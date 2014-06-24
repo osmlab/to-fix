@@ -39,3 +39,37 @@ git config --global credential.helper cache
 
 curl -f http://keepright.ipax.at/keepright_errors.txt.bz2 > errors.txt.bz2
 bunzip2 errors.txt.bz2
+
+echo "
+    CREATE TYPE obj_type AS ENUM('node', 'way', 'relation');
+"| psql -U postgres keepright
+
+echo "
+    CREATE TYPE the_state AS ENUM('new','reopened','ignore_temporarily','ignore');
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE errors (
+        schema varchar(6) NOT NULL,
+        error_id integer NOT NULL,
+        error_type integer NOT NULL,
+        error_name varchar(100) NOT NULL,
+        object_type obj_type NOT NULL,
+        object_id bigint NOT NULL,
+        state the_state NOT NULL,
+        first_occurrence timestamp NOT NULL,
+        last_checked timestamp NOT NULL,
+        object_timestamp timestamp NOT NULL,
+        user_name text NOT NULL,
+        lat integer NOT NULL,
+        lon integer NOT NULL,
+        comment text,
+        comment_timestamp timestamp,
+        msgid text,
+        txt1 text,
+        txt2 text,
+        txt3 text,
+        txt4 text,
+        txt5 text
+    );
+" | psql -U postgres keepright
