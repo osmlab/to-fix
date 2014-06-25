@@ -76,3 +76,8 @@ rm -rf errors.txt
 echo "
     COPY errors from '$PWD/errors-nohead.txt';
 " | psql -U postgres keepright
+
+echo "
+    ALTER TABLE errors ADD COLUMN geom GEOMETRY (POINT, 4326);
+    UPDATE errors SET geom = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
+" | psql -U postgres keepright
