@@ -1,4 +1,3 @@
-# mostly taken from mapbox-places
 apt-get -y update
 
 apt-get install -y python-software-properties build-essential
@@ -10,6 +9,9 @@ apt-get install -y postgres-xc-client
 add-apt-repository --yes ppa:developmentseed/mapbox-streets
 
 apt-get install -y libpq-dev libgeos-c1 libgeos++-dev proj-bin mapnik-utils postgresql-9.3 postgresql-9.3-postgis-2.1 postgresql-contrib-9.3 unzip postgresql-client-9.3 postgresql-common postgresql-client-common postgresql-plpython-9.3
+
+sudo apt-get install -y git vim htop bzip2 curl
+git config --global credential.helper cache
 
 echo "- setting up postgres permissions + database"
 chmod a+rx $HOME
@@ -34,9 +36,6 @@ host all all ::1/128 trust
 host replication postgres samenet trust
 " > /etc/postgresql/9.3/main/pg_hba.conf'
 
-sudo apt-get install -y git vim htop bzip2 curl
-git config --global credential.helper cache
-
 curl -f http://keepright.ipax.at/keepright_errors.txt.bz2 > errors.txt.bz2
 bunzip2 errors.txt.bz2
 
@@ -53,23 +52,32 @@ echo "
         schema varchar(6) NOT NULL,
         error_id integer NOT NULL,
         error_type integer NOT NULL,
-        error_name varchar(100) NOT NULL,
+        error_name varchar(255) NOT NULL,
         object_type obj_type NOT NULL,
         object_id bigint NOT NULL,
         state the_state NOT NULL,
         first_occurrence timestamp NOT NULL,
         last_checked timestamp NOT NULL,
         object_timestamp timestamp NOT NULL,
-        user_name text NOT NULL,
+        user_name varchar(255) NOT NULL,
         lat integer NOT NULL,
         lon integer NOT NULL,
-        comment text,
-        comment_timestamp timestamp,
-        msgid text,
-        txt1 text,
-        txt2 text,
-        txt3 text,
-        txt4 text,
-        txt5 text
+        comment varchar(255),
+        comment_timestamp bytea,
+        msgid bytea,
+        txt1 bytea,
+        txt2 bytea,
+        txt3 bytea,
+        txt4 bytea,
+        txt5 bytea
     );
+" | psql -U postgres keepright
+
+tail -n +2 errors.txt > errors-nohead.txt
+sed -i 's/\\N/NULLs/g' errors-nohead.txt
+sed -i 's/\\//g' errors-nohead.txt
+rm -rf errors.txt
+
+echo "
+    COPY errors from '$PWD/errors-nohead.txt';
 " | psql -U postgres keepright
