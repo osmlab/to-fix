@@ -1,3 +1,3 @@
-errors.txt.bz2
-errors.txt
-errors-nohead.txt
+*.bz2
+*.txt
+*.gml
