@@ -1,5 +1,5 @@
 # create the db
-sudo -u postgres createdb -U postgres -T template_postgis -E UTF8 keepright
+sudo -u postgres createdb -U postgres -E UTF8 keepright
 
 # download keepright dump
 curl -f http://keepright.ipax.at/keepright_errors.txt.bz2 > errors.txt.bz2

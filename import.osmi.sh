@@ -12,6 +12,8 @@
 # http://tools.geofabrik.de/osmi/views/highways/view.json
 # http://tools.geofabrik.de/osmi/views/routing/view.json
 
+sudo -u postgres createdb -U postgres -T template_postgis -E UTF8 osmi
+
 # I'm only interested in certain layers
 # commented out lines send 500 err, I think there are just too many, want to find a way around that
 curl -f "http://tools.geofabrik.de/osmi/view/multipolygon/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=role_mismatch_hull" > role_mismatch_hull.gml
@@ -30,3 +32,5 @@ curl -f "http://tools.geofabrik.de/osmi/view/routing/wxs?SERVICE=WFS&VERSION=1.0
 for a in $(ls *.gml); do
     sudo -u postgres ogr2ogr -overwrite -f PostgreSQL PG:dbname=osmi $a
 done
+
+rm -rf *.gml
