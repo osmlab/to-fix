@@ -47,7 +47,7 @@ echo "
         txt5 bytea
     );
 " | psql -U postgres keepright
-# using bytea for now because I couldn't figure out the problems
+# using bytea for now because I couldn't figure out encoding problems
 
 # remove the header
 tail -n +2 errors.txt > errors-nohead.txt
@@ -66,4 +66,23 @@ echo "
 echo "
     ALTER TABLE errors ADD COLUMN geom GEOMETRY (POINT, 4326);
     UPDATE errors SET geom = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
+" | psql -U postgres keepright
+
+# let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
+echo "
+    CREATE TABLE nonclosedways AS SELECT * from errors where error_name = 'non-closed areas' order by random();
+" | psql -U postgres keepright
+
+# important for routing
+echo "
+    CREATE TABLE deadendoneway AS SELECT * from errors where error_name = 'dead-ended one-ways' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE impossibleangle AS SELECT * from errors where error_name = 'impossible angles' order by random();
+" | psql -U postgres keepright
+
+# important for routing
+echo "
+    CREATE TABLE mixedlayer as SELECT * from errors where error_name = 'mixed layers intersections' order by random();
 " | psql -U postgres keepright
