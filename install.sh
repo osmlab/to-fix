@@ -18,3 +18,12 @@ sudo -u postgres psql -U postgres -d template_postgis -c "CREATE EXTENSION postg
 sudo -u postgres psql -U postgres -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;"
 sudo -u postgres psql -U postgres -d template_postgis -c "GRANT ALL ON geography_columns TO PUBLIC;"
 sudo -u postgres psql -U postgres -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;"
+
+# play nicely with other users
+sh -c 'echo "
+local all postgres trust
+local all all trust
+host all all 127.0.0.1/32 trust
+host all all ::1/128 trust
+host replication postgres samenet trust
+" > /etc/postgresql/9.3/main/pg_hba.conf'

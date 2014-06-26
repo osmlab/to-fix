@@ -1,7 +1,6 @@
 ##to-fix
 
-Collecting OSM QA data; so you can do stuff with it.
-
+Collecting OSM QA data and doing stuff with it.
 
 ####Notes
 - KeepRight includes lots of useful data but doesn't include geometry of the 

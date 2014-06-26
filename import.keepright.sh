@@ -1,15 +1,6 @@
 # create the db
 sudo -u postgres createdb -U postgres -T template_postgis -E UTF8 keepright
 
-# play nicely with other users
-sh -c 'echo "
-local all postgres trust
-local all all trust
-host all all 127.0.0.1/32 trust
-host all all ::1/128 trust
-host replication postgres samenet trust
-" > /etc/postgresql/9.3/main/pg_hba.conf'
-
 # download keepright dump
 curl -f http://keepright.ipax.at/keepright_errors.txt.bz2 > errors.txt.bz2
 bunzip2 errors.txt.bz2
@@ -62,12 +53,6 @@ echo "
     COPY errors from '$PWD/errors-nohead.txt';
 " | psql -U postgres keepright
 
-# make it spatial
-echo "
-    ALTER TABLE errors ADD COLUMN geom GEOMETRY (POINT, 4326);
-    UPDATE errors SET geom = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
-" | psql -U postgres keepright
-
 # let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
 echo "
     CREATE TABLE nonclosedways AS SELECT * from errors where error_name = 'non-closed areas' order by random();
@@ -85,4 +70,9 @@ echo "
 # important for routing
 echo "
     CREATE TABLE mixedlayer as SELECT * from errors where error_name = 'mixed layers intersections' order by random();
+" | psql -U postgres keepright
+
+# drop the rest of the db that we don't need right now
+echo "
+    DROP TABLE errors;
 " | psql -U postgres keepright
