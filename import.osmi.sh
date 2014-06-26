@@ -13,6 +13,7 @@
 # http://tools.geofabrik.de/osmi/views/routing/view.json
 
 # I'm only interested in certain layers
+# commented out lines send 500 err, I think there are just too many, want to find a way around that
 curl -f "http://tools.geofabrik.de/osmi/view/multipolygon/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=role_mismatch_hull" > role_mismatch_hull.gml
 curl -f "http://tools.geofabrik.de/osmi/view/multipolygon/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=role_mismatch" > role_mismatch_ways.gml
 curl -f "http://tools.geofabrik.de/osmi/view/multipolygon/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=intersections" > intersection_points.gml
@@ -25,3 +26,7 @@ curl -f "http://tools.geofabrik.de/osmi/view/routing/wxs?SERVICE=WFS&VERSION=1.0
 curl -f "http://tools.geofabrik.de/osmi/view/routing/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=unconnected_minor1" > routing_minor1.gml
 # curl -f "http://tools.geofabrik.de/osmi/view/routing/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=islands" > islands.gml
 # curl -f "http://tools.geofabrik.de/osmi/view/routing/wxs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=duplicate_ways" > duplicate_ways.gml
+
+for a in $(ls *.gml); do
+    sudo -u postgres ogr2ogr -overwrite -f PostgreSQL PG:dbname=osmi $a
+done
