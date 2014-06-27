@@ -3,6 +3,7 @@ sudo -u postgres createdb -U postgres -E UTF8 keepright
 
 # download keepright dump
 curl -f http://keepright.ipax.at/keepright_errors.txt.bz2 > errors.txt.bz2
+echo "unzipping error file"
 bunzip2 errors.txt.bz2
 
 echo "
@@ -40,7 +41,7 @@ echo "
 " | psql -U postgres keepright
 # using bytea for now because I couldn't figure out encoding problems
 
-# remove the header
+echo "removing the header"
 tail -n +2 errors.txt > errors-nohead.txt
 rm -rf errors.txt
 # fix NULL issues, NULLs for text in MySQL, not in Postgres
@@ -49,11 +50,13 @@ sed -i 's/\\N/NULLs/g' errors-nohead.txt
 sed -i 's/\\//g' errors-nohead.txt
 # way sloppy
 
+echo "importing errors to database"
 echo "
     COPY errors from '$PWD/errors-nohead.txt';
 " | psql -U postgres keepright
 
 # let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
+echo "importing select error layers"
 echo "
     CREATE TABLE nonclosedways AS SELECT * from errors where error_name = 'non-closed areas' order by random();
 " | psql -U postgres keepright
