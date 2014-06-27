@@ -1,5 +1,6 @@
+sudo su
 # create the db
-sudo -u postgres createdb -U postgres -E UTF8 keepright
+sudo -u postgres createdb -U postgres -T template_postgis -E UTF8 keepright
 
 # download keepright dump
 curl -f http://keepright.ipax.at/keepright_errors.txt.bz2 > errors.txt.bz2
@@ -29,7 +30,7 @@ echo "
         user_name varchar(255) NOT NULL,
         lat integer NOT NULL,
         lon integer NOT NULL,
-        comment varchar(255),
+        comment varchar(10000),
         comment_timestamp bytea,
         msgid bytea,
         txt1 bytea,
@@ -57,7 +58,7 @@ echo "
 
 echo "
     ALTER TABLE errors ADD COLUMN wkb_geometry GEOMETRY (POINT, 4326);
-    UPDATE errors SET geom = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
+    UPDATE errors SET wkb_geometry = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
 " | psql -U postgres keepright
 
 # let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
@@ -66,7 +67,6 @@ echo "
     CREATE TABLE nonclosedways AS SELECT * from errors where error_name = 'non-closed areas' order by random();
 " | psql -U postgres keepright
 
-# important for routing
 echo "
     CREATE TABLE deadendoneway AS SELECT * from errors where error_name = 'dead-ended one-ways' order by random();
 " | psql -U postgres keepright
@@ -75,7 +75,6 @@ echo "
     CREATE TABLE impossibleangle AS SELECT * from errors where error_name = 'impossible angles' order by random();
 " | psql -U postgres keepright
 
-# important for routing
 echo "
     CREATE TABLE mixedlayer as SELECT * from errors where error_name = 'mixed layers intersections' order by random();
 " | psql -U postgres keepright
