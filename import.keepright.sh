@@ -55,6 +55,11 @@ echo "
     COPY errors from '$PWD/errors-nohead.txt';
 " | psql -U postgres keepright
 
+echo "
+    ALTER TABLE errors ADD COLUMN wkb_geometry GEOMETRY (POINT, 4326);
+    UPDATE errors SET geom = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
+" | psql -U postgres keepright
+
 # let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
 echo "importing select error layers"
 echo "
