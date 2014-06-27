@@ -8,20 +8,21 @@ reimport:
 	sh import.keepright.sh
 	sh.import.osmi.sh
 
-activity.sql:
-	echo 'backing up activity database'
-	sudo -u postgres pg_dump activity > "activity-$(date +%s).sql"
-
 keepright.sql:
-	sudo -u postgres pg_dump keepright > keepright-$(date +%s).sql
+	FILE="keepright-$(date +%s).sql"
+	sudo -u postgres pg_dump keepright > $FILE
+	echo "new backup: $FILE"
 
 osmi.sql:
-	sudo -u postgres pg_dump osmi > osmi-$(date +%s).sql
+	FILE="osmi-$(date +%s).sql"
+	sudo -u postgres pg_dump osmi > $FILE
+	echo "new backup: $FILE"
 
-backup: activity.sql keepright.sql osmi.sql
+backup:
+	make keepright.sql
+	make osmi.sql
 
 clean:
-	echo 'deleting error databases'
+	echo 'dropping databases'
 	echo "DROP DATABASE osmi;" | pgsql -U postgres
 	echo "DROP DATABASE keepright;" | pgsql -U postgres
-	make activity.sql

@@ -8,8 +8,8 @@ Just run `make <command>` and it will do that thing.
 Commands:
 - install - installs PostGIS, downloads and imports keepright and OSM Inspector data.
 - reimport - deletes the keepright and OSMI database, redownloads and imports everything
-- backup - backs up the keepright, OSMI and activity databases
-- clean - drops and keepright and OSMI database, backs up the activity database
+- backup - backs up the keepright and OSMI databases using pg_dump
+- clean - drops and keepright and OSMI database
 
 ###Notes
 - KeepRight includes lots of useful data but doesn't include geometry of the 

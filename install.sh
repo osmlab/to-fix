@@ -27,15 +27,3 @@ host all all 127.0.0.1/32 trust
 host all all ::1/128 trust
 host replication postgres samenet trust
 " > /etc/postgresql/9.3/main/pg_hba.conf'
-
-sudo -u postgres createdb -U postgres -E UTF8 activity
-
-echo "
-    CREATE TABLE activity (
-        action varchar(255),
-        username varchar(255),
-        item varchar(255),
-        location text,
-        time varchar(255)
-    );
-" | psql -U postgres activity
