@@ -32,3 +32,8 @@ clean:
 	echo 'dropping databases'
 	echo "DROP DATABASE osmi;" | pgsql -U postgres
 	echo "DROP DATABASE keepright;" | pgsql -U postgres
+
+tasks:
+	sh tasks.keepright.sh
+	sh tasks.osmi.sh
+	# need to figure out hashing
