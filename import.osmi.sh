@@ -1,4 +1,3 @@
-sudo su
 # views:
 # http://tools.geofabrik.de/osmi/view
 

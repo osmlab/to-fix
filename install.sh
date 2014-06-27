@@ -1,4 +1,3 @@
-sudo su
 apt-get -y update
 
 echo "- installing postgres + postgis"
