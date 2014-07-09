@@ -24,8 +24,8 @@ backup:
 
 clean:
 	echo 'dropping databases'
-	echo "DROP DATABASE osmi;" | pgsql -U postgres
-	echo "DROP DATABASE keepright;" | pgsql -U postgres
+	echo "DROP DATABASE osmi;" | psql -U postgres
+	echo "DROP DATABASE keepright;" | psql -U postgres
 
 tasks:
 	sh tasks.keepright.sh
