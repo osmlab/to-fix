@@ -1,17 +1,17 @@
-echo "
-    COPY (select wkb_geometry from deadendoneway) to stdout DELIMITER ',' CSV;
-" | psql -U postgres keepright > deadendoneway.csv
+mkdir keepright-tasks
 
 echo "
-    COPY (select wkb_geometry from impossibleangle) to stdout DELIMITER ',' CSV;
-" | psql -U postgres keepright > impossibleangle.csv
+    COPY (select object_type, object_id, wkb_geometry from deadendoneway) to stdout DELIMITER ',' CSV;
+" | psql -U postgres keepright > keepright-tasks/deadendoneway.csv
 
 echo "
-    COPY (select wkb_geometry from mixedlayer) to stdout DELIMITER ',' CSV;
-" | psql -U postgres keepright > mixedlayer.csv
+    COPY (select object_type, object_id, wkb_geometry from impossibleangle) to stdout DELIMITER ',' CSV;
+" | psql -U postgres keepright > keepright-tasks/impossibleangle.csv
 
 echo "
-    COPY (select wkb_geometry from nonclosedways) to stdout DELIMITER ',' CSV;
-" | psql -U postgres keepright > nonclosedways.csv
+    COPY (select object_type, object_id, wkb_geometry from mixedlayer) to stdout DELIMITER ',' CSV;
+" | psql -U postgres keepright > keepright-tasks/mixedlayer.csv
 
-# chop them up and name then with unique reproduceable hashes
+echo "
+    COPY (select object_type, object_id, wkb_geometry from nonclosedways) to stdout DELIMITER ',' CSV;
+" | psql -U postgres keepright > keepright-tasks/nonclosedways.csv
