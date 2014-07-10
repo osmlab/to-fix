@@ -15,3 +15,15 @@ echo "
 echo "
     COPY (select object_type, object_id, wkb_geometry from nonclosedways) to stdout DELIMITER ',' CSV;
 " | psql -U postgres keepright > keepright-tasks/nonclosedways.csv
+
+for a in $(ls keepright-tasks/*.csv);
+do
+    dirname=$(basename $a '.csv')
+    mkdir -p keepright-tasks/$dirname
+    count=0
+    while read line
+    do
+        echo $line > keepright-tasks/$dirname/$count.json
+        count=$(($count + 1))
+    done < $a
+done
