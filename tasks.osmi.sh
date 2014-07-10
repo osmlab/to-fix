@@ -35,3 +35,15 @@ echo "
 echo "
     COPY (select ogc_fid, wkb_geometry from unconnected_minor2) to stdout DELIMITER ',' CSV;
 " | psql -U postgres osmi > osmi-tasks/unconnected_minor2.csv
+
+for a in $(ls osmi-tasks/*.csv);
+do
+    dirname=$(basename $a '.csv')
+    mkdir -p osmi-tasks/$dirname
+    count=0
+    while read line
+    do
+        echo $line > osmi-tasks/$dirname/$count.json
+        count=$(($count + 1))
+    done < $a
+done
