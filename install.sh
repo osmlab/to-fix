@@ -28,10 +28,10 @@ host all all ::1/128 trust
 host replication postgres samenet trust
 " > /etc/postgresql/9.3/main/pg_hba.conf'
 
-killall postgres
+sudo killall postgres
 
 mkdir -p /mnt/data/postgres/
-rm /var/lib/postgresql/9.3/main
+mv /var/lib/postgresql/9.3/main/ /mnt/data/postgres/
 cd /var/lib/postgresql/9.3
 ln -s /mnt/data/postgres/main main
 
