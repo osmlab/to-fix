@@ -43,7 +43,7 @@ do
     count=0
     while read line
     do
-        echo $line > osmi-tasks/$dirname/$count
+        echo $line > osmi-tasks/$dirname/$(echo $count | rev)
         count=$(($count + 1))
     done < $a
 done

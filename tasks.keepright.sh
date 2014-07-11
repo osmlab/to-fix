@@ -23,7 +23,7 @@ do
     count=0
     while read line
     do
-        echo $line > keepright-tasks/$dirname/$count
+        echo $line > keepright-tasks/$dirname/$(echo $count | rev)
         count=$(($count + 1))
     done < $a
 done

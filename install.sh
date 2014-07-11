@@ -6,7 +6,7 @@ add-apt-repository --yes ppa:developmentseed/mapbox-streets
 
 apt-get install -y libpq-dev libgeos-c1 libgeos++-dev proj-bin mapnik-utils postgresql-9.3 postgresql-9.3-postgis-2.1 postgresql-contrib-9.3 unzip postgresql-client-9.3 postgresql-common postgresql-client-common postgresql-plpython-9.3
 
-sudo apt-get install -y git vim htop bzip2 curl gdal-bin
+sudo apt-get install -y git vim htop bzip2 curl gdal-bin s3cmd
 
 echo "- setting up postgres permissions + database"
 chmod a+rx $HOME
