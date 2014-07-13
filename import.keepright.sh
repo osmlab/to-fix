@@ -57,7 +57,7 @@ echo "
 
 echo "
     ALTER TABLE errors ADD COLUMN wkb_geometry GEOMETRY (POINT, 4326);
-    UPDATE errors SET wkb_geometry = ST_Transform(ST_SetSRID(ST_MakePoint(lon, lat), 3857), 4326);
+    UPDATE errors SET wkb_geometry = ST_SetSRID(ST_MakePoint(lon/10000000.0, lat/10000000.0), 4326);
 " | psql -U postgres keepright
 
 # let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
