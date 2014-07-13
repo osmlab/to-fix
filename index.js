@@ -17,8 +17,9 @@ router.addRoute('/error/:db/:table', {
         quick_query(opts.db, query, function(err, result) {
             if (err) return console.log(err);
             console.log(result);
+            // will res.end the results here
         });
-        res.end(200);
+        res.end('hello');
     },
     POST: function(req, res, opts) {
         // lets not for now
@@ -26,13 +27,13 @@ router.addRoute('/error/:db/:table', {
 });
 
 function quick_query(database, query, cb) {
-    var client = new pg.Client(conString + database)
-        .connect(function(err) {
+    var client = new pg.Client(connection + database);
+    client.connect(function(err) {
+        if (err) return cb(err);
+        client.query(function(err, result) {
             if (err) return cb(err);
-            client.query(function(err, result) {
-                if (err) return cb(err);
-                cb(false, result);
-                client.end();
-            });
+            cb(false, result);
+            client.end();
         });
+    });
 }
