@@ -10,10 +10,10 @@ http.createServer(router).listen(port, function() {
     console.log('running on port ' + port);
 });
 
-router.addRoute('/problem/:db/:table/:id', {
+router.addRoute('/error/:db/:table', {
     GET: function(req, res, opts) {
         // serves a random item
-        var query = 'select * from ' + opts.table + ' where done = false limit 1;';
+        var query = 'select ogc_fid, ST_AsText(wkb_geometry) from ' + opts.table + ';';
         quick_query(opts.db, query, function(err, result) {
             if (err) return console.log(err);
             console.log(result);
@@ -21,13 +21,7 @@ router.addRoute('/problem/:db/:table/:id', {
         res.end(200);
     },
     POST: function(req, res, opts) {
-        // update a specific item, requires :id
-        if (opts.id) {
-            // update item in pg
-            // send success response
-        } else {
-            res.send(400);
-        }
+        // lets not for now
     }
 });
 
@@ -42,10 +36,3 @@ function quick_query(database, query, cb) {
             });
         });
 }
-
-router.addRoute('/users', function(req, res) {
-    // just dump the activity table
-    // csv? 
-    // hope to use it for vizualizations
-    // make sure this reimportable to carry from instance to instance?
-});
