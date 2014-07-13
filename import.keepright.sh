@@ -78,6 +78,10 @@ echo "
     CREATE TABLE mixedlayer as SELECT * from errors where error_name = 'mixed layers intersections' order by random();
 " | psql -U postgres keepright
 
+echo "
+    CREATE TABLE highwaywater as SELECT * from errors where error_name = 'highway-waterway' order by random();
+" | psql -U postgres keepright
+
 # drop the rest of the db that we don't need right now
 echo "
     DROP TABLE errors;
