@@ -13,7 +13,7 @@ http.createServer(router).listen(port, function() {
 router.addRoute('/error/:db/:table', {
     GET: function(req, res, opts) {
         // serves a random item
-        var query = 'select ogc_fid, ST_AsText(wkb_geometry) from ' + opts.table + ';';
+        var query = 'select object_type, object_id, ST_AsText(wkb_geometry) from ' + opts.table + ' order by random() limit 1;';
         quick_query(opts.db, query, function(err, result) {
             if (err) return console.log(err);
             console.log(result);
@@ -27,12 +27,14 @@ router.addRoute('/error/:db/:table', {
 });
 
 function quick_query(database, query, cb) {
-    var client = new pg.Client(connection + database);
-    client.connect(function(err) {
+    pg.connect(connection + database, function(err, client) {
         if (err) return cb(err);
-        client.query(function(err, result) {
-            if (err) return cb(err);
-            cb(false, result);
+        client.query(query, function(err, result) {
+            if (err) {
+                client.end();
+                return cb(err);
+            }
+            cb(result.rows[0]);
             client.end();
         });
     });

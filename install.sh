@@ -28,6 +28,11 @@ host all all ::1/128 trust
 host replication postgres samenet trust
 " > /etc/postgresql/9.3/main/pg_hba.conf'
 
+# sudo vi /etc/postgresql/9.3/main/postgresql.conf
+# set: listen_addresses='*'
+# add
+# host all all 50.198.132.58/32 trust
+
 sudo killall postgres
 
 mkdir -p /mnt/data/postgres/
