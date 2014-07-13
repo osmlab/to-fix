@@ -16,10 +16,8 @@ router.addRoute('/error/:db/:table', {
         var query = 'select object_type, object_id, ST_AsText(wkb_geometry) from ' + opts.table + ' order by random() limit 1;';
         quick_query(opts.db, query, function(err, result) {
             if (err) return console.log(err);
-            console.log(result);
-            // will res.end the results here
+            res.end(JSON.stringify(result));
         });
-        res.end('hello');
     },
     POST: function(req, res, opts) {
         // lets not for now
@@ -34,8 +32,8 @@ function quick_query(database, query, cb) {
                 client.end();
                 return cb(err);
             }
-            cb(result.rows[0]);
             client.end();
+            cb(null, result.rows[0]);
         });
     });
 }
