@@ -36,3 +36,7 @@ cd /var/lib/postgresql/9.3
 ln -s /mnt/data/postgres/main main
 
 sudo /etc/init.d/postgresql start
+
+# hopefully short lived
+sudo apt-get install -y nodejs npm
+sudo ln -s /usr/bin/nodejs /usr/bin/node
