@@ -166,7 +166,6 @@
                 current.bounds = layer.getBounds();
                 map.fitBounds(current.bounds);
                 omnivore.wkt.parse(data.st_astext).addTo(map);
-                loadJOSM();
             }
         });
         renderUI({
@@ -192,7 +191,6 @@
                     dataType: "xml",
                     success: function (xml) {
                         var layer = new L.OSM.DataLayer(xml).addTo(map);
-                        loadJOSM();
                     }
                 });
             }
