@@ -135,7 +135,7 @@
             crossDomain: true,
             url: url + qs('error')
         }).done(function(data) {
-            $('#next').removeClass('loading');
+            $('#map').removeClass('loading');
             loader[qs('error')](data);
         });
     }
@@ -224,7 +224,7 @@
     });
 
     $('#next').on('click', function() {
-        $('#next').addClass('loading');
+        $('#map').addClass('loading');
         load();
     });
 
