@@ -60,6 +60,19 @@
         padding: 0 15px;
     }
 
+    #next {
+        padding: 0px 100px;
+        line-height: 55px;
+        font-size: 20px;
+        bottom: 30px;
+        right: 10px;
+        font-weight: bold;
+    }
+
+    #next:hover {
+        cursor: pointer;
+    }
+
     .leaflet-bar, .leaflet-control-layers {
         border-radius: 0px;
         border-color: rgba(0,0,0,0);
@@ -75,9 +88,19 @@
 
 <h1 id='title' class='controls hidden'></h1>
 <div id='menu' class='hidden'></div>
+<div id='next' class='controls hidden'>Next »</div>
 
 <div id='map'></div>
 <script>
+    var title = {
+        'keepright/deadendoneway': 'One-way without exit',
+        // 'keepright/highwaywater': 'Highways crossing water',
+        'keepright/impossibleangle': 'Sharp angles',
+        'keepright/mixedlayer': 'Mixed layer tagging',
+        'keepright/nonclosedways': 'Nonclosed ways'
+        // don't forget osmi
+    };
+
     var url = 'http://54.91.116.141:3000/error/';
 
     function qs(name) {
@@ -88,12 +111,15 @@
     }
 
     var map = L.mapbox.map('map', 'aaronlidman.inhj344j').setView([22.76, -25.84], 3);
+
     $(function() {
+        renderMenu();
         load();
     });
 
+    if (qs('error') == '') window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
+
     function load() {
-        renderMenu();
         $.ajax({
             crossDomain: true,
             url: url + qs('error')
@@ -111,15 +137,6 @@
     loader['keepright/mixedlayer'] = keeprights;
     loader['keepright/nonclosedways'] = keeprights;
 
-    var title = {
-        'keepright/deadendoneway': 'One-way without exit',
-        // 'keepright/highwaywater': 'Highways crossing water',
-        'keepright/impossibleangle': 'Impossible angles',
-        'keepright/mixedlayer': 'Mixed layer tagging',
-        'keepright/nonclosedways': 'Nonclosed ways'
-        // don't forget osmi
-    };
-
     function keeprights(data, cb) {
         data = JSON.parse(data);
         console.log(data);
@@ -129,7 +146,9 @@
             dataType: "xml",
             success: function (xml) {
                 var layer = new L.OSM.DataLayer(xml).addTo(map);
-                map.fitBounds(layer.getBounds());
+                var bounds = layer.getBounds();
+                console.log(bounds);
+                map.fitBounds(bounds);
                 if (map.getZoom() > 18) map.setZoom(18);
                 omnivore.wkt.parse(data.st_astext).addTo(map);
                 // open in JOSM
@@ -156,6 +175,10 @@
         }
     });
 
+    $('#next').on('click', function() {
+        load();
+    });
+
     function renderMenu() {
         var html = '';
         for (var item in title) {
@@ -165,7 +188,6 @@
     }
 
     // autoload JOSM
-    // next button
     // no user anything yet
 
 </script>
