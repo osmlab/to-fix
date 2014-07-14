@@ -42,7 +42,7 @@
     }
 
     #menu {
-        width: 200px;
+        width: 250px;
         top: 64px;
         left: 48px;
         padding: 10px 0;
@@ -90,7 +90,7 @@
 <h1 id='title' class='controls hidden'></h1>
 <div id='menu'></div>
 <div id='josm' class='controls hidden'>load in JOSM</div>
-<div id='next' class='controls hidden'>Next »</div>
+<div id='next' class='controls hidden'>next »</div>
 
 <div id='map'></div>
 <script>
@@ -99,8 +99,12 @@
         // 'keepright/highwaywater': 'Highways crossing water',
         'keepright/impossibleangle': 'Sharp angles',
         'keepright/mixedlayer': 'Mixed layer tagging',
-        'keepright/nonclosedways': 'Nonclosed ways'
-        // don't forget osmi
+        'keepright/nonclosedways': 'Nonclosed ways',
+        'osmi/unconnected_major1': 'Unconnected major < 1m',
+        'osmi/unconnected_major2': 'Unconnected major < 2m',
+        'osmi/unconnected_major5': 'Unconnected major < 5m',
+        'osmi/unconnected_minor1': 'Unconnected minor < 1m',
+        'osmi/unconnected_minor2': 'Unconnected minor < 2m'
     };
 
     var url = 'http://54.91.116.141:3000/error/';
@@ -115,7 +119,8 @@
 
     var map = L.mapbox.map('map', 'aaronlidman.inhj344j', {
         fadeAnimation: false,
-        zoomAnimation: false
+        zoomAnimation: false,
+        maxZoom: 18
     }).setView([22.76, -25.84], 3);
 
     $(function() {
@@ -131,20 +136,24 @@
             url: url + qs('error')
         }).done(function(data) {
             $('#next').removeClass('loading');
-            loader[qs('error')](data, function() {
-                // idk
-            });
+            loader[qs('error')](data);
         });
     }
 
     var loader = {};
-    loader['keepright/deadendoneway'] = keeprights;
-    loader['keepright/highwaywater'] = keeprights;
-    loader['keepright/impossibleangle'] = keeprights;
-    loader['keepright/mixedlayer'] = keeprights;
-    loader['keepright/nonclosedways'] = keeprights;
+    loader['keepright/deadendoneway'] =     keeprights;
+    loader['keepright/highwaywater'] =      keeprights;
+    loader['keepright/impossibleangle'] =   keeprights;
+    loader['keepright/mixedlayer'] =        keeprights;
+    loader['keepright/nonclosedways'] =     keeprights;
 
-    function keeprights(data, cb) {
+    loader['osmi/unconnected_major1'] =     unconnected;
+    loader['osmi/unconnected_major2'] =     unconnected;
+    loader['osmi/unconnected_major5'] =     unconnected;
+    loader['osmi/unconnected_minor1'] =     unconnected;
+    loader['osmi/unconnected_minor2'] =     unconnected;
+
+    function keeprights(data) {
         data = JSON.parse(data);
         current = data;
         console.log(current);
@@ -156,12 +165,38 @@
                 var layer = new L.OSM.DataLayer(xml).addTo(map);
                 current.bounds = layer.getBounds();
                 map.fitBounds(current.bounds);
-                if (map.getZoom() > 18) map.setZoom(18);
                 omnivore.wkt.parse(data.st_astext).addTo(map);
                 loadJOSM();
             }
         });
-        cb();
+        renderUI({
+            title: title[qs('error')]
+        });
+    }
+
+    function unconnected(data) {
+        data = JSON.parse(data);
+        current = data;
+        // we're assuming they all have a node and a way, which might not hold true
+        console.log(current);
+        // first the way, then the node
+        $.ajax({
+            url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way_id + '/full',
+            dataType: "xml",
+            success: function (xml) {
+                var layer = new L.OSM.DataLayer(xml).addTo(map);
+                current.bounds = layer.getBounds();
+                map.fitBounds(current.bounds);
+                $.ajax({
+                    url: 'https://www.openstreetmap.org/api/0.6/node' + '/' + data.node_id,
+                    dataType: "xml",
+                    success: function (xml) {
+                        var layer = new L.OSM.DataLayer(xml).addTo(map);
+                        loadJOSM();
+                    }
+                });
+            }
+        });
         renderUI({
             title: title[qs('error')]
         });
@@ -205,7 +240,6 @@
         $('#menu').html(html);
     }
 
-    // autoload JOSM
     // no user anything yet
 
 </script>
