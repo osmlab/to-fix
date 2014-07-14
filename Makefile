@@ -33,3 +33,6 @@ tasks:
 	sh tasks.keepright.sh
 	sh tasks.osmi.sh
 	# need to figure out hashing
+
+server:
+	sudo ./node_modules/forever/bin/forever start index.js
