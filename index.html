@@ -29,8 +29,35 @@
 
     var map = L.mapbox.map('map', 'aaronlidman.inhj344j').setView([22.76, -25.84], 3);
     $(function() {
-        // go
+        load();
     });
+
+    function load() {
+        $.ajax({
+            crossDomain: true,
+            url: url + qs('error')
+        }).done(function(data) {
+            loader[qs('error')](data, function() {
+                // idk
+            });
+        });
+    }
+
+    var loader = {};
+    loader['keepright/deadendoneway'] = keeprights;
+    loader['keepright/highwaywater'] = keeprights;
+    loader['keepright/impossibleangle'] = keeprights;
+    loader['keepright/mixedlayer'] = keeprights;
+    loader['keepright/nonclosedways'] = keeprights;
+
+    function keeprights(data, cb) {
+        data = JSON.parse(data);
+        omnivore.wkt.parse(data.st_astext).addTo(map);
+        // populate UI
+        // bind stuff
+        // open in JOSM
+        cb();
+    }
 
 </script>
 
