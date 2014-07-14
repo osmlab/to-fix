@@ -33,12 +33,3 @@ tasks:
 	sh tasks.keepright.sh
 	sh tasks.osmi.sh
 	# need to figure out hashing
-
-s3push:
-	make s3clean
-	s3cmd put --acl-public --resursive keepright-tasks s3://to-fix/
-	s3cmd put --acl-public --recursive osmi-tasks s3://to-fix/
-
-s3clean:
-	s3cmd del --recursive s3://to-fix/keepright-tasks/
-	s3cmd del --recursive s3://to-fix/osmi-tasks/
