@@ -45,6 +45,11 @@
         top: 64px;
         left: 48px;
         padding: 10px 0;
+        float: left;
+        position: absolute;
+        background-color: white;
+        z-index: 9001;
+        font-weight: bold;
     }
 
     #menu a {   
@@ -68,7 +73,7 @@
 <body>
 
 <h1 id='title' class='controls hidden'></h1>
-<div id='menu' class='controls hidden'></div>
+<div id='menu' class='hidden'></div>
 
 <div id='map'></div>
 <script>
@@ -107,7 +112,7 @@
 
     var title = {
         'keepright/deadendoneway': 'One-way without exit',
-        'keepright/highwaywater': 'Highways crossing water',
+        // 'keepright/highwaywater': 'Highways crossing water',
         'keepright/impossibleangle': 'Impossible angles',
         'keepright/mixedlayer': 'Mixed layer tagging',
         'keepright/nonclosedways': 'Nonclosed ways'
@@ -137,7 +142,11 @@
 
     $('h1').on('click', function() {
         // show/hide a #menu
-
+        if ($('#menu').hasClass('hidden')) {
+            $('#menu').removeClass('hidden');
+        } else {
+            $('#menu').addClass('hidden');
+        }
     });
 
     function renderMenu() {
@@ -148,8 +157,6 @@
         $('#menu').html(html);
     }
 
-    // todo create really basic UI
-    // dropdown to switch between errors
     // autoload JOSM
     // next button
     // no user anything yet
