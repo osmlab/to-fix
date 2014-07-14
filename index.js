@@ -39,7 +39,8 @@ router.addRoute('/error/osmi/:table', {
     GET: function(req, res, opts) {
         var query = '';
         switch (opts.table) {
-            case 'intersections' || 'intersection_lines':
+            case 'intersections':
+            case 'intersection_lines':
                 query = 'select rel_id ';
                 break;
             // case role_mismatch:
@@ -48,11 +49,11 @@ router.addRoute('/error/osmi/:table', {
             // case role_mismatch_hull:
 
             //     break;
-            case 'unconnected_major1' ||
-                'unconnected_major2' ||
-                'unconnected_major5' ||
-                'unconnected_minor1' ||
-                'unconnected_minor2':
+            case 'unconnected_major1':
+            case 'unconnected_major2':
+            case 'unconnected_major5':
+            case 'unconnected_minor1':
+            case 'unconnected_minor2':
                     query = 'select way_id, node_id, error_desc ';
                     break;
             default:
