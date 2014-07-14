@@ -6,6 +6,7 @@
 <script src='//api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
 <link href='//api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
 <link href='//www.mapbox.com/base/latest/base.css' rel='stylesheet'>
 <style>
@@ -116,17 +117,24 @@
         'keepright/impossibleangle': 'Impossible angles',
         'keepright/mixedlayer': 'Mixed layer tagging',
         'keepright/nonclosedways': 'Nonclosed ways'
+        // don't forget osmi
     };
 
     function keeprights(data, cb) {
         data = JSON.parse(data);
         console.log(data);
-        omnivore.wkt.parse(data.st_astext).addTo(map);
-        // get ref object from OSM
-            // highlight it, leaflet OSM?
-        // populate UI
-        // bind stuff
-        // open in JOSM
+        var full = data.object_type == 'way' ? '/full' : '';
+        $.ajax({
+            url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
+            dataType: "xml",
+            success: function (xml) {
+                var layer = new L.OSM.DataLayer(xml).addTo(map);
+                map.fitBounds(layer.getBounds());
+                if (map.getZoom() > 18) map.setZoom(18);
+                omnivore.wkt.parse(data.st_astext).addTo(map);
+                // open in JOSM
+            }
+        });
         cb();
         renderUI({
             title: title[qs('error')]
@@ -141,7 +149,6 @@
     }
 
     $('h1').on('click', function() {
-        // show/hide a #menu
         if ($('#menu').hasClass('hidden')) {
             $('#menu').removeClass('hidden');
         } else {
