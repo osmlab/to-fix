@@ -201,10 +201,10 @@
     }
 
     function loadJOSM() {
-        var bottom = current.bounds._southWest.lat;
-        var left = current.bounds._southWest.lng;
-        var top = current.bounds._northEast.lat;
-        var right = current.bounds._northEast.lng;
+        var bottom = current.bounds._southWest.lat - 0.0005;
+        var left = current.bounds._southWest.lng - 0.0005;
+        var top = current.bounds._northEast.lat + 0.0005;
+        var right = current.bounds._northEast.lng + 0.0005;
         // if it's just a node it doesn't load much, should detect a certain size and get the mapview bounds instead?
         $.ajax('http://localhost:8111/load_and_zoom?left=' + left + '&right=' + right + '&top=' + top + '&bottom=' + bottom + '&select=' + current.object_type + current.object_id);
     }
