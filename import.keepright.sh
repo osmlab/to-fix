@@ -82,6 +82,38 @@ echo "
     CREATE TABLE highwaywater as SELECT * from errors where error_name = 'highway-waterway' order by random();
 " | psql -U postgres keepright
 
+echo "
+    CREATE TABLE doubledplaces as SELECT * from errors where error_name = 'doubled places' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE highwayfootpath as SELECT * from errors where error_name = 'highway-cyclew/footp' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE mispelledtags as SELECT * from errors where error_name = 'misspelled tags' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE island as SELECT * from errors where error_name = 'floating islands' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE almostjunction as SELECT * from errors where error_name = 'almost-junctions' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE highwayhighway as SELECT * from errors where error_name = 'highway-highway' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE highwayriverbank as SELECT * from errors where error_name = 'highway-riverbank' order by random();
+" | psql -U postgres keepright
+
+echo "
+    CREATE TABLE strangelayer as SELECT * from errors where error_name = 'strange layers' order by random();
+" | psql -U postgres keepright
+
 # drop the rest of the db that we don't need right now
 echo "
     DROP TABLE errors;
