@@ -124,11 +124,25 @@
         maxZoom: 18
     }).setView([22.76, -25.84], 3);
 
-    L.control.layers({
-        'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j').addTo(map),
-        'Mapbox Satellite': L.mapbox.tileLayer('openstreetmap.map-inh7ifmo'),
-        'Bing Satellite': new L.BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU')
-    }).addTo(map);
+    var layers = {
+        'Bing Satellite': new L.BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
+        'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
+        'Mapbox Satellite': L.mapbox.tileLayer('openstreetmap.map-inh7ifmo')
+    };
+
+    // set the initial baselayer
+    var baseLayer = localStorage.getItem('baseLayer');
+    if (baseLayer && layers[baseLayer]) {
+        layers[baseLayer].addTo(map);
+    } else {
+        layers['Mapbox Streets'].addTo(map);
+    }
+
+    L.control.layers(layers).addTo(map);
+
+    map.on('baselayerchange', function(e) {
+        localStorage.setItem('baseLayer', e.name);
+    });
 
     $(function() {
         renderMenu();
