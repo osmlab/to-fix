@@ -63,55 +63,55 @@ echo "
 # let's pick a few errors: https://gist.github.com/aaronlidman/7bb7b84f2a6689f7e94f
 echo "importing select error layers"
 echo "
-    CREATE TABLE nonclosedways AS SELECT * from errors where error_name = 'non-closed areas' order by random();
+    CREATE TABLE nonclosedways AS SELECT object_type, object_id, wkb_geometry from errors where error_name = 'non-closed areas' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE deadendoneway AS SELECT * from errors where error_name = 'dead-ended one-ways' order by random();
+    CREATE TABLE deadendoneway AS SELECT object_type, object_id, wkb_geometry from errors where error_name = 'dead-ended one-ways' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE impossibleangle AS SELECT * from errors where error_name = 'impossible angles' order by random();
+    CREATE TABLE impossibleangle AS SELECT object_type, object_id, wkb_geometry from errors where error_name = 'impossible angles' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE mixedlayer as SELECT * from errors where error_name = 'mixed layers intersections' order by random();
+    CREATE TABLE mixedlayer as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'mixed layers intersections' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE highwaywater as SELECT * from errors where error_name = 'highway-waterway' order by random();
+    CREATE TABLE highwaywater as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'highway-waterway' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE doubledplaces as SELECT * from errors where error_name = 'doubled places' order by random();
+    CREATE TABLE doubledplaces as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'doubled places' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE highwayfootpath as SELECT * from errors where error_name = 'highway-cyclew/footp' order by random();
+    CREATE TABLE highwayfootpath as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'highway-cyclew/footp' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE mispelledtags as SELECT * from errors where error_name = 'misspelled tags' order by random();
+    CREATE TABLE mispelledtags as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'misspelled tags' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE island as SELECT * from errors where error_name = 'floating islands' order by random();
+    CREATE TABLE island as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'floating islands' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE almostjunction as SELECT * from errors where error_name = 'almost-junctions' order by random();
+    CREATE TABLE almostjunction as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'almost-junctions' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE highwayhighway as SELECT * from errors where error_name = 'highway-highway' order by random();
+    CREATE TABLE highwayhighway as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'highway-highway' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE highwayriverbank as SELECT * from errors where error_name = 'highway-riverbank' order by random();
+    CREATE TABLE highwayriverbank as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'highway-riverbank' order by random();
 " | psql -U postgres keepright
 
 echo "
-    CREATE TABLE strangelayer as SELECT * from errors where error_name = 'strange layers' order by random();
+    CREATE TABLE strangelayer as SELECT object_type, object_id, wkb_geometry from errors where error_name = 'strange layers' order by random();
 " | psql -U postgres keepright
 
 # drop the rest of the db that we don't need right now
