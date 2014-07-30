@@ -6,7 +6,12 @@
   "dependencies": {
     "pg": "^3.4.0",
     "http-framework": "^1.2.0",
-    "routes-router": "^3.1.0"
+    "routes-router": "^3.1.0",
+    "redis": "^0.11.0",
+    "hiredis": "^0.1.17",
+    "csv-parser": "^1.4.3",
+    "minimist": "^0.2.0",
+    "MD5": "^1.2.1"
   },
   "devDependencies": {
     "forever": "^0.11.1"
