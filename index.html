@@ -105,10 +105,12 @@
         'osmi/unconnected_major2': 'Unconnected major < 2m',
         'osmi/unconnected_major5': 'Unconnected major < 5m',
         'osmi/unconnected_minor1': 'Unconnected minor < 1m',
-        'osmi/unconnected_minor2': 'Unconnected minor < 2m'
+        'osmi/unconnected_minor2': 'Unconnected minor < 2m',
+        'tigerdelta': 'TIGER delta'
     };
 
     var url = 'http://54.91.116.141:3000/error/';
+    // var url = 'http://localhost:3000/error/';
     var current = {};
 
     function qs(name) {
@@ -175,21 +177,25 @@
     loader['osmi/unconnected_minor1'] =     unconnected;
     loader['osmi/unconnected_minor2'] =     unconnected;
 
+    loader.tigerdelta =                     tigerdelta;
+
     function keeprights(data) {
         data = JSON.parse(data);
         current = data;
         console.log(current);
         var full = data.object_type == 'way' ? '/full' : '';
-        $.ajax({
-            url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
-            dataType: "xml",
-            success: function (xml) {
-                var layer = new L.OSM.DataLayer(xml).addTo(map);
-                current.bounds = layer.getBounds();
-                map.fitBounds(current.bounds);
-                omnivore.wkt.parse(data.st_astext).addTo(map);
-            }
-        });
+        
+        // $.ajax({
+        //     url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
+        //     dataType: "xml",
+        //     success: function (xml) {
+        //         var layer = new L.OSM.DataLayer(xml).addTo(map);
+        //         current.bounds = layer.getBounds();
+        //         map.fitBounds(current.bounds);
+        //         omnivore.wkt.parse(data.st_astext).addTo(map);
+        //     }
+        // });
+
         renderUI({
             title: title[qs('error')]
         });
@@ -217,6 +223,32 @@
                 });
             }
         });
+        renderUI({
+            title: title[qs('error')]
+        });
+    }
+
+    function tigerdelta(data) {
+        data = JSON.parse(data);
+        current = data;
+        console.log(data);
+
+        var layer = omnivore.wkt.parse(data.st_astext).addTo(map);
+        current.bounds = layer.getBounds();
+        map.fitBounds(current.bounds);
+
+        if (data.way) {
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way + '/full',
+                dataType: "xml",
+                success: function (xml) {
+                    var layer = new L.OSM.DataLayer(xml).addTo(map);
+                    current.bounds = layer.getBounds();
+                    map.fitBounds(current.bounds);
+                }
+            });
+        }
+
         renderUI({
             title: title[qs('error')]
         });
