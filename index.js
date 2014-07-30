@@ -29,9 +29,6 @@ router.addRoute('/error/keepright/:table', {
             res.writeHead(200, headers);
             res.end(JSON.stringify(result));
         });
-    },
-    POST: function(req, res, opts) {
-        // lets not for now
     }
 });
 
@@ -68,9 +65,17 @@ router.addRoute('/error/osmi/:table', {
             res.writeHead(200, headers);
             res.end(JSON.stringify(result));
         });
-    },
-    POST: function(req, res, opts) {
-        // lets not for now
+    }
+});
+
+router.addRoute('/error/tigerdelta', {
+    GET: function(req, res, opts) {
+        var query = 'select * from tigerdelta order by random() limit 1;';
+        quick_query('tigerdelta', query, function(err, result) {
+            if (err) return console.log(err);
+            res.writeHead(200, headers);
+            res.end(JSON.stringify(result));
+        });
     }
 });
 
