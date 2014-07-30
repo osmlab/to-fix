@@ -185,16 +185,16 @@
         console.log(current);
         var full = data.object_type == 'way' ? '/full' : '';
         
-        // $.ajax({
-        //     url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
-        //     dataType: "xml",
-        //     success: function (xml) {
-        //         var layer = new L.OSM.DataLayer(xml).addTo(map);
-        //         current.bounds = layer.getBounds();
-        //         map.fitBounds(current.bounds);
-        //         omnivore.wkt.parse(data.st_astext).addTo(map);
-        //     }
-        // });
+        $.ajax({
+            url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
+            dataType: "xml",
+            success: function (xml) {
+                var layer = new L.OSM.DataLayer(xml).addTo(map);
+                current.bounds = layer.getBounds();
+                map.fitBounds(current.bounds);
+                omnivore.wkt.parse(data.st_astext).addTo(map);
+            }
+        });
 
         renderUI({
             title: title[qs('error')]
@@ -237,17 +237,17 @@
         current.bounds = layer.getBounds();
         map.fitBounds(current.bounds);
 
-        if (data.way) {
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way + '/full',
-                dataType: "xml",
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).addTo(map);
-                    current.bounds = layer.getBounds();
-                    map.fitBounds(current.bounds);
-                }
-            });
-        }
+        // if (data.way) {
+        //     $.ajax({
+        //         url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way + '/full',
+        //         dataType: "xml",
+        //         success: function (xml) {
+        //             var layer = new L.OSM.DataLayer(xml).addTo(map);
+        //             current.bounds = layer.getBounds();
+        //             map.fitBounds(current.bounds);
+        //         }
+        //     });
+        // }
 
         renderUI({
             title: title[qs('error')]
