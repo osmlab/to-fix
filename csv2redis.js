@@ -15,8 +15,12 @@ fs.createReadStream(process.argv[2])
     .on('data', function(data) {
         data = JSON.stringify(data);
         var key = md5(data);
-        client.sadd(task, key);
-        client.hset(task + ':' + key, 'error', data);
+        try {
+            client.sadd(task, key);
+            client.hset(task + ':' + key, 'error', data);
+        } catch (e) {
+            console.log(e);
+        }
     })
     .on('end', function() {
         client.quit();

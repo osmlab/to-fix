@@ -10,7 +10,6 @@
     "redis": "^0.11.0",
     "hiredis": "^0.1.17",
     "csv-parser": "^1.4.3",
-    "minimist": "^0.2.0",
     "MD5": "^1.2.1"
   },
   "devDependencies": {
