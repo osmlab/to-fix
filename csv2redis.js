@@ -10,14 +10,16 @@ client.on('error', function(err) {
     console.log('err', err);
 });
 
+// if this gets too slow checkout multi
+// https://github.com/mranney/node_redis#clientmulticommands
+
 fs.createReadStream(process.argv[2])
     .pipe(csv())
     .on('data', function(data) {
-        data = JSON.stringify(data);
-        var key = md5(data);
+        var key = md5(JSON.stringify(data));
         try {
             client.sadd(task, key);
-            client.hset(task + ':' + key, 'error', data);
+            client.hmset(task + ':' + key, data);
         } catch (e) {
             console.log(e);
         }
