@@ -10,11 +10,13 @@ client.on('error', function(err) {
     console.log('err', err);
 });
 
+var database = argv._[0].split('.')[0];
+
 fs.createReadStream(argv._[0])
     .pipe(csv())
     .on('data', function(data) {
         data = JSON.stringify(data);
-        client.set(md5(data), data);
+        client.set(database + '/' + md5(data), data);
     })
     .on('end', function() {
         client.quit();
