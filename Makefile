@@ -19,6 +19,9 @@ tasks:
 	make keepright-zip
 	make osmi-zip
 
+from-s3:
+	# download the cache from s3, populate redis
+
 update-keepright:
 	echo 'updating keepright'
 	echo "DROP DATABASE keepright;" | psql -U postgres
@@ -32,20 +35,10 @@ update-osmi:
 	echo 'done updating osmi'
 
 keepright-zip:
-	FILE="keepright-$(date +%s).zip"
-	zip -r $FILE keepright-tasks/
-	cp $FILE keepright-latest.zip
-	s3cmd put --acl-public $FILE s3://to-fix/$FILE
-	s3cmd put --acl-public keepright-latest.zip s3://to-fix/keepright-latest.zip
-	echo "keepright dump: s3://to-fix/$FILE"
+	sh s3.keepright.sh
 
 osmi-zip:
-	FILE="osmi-$(date +%s).zip"
-	zip -r $FILE osmi-tasks/
-	cp $FILE osmi-latest.zip
-	s3cmd put --acl-public $FILE s3://to-fix/$FILE
-	s3cmd put --acl-public osmi-latest.zip s3://to-fix/osmi-latest.zip
-	echo "osmi dump: s3://to-fix/$FILE"
+	sh s3.osmi.sh
 
 keepright-tasks:
 	rm -rf keepright-tasks
