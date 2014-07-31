@@ -17,7 +17,7 @@ echo "
 " | psql -U postgres osmi > osmi-tasks/role_mismatch_hull.csv
 
 echo "
-    COPY (select ogc_fid, ST_AsText(wkb_geometry) from unconnected_major1) to stdout DELIMITER ',' HEADER TRUE CSV;
+    COPY (select ogc_fid, ST_AsText(wkb_geometry) from unconnected_major1) to stdout DELIMITER ',' HEADER CSV;
 " | psql -U postgres osmi > osmi-tasks/unconnected_major1.csv
 
 echo "
