@@ -4,7 +4,7 @@ var fs = require('fs'),
     csv = require('csv-parser');
 
 var client = redis.createClient();
-var task = process.argv[2].split('.')[0];
+var task = process.argv[2].split('.')[0].split('/')[1];
 
 client.on('error', function(err) {
     console.log('err', err);
