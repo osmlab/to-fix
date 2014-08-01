@@ -8,6 +8,7 @@
 <script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
 <script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
 <script src='./bing.js'></script>
+<script src='./osmauth.min.js'></script>
 <link href='http://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
 <link href='http://www.mapbox.com/base/latest/base.css' rel='stylesheet'>
 <style>
@@ -95,6 +96,14 @@
 
 <div id='map'></div>
 <script>
+    var auth = osmAuth({
+        oauth_secret: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
+        oauth_consumer_key: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
+        auto: false,
+        url: 'http://www.openstreetmap.org',
+        landing: location.protocol + "//" + location.host + '/land.html'
+    });
+
     var title = {
         'deadendoneway': 'One-way without exit',
         // 'highwaywater': 'Highways crossing water',
@@ -155,13 +164,20 @@
     if (qs('error') == '') window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
 
     function load() {
-        $.ajax({
-            crossDomain: true,
-            url: url + qs('error')
-        }).done(function(data) {
-            $('#map').removeClass('loading');
-            loader[qs('error')](data);
-        });
+        if (auth.authenticated()) {
+            $.ajax({
+                crossDomain: true,
+                url: url + qs('error')
+            }).done(function(data) {
+                $('#map').removeClass('loading');
+                loader[qs('error')](data);
+            });
+        } else {
+            console.log('auth!');
+            auth.authenticate(function() {
+                console.log('auth callback');
+            });
+        }
     }
 
     var loader = {};
