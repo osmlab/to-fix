@@ -19,8 +19,16 @@ tasks:
 	make keepright-zip
 	make osmi-zip
 
-from-s3:
-	# download the cache from s3, populate redis
+redis:
+	wget http://download.redis.io/redis-stable.tar.gz
+	tar xvzf redis-stable.tar.gz
+	cd redis-stable
+	make
+	sudo redis-server
+	# how am I going to run this as a service?
+
+populate-tasks:
+	sh populate-redis.sh
 
 update-keepright:
 	echo 'updating keepright'
