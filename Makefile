@@ -20,12 +20,10 @@ tasks:
 	make osmi-zip
 
 redis:
-	wget http://download.redis.io/redis-stable.tar.gz
-	tar xvzf redis-stable.tar.gz
-	cd redis-stable
-	make
+	sudo apt-get update
+	sudo apt-get install redis-server
 	sudo redis-server
-	# how am I going to run this as a service?
+	# run as a service?
 
 populate-tasks:
 	sh populate-redis.sh
