@@ -96,20 +96,20 @@
 <div id='map'></div>
 <script>
     var title = {
-        'keepright/deadendoneway': 'One-way without exit',
-        // 'keepright/highwaywater': 'Highways crossing water',
-        'keepright/impossibleangle': 'Sharp angles',
-        'keepright/mixedlayer': 'Mixed layer tagging',
-        'keepright/nonclosedways': 'Nonclosed ways',
-        'osmi/unconnected_major1': 'Unconnected major < 1m',
-        'osmi/unconnected_major2': 'Unconnected major < 2m',
-        'osmi/unconnected_major5': 'Unconnected major < 5m',
-        'osmi/unconnected_minor1': 'Unconnected minor < 1m',
-        'osmi/unconnected_minor2': 'Unconnected minor < 2m',
+        'deadendoneway': 'One-way without exit',
+        // 'highwaywater': 'Highways crossing water',
+        'impossibleangle': 'Sharp angles',
+        'mixedlayer': 'Mixed layer tagging',
+        'nonclosedways': 'Nonclosed ways',
+        'unconnected_major1': 'Unconnected major < 1m',
+        'unconnected_major2': 'Unconnected major < 2m',
+        'unconnected_major5': 'Unconnected major < 5m',
+        'unconnected_minor1': 'Unconnected minor < 1m',
+        'unconnected_minor2': 'Unconnected minor < 2m',
         'tigerdelta': 'TIGER delta'
     };
 
-    var url = 'http://54.91.116.141:3000/error/';
+    var url = 'http://54.82.204.158:3000/error/';
     // var url = 'http://localhost:3000/error/';
     var current = {};
 
@@ -165,19 +165,19 @@
     }
 
     var loader = {};
-    loader['keepright/deadendoneway'] =     keeprights;
-    loader['keepright/highwaywater'] =      keeprights;
-    loader['keepright/impossibleangle'] =   keeprights;
-    loader['keepright/mixedlayer'] =        keeprights;
-    loader['keepright/nonclosedways'] =     keeprights;
+    loader.deadendoneway =          keeprights;
+    loader.highwaywater =           keeprights;
+    loader.impossibleangle =        keeprights;
+    loader.mixedlayer =             keeprights;
+    loader.nonclosedways =          keeprights;
 
-    loader['osmi/unconnected_major1'] =     unconnected;
-    loader['osmi/unconnected_major2'] =     unconnected;
-    loader['osmi/unconnected_major5'] =     unconnected;
-    loader['osmi/unconnected_minor1'] =     unconnected;
-    loader['osmi/unconnected_minor2'] =     unconnected;
+    loader.unconnected_major1 =     unconnected;
+    loader.unconnected_major2 =     unconnected;
+    loader.unconnected_major5 =     unconnected;
+    loader.unconnected_minor1 =     unconnected;
+    loader.unconnected_minor2 =     unconnected;
 
-    loader.tigerdelta =                     tigerdelta;
+    loader.tigerdelta =             tigerdelta;
 
     function keeprights(data) {
         data = JSON.parse(data);
