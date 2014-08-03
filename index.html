@@ -8,6 +8,7 @@
 <script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
 <script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
 <script src='./bing.js'></script>
+<script src='./osmauth.min.js'></script>
 <link href='http://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
 <link href='http://www.mapbox.com/base/latest/base.css' rel='stylesheet'>
 <style>
@@ -23,11 +24,11 @@
         width:100%;
     }
 
-    h1:hover, #next:hover, #josm:hover {
+    h1:hover, .controls:hover {
         cursor: pointer;
     }
 
-    .controls {
+    .controls, #login {
         float: left;
         position: absolute;
         background-color: white;
@@ -75,6 +76,17 @@
         bottom: 90px;
     }
 
+    #login {
+        cursor: pointer;
+        padding: 15px 20px;
+        text-align: center;
+        height: 50px;
+        font-size: 20px;
+        letter-spacing: -1px;
+        bottom: 10px;
+        left: 10px;
+    }
+
     .leaflet-bar, .leaflet-control-layers {
         border-radius: 0px;
         border-color: rgba(0,0,0,0);
@@ -89,12 +101,19 @@
 <body>
 
 <h1 id='title' class='controls hidden'></h1>
-<div id='menu'></div>
+<div id='menu' class='hidden'></div>
+<div id='login' class='hidden'>Login with your OSM account »</div>
 <div id='josm' class='controls hidden'>load in JOSM</div>
 <div id='next' class='controls hidden'>next »</div>
 
 <div id='map'></div>
 <script>
+    var auth = osmAuth({
+        oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
+        oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
+        landing: location.protocol + "//" + location.host + '/land.html'
+    });
+
     var title = {
         'deadendoneway': 'One-way without exit',
         // 'highwaywater': 'Highways crossing water',
@@ -147,21 +166,40 @@
         localStorage.setItem('baseLayer', e.name);
     });
 
+    $('#login').on('click', function() {
+        auth.authenticate(function(err) {
+            if (err) return console.log(err);
+            if (auth.authenticated()) {
+                $('#login').addClass('hidden');
+                start();
+            }
+        });
+    });
+
     $(function() {
-        renderMenu();
         load();
     });
 
-    if (qs('error') == '') window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
-
     function load() {
+        if (auth.authenticated()) {
+            start();
+        } else {
+            $('#login').removeClass('hidden');
+        }
+    }
+
+    function start() {
+        renderMenu();
+        if (qs('error') == '') {
+            window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
+        }
         $.ajax({
             crossDomain: true,
             url: url + qs('error')
         }).done(function(data) {
             $('#map').removeClass('loading');
             loader[qs('error')](data);
-        });
+        });    
     }
 
     var loader = {};
@@ -184,7 +222,7 @@
         current = data;
         console.log(current);
         var full = data.object_type == 'way' ? '/full' : '';
-        
+
         $.ajax({
             url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
             dataType: "xml",
@@ -263,7 +301,6 @@
     }
 
     function renderUI(data) {
-        $('.controls').addClass('hidden');
         if (data.title) $('#title').html(data.title);
         $('.controls').removeClass('hidden');
     }
@@ -289,6 +326,7 @@
             if (item != qs('error')) html += '<a href="' + window.location.href.split(qs('error')).join(item) + '">' + title[item] + '</a>';
         }
         $('#menu').html(html);
+        $('#menu').removeClass('hidden');
     }
 
     // no user anything yet
