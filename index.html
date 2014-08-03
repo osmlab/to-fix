@@ -111,7 +111,7 @@
     var auth = osmAuth({
         oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
         oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
-        landing: location.href.replace('/index.html', '') + '/land.html'
+        landing: location.href.replace('/index.html', '').replace(location.search, '') + '/land.html'
     });
 
     var title = {
@@ -189,7 +189,6 @@
     }
 
     function start() {
-        renderMenu();
         if (qs('error') == '') {
             window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
         }
@@ -301,6 +300,7 @@
     }
 
     function renderUI(data) {
+        renderMenu();
         if (data.title) $('#title').html(data.title);
         $('.controls').removeClass('hidden');
     }
