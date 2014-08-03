@@ -111,7 +111,7 @@
     var auth = osmAuth({
         oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
         oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
-        landing: location.protocol + "//" + location.host + '/land.html'
+        landing: location.href.replace('/index.html', '') + '/land.html'
     });
 
     var title = {
