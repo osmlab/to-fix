@@ -177,6 +177,7 @@
     });
 
     $(function() {
+        renderMenu();
         load();
     });
 
@@ -191,6 +192,7 @@
     function start() {
         if (qs('error') == '') {
             window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
+            // trailing slash from simplehttpserver is screwing things up
         }
         $.ajax({
             crossDomain: true,
@@ -300,7 +302,6 @@
     }
 
     function renderUI(data) {
-        renderMenu();
         if (data.title) $('#title').html(data.title);
         $('.controls').removeClass('hidden');
     }
