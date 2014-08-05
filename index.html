@@ -154,6 +154,8 @@
 
     // set the initial baselayer
     var baseLayer = localStorage.getItem('baseLayer');
+    var menuState = localStorage.getItem('menuState');
+
     if (baseLayer && layers[baseLayer]) {
         layers[baseLayer].addTo(map);
     } else {
@@ -171,52 +173,46 @@
             if (err) return console.log(err);
             if (auth.authenticated()) {
                 $('#login').addClass('hidden');
-                start();
+                load();
             }
         });
     });
 
-    $(function() {
-        renderMenu();
-        load();
-    });
+    $(load);
 
     function load() {
         // if (auth.authenticated()) {
-            start();
+            renderMenu();
+            if (qs('error') == '') {
+                window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
+                // trailing slash from simplehttpserver is screwing things up
+            }
+            $.ajax({
+                crossDomain: true,
+                url: url + qs('error')
+            }).done(function(data) {
+                $('#map').removeClass('loading');
+                loader[qs('error')](data);
+            });
         // } else {
-            // $('#login').removeClass('hidden');
+        //     $('#login').removeClass('hidden');
         // }
     }
 
-    function start() {
-        if (qs('error') == '') {
-            window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
-            // trailing slash from simplehttpserver is screwing things up
-        }
-        $.ajax({
-            crossDomain: true,
-            url: url + qs('error')
-        }).done(function(data) {
-            $('#map').removeClass('loading');
-            loader[qs('error')](data);
-        });    
-    }
-
     var loader = {};
-    loader.deadendoneway =          keeprights;
-    loader.highwaywater =           keeprights;
-    loader.impossibleangle =        keeprights;
-    loader.mixedlayer =             keeprights;
-    loader.nonclosedways =          keeprights;
+    loader.deadendoneway = keeprights;
+    loader.highwaywater = keeprights;
+    loader.impossibleangle = keeprights;
+    loader.mixedlayer = keeprights;
+    loader.nonclosedways = keeprights;
 
-    loader.unconnected_major1 =     unconnected;
-    loader.unconnected_major2 =     unconnected;
-    loader.unconnected_major5 =     unconnected;
-    loader.unconnected_minor1 =     unconnected;
-    loader.unconnected_minor2 =     unconnected;
+    loader.unconnected_major1 = unconnected;
+    loader.unconnected_major2 = unconnected;
+    loader.unconnected_major5 = unconnected;
+    loader.unconnected_minor1 = unconnected;
+    loader.unconnected_minor2 = unconnected;
 
-    loader.tigerdelta =             tigerdelta;
+    loader.tigerdelta = tigerdelta;
 
     function keeprights(data) {
         data = JSON.parse(data);
@@ -309,8 +305,12 @@
     $('h1').on('click', function() {
         if ($('#menu').hasClass('hidden')) {
             $('#menu').removeClass('hidden');
+            localStorage.setItem('menuState', true);
+            // no longer hidden
         } else {
             $('#menu').addClass('hidden');
+            localStorage.setItem('menuState', 'hidden');
+            // hidden
         }
     });
 
@@ -327,11 +327,8 @@
             if (item != qs('error')) html += '<a href="' + window.location.href.split(qs('error')).join(item) + '">' + title[item] + '</a>';
         }
         $('#menu').html(html);
-        $('#menu').removeClass('hidden');
+        if (localStorage.getItem('menuState') !== 'hidden') $('#menu').removeClass('hidden');
     }
-
-    // no user anything yet
-
 </script>
 
 </body>
