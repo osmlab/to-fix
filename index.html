@@ -124,8 +124,8 @@
         'unconnected_major2': 'Unconnected major < 2m',
         'unconnected_major5': 'Unconnected major < 5m',
         'unconnected_minor1': 'Unconnected minor < 1m',
-        'unconnected_minor2': 'Unconnected minor < 2m'
-        // 'tigerdelta': 'TIGER delta'
+        'unconnected_minor2': 'Unconnected minor < 2m',
+        'tigermissing': 'Missing TIGER'
     };
 
     var url = 'http://54.82.204.158:3000/error/';
@@ -212,7 +212,7 @@
     loader.unconnected_minor1 = unconnected;
     loader.unconnected_minor2 = unconnected;
 
-    loader.tigerdelta = tigerdelta;
+    loader.tigermissing = tigermissing;
 
     function keeprights(data) {
         data = JSON.parse(data);
@@ -263,7 +263,7 @@
         });
     }
 
-    function tigerdelta(data) {
+    function tigermissing(data) {
         data = JSON.parse(data);
         current = data;
         console.log(data);
@@ -271,18 +271,6 @@
         var layer = omnivore.wkt.parse(data.st_astext).addTo(map);
         current.bounds = layer.getBounds();
         map.fitBounds(current.bounds);
-
-        // if (data.way) {
-        //     $.ajax({
-        //         url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way + '/full',
-        //         dataType: "xml",
-        //         success: function (xml) {
-        //             var layer = new L.OSM.DataLayer(xml).addTo(map);
-        //             current.bounds = layer.getBounds();
-        //             map.fitBounds(current.bounds);
-        //         }
-        //     });
-        // }
 
         renderUI({
             title: title[qs('error')]
