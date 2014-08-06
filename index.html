@@ -28,7 +28,7 @@
         cursor: pointer;
     }
 
-    .controls, #login {
+    .controls, #login, #name {
         float: left;
         position: absolute;
         background-color: white;
@@ -96,6 +96,15 @@
         border-bottom: none;
         border-bottom-color: rgba(0,0,0,0);
     }
+
+    #name {
+        width: 250px;
+        text-align: center;
+        padding: 10px 15px;
+        line-height: 55px;
+        font-size: 20px;
+        left: 45%;
+    }
 </style>
 </head>
 <body>
@@ -105,6 +114,7 @@
 <div id='login' class='hidden'>Login with your OSM account »</div>
 <div id='josm' class='controls hidden'>load in JOSM</div>
 <div id='next' class='controls hidden'>next »</div>
+<div id='name' class='controls hidden'></div>
 
 <div id='map'></div>
 <script>
@@ -273,7 +283,8 @@
         map.fitBounds(current.bounds);
 
         renderUI({
-            title: title[qs('error')]
+            title: title[qs('error')],
+            name: current.name
         });
     }
 
@@ -286,8 +297,16 @@
     }
 
     function renderUI(data) {
-        if (data.title) $('#title').html(data.title);
         $('.controls').removeClass('hidden');
+        if (data.title) $('#title').html(data.title);
+
+        if (data.name && data.name.length) {
+            $('#name')
+                .text(data.name)
+                .removeClass('hidden');
+        } else {
+            console.log($('#name').addClass('hidden'));
+        }
     }
 
     $('h1').on('click', function() {
