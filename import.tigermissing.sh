@@ -12,19 +12,19 @@ echo ']}' > tail
 # add commas to each line
 for f in chunks-*;
     do
-        awk '{print $0","}' $f > $f.commas
+        awk '{print $0","}' $f > c-$f
         rm -rf $f
     done
 
 # add featurecollection head and tail
-for f in chunks-*;
+for f in c-*;
     do
-        cat head $f tail > $f.json
+        cat head $f tail > j-$f
         rm -f $f;
     done
 
 # insert each chunk into postgis
-for f in chunks-*.json;
+for f in j-*;
     do
-        sudo -u postgres ogr2ogr -update -append -f PostgreSQL PG:dbname=tigermissing $f;
+        sudo -u postgres ogr2ogr -update -append -f PostgreSQL PG:dbname=tigermissing $f
     done
