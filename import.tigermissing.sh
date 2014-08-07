@@ -1,5 +1,5 @@
 curl -f "http://trafficways.org/obsolete/missing.json.gz" -o missing.json.gz
-sudo ungzip missing.json.gz
+sudo gunzip missing.json.gz
 
 split -l 100000 missing.json chunks-
 
