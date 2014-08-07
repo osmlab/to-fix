@@ -27,4 +27,5 @@ for f in c-*;
 for f in j-*;
     do
         sudo -u postgres ogr2ogr -update -append -f PostgreSQL PG:dbname=tigermissing $f
+        rm -rf $f
     done

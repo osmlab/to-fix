@@ -8,5 +8,3 @@ s3cmd put --acl-public ${FILE} s3://to-fix/${FILE}
 s3cmd put --acl-public osmi-latest.zip s3://to-fix/osmi-latest.zip
 
 rm -rf osmi-*.zip
-
-echo "osmi dump: s3://to-fix/${FILE}"
