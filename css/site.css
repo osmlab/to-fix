@@ -12,10 +12,10 @@ body {
 
 h1:hover, .controls:hover {
     cursor: pointer;
+    background:#eee;
 }
 
 .controls, #login, #name {
-    float: left;
     position: absolute;
     background-color: white;
     z-index: 9001;
@@ -41,7 +41,7 @@ h1:hover, .controls:hover {
     font-weight: bold;
 }
 
-#menu a {   
+#menu a {
     line-height: 2em;
     float: left;
     width: 100%;
@@ -50,16 +50,19 @@ h1:hover, .controls:hover {
 
 #next, #josm {
     text-align: center;
-    width: 250px;
-    line-height: 55px;
-    font-size: 20px;
-    bottom: 30px;
-    right: 10px;
-    font-weight: bold;
+    width: 50%;
+    line-height: 80px;
+    font-size: 30px;
+    bottom: 0px;
+    border-top:1px solid #555;
 }
 
 #josm {
-    bottom: 90px;
+    left:0;
+}
+
+#next {
+    right:0;
 }
 
 #login {

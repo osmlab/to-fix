@@ -33,6 +33,8 @@ var map = L.mapbox.map('map', null, {
     keyboard: false
 }).setView([22.76, -25.84], 3);
 
+map.attributionControl.setPosition('topright');
+
 var layers = {
     'Bing Satellite': new L.BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
     'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
