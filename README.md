@@ -10,7 +10,8 @@ Gathering and serving up OSM QA data in an actionable way.
 - `git clone https://github.com/osmlab/to-fix.git && cd to-fix/`
 - `sudo make install`
 
-###Usage
+### Usage
+
 Just run `sudo make <command>` and it will do that thing.
 
 Commands:
@@ -19,6 +20,16 @@ Commands:
 - `update` - updates everything in place
 - `tasks` - packages up tasks as csvs and uploads them to s3
 
-###Notes
-- KeepRight includes lots of useful data but doesn't include geometry of the 
+### Notes
+- KeepRight includes lots of useful data but doesn't include geometry of the
 problem itself, just a reference
+
+### Frontend
+
+The frontend is a static application. The JavaScript portion is built with
+`browserify` and can be updated as follows:
+
+```sh
+$ npm install
+$ npm run watch
+```

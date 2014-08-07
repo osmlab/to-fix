@@ -1,0 +1,2840 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/tmcw/src/to-fix/js/index.js":[function(require,module,exports){
+var querystring = require('querystring'),
+    omnivore = require('leaflet-omnivore'),
+    Mousetrap = require('mousetrap');
+
+var url = 'http://54.82.204.158:3000/error/';
+
+var auth = osmAuth({
+    oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
+    oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
+    landing: location.href.replace('/index.html', '').replace(location.search, '') + '/land.html'
+});
+
+var title = {
+    'deadendoneway': 'One-way without exit',
+    // 'highwaywater': 'Highways crossing water',
+    'impossibleangle': 'Sharp angles',
+    'mixedlayer': 'Mixed layer tagging',
+    'nonclosedways': 'Nonclosed ways',
+    'unconnected_major1': 'Unconnected major < 1m',
+    'unconnected_major2': 'Unconnected major < 2m',
+    'unconnected_major5': 'Unconnected major < 5m',
+    'unconnected_minor1': 'Unconnected minor < 1m',
+    'unconnected_minor2': 'Unconnected minor < 2m',
+    'tigermissing': 'Missing TIGER'
+};
+
+var current = {};
+
+var map = L.mapbox.map('map', null, {
+    fadeAnimation: false,
+    zoomAnimation: false,
+    maxZoom: 18,
+    keyboard: false
+}).setView([22.76, -25.84], 3);
+
+var layers = {
+    'Bing Satellite': new L.BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
+    'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g'),
+    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+};
+
+// set the initial baselayer
+var baseLayer = localStorage.getItem('baseLayer');
+var menuState = localStorage.getItem('menuState');
+
+if (baseLayer && layers[baseLayer]) {
+    layers[baseLayer].addTo(map);
+} else {
+    layers['Mapbox Streets'].addTo(map);
+}
+
+L.control.layers(layers).addTo(map);
+
+map.on('baselayerchange', function(e) {
+    localStorage.setItem('baseLayer', e.name);
+});
+
+$('#login').on('click', function() {
+    auth.authenticate(function(err) {
+        if (err) return console.log(err);
+        if (auth.authenticated()) {
+            $('#login').addClass('hidden');
+            load();
+        }
+    });
+});
+
+$(load);
+
+var loader = {};
+loader.deadendoneway = keeprights;
+loader.highwaywater = keeprights;
+loader.impossibleangle = keeprights;
+loader.mixedlayer = keeprights;
+loader.nonclosedways = keeprights;
+
+loader.unconnected_major1 = unconnected;
+loader.unconnected_major2 = unconnected;
+loader.unconnected_major5 = unconnected;
+loader.unconnected_minor1 = unconnected;
+loader.unconnected_minor2 = unconnected;
+
+loader.tigermissing = tigermissing;
+
+function keeprights(data) {
+    data = JSON.parse(data);
+    current = data;
+    console.log(current);
+    var full = data.object_type == 'way' ? '/full' : '';
+
+    $.ajax({
+        url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
+        dataType: 'xml',
+        success: function (xml) {
+            var layer = new L.OSM.DataLayer(xml).addTo(map);
+            current.bounds = layer.getBounds();
+            map.fitBounds(current.bounds);
+            omnivore.wkt.parse(data.st_astext).addTo(map);
+        }
+    });
+
+    renderUI({
+        title: title[qs('error')]
+    });
+}
+
+$('h1').on('click', function() {
+    if ($('#menu').hasClass('hidden')) {
+        $('#menu').removeClass('hidden');
+        localStorage.setItem('menuState', true);
+        // no longer hidden
+    } else {
+        $('#menu').addClass('hidden');
+        localStorage.setItem('menuState', 'hidden');
+        // hidden
+    }
+});
+
+$('#next').on('click', function() {
+    $('#map').addClass('loading');
+    load();
+});
+
+$('#josm').on('click', loadJOSM);
+
+Mousetrap.bind(['right', 'j'], function() {
+    $('#next').click();
+});
+
+Mousetrap.bind(['enter'], function() {
+    $('#josm').click();
+});
+
+var alt = false;
+Mousetrap.bind(['s'], function() {
+    if (alt = !alt) $('.leaflet-control-layers-base input:eq(1)').click();
+    else $('.leaflet-control-layers-base input:eq(2)').click();
+});
+
+function load() {
+    // if (auth.authenticated()) {
+        renderMenu();
+        if (qs('error') === '') {
+            window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
+            // trailing slash from simplehttpserver is screwing things up
+        }
+        $.ajax({
+            crossDomain: true,
+            url: url + qs('error')
+        }).done(function(data) {
+            $('#map').removeClass('loading');
+            loader[qs('error')](data);
+        });
+    // } else {
+    //     $('#login').removeClass('hidden');
+    // }
+}
+
+function tigermissing(data) {
+    data = JSON.parse(data);
+    current = data;
+
+    var layer = omnivore.wkt.parse(data.st_astext).addTo(map);
+    current.bounds = layer.getBounds();
+    map.fitBounds(current.bounds);
+
+    renderUI({
+        title: title[qs('error')],
+        name: current.name
+    });
+}
+
+function unconnected(data) {
+    data = JSON.parse(data);
+    current = data;
+    // we're assuming they all have a node and a way, which might not hold true
+    console.log(current);
+    // first the way, then the node
+    $.ajax({
+        url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way_id + '/full',
+        dataType: "xml",
+        success: function (xml) {
+            var layer = new L.OSM.DataLayer(xml).addTo(map);
+            current.bounds = layer.getBounds();
+            map.fitBounds(current.bounds);
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/node' + '/' + data.node_id,
+                dataType: "xml",
+                success: function (xml) {
+                    var layer = new L.OSM.DataLayer(xml).addTo(map);
+                }
+            });
+        }
+    });
+    renderUI({
+        title: title[qs('error')]
+    });
+}
+
+function loadJOSM() {
+    var bottom = current.bounds._southWest.lat - 0.0005;
+    var left = current.bounds._southWest.lng - 0.0005;
+    var top = current.bounds._northEast.lat + 0.0005;
+    var right = current.bounds._northEast.lng + 0.0005;
+    $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
+        left: left,
+        right: right,
+        top: top,
+        bottom: bottom,
+        select: current.object_type + current.object_id
+    }), {
+        error: function() {
+            alert('JOSM is not running - start JOSM and enable Remote Control');
+        }
+    });
+}
+
+function renderUI(data) {
+    $('.controls').removeClass('hidden');
+    if (data.title) $('#title').html(data.title);
+
+    if (data.name && data.name.length) {
+        $('#name')
+            .text(data.name)
+            .removeClass('hidden');
+    } else {
+        console.log($('#name').addClass('hidden'));
+    }
+}
+
+function renderMenu() {
+    var html = '';
+    for (var item in title) {
+        if (item != qs('error')) html += '<a href="' + window.location.href.split(qs('error')).join(item) + '">' + title[item] + '</a>';
+    }
+    $('#menu').html(html);
+    if (localStorage.getItem('menuState') !== 'hidden') $('#menu').removeClass('hidden');
+}
+
+function qs(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+},{"leaflet-omnivore":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/tmcw/src/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
+var xhr = require('corslite'),
+    csv2geojson = require('csv2geojson'),
+    wellknown = require('wellknown'),
+    topojson = require('topojson/topojson.js'),
+    toGeoJSON = require('togeojson');
+
+module.exports.geojson = geojsonLoad;
+
+module.exports.topojson = topojsonLoad;
+module.exports.topojson.parse = topojsonParse;
+
+module.exports.csv = csvLoad;
+module.exports.csv.parse = csvParse;
+
+module.exports.gpx = gpxLoad;
+module.exports.gpx.parse = gpxParse;
+
+module.exports.kml = kmlLoad;
+module.exports.kml.parse = kmlParse;
+
+module.exports.wkt = wktLoad;
+module.exports.wkt.parse = wktParse;
+
+function addData(l, d) {
+    if ('addData' in l) l.addData(d);
+    if ('setGeoJSON' in l) l.setGeoJSON(d);
+}
+
+/**
+ * Load a [GeoJSON](http://geojson.org/) document into a layer and return the layer.
+ *
+ * @param {string} url
+ * @param {object} options
+ * @param {object} customLayer
+ * @returns {object}
+ */
+function geojsonLoad(url, options, customLayer) {
+    var layer = customLayer || L.geoJson();
+    xhr(url, function(err, response) {
+        if (err) return layer.fire('error', { error: err });
+        addData(layer, JSON.parse(response.responseText));
+        layer.fire('ready');
+    });
+    return layer;
+}
+
+/**
+ * Load a [TopoJSON](https://github.com/mbostock/topojson) document into a layer and return the layer.
+ *
+ * @param {string} url
+ * @param {object} options
+ * @param {object} customLayer
+ * @returns {object}
+ */
+function topojsonLoad(url, options, customLayer) {
+    var layer = customLayer || L.geoJson();
+    xhr(url, onload);
+    function onload(err, response) {
+        if (err) return layer.fire('error', { error: err });
+        addData(layer, topojsonParse(response.responseText));
+        layer.fire('ready');
+    }
+    return layer;
+}
+
+/**
+ * Load a CSV document into a layer and return the layer.
+ *
+ * @param {string} url
+ * @param {object} options
+ * @param {object} customLayer
+ * @returns {object}
+ */
+function csvLoad(url, options, customLayer) {
+    var layer = customLayer || L.geoJson();
+    xhr(url, onload);
+    function onload(err, response) {
+        var error;
+        if (err) return layer.fire('error', { error: err });
+        function avoidReady() {
+            error = true;
+        }
+        layer.on('error', avoidReady);
+        csvParse(response.responseText, options, layer);
+        layer.off('error', avoidReady);
+        if (!error) layer.fire('ready');
+    }
+    return layer;
+}
+
+/**
+ * Load a GPX document into a layer and return the layer.
+ *
+ * @param {string} url
+ * @param {object} options
+ * @param {object} customLayer
+ * @returns {object}
+ */
+function gpxLoad(url, options, customLayer) {
+    var layer = customLayer || L.geoJson();
+    xhr(url, onload);
+    function onload(err, response) {
+        var error;
+        if (err) return layer.fire('error', { error: err });
+        function avoidReady() {
+            error = true;
+        }
+        layer.on('error', avoidReady);
+        gpxParse(response.responseXML || response.responseText, options, layer);
+        layer.off('error', avoidReady);
+        if (!error) layer.fire('ready');
+    }
+    return layer;
+}
+
+/**
+ * Load a [KML](https://developers.google.com/kml/documentation/) document into a layer and return the layer.
+ *
+ * @param {string} url
+ * @param {object} options
+ * @param {object} customLayer
+ * @returns {object}
+ */
+function kmlLoad(url, options, customLayer) {
+    var layer = customLayer || L.geoJson();
+    xhr(url, onload);
+    function onload(err, response) {
+        var error;
+        if (err) return layer.fire('error', { error: err });
+        function avoidReady() {
+            error = true;
+        }
+        layer.on('error', avoidReady);
+        kmlParse(response.responseXML || response.responseText, options, layer);
+        layer.off('error', avoidReady);
+        if (!error) layer.fire('ready');
+    }
+    return layer;
+}
+
+/**
+ * Load a WKT (Well Known Text) string into a layer and return the layer
+ *
+ * @param {string} url
+ * @param {object} options
+ * @param {object} customLayer
+ * @returns {object}
+ */
+function wktLoad(url, options, customLayer) {
+    var layer = customLayer || L.geoJson();
+    xhr(url, onload);
+    function onload(err, response) {
+        if (err) return layer.fire('error', { error: err });
+        wktParse(response.responseText, options, layer);
+        layer.fire('ready');
+    }
+    return layer;
+}
+
+function topojsonParse(data) {
+    var o = typeof data === 'string' ?
+        JSON.parse(data) : data;
+    var features = [];
+    for (var i in o.objects) {
+        var ft = topojson.feature(o, o.objects[i]);
+        if (ft.features) features = features.concat(ft.features);
+        else features = features.concat([ft]);
+    }
+    return features;
+}
+
+function csvParse(csv, options, layer) {
+    layer = layer || L.geoJson();
+    options = options || {};
+    csv2geojson.csv2geojson(csv, options, onparse);
+    function onparse(err, geojson) {
+        if (err) return layer.fire('error', { error: err });
+        addData(layer, geojson);
+    }
+    return layer;
+}
+
+function gpxParse(gpx, options, layer) {
+    var xml = parseXML(gpx);
+    if (!xml) return layer.fire('error', {
+        error: 'Could not parse GPX'
+    });
+    layer = layer || L.geoJson();
+    var geojson = toGeoJSON.gpx(xml);
+    addData(layer, geojson);
+    return layer;
+}
+
+
+function kmlParse(gpx, options, layer) {
+    var xml = parseXML(gpx);
+    if (!xml) return layer.fire('error', {
+        error: 'Could not parse GPX'
+    });
+    layer = layer || L.geoJson();
+    var geojson = toGeoJSON.kml(xml);
+    addData(layer, geojson);
+    return layer;
+}
+
+function wktParse(wkt, options, layer) {
+    layer = layer || L.geoJson();
+    var geojson = wellknown(wkt);
+    addData(layer, geojson);
+    return layer;
+}
+
+function parseXML(str) {
+    if (typeof str === 'string') {
+        return (new DOMParser()).parseFromString(str, 'text/xml');
+    } else {
+        return str;
+    }
+}
+
+},{"corslite":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
+function corslite(url, callback, cors) {
+    var sent = false;
+
+    if (typeof window.XMLHttpRequest === 'undefined') {
+        return callback(Error('Browser not supported'));
+    }
+
+    if (typeof cors === 'undefined') {
+        var m = url.match(/^\s*https?:\/\/[^\/]*/);
+        cors = m && (m[0] !== location.protocol + '//' + location.domain +
+                (location.port ? ':' + location.port : ''));
+    }
+
+    var x = new window.XMLHttpRequest();
+
+    function isSuccessful(status) {
+        return status >= 200 && status < 300 || status === 304;
+    }
+
+    if (cors && !('withCredentials' in x)) {
+        // IE8-9
+        x = new window.XDomainRequest();
+
+        // Ensure callback is never called synchronously, i.e., before
+        // x.send() returns (this has been observed in the wild).
+        // See https://github.com/mapbox/mapbox.js/issues/472
+        var original = callback;
+        callback = function() {
+            if (sent) {
+                original.apply(this, arguments);
+            } else {
+                var that = this, args = arguments;
+                setTimeout(function() {
+                    original.apply(that, args);
+                }, 0);
+            }
+        }
+    }
+
+    function loaded() {
+        if (
+            // XDomainRequest
+            x.status === undefined ||
+            // modern browsers
+            isSuccessful(x.status)) callback.call(x, null, x);
+        else callback.call(x, x, null);
+    }
+
+    // Both `onreadystatechange` and `onload` can fire. `onreadystatechange`
+    // has [been supported for longer](http://stackoverflow.com/a/9181508/229001).
+    if ('onload' in x) {
+        x.onload = loaded;
+    } else {
+        x.onreadystatechange = function readystate() {
+            if (x.readyState === 4) {
+                loaded();
+            }
+        };
+    }
+
+    // Call the callback with the XMLHttpRequest object as an error and prevent
+    // it from ever being called again by reassigning it to `noop`
+    x.onerror = function error(evt) {
+        // XDomainRequest provides no evt parameter
+        callback.call(this, evt || true, null);
+        callback = function() { };
+    };
+
+    // IE9 must have onprogress be set to a unique function.
+    x.onprogress = function() { };
+
+    x.ontimeout = function(evt) {
+        callback.call(this, evt, null);
+        callback = function() { };
+    };
+
+    x.onabort = function(evt) {
+        callback.call(this, evt, null);
+        callback = function() { };
+    };
+
+    // GET is the only supported HTTP Verb by XDomainRequest and is the
+    // only one supported here.
+    x.open('GET', url, true);
+
+    // Send the request. Sending data is not supported.
+    x.send(null);
+    sent = true;
+
+    return x;
+}
+
+if (typeof module !== 'undefined') module.exports = corslite;
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
+var dsv = require('dsv'),
+    sexagesimal = require('sexagesimal');
+
+function isLat(f) { return !!f.match(/(Lat)(itude)?/gi); }
+function isLon(f) { return !!f.match(/(L)(on|ng)(gitude)?/i); }
+
+function keyCount(o) {
+    return (typeof o == 'object') ? Object.keys(o).length : 0;
+}
+
+function autoDelimiter(x) {
+    var delimiters = [',', ';', '\t', '|'];
+    var results = [];
+
+    delimiters.forEach(function(delimiter) {
+        var res = dsv(delimiter).parse(x);
+        if (res.length >= 1) {
+            var count = keyCount(res[0]);
+            for (var i = 0; i < res.length; i++) {
+                if (keyCount(res[i]) !== count) return;
+            }
+            results.push({
+                delimiter: delimiter,
+                arity: Object.keys(res[0]).length,
+            });
+        }
+    });
+
+    if (results.length) {
+        return results.sort(function(a, b) {
+            return b.arity - a.arity;
+        })[0].delimiter;
+    } else {
+        return null;
+    }
+}
+
+function auto(x) {
+    var delimiter = autoDelimiter(x);
+    if (!delimiter) return null;
+    return dsv(delimiter).parse(x);
+}
+
+function csv2geojson(x, options, callback) {
+
+    if (!callback) {
+        callback = options;
+        options = {};
+    }
+
+    options.delimiter = options.delimiter || ',';
+
+    var latfield = options.latfield || '',
+        lonfield = options.lonfield || '';
+
+    var features = [],
+        featurecollection = { type: 'FeatureCollection', features: features };
+
+    if (options.delimiter === 'auto' && typeof x == 'string') {
+        options.delimiter = autoDelimiter(x);
+        if (!options.delimiter) return callback({
+            type: 'Error',
+            message: 'Could not autodetect delimiter'
+        });
+    }
+
+    var parsed = (typeof x == 'string') ? dsv(options.delimiter).parse(x) : x;
+
+    if (!parsed.length) return callback(null, featurecollection);
+
+    if (!latfield || !lonfield) {
+        for (var f in parsed[0]) {
+            if (!latfield && isLat(f)) latfield = f;
+            if (!lonfield && isLon(f)) lonfield = f;
+        }
+        if (!latfield || !lonfield) {
+            var fields = [];
+            for (var k in parsed[0]) fields.push(k);
+            return callback({
+                type: 'Error',
+                message: 'Latitude and longitude fields not present',
+                data: parsed,
+                fields: fields
+            });
+        }
+    }
+
+    var errors = [];
+
+    for (var i = 0; i < parsed.length; i++) {
+        if (parsed[i][lonfield] !== undefined &&
+            parsed[i][lonfield] !== undefined) {
+
+            var lonk = parsed[i][lonfield],
+                latk = parsed[i][latfield],
+                lonf, latf,
+                a;
+
+            a = sexagesimal(lonk, 'EW');
+            if (a) lonk = a;
+            a = sexagesimal(latk, 'NS');
+            if (a) latk = a;
+
+            lonf = parseFloat(lonk);
+            latf = parseFloat(latk);
+
+            if (isNaN(lonf) ||
+                isNaN(latf)) {
+                errors.push({
+                    message: 'A row contained an invalid value for latitude or longitude',
+                    row: parsed[i]
+                });
+            } else {
+                if (!options.includeLatLon) {
+                    delete parsed[i][lonfield];
+                    delete parsed[i][latfield];
+                }
+
+                features.push({
+                    type: 'Feature',
+                    properties: parsed[i],
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [
+                            parseFloat(lonf),
+                            parseFloat(latf)
+                        ]
+                    }
+                });
+            }
+        }
+    }
+
+    callback(errors.length ? errors: null, featurecollection);
+}
+
+function toLine(gj) {
+    var features = gj.features;
+    var line = {
+        type: 'Feature',
+        geometry: {
+            type: 'LineString',
+            coordinates: []
+        }
+    };
+    for (var i = 0; i < features.length; i++) {
+        line.geometry.coordinates.push(features[i].geometry.coordinates);
+    }
+    line.properties = features[0].properties;
+    return {
+        type: 'FeatureCollection',
+        features: [line]
+    };
+}
+
+function toPolygon(gj) {
+    var features = gj.features;
+    var poly = {
+        type: 'Feature',
+        geometry: {
+            type: 'Polygon',
+            coordinates: [[]]
+        }
+    };
+    for (var i = 0; i < features.length; i++) {
+        poly.geometry.coordinates[0].push(features[i].geometry.coordinates);
+    }
+    poly.properties = features[0].properties;
+    return {
+        type: 'FeatureCollection',
+        features: [poly]
+    };
+}
+
+module.exports = {
+    isLon: isLon,
+    isLat: isLat,
+    csv: dsv.csv.parse,
+    tsv: dsv.tsv.parse,
+    dsv: dsv,
+    auto: auto,
+    csv2geojson: csv2geojson,
+    toLine: toLine,
+    toPolygon: toPolygon
+};
+
+},{"dsv":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
+
+
+module.exports = new Function("dsv.version = \"0.0.3\";\n\ndsv.tsv = dsv(\"\\t\");\ndsv.csv = dsv(\",\");\n\nfunction dsv(delimiter) {\n  var dsv = {},\n      reFormat = new RegExp(\"[\\\"\" + delimiter + \"\\n]\"),\n      delimiterCode = delimiter.charCodeAt(0);\n\n  dsv.parse = function(text, f) {\n    var o;\n    return dsv.parseRows(text, function(row, i) {\n      if (o) return o(row, i - 1);\n      var a = new Function(\"d\", \"return {\" + row.map(function(name, i) {\n        return JSON.stringify(name) + \": d[\" + i + \"]\";\n      }).join(\",\") + \"}\");\n      o = f ? function(row, i) { return f(a(row), i); } : a;\n    });\n  };\n\n  dsv.parseRows = function(text, f) {\n    var EOL = {}, // sentinel value for end-of-line\n        EOF = {}, // sentinel value for end-of-file\n        rows = [], // output rows\n        N = text.length,\n        I = 0, // current character index\n        n = 0, // the current line number\n        t, // the current token\n        eol; // is the current token followed by EOL?\n\n    function token() {\n      if (I >= N) return EOF; // special case: end of file\n      if (eol) return eol = false, EOL; // special case: end of line\n\n      // special case: quotes\n      var j = I;\n      if (text.charCodeAt(j) === 34) {\n        var i = j;\n        while (i++ < N) {\n          if (text.charCodeAt(i) === 34) {\n            if (text.charCodeAt(i + 1) !== 34) break;\n            ++i;\n          }\n        }\n        I = i + 2;\n        var c = text.charCodeAt(i + 1);\n        if (c === 13) {\n          eol = true;\n          if (text.charCodeAt(i + 2) === 10) ++I;\n        } else if (c === 10) {\n          eol = true;\n        }\n        return text.substring(j + 1, i).replace(/\"\"/g, \"\\\"\");\n      }\n\n      // common case: find next delimiter or newline\n      while (I < N) {\n        var c = text.charCodeAt(I++), k = 1;\n        if (c === 10) eol = true; // \\n\n        else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \\r|\\r\\n\n        else if (c !== delimiterCode) continue;\n        return text.substring(j, I - k);\n      }\n\n      // special case: last token before EOF\n      return text.substring(j);\n    }\n\n    while ((t = token()) !== EOF) {\n      var a = [];\n      while (t !== EOL && t !== EOF) {\n        a.push(t);\n        t = token();\n      }\n      if (f && !(a = f(a, n++))) continue;\n      rows.push(a);\n    }\n\n    return rows;\n  };\n\n  dsv.format = function(rows) {\n    if (Array.isArray(rows[0])) return dsv.formatRows(rows); // deprecated; use formatRows\n    var fieldSet = {}, fields = [];\n\n    // Compute unique fields in order of discovery.\n    rows.forEach(function(row) {\n      for (var field in row) {\n        if (!(field in fieldSet)) {\n          fields.push(fieldSet[field] = field);\n        }\n      }\n    });\n\n    return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {\n      return fields.map(function(field) {\n        return formatValue(row[field]);\n      }).join(delimiter);\n    })).join(\"\\n\");\n  };\n\n  dsv.formatRows = function(rows) {\n    return rows.map(formatRow).join(\"\\n\");\n  };\n\n  function formatRow(row) {\n    return row.map(formatValue).join(delimiter);\n  }\n\n  function formatValue(text) {\n    return reFormat.test(text) ? \"\\\"\" + text.replace(/\\\"/g, \"\\\"\\\"\") + \"\\\"\" : text;\n  }\n\n  return dsv;\n}\n" + ";return dsv")();
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
+module.exports = function(x, dims) {
+    if (!dims) dims = 'NSEW';
+    if (typeof x !== 'string') return null;
+    var r = /^([0-9.]+)°? *(?:([0-9.]+)['’′‘] *)?(?:([0-9.]+)(?:''|"|”|″) *)?([NSEW])?/,
+        m = x.match(r);
+    if (!m) return null;
+    else if (m[4] && dims.indexOf(m[4]) === -1) return null;
+    else return (((m[1]) ? parseFloat(m[1]) : 0) +
+        ((m[2] ? parseFloat(m[2]) / 60 : 0)) +
+        ((m[3] ? parseFloat(m[3]) / 3600 : 0))) *
+        ((m[4] && m[4] === 'S' || m[4] === 'W') ? -1 : 1);
+};
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
+(function (process){
+toGeoJSON = (function() {
+    'use strict';
+
+    var removeSpace = (/\s*/g),
+        trimSpace = (/^\s*|\s*$/g),
+        splitSpace = (/\s+/);
+    // generate a short, numeric hash of a string
+    function okhash(x) {
+        if (!x || !x.length) return 0;
+        for (var i = 0, h = 0; i < x.length; i++) {
+            h = ((h << 5) - h) + x.charCodeAt(i) | 0;
+        } return h;
+    }
+    // all Y children of X
+    function get(x, y) { return x.getElementsByTagName(y); }
+    function attr(x, y) { return x.getAttribute(y); }
+    function attrf(x, y) { return parseFloat(attr(x, y)); }
+    // one Y child of X, if any, otherwise null
+    function get1(x, y) { var n = get(x, y); return n.length ? n[0] : null; }
+    // https://developer.mozilla.org/en-US/docs/Web/API/Node.normalize
+    function norm(el) { if (el.normalize) { el.normalize(); } return el; }
+    // cast array x into numbers
+    function numarray(x) {
+        for (var j = 0, o = []; j < x.length; j++) o[j] = parseFloat(x[j]);
+        return o;
+    }
+    function clean(x) {
+        var o = {};
+        for (var i in x) if (x[i]) o[i] = x[i];
+        return o;
+    }
+    // get the content of a text node, if any
+    function nodeVal(x) { if (x) {norm(x);} return x && x.firstChild && x.firstChild.nodeValue; }
+    // get one coordinate from a coordinate array, if any
+    function coord1(v) { return numarray(v.replace(removeSpace, '').split(',')); }
+    // get all coordinates from a coordinate array as [[],[]]
+    function coord(v) {
+        var coords = v.replace(trimSpace, '').split(splitSpace),
+            o = [];
+        for (var i = 0; i < coords.length; i++) {
+            o.push(coord1(coords[i]));
+        }
+        return o;
+    }
+    function coordPair(x) {
+        var ll = [attrf(x, 'lon'), attrf(x, 'lat')],
+            ele = get1(x, 'ele');
+        if (ele) ll.push(parseFloat(nodeVal(ele)));
+        return ll;
+    }
+
+    // create a new feature collection parent object
+    function fc() {
+        return {
+            type: 'FeatureCollection',
+            features: []
+        };
+    }
+
+    var serializer;
+    if (typeof XMLSerializer !== 'undefined') {
+        serializer = new XMLSerializer();
+    // only require xmldom in a node environment
+    } else if (typeof exports === 'object' && typeof process === 'object' && !process.browser) {
+        serializer = new (require('xmldom').XMLSerializer)();
+    }
+    function xml2str(str) { return serializer.serializeToString(str); }
+
+    var t = {
+        kml: function(doc, o) {
+            o = o || {};
+
+            var gj = fc(),
+                // styleindex keeps track of hashed styles in order to match features
+                styleIndex = {},
+                // atomic geospatial types supported by KML - MultiGeometry is
+                // handled separately
+                geotypes = ['Polygon', 'LineString', 'Point', 'Track'],
+                // all root placemarks in the file
+                placemarks = get(doc, 'Placemark'),
+                styles = get(doc, 'Style');
+
+            for (var k = 0; k < styles.length; k++) {
+                styleIndex['#' + attr(styles[k], 'id')] = okhash(xml2str(styles[k])).toString(16);
+            }
+            for (var j = 0; j < placemarks.length; j++) {
+                gj.features = gj.features.concat(getPlacemark(placemarks[j]));
+            }
+            function gxCoord(v) { return numarray(v.split(' ')); }
+            function gxCoords(root) {
+                var elems = get(root, 'coord', 'gx'), coords = [];
+                for (var i = 0; i < elems.length; i++) coords.push(gxCoord(nodeVal(elems[i])));
+                return coords;
+            }
+            function getGeometry(root) {
+                var geomNode, geomNodes, i, j, k, geoms = [];
+                if (get1(root, 'MultiGeometry')) return getGeometry(get1(root, 'MultiGeometry'));
+                if (get1(root, 'MultiTrack')) return getGeometry(get1(root, 'MultiTrack'));
+                for (i = 0; i < geotypes.length; i++) {
+                    geomNodes = get(root, geotypes[i]);
+                    if (geomNodes) {
+                        for (j = 0; j < geomNodes.length; j++) {
+                            geomNode = geomNodes[j];
+                            if (geotypes[i] == 'Point') {
+                                geoms.push({
+                                    type: 'Point',
+                                    coordinates: coord1(nodeVal(get1(geomNode, 'coordinates')))
+                                });
+                            } else if (geotypes[i] == 'LineString') {
+                                geoms.push({
+                                    type: 'LineString',
+                                    coordinates: coord(nodeVal(get1(geomNode, 'coordinates')))
+                                });
+                            } else if (geotypes[i] == 'Polygon') {
+                                var rings = get(geomNode, 'LinearRing'),
+                                    coords = [];
+                                for (k = 0; k < rings.length; k++) {
+                                    coords.push(coord(nodeVal(get1(rings[k], 'coordinates'))));
+                                }
+                                geoms.push({
+                                    type: 'Polygon',
+                                    coordinates: coords
+                                });
+                            } else if (geotypes[i] == 'Track') {
+                                geoms.push({
+                                    type: 'LineString',
+                                    coordinates: gxCoords(geomNode)
+                                });
+                            }
+                        }
+                    }
+                }
+                return geoms;
+            }
+            function getPlacemark(root) {
+                var geoms = getGeometry(root), i, properties = {},
+                    name = nodeVal(get1(root, 'name')),
+                    styleUrl = nodeVal(get1(root, 'styleUrl')),
+                    description = nodeVal(get1(root, 'description')),
+                    timeSpan = get1(root, 'TimeSpan'),
+                    extendedData = get1(root, 'ExtendedData');
+
+                if (!geoms.length) return [];
+                if (name) properties.name = name;
+                if (styleUrl && styleIndex[styleUrl]) {
+                    properties.styleUrl = styleUrl;
+                    properties.styleHash = styleIndex[styleUrl];
+                }
+                if (description) properties.description = description;
+                if (timeSpan) {
+                    var begin = nodeVal(get1(timeSpan, 'begin'));
+                    var end = nodeVal(get1(timeSpan, 'end'));
+                    properties.timespan = { begin: begin, end: end };
+                }
+                if (extendedData) {
+                    var datas = get(extendedData, 'Data'),
+                        simpleDatas = get(extendedData, 'SimpleData');
+
+                    for (i = 0; i < datas.length; i++) {
+                        properties[datas[i].getAttribute('name')] = nodeVal(get1(datas[i], 'value'));
+                    }
+                    for (i = 0; i < simpleDatas.length; i++) {
+                        properties[simpleDatas[i].getAttribute('name')] = nodeVal(simpleDatas[i]);
+                    }
+                }
+                return [{
+                    type: 'Feature',
+                    geometry: (geoms.length === 1) ? geoms[0] : {
+                        type: 'GeometryCollection',
+                        geometries: geoms
+                    },
+                    properties: properties
+                }];
+            }
+            return gj;
+        },
+        gpx: function(doc, o) {
+            var i,
+                tracks = get(doc, 'trk'),
+                routes = get(doc, 'rte'),
+                waypoints = get(doc, 'wpt'),
+                // a feature collection
+                gj = fc();
+            for (i = 0; i < tracks.length; i++) {
+                gj.features.push(getLinestring(tracks[i], 'trkpt'));
+            }
+            for (i = 0; i < routes.length; i++) {
+                gj.features.push(getLinestring(routes[i], 'rtept'));
+            }
+            for (i = 0; i < waypoints.length; i++) {
+                gj.features.push(getPoint(waypoints[i]));
+            }
+            function getLinestring(node, pointname) {
+                var j, pts = get(node, pointname), line = [];
+                for (j = 0; j < pts.length; j++) {
+                    line.push(coordPair(pts[j]));
+                }
+                return {
+                    type: 'Feature',
+                    properties: getProperties(node),
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: line
+                    }
+                };
+            }
+            function getPoint(node) {
+                var prop = getProperties(node);
+                prop.sym = nodeVal(get1(node, 'sym'));
+                return {
+                    type: 'Feature',
+                    properties: prop,
+                    geometry: {
+                        type: 'Point',
+                        coordinates: coordPair(node)
+                    }
+                };
+            }
+            function getProperties(node) {
+                var meta = ['name', 'desc', 'author', 'copyright', 'link',
+                            'time', 'keywords'],
+                    prop = {},
+                    k;
+                for (k = 0; k < meta.length; k++) {
+                    prop[meta[k]] = nodeVal(get1(node, meta[k]));
+                }
+                return clean(prop);
+            }
+            return gj;
+        }
+    };
+    return t;
+})();
+
+if (typeof module !== 'undefined') module.exports = toGeoJSON;
+
+}).call(this,require('_process'))
+},{"_process":"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
+!function() {
+  var topojson = {
+    version: "1.6.8",
+    mesh: function(topology) { return object(topology, meshArcs.apply(this, arguments)); },
+    meshArcs: meshArcs,
+    merge: function(topology) { return object(topology, mergeArcs.apply(this, arguments)); },
+    mergeArcs: mergeArcs,
+    feature: featureOrCollection,
+    neighbors: neighbors,
+    presimplify: presimplify
+  };
+
+  function stitchArcs(topology, arcs) {
+    var stitchedArcs = {},
+        fragmentByStart = {},
+        fragmentByEnd = {},
+        fragments = [],
+        emptyIndex = -1;
+
+    // Stitch empty arcs first, since they may be subsumed by other arcs.
+    arcs.forEach(function(i, j) {
+      var arc = topology.arcs[i < 0 ? ~i : i], t;
+      if (arc.length < 3 && !arc[1][0] && !arc[1][1]) {
+        t = arcs[++emptyIndex], arcs[emptyIndex] = i, arcs[j] = t;
+      }
+    });
+
+    arcs.forEach(function(i) {
+      var e = ends(i),
+          start = e[0],
+          end = e[1],
+          f, g;
+
+      if (f = fragmentByEnd[start]) {
+        delete fragmentByEnd[f.end];
+        f.push(i);
+        f.end = end;
+        if (g = fragmentByStart[end]) {
+          delete fragmentByStart[g.start];
+          var fg = g === f ? f : f.concat(g);
+          fragmentByStart[fg.start = f.start] = fragmentByEnd[fg.end = g.end] = fg;
+        } else {
+          fragmentByStart[f.start] = fragmentByEnd[f.end] = f;
+        }
+      } else if (f = fragmentByStart[end]) {
+        delete fragmentByStart[f.start];
+        f.unshift(i);
+        f.start = start;
+        if (g = fragmentByEnd[start]) {
+          delete fragmentByEnd[g.end];
+          var gf = g === f ? f : g.concat(f);
+          fragmentByStart[gf.start = g.start] = fragmentByEnd[gf.end = f.end] = gf;
+        } else {
+          fragmentByStart[f.start] = fragmentByEnd[f.end] = f;
+        }
+      } else {
+        f = [i];
+        fragmentByStart[f.start = start] = fragmentByEnd[f.end = end] = f;
+      }
+    });
+
+    function ends(i) {
+      var arc = topology.arcs[i < 0 ? ~i : i], p0 = arc[0], p1;
+      if (topology.transform) p1 = [0, 0], arc.forEach(function(dp) { p1[0] += dp[0], p1[1] += dp[1]; });
+      else p1 = arc[arc.length - 1];
+      return i < 0 ? [p1, p0] : [p0, p1];
+    }
+
+    function flush(fragmentByEnd, fragmentByStart) {
+      for (var k in fragmentByEnd) {
+        var f = fragmentByEnd[k];
+        delete fragmentByStart[f.start];
+        delete f.start;
+        delete f.end;
+        f.forEach(function(i) { stitchedArcs[i < 0 ? ~i : i] = 1; });
+        fragments.push(f);
+      }
+    }
+
+    flush(fragmentByEnd, fragmentByStart);
+    flush(fragmentByStart, fragmentByEnd);
+    arcs.forEach(function(i) { if (!stitchedArcs[i < 0 ? ~i : i]) fragments.push([i]); });
+
+    return fragments;
+  }
+
+  function meshArcs(topology, o, filter) {
+    var arcs = [];
+
+    if (arguments.length > 1) {
+      var geomsByArc = [],
+          geom;
+
+      function arc(i) {
+        var j = i < 0 ? ~i : i;
+        (geomsByArc[j] || (geomsByArc[j] = [])).push({i: i, g: geom});
+      }
+
+      function line(arcs) {
+        arcs.forEach(arc);
+      }
+
+      function polygon(arcs) {
+        arcs.forEach(line);
+      }
+
+      function geometry(o) {
+        if (o.type === "GeometryCollection") o.geometries.forEach(geometry);
+        else if (o.type in geometryType) geom = o, geometryType[o.type](o.arcs);
+      }
+
+      var geometryType = {
+        LineString: line,
+        MultiLineString: polygon,
+        Polygon: polygon,
+        MultiPolygon: function(arcs) { arcs.forEach(polygon); }
+      };
+
+      geometry(o);
+
+      geomsByArc.forEach(arguments.length < 3
+          ? function(geoms) { arcs.push(geoms[0].i); }
+          : function(geoms) { if (filter(geoms[0].g, geoms[geoms.length - 1].g)) arcs.push(geoms[0].i); });
+    } else {
+      for (var i = 0, n = topology.arcs.length; i < n; ++i) arcs.push(i);
+    }
+
+    return {type: "MultiLineString", arcs: stitchArcs(topology, arcs)};
+  }
+
+  function mergeArcs(topology, objects) {
+    var polygonsByArc = {},
+        polygons = [],
+        components = [];
+
+    objects.forEach(function(o) {
+      if (o.type === "Polygon") register(o.arcs);
+      else if (o.type === "MultiPolygon") o.arcs.forEach(register);
+    });
+
+    function register(polygon) {
+      polygon.forEach(function(ring) {
+        ring.forEach(function(arc) {
+          (polygonsByArc[arc = arc < 0 ? ~arc : arc] || (polygonsByArc[arc] = [])).push(polygon);
+        });
+      });
+      polygons.push(polygon);
+    }
+
+    function exterior(ring) {
+      return cartesianRingArea(object(topology, {type: "Polygon", arcs: [ring]}).coordinates[0]) > 0; // TODO allow spherical?
+    }
+
+    polygons.forEach(function(polygon) {
+      if (!polygon._) {
+        var component = [],
+            neighbors = [polygon];
+        polygon._ = 1;
+        components.push(component);
+        while (polygon = neighbors.pop()) {
+          component.push(polygon);
+          polygon.forEach(function(ring) {
+            ring.forEach(function(arc) {
+              polygonsByArc[arc < 0 ? ~arc : arc].forEach(function(polygon) {
+                if (!polygon._) {
+                  polygon._ = 1;
+                  neighbors.push(polygon);
+                }
+              });
+            });
+          });
+        }
+      }
+    });
+
+    polygons.forEach(function(polygon) {
+      delete polygon._;
+    });
+
+    return {
+      type: "MultiPolygon",
+      arcs: components.map(function(polygons) {
+        var arcs = [];
+
+        // Extract the exterior (unique) arcs.
+        polygons.forEach(function(polygon) {
+          polygon.forEach(function(ring) {
+            ring.forEach(function(arc) {
+              if (polygonsByArc[arc < 0 ? ~arc : arc].length < 2) {
+                arcs.push(arc);
+              }
+            });
+          });
+        });
+
+        // Stitch the arcs into one or more rings.
+        arcs = stitchArcs(topology, arcs);
+
+        // If more than one ring is returned,
+        // at most one of these rings can be the exterior;
+        // this exterior ring has the same winding order
+        // as any exterior ring in the original polygons.
+        if ((n = arcs.length) > 1) {
+          var sgn = exterior(polygons[0][0]);
+          for (var i = 0, t; i < n; ++i) {
+            if (sgn === exterior(arcs[i])) {
+              t = arcs[0], arcs[0] = arcs[i], arcs[i] = t;
+              break;
+            }
+          }
+        }
+
+        return arcs;
+      })
+    };
+  }
+
+  function featureOrCollection(topology, o) {
+    return o.type === "GeometryCollection" ? {
+      type: "FeatureCollection",
+      features: o.geometries.map(function(o) { return feature(topology, o); })
+    } : feature(topology, o);
+  }
+
+  function feature(topology, o) {
+    var f = {
+      type: "Feature",
+      id: o.id,
+      properties: o.properties || {},
+      geometry: object(topology, o)
+    };
+    if (o.id == null) delete f.id;
+    return f;
+  }
+
+  function object(topology, o) {
+    var absolute = transformAbsolute(topology.transform),
+        arcs = topology.arcs;
+
+    function arc(i, points) {
+      if (points.length) points.pop();
+      for (var a = arcs[i < 0 ? ~i : i], k = 0, n = a.length, p; k < n; ++k) {
+        points.push(p = a[k].slice());
+        absolute(p, k);
+      }
+      if (i < 0) reverse(points, n);
+    }
+
+    function point(p) {
+      p = p.slice();
+      absolute(p, 0);
+      return p;
+    }
+
+    function line(arcs) {
+      var points = [];
+      for (var i = 0, n = arcs.length; i < n; ++i) arc(arcs[i], points);
+      if (points.length < 2) points.push(points[0].slice());
+      return points;
+    }
+
+    function ring(arcs) {
+      var points = line(arcs);
+      while (points.length < 4) points.push(points[0].slice());
+      return points;
+    }
+
+    function polygon(arcs) {
+      return arcs.map(ring);
+    }
+
+    function geometry(o) {
+      var t = o.type;
+      return t === "GeometryCollection" ? {type: t, geometries: o.geometries.map(geometry)}
+          : t in geometryType ? {type: t, coordinates: geometryType[t](o)}
+          : null;
+    }
+
+    var geometryType = {
+      Point: function(o) { return point(o.coordinates); },
+      MultiPoint: function(o) { return o.coordinates.map(point); },
+      LineString: function(o) { return line(o.arcs); },
+      MultiLineString: function(o) { return o.arcs.map(line); },
+      Polygon: function(o) { return polygon(o.arcs); },
+      MultiPolygon: function(o) { return o.arcs.map(polygon); }
+    };
+
+    return geometry(o);
+  }
+
+  function reverse(array, n) {
+    var t, j = array.length, i = j - n; while (i < --j) t = array[i], array[i++] = array[j], array[j] = t;
+  }
+
+  function bisect(a, x) {
+    var lo = 0, hi = a.length;
+    while (lo < hi) {
+      var mid = lo + hi >>> 1;
+      if (a[mid] < x) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo;
+  }
+
+  function neighbors(objects) {
+    var indexesByArc = {}, // arc index -> array of object indexes
+        neighbors = objects.map(function() { return []; });
+
+    function line(arcs, i) {
+      arcs.forEach(function(a) {
+        if (a < 0) a = ~a;
+        var o = indexesByArc[a];
+        if (o) o.push(i);
+        else indexesByArc[a] = [i];
+      });
+    }
+
+    function polygon(arcs, i) {
+      arcs.forEach(function(arc) { line(arc, i); });
+    }
+
+    function geometry(o, i) {
+      if (o.type === "GeometryCollection") o.geometries.forEach(function(o) { geometry(o, i); });
+      else if (o.type in geometryType) geometryType[o.type](o.arcs, i);
+    }
+
+    var geometryType = {
+      LineString: line,
+      MultiLineString: polygon,
+      Polygon: polygon,
+      MultiPolygon: function(arcs, i) { arcs.forEach(function(arc) { polygon(arc, i); }); }
+    };
+
+    objects.forEach(geometry);
+
+    for (var i in indexesByArc) {
+      for (var indexes = indexesByArc[i], m = indexes.length, j = 0; j < m; ++j) {
+        for (var k = j + 1; k < m; ++k) {
+          var ij = indexes[j], ik = indexes[k], n;
+          if ((n = neighbors[ij])[i = bisect(n, ik)] !== ik) n.splice(i, 0, ik);
+          if ((n = neighbors[ik])[i = bisect(n, ij)] !== ij) n.splice(i, 0, ij);
+        }
+      }
+    }
+
+    return neighbors;
+  }
+
+  function presimplify(topology, triangleArea) {
+    var absolute = transformAbsolute(topology.transform),
+        relative = transformRelative(topology.transform),
+        heap = minAreaHeap(),
+        maxArea = 0,
+        triangle;
+
+    if (!triangleArea) triangleArea = cartesianTriangleArea;
+
+    topology.arcs.forEach(function(arc) {
+      var triangles = [];
+
+      arc.forEach(absolute);
+
+      for (var i = 1, n = arc.length - 1; i < n; ++i) {
+        triangle = arc.slice(i - 1, i + 2);
+        triangle[1][2] = triangleArea(triangle);
+        triangles.push(triangle);
+        heap.push(triangle);
+      }
+
+      // Always keep the arc endpoints!
+      arc[0][2] = arc[n][2] = Infinity;
+
+      for (var i = 0, n = triangles.length; i < n; ++i) {
+        triangle = triangles[i];
+        triangle.previous = triangles[i - 1];
+        triangle.next = triangles[i + 1];
+      }
+    });
+
+    while (triangle = heap.pop()) {
+      var previous = triangle.previous,
+          next = triangle.next;
+
+      // If the area of the current point is less than that of the previous point
+      // to be eliminated, use the latter's area instead. This ensures that the
+      // current point cannot be eliminated without eliminating previously-
+      // eliminated points.
+      if (triangle[1][2] < maxArea) triangle[1][2] = maxArea;
+      else maxArea = triangle[1][2];
+
+      if (previous) {
+        previous.next = next;
+        previous[2] = triangle[2];
+        update(previous);
+      }
+
+      if (next) {
+        next.previous = previous;
+        next[0] = triangle[0];
+        update(next);
+      }
+    }
+
+    topology.arcs.forEach(function(arc) {
+      arc.forEach(relative);
+    });
+
+    function update(triangle) {
+      heap.remove(triangle);
+      triangle[1][2] = triangleArea(triangle);
+      heap.push(triangle);
+    }
+
+    return topology;
+  };
+
+  function cartesianRingArea(ring) {
+    var i = -1,
+        n = ring.length,
+        a,
+        b = ring[n - 1],
+        area = 0;
+
+    while (++i < n) {
+      a = b;
+      b = ring[i];
+      area += a[0] * b[1] - a[1] * b[0];
+    }
+
+    return area * .5;
+  }
+
+  function cartesianTriangleArea(triangle) {
+    var a = triangle[0], b = triangle[1], c = triangle[2];
+    return Math.abs((a[0] - c[0]) * (b[1] - a[1]) - (a[0] - b[0]) * (c[1] - a[1]));
+  }
+
+  function compareArea(a, b) {
+    return a[1][2] - b[1][2];
+  }
+
+  function minAreaHeap() {
+    var heap = {},
+        array = [],
+        size = 0;
+
+    heap.push = function(object) {
+      up(array[object._ = size] = object, size++);
+      return size;
+    };
+
+    heap.pop = function() {
+      if (size <= 0) return;
+      var removed = array[0], object;
+      if (--size > 0) object = array[size], down(array[object._ = 0] = object, 0);
+      return removed;
+    };
+
+    heap.remove = function(removed) {
+      var i = removed._, object;
+      if (array[i] !== removed) return; // invalid request
+      if (i !== --size) object = array[size], (compareArea(object, removed) < 0 ? up : down)(array[object._ = i] = object, i);
+      return i;
+    };
+
+    function up(object, i) {
+      while (i > 0) {
+        var j = ((i + 1) >> 1) - 1,
+            parent = array[j];
+        if (compareArea(object, parent) >= 0) break;
+        array[parent._ = i] = parent;
+        array[object._ = i = j] = object;
+      }
+    }
+
+    function down(object, i) {
+      while (true) {
+        var r = (i + 1) << 1,
+            l = r - 1,
+            j = i,
+            child = array[j];
+        if (l < size && compareArea(array[l], child) < 0) child = array[j = l];
+        if (r < size && compareArea(array[r], child) < 0) child = array[j = r];
+        if (j === i) break;
+        array[child._ = i] = child;
+        array[object._ = i = j] = object;
+      }
+    }
+
+    return heap;
+  }
+
+  function transformAbsolute(transform) {
+    if (!transform) return noop;
+    var x0,
+        y0,
+        kx = transform.scale[0],
+        ky = transform.scale[1],
+        dx = transform.translate[0],
+        dy = transform.translate[1];
+    return function(point, i) {
+      if (!i) x0 = y0 = 0;
+      point[0] = (x0 += point[0]) * kx + dx;
+      point[1] = (y0 += point[1]) * ky + dy;
+    };
+  }
+
+  function transformRelative(transform) {
+    if (!transform) return noop;
+    var x0,
+        y0,
+        kx = transform.scale[0],
+        ky = transform.scale[1],
+        dx = transform.translate[0],
+        dy = transform.translate[1];
+    return function(point, i) {
+      if (!i) x0 = y0 = 0;
+      var x1 = (point[0] - dx) / kx | 0,
+          y1 = (point[1] - dy) / ky | 0;
+      point[0] = x1 - x0;
+      point[1] = y1 - y0;
+      x0 = x1;
+      y0 = y1;
+    };
+  }
+
+  function noop() {}
+
+  if (typeof define === "function" && define.amd) define(topojson);
+  else if (typeof module === "object" && module.exports) module.exports = topojson;
+  else this.topojson = topojson;
+}();
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
+module.exports = parse;
+module.exports.parse = parse;
+module.exports.stringify = stringify;
+
+ /*
+ * Parse WKT and return GeoJSON.
+ *
+ * @param {string} _ A WKT geometry
+ * @return {?Object} A GeoJSON geometry object
+ */
+function parse(_) {
+    var parts = _.split(";"),
+        _ = parts.pop(),
+        srid = (parts.shift() || "").split("=").pop();
+
+    var i = 0;
+
+    function $(re) {
+        var match = _.substring(i).match(re);
+        if (!match) return null;
+        else {
+            i += match[0].length;
+            return match[0];
+        }
+    }
+
+    function crs(obj) {
+        if (obj && srid.match(/\d+/)) {
+            obj.crs = {
+                type: 'name',
+                properties: {
+                    name: 'urn:ogc:def:crs:EPSG::' + srid
+                }
+            };
+        }
+
+        return obj;
+    }
+
+    function white() { $(/^\s*/); }
+
+    function multicoords() {
+        white();
+        var depth = 0, rings = [], stack = [rings],
+            pointer = rings, elem;
+
+        while (elem =
+            $(/^(\()/) ||
+            $(/^(\))/) ||
+            $(/^(\,)/) ||
+            $(/^[-+]?([0-9]*\.[0-9]+|[0-9]+)/)) {
+            if (elem == '(') {
+                stack.push(pointer);
+                pointer = [];
+                stack[stack.length - 1].push(pointer);
+                depth++;
+            } else if (elem == ')') {
+                pointer = stack.pop();
+                // the stack was empty, input was malformed
+                if (!pointer) return;
+                depth--;
+                if (depth === 0) break;
+            } else if (elem === ',') {
+                pointer = [];
+                stack[stack.length - 1].push(pointer);
+            } else if (!isNaN(parseFloat(elem))) {
+                pointer.push(parseFloat(elem));
+            } else {
+                return null;
+            }
+            white();
+        }
+
+        if (depth !== 0) return null;
+        return rings;
+    }
+
+    function coords() {
+        var list = [], item, pt;
+        while (pt =
+            $(/^[-+]?([0-9]*\.[0-9]+|[0-9]+)/) ||
+            $(/^(\,)/)) {
+            if (pt == ',') {
+                list.push(item);
+                item = [];
+            } else {
+                if (!item) item = [];
+                item.push(parseFloat(pt));
+            }
+            white();
+        }
+        if (item) list.push(item);
+        return list.length ? list : null;
+    }
+
+    function point() {
+        if (!$(/^(point)/i)) return null;
+        white();
+        if (!$(/^(\()/)) return null;
+        var c = coords();
+        if (!c) return null;
+        white();
+        if (!$(/^(\))/)) return null;
+        return {
+            type: 'Point',
+            coordinates: c[0]
+        };
+    }
+
+    function multipoint() {
+        if (!$(/^(multipoint)/i)) return null;
+        white();
+        var c = multicoords();
+        if (!c) return null;
+        white();
+        return {
+            type: 'MultiPoint',
+            coordinates: c
+        };
+    }
+
+    function multilinestring() {
+        if (!$(/^(multilinestring)/i)) return null;
+        white();
+        var c = multicoords();
+        if (!c) return null;
+        white();
+        return {
+            type: 'MultiLineString',
+            coordinates: c
+        };
+    }
+
+    function linestring() {
+        if (!$(/^(linestring)/i)) return null;
+        white();
+        if (!$(/^(\()/)) return null;
+        var c = coords();
+        if (!c) return null;
+        if (!$(/^(\))/)) return null;
+        return {
+            type: 'LineString',
+            coordinates: c
+        };
+    }
+
+    function polygon() {
+        if (!$(/^(polygon)/i)) return null;
+        white();
+        return {
+            type: 'Polygon',
+            coordinates: multicoords()
+        };
+    }
+
+    function multipolygon() {
+        if (!$(/^(multipolygon)/i)) return null;
+        white();
+        return {
+            type: 'MultiPolygon',
+            coordinates: multicoords()
+        };
+    }
+
+    function geometrycollection() {
+        var geometries = [], geometry;
+
+        if (!$(/^(geometrycollection)/i)) return null;
+        white();
+
+        if (!$(/^(\()/)) return null;
+        while (geometry = root()) {
+            geometries.push(geometry);
+            white();
+            $(/^(\,)/);
+            white();
+        }
+        if (!$(/^(\))/)) return null;
+
+        return {
+            type: 'GeometryCollection',
+            geometries: geometries
+        };
+    }
+
+    function root() {
+        return point() ||
+            linestring() ||
+            polygon() ||
+            multipoint() ||
+            multilinestring() ||
+            multipolygon() ||
+            geometrycollection();
+    }
+
+    return crs(root());
+}
+
+/**
+ * Stringifies a GeoJSON object into WKT
+ */
+function stringify(gj) {
+    if (gj.type === 'Feature') {
+        gj = gj.geometry;
+    }
+
+    function pairWKT(c) {
+        if (c.length === 2) {
+            return c[0] + ' ' + c[1];
+        } else if (c.length === 3) {
+            return c[0] + ' ' + c[1] + ' ' + c[2];
+        }
+    }
+
+    function ringWKT(r) {
+        return r.map(pairWKT).join(', ');
+    }
+
+    function ringsWKT(r) {
+        return r.map(ringWKT).map(wrapParens).join(', ');
+    }
+
+    function multiRingsWKT(r) {
+        return r.map(ringsWKT).map(wrapParens).join(', ');
+    }
+
+    function wrapParens(s) { return '(' + s + ')'; }
+
+    switch (gj.type) {
+        case 'Point':
+            return 'POINT (' + pairWKT(gj.coordinates) + ')';
+        case 'LineString':
+            return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
+        case 'Polygon':
+            return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
+        case 'MultiPoint':
+            return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
+        case 'MultiPolygon':
+            return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
+        case 'MultiLineString':
+            return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
+        case 'GeometryCollection':
+            return 'GEOMETRYCOLLECTION (' + gj.geometries.map(stringify).join(', ') + ')';
+        default:
+            throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
+    }
+}
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
+/**
+ * Copyright 2012 Craig Campbell
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Mousetrap is a simple keyboard shortcut library for Javascript with
+ * no external dependencies
+ *
+ * @version 1.1.2
+ * @url craig.is/killing/mice
+ */
+
+  /**
+   * mapping of special keycodes to their corresponding keys
+   *
+   * everything in this dictionary cannot use keypress events
+   * so it has to be here to map to the correct keycodes for
+   * keyup/keydown events
+   *
+   * @type {Object}
+   */
+  var _MAP = {
+          8: 'backspace',
+          9: 'tab',
+          13: 'enter',
+          16: 'shift',
+          17: 'ctrl',
+          18: 'alt',
+          20: 'capslock',
+          27: 'esc',
+          32: 'space',
+          33: 'pageup',
+          34: 'pagedown',
+          35: 'end',
+          36: 'home',
+          37: 'left',
+          38: 'up',
+          39: 'right',
+          40: 'down',
+          45: 'ins',
+          46: 'del',
+          91: 'meta',
+          93: 'meta',
+          224: 'meta'
+      },
+
+      /**
+       * mapping for special characters so they can support
+       *
+       * this dictionary is only used incase you want to bind a
+       * keyup or keydown event to one of these keys
+       *
+       * @type {Object}
+       */
+      _KEYCODE_MAP = {
+          106: '*',
+          107: '+',
+          109: '-',
+          110: '.',
+          111 : '/',
+          186: ';',
+          187: '=',
+          188: ',',
+          189: '-',
+          190: '.',
+          191: '/',
+          192: '`',
+          219: '[',
+          220: '\\',
+          221: ']',
+          222: '\''
+      },
+
+      /**
+       * this is a mapping of keys that require shift on a US keypad
+       * back to the non shift equivelents
+       *
+       * this is so you can use keyup events with these keys
+       *
+       * note that this will only work reliably on US keyboards
+       *
+       * @type {Object}
+       */
+      _SHIFT_MAP = {
+          '~': '`',
+          '!': '1',
+          '@': '2',
+          '#': '3',
+          '$': '4',
+          '%': '5',
+          '^': '6',
+          '&': '7',
+          '*': '8',
+          '(': '9',
+          ')': '0',
+          '_': '-',
+          '+': '=',
+          ':': ';',
+          '\"': '\'',
+          '<': ',',
+          '>': '.',
+          '?': '/',
+          '|': '\\'
+      },
+
+      /**
+       * this is a list of special strings you can use to map
+       * to modifier keys when you specify your keyboard shortcuts
+       *
+       * @type {Object}
+       */
+      _SPECIAL_ALIASES = {
+          'option': 'alt',
+          'command': 'meta',
+          'return': 'enter',
+          'escape': 'esc'
+      },
+
+      /**
+       * variable to store the flipped version of _MAP from above
+       * needed to check if we should use keypress or not when no action
+       * is specified
+       *
+       * @type {Object|undefined}
+       */
+      _REVERSE_MAP,
+
+      /**
+       * a list of all the callbacks setup via Mousetrap.bind()
+       *
+       * @type {Object}
+       */
+      _callbacks = {},
+
+      /**
+       * direct map of string combinations to callbacks used for trigger()
+       *
+       * @type {Object}
+       */
+      _direct_map = {},
+
+      /**
+       * keeps track of what level each sequence is at since multiple
+       * sequences can start out with the same sequence
+       *
+       * @type {Object}
+       */
+      _sequence_levels = {},
+
+      /**
+       * variable to store the setTimeout call
+       *
+       * @type {null|number}
+       */
+      _reset_timer,
+
+      /**
+       * temporary state where we will ignore the next keyup
+       *
+       * @type {boolean|string}
+       */
+      _ignore_next_keyup = false,
+
+      /**
+       * are we currently inside of a sequence?
+       * type of action ("keyup" or "keydown" or "keypress") or false
+       *
+       * @type {boolean|string}
+       */
+      _inside_sequence = false;
+
+  /**
+   * loop through the f keys, f1 to f19 and add them to the map
+   * programatically
+   */
+  for (var i = 1; i < 20; ++i) {
+      _MAP[111 + i] = 'f' + i;
+  }
+
+  /**
+   * loop through to map numbers on the numeric keypad
+   */
+  for (i = 0; i <= 9; ++i) {
+      _MAP[i + 96] = i;
+  }
+
+  /**
+   * cross browser add event method
+   *
+   * @param {Element|HTMLDocument} object
+   * @param {string} type
+   * @param {Function} callback
+   * @returns void
+   */
+  function _addEvent(object, type, callback) {
+      if (object.addEventListener) {
+          return object.addEventListener(type, callback, false);
+      }
+
+      object.attachEvent('on' + type, callback);
+  }
+
+  /**
+   * takes the event and returns the key character
+   *
+   * @param {Event} e
+   * @return {string}
+   */
+  function _characterFromEvent(e) {
+
+      // for keypress events we should return the character as is
+      if (e.type == 'keypress') {
+          return String.fromCharCode(e.which);
+      }
+
+      // for non keypress events the special maps are needed
+      if (_MAP[e.which]) {
+          return _MAP[e.which];
+      }
+
+      if (_KEYCODE_MAP[e.which]) {
+          return _KEYCODE_MAP[e.which];
+      }
+
+      // if it is not in the special map
+      return String.fromCharCode(e.which).toLowerCase();
+  }
+
+  /**
+   * should we stop this event before firing off callbacks
+   *
+   * @param {Event} e
+   * @return {boolean}
+   */
+  function _stop(e) {
+      var element = e.target || e.srcElement,
+          tag_name = element.tagName;
+
+      // if the element has the class "mousetrap" then no need to stop
+      if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
+          return false;
+      }
+
+      // stop for input, select, and textarea
+      return tag_name == 'INPUT' || tag_name == 'SELECT' || tag_name == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
+  }
+
+  /**
+   * checks if two arrays are equal
+   *
+   * @param {Array} modifiers1
+   * @param {Array} modifiers2
+   * @returns {boolean}
+   */
+  function _modifiersMatch(modifiers1, modifiers2) {
+      return modifiers1.sort().join(',') === modifiers2.sort().join(',');
+  }
+
+  /**
+   * resets all sequence counters except for the ones passed in
+   *
+   * @param {Object} do_not_reset
+   * @returns void
+   */
+  function _resetSequences(do_not_reset) {
+      do_not_reset = do_not_reset || {};
+
+      var active_sequences = false,
+          key;
+
+      for (key in _sequence_levels) {
+          if (do_not_reset[key]) {
+              active_sequences = true;
+              continue;
+          }
+          _sequence_levels[key] = 0;
+      }
+
+      if (!active_sequences) {
+          _inside_sequence = false;
+      }
+  }
+
+  /**
+   * finds all callbacks that match based on the keycode, modifiers,
+   * and action
+   *
+   * @param {string} character
+   * @param {Array} modifiers
+   * @param {string} action
+   * @param {boolean=} remove - should we remove any matches
+   * @param {string=} combination
+   * @returns {Array}
+   */
+  function _getMatches(character, modifiers, action, remove, combination) {
+      var i,
+          callback,
+          matches = [];
+
+      // if there are no events related to this keycode
+      if (!_callbacks[character]) {
+          return [];
+      }
+
+      // if a modifier key is coming up on its own we should allow it
+      if (action == 'keyup' && _isModifier(character)) {
+          modifiers = [character];
+      }
+
+      // loop through all callbacks for the key that was pressed
+      // and see if any of them match
+      for (i = 0; i < _callbacks[character].length; ++i) {
+          callback = _callbacks[character][i];
+
+          // if this is a sequence but it is not at the right level
+          // then move onto the next match
+          if (callback.seq && _sequence_levels[callback.seq] != callback.level) {
+              continue;
+          }
+
+          // if the action we are looking for doesn't match the action we got
+          // then we should keep going
+          if (action != callback.action) {
+              continue;
+          }
+
+          // if this is a keypress event that means that we need to only
+          // look at the character, otherwise check the modifiers as
+          // well
+          if (action == 'keypress' || _modifiersMatch(modifiers, callback.modifiers)) {
+
+              // remove is used so if you change your mind and call bind a
+              // second time with a new function the first one is overwritten
+              if (remove && callback.combo == combination) {
+                  _callbacks[character].splice(i, 1);
+              }
+
+              matches.push(callback);
+          }
+      }
+
+      return matches;
+  }
+
+  /**
+   * takes a key event and figures out what the modifiers are
+   *
+   * @param {Event} e
+   * @returns {Array}
+   */
+  function _eventModifiers(e) {
+      var modifiers = [];
+
+      if (e.shiftKey) {
+          modifiers.push('shift');
+      }
+
+      if (e.altKey) {
+          modifiers.push('alt');
+      }
+
+      if (e.ctrlKey) {
+          modifiers.push('ctrl');
+      }
+
+      if (e.metaKey) {
+          modifiers.push('meta');
+      }
+
+      return modifiers;
+  }
+
+  /**
+   * actually calls the callback function
+   *
+   * if your callback function returns false this will use the jquery
+   * convention - prevent default and stop propogation on the event
+   *
+   * @param {Function} callback
+   * @param {Event} e
+   * @returns void
+   */
+  function _fireCallback(callback, e) {
+      if (callback(e) === false) {
+          if (e.preventDefault) {
+              e.preventDefault();
+          }
+
+          if (e.stopPropagation) {
+              e.stopPropagation();
+          }
+
+          e.returnValue = false;
+          e.cancelBubble = true;
+      }
+  }
+
+  /**
+   * handles a character key event
+   *
+   * @param {string} character
+   * @param {Event} e
+   * @returns void
+   */
+  function _handleCharacter(character, e) {
+
+      // if this event should not happen stop here
+      if (_stop(e)) {
+          return;
+      }
+
+      var callbacks = _getMatches(character, _eventModifiers(e), e.type),
+          i,
+          do_not_reset = {},
+          processed_sequence_callback = false;
+
+      // loop through matching callbacks for this key event
+      for (i = 0; i < callbacks.length; ++i) {
+
+          // fire for all sequence callbacks
+          // this is because if for example you have multiple sequences
+          // bound such as "g i" and "g t" they both need to fire the
+          // callback for matching g cause otherwise you can only ever
+          // match the first one
+          if (callbacks[i].seq) {
+              processed_sequence_callback = true;
+
+              // keep a list of which sequences were matches for later
+              do_not_reset[callbacks[i].seq] = 1;
+              _fireCallback(callbacks[i].callback, e);
+              continue;
+          }
+
+          // if there were no sequence matches but we are still here
+          // that means this is a regular match so we should fire that
+          if (!processed_sequence_callback && !_inside_sequence) {
+              _fireCallback(callbacks[i].callback, e);
+          }
+      }
+
+      // if you are inside of a sequence and the key you are pressing
+      // is not a modifier key then we should reset all sequences
+      // that were not matched by this key event
+      if (e.type == _inside_sequence && !_isModifier(character)) {
+          _resetSequences(do_not_reset);
+      }
+  }
+
+  /**
+   * handles a keydown event
+   *
+   * @param {Event} e
+   * @returns void
+   */
+  function _handleKey(e) {
+
+      // normalize e.which for key events
+      // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
+      e.which = typeof e.which == "number" ? e.which : e.keyCode;
+
+      var character = _characterFromEvent(e);
+
+      // no character found then stop
+      if (!character) {
+          return;
+      }
+
+      if (e.type == 'keyup' && _ignore_next_keyup == character) {
+          _ignore_next_keyup = false;
+          return;
+      }
+
+      _handleCharacter(character, e);
+  }
+
+  /**
+   * determines if the keycode specified is a modifier key or not
+   *
+   * @param {string} key
+   * @returns {boolean}
+   */
+  function _isModifier(key) {
+      return key == 'shift' || key == 'ctrl' || key == 'alt' || key == 'meta';
+  }
+
+  /**
+   * called to set a 1 second timeout on the specified sequence
+   *
+   * this is so after each key press in the sequence you have 1 second
+   * to press the next key before you have to start over
+   *
+   * @returns void
+   */
+  function _resetSequenceTimer() {
+      clearTimeout(_reset_timer);
+      _reset_timer = setTimeout(_resetSequences, 1000);
+  }
+
+  /**
+   * reverses the map lookup so that we can look for specific keys
+   * to see what can and can't use keypress
+   *
+   * @return {Object}
+   */
+  function _getReverseMap() {
+      if (!_REVERSE_MAP) {
+          _REVERSE_MAP = {};
+          for (var key in _MAP) {
+
+              // pull out the numeric keypad from here cause keypress should
+              // be able to detect the keys from the character
+              if (key > 95 && key < 112) {
+                  continue;
+              }
+
+              if (_MAP.hasOwnProperty(key)) {
+                  _REVERSE_MAP[_MAP[key]] = key;
+              }
+          }
+      }
+      return _REVERSE_MAP;
+  }
+
+  /**
+   * picks the best action based on the key combination
+   *
+   * @param {string} key - character for key
+   * @param {Array} modifiers
+   * @param {string=} action passed in
+   */
+  function _pickBestAction(key, modifiers, action) {
+
+      // if no action was picked in we should try to pick the one
+      // that we think would work best for this key
+      if (!action) {
+          action = _getReverseMap()[key] ? 'keydown' : 'keypress';
+      }
+
+      // modifier keys don't work as expected with keypress,
+      // switch to keydown
+      if (action == 'keypress' && modifiers.length) {
+          action = 'keydown';
+      }
+
+      return action;
+  }
+
+  /**
+   * binds a key sequence to an event
+   *
+   * @param {string} combo - combo specified in bind call
+   * @param {Array} keys
+   * @param {Function} callback
+   * @param {string=} action
+   * @returns void
+   */
+  function _bindSequence(combo, keys, callback, action) {
+
+      // start off by adding a sequence level record for this combination
+      // and setting the level to 0
+      _sequence_levels[combo] = 0;
+
+      // if there is no action pick the best one for the first key
+      // in the sequence
+      if (!action) {
+          action = _pickBestAction(keys[0], []);
+      }
+
+      /**
+       * callback to increase the sequence level for this sequence and reset
+       * all other sequences that were active
+       *
+       * @param {Event} e
+       * @returns void
+       */
+      var _increaseSequence = function(e) {
+              _inside_sequence = action;
+              ++_sequence_levels[combo];
+              _resetSequenceTimer();
+          },
+
+          /**
+           * wraps the specified callback inside of another function in order
+           * to reset all sequence counters as soon as this sequence is done
+           *
+           * @param {Event} e
+           * @returns void
+           */
+          _callbackAndReset = function(e) {
+              _fireCallback(callback, e);
+
+              // we should ignore the next key up if the action is key down
+              // or keypress.  this is so if you finish a sequence and
+              // release the key the final key will not trigger a keyup
+              if (action !== 'keyup') {
+                  _ignore_next_keyup = _characterFromEvent(e);
+              }
+
+              // weird race condition if a sequence ends with the key
+              // another sequence begins with
+              setTimeout(_resetSequences, 10);
+          },
+          i;
+
+      // loop through keys one at a time and bind the appropriate callback
+      // function.  for any key leading up to the final one it should
+      // increase the sequence. after the final, it should reset all sequences
+      for (i = 0; i < keys.length; ++i) {
+          _bindSingle(keys[i], i < keys.length - 1 ? _increaseSequence : _callbackAndReset, action, combo, i);
+      }
+  }
+
+  /**
+   * binds a single keyboard combination
+   *
+   * @param {string} combination
+   * @param {Function} callback
+   * @param {string=} action
+   * @param {string=} sequence_name - name of sequence if part of sequence
+   * @param {number=} level - what part of the sequence the command is
+   * @returns void
+   */
+  function _bindSingle(combination, callback, action, sequence_name, level) {
+
+      // make sure multiple spaces in a row become a single space
+      combination = combination.replace(/\s+/g, ' ');
+
+      var sequence = combination.split(' '),
+          i,
+          key,
+          keys,
+          modifiers = [];
+
+      // if this pattern is a sequence of keys then run through this method
+      // to reprocess each pattern one key at a time
+      if (sequence.length > 1) {
+          return _bindSequence(combination, sequence, callback, action);
+      }
+
+      // take the keys from this pattern and figure out what the actual
+      // pattern is all about
+      keys = combination === '+' ? ['+'] : combination.split('+');
+
+      for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+
+          // normalize key names
+          if (_SPECIAL_ALIASES[key]) {
+              key = _SPECIAL_ALIASES[key];
+          }
+
+          // if this is not a keypress event then we should
+          // be smart about using shift keys
+          // this will only work for US keyboards however
+          if (action && action != 'keypress' && _SHIFT_MAP[key]) {
+              key = _SHIFT_MAP[key];
+              modifiers.push('shift');
+          }
+
+          // if this key is a modifier then add it to the list of modifiers
+          if (_isModifier(key)) {
+              modifiers.push(key);
+          }
+      }
+
+      // depending on what the key combination is
+      // we will try to pick the best event for it
+      action = _pickBestAction(key, modifiers, action);
+
+      // make sure to initialize array if this is the first time
+      // a callback is added for this key
+      if (!_callbacks[key]) {
+          _callbacks[key] = [];
+      }
+
+      // remove an existing match if there is one
+      _getMatches(key, modifiers, action, !sequence_name, combination);
+
+      // add this call back to the array
+      // if it is a sequence put it at the beginning
+      // if not put it at the end
+      //
+      // this is important because the way these are processed expects
+      // the sequence ones to come first
+      _callbacks[key][sequence_name ? 'unshift' : 'push']({
+          callback: callback,
+          modifiers: modifiers,
+          action: action,
+          seq: sequence_name,
+          level: level,
+          combo: combination
+      });
+  }
+
+  /**
+   * binds multiple combinations to the same callback
+   *
+   * @param {Array} combinations
+   * @param {Function} callback
+   * @param {string|undefined} action
+   * @returns void
+   */
+  function _bindMultiple(combinations, callback, action) {
+      for (var i = 0; i < combinations.length; ++i) {
+          _bindSingle(combinations[i], callback, action);
+      }
+  }
+
+  // start!
+  _addEvent(document, 'keypress', _handleKey);
+  _addEvent(document, 'keydown', _handleKey);
+  _addEvent(document, 'keyup', _handleKey);
+
+  var mousetrap = {
+
+      /**
+       * binds an event to mousetrap
+       *
+       * can be a single key, a combination of keys separated with +,
+       * a comma separated list of keys, an array of keys, or
+       * a sequence of keys separated by spaces
+       *
+       * be sure to list the modifier keys first to make sure that the
+       * correct key ends up getting bound (the last key in the pattern)
+       *
+       * @param {string|Array} keys
+       * @param {Function} callback
+       * @param {string=} action - 'keypress', 'keydown', or 'keyup'
+       * @returns void
+       */
+      bind: function(keys, callback, action) {
+          _bindMultiple(keys instanceof Array ? keys : [keys], callback, action);
+          _direct_map[keys + ':' + action] = callback;
+          return this;
+      },
+
+      /**
+       * unbinds an event to mousetrap
+       *
+       * the unbinding sets the callback function of the specified key combo
+       * to an empty function and deletes the corresponding key in the
+       * _direct_map dict.
+       *
+       * the keycombo+action has to be exactly the same as
+       * it was defined in the bind method
+       *
+       * TODO: actually remove this from the _callbacks dictionary instead
+       * of binding an empty function
+       *
+       * @param {string|Array} keys
+       * @param {string} action
+       * @returns void
+       */
+      unbind: function(keys, action) {
+          if (_direct_map[keys + ':' + action]) {
+              delete _direct_map[keys + ':' + action];
+              this.bind(keys, function() {}, action);
+          }
+          return this;
+      },
+
+      /**
+       * triggers an event that has already been bound
+       *
+       * @param {string} keys
+       * @param {string=} action
+       * @returns void
+       */
+      trigger: function(keys, action) {
+          _direct_map[keys + ':' + action]();
+          return this;
+      },
+
+      /**
+       * resets the library back to its initial state.  this is useful
+       * if you want to clear out the current keyboard shortcuts and bind
+       * new ones - for example if you switch to another page
+       *
+       * @returns void
+       */
+      reset: function() {
+          _callbacks = {};
+          _direct_map = {};
+          return this;
+      }
+  };
+
+module.exports = mousetrap;
+
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/tmcw/src/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/tmcw/src/to-fix/js/index.js"]);

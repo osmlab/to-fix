@@ -10,13 +10,18 @@
     "redis": "^0.11.0",
     "hiredis": "^0.1.17",
     "csv-parser": "^1.4.3",
-    "MD5": "^1.2.1"
+    "MD5": "^1.2.1",
+    "watchify": "~1.0.1",
+    "leaflet-omnivore": "~0.2.0",
+    "mousetrap": "0.0.1"
   },
   "devDependencies": {
-    "forever": "^0.11.1"
+    "forever": "^0.11.1",
+    "brfs": "~1.2.0",
+    "hintify": "~0.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "watchify js/index.js -o js/bundle.js"
   },
   "repository": {
     "type": "git",

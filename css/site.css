@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:100%;
+}
+
+h1:hover, .controls:hover {
+    cursor: pointer;
+}
+
+.controls, #login, #name {
+    float: left;
+    position: absolute;
+    background-color: white;
+    z-index: 9001;
+    font-weight: bold;
+}
+
+#title {
+    left: 48px;
+    top: 10px;
+    padding: 0px 15px;
+    line-height: 54px;
+}
+
+#menu {
+    width: 250px;
+    top: 64px;
+    left: 48px;
+    padding: 10px 0;
+    float: left;
+    position: absolute;
+    background-color: white;
+    z-index: 9001;
+    font-weight: bold;
+}
+
+#menu a {   
+    line-height: 2em;
+    float: left;
+    width: 100%;
+    padding: 0 15px;
+}
+
+#next, #josm {
+    text-align: center;
+    width: 250px;
+    line-height: 55px;
+    font-size: 20px;
+    bottom: 30px;
+    right: 10px;
+    font-weight: bold;
+}
+
+#josm {
+    bottom: 90px;
+}
+
+#login {
+    cursor: pointer;
+    padding: 15px 20px;
+    text-align: center;
+    height: 50px;
+    font-size: 20px;
+    letter-spacing: -1px;
+    bottom: 10px;
+    left: 10px;
+}
+
+.leaflet-bar, .leaflet-control-layers {
+    border-radius: 0px;
+    border-color: rgba(0,0,0,0);
+}
+
+.leaflet-bar a, .leaflet-bar a:hover {
+    border-bottom: none;
+    border-bottom-color: rgba(0,0,0,0);
+}
+
+#name {
+    width: 250px;
+    text-align: center;
+    padding: 10px 15px;
+    line-height: 55px;
+    font-size: 20px;
+    left: 45%;
+}
