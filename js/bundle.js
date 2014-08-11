@@ -263,6 +263,7 @@ function load() {
             window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
             // trailing slash from simplehttpserver is screwing things up
         }
+
         $.ajax({
             crossDomain: true,
             url: url + qs('error')
@@ -280,6 +281,7 @@ function tigermissing(data) {
     current = data;
 
     var layer = omnivore.wkt.parse(data.st_astext).addTo(map);
+    layer.setStyle(featureStyle);
     current.bounds = layer.getBounds();
     map.fitBounds(current.bounds);
 
