@@ -226,7 +226,7 @@ function renderUI(data) {
 }
 
 function renderMenu() {
-    var $menu = $('#menu');
+    var $menu = $('#menu').html('');
     var err = qs('error');
     for (var item in title) {
         $menu.append(
