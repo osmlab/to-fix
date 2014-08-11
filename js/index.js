@@ -124,7 +124,7 @@ Mousetrap.bind(['right', 'j'], function() {
     $('#next').click();
 });
 
-Mousetrap.bind(['enter'], function() {
+Mousetrap.bind(['enter', 'e'], function() {
     $('#josm').click();
 });
 
