@@ -17,16 +17,16 @@ var auth = osmAuth({
 });
 
 var title = {
-    'deadendoneway': 'One-way without exit',
-    'impossibleangle': 'Sharp angles',
-    'mixedlayer': 'Mixed layer tagging',
-    'nonclosedways': 'Nonclosed ways',
+    'deadendoneway': 'Impossible one-ways',
+    'impossibleangle': 'Kinks',
+    'mixedlayer': 'Mixed layers',
+    'nonclosedways': 'Broken polygons',
     'unconnected_major1': 'Unconnected major < 1m',
     'unconnected_major2': 'Unconnected major < 2m',
     'unconnected_major5': 'Unconnected major < 5m',
     'unconnected_minor1': 'Unconnected minor < 1m',
     'unconnected_minor2': 'Unconnected minor < 2m',
-    'tigermissing': 'Missing TIGER'
+    'tigermissing': 'Missing/misaligned TIGER'
 };
 
 var featureStyle = {
