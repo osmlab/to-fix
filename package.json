@@ -13,7 +13,10 @@
     "MD5": "^1.2.1",
     "watchify": "~1.0.1",
     "leaflet-omnivore": "~0.2.0",
-    "mousetrap": "0.0.1"
+    "mousetrap": "0.0.1",
+    "osm-auth": "~0.2.5",
+    "store": "~1.3.16",
+    "stylus": "~0.47.3"
   },
   "devDependencies": {
     "forever": "^0.11.1",
@@ -21,7 +24,9 @@
     "hintify": "~0.1.0"
   },
   "scripts": {
-    "watch": "watchify js/index.js -o js/bundle.js"
+    "start": "serve & npm run watch & npm run watch-css",
+    "watch": "watchify js/index.js -o js/bundle.js",
+    "watch-css": "stylus -w css/site.styl"
   },
   "repository": {
     "type": "git",

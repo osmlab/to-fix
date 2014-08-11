@@ -31,5 +31,7 @@ The frontend is a static application. The JavaScript portion is built with
 
 ```sh
 $ npm install
-$ npm run watch
+$ npm start
 ```
+
+This will rebuild JS, CSS, and serve on port 3000.

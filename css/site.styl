@@ -1,0 +1,83 @@
+dark = #000
+trans = rgba(0, 0, 0, 0.7)
+glow = #d8f8ff
+mid = #333
+
+body
+    margin: 0
+    padding: 0
+    background:dark
+    color: glow
+
+#tofix a
+    color: glow
+
+#map
+    position:absolute
+    top: 0
+    bottom: 0
+    width: 100%
+    background: dark
+
+.controls, #login, #name
+    position: absolute
+    background-color: dark
+    z-index: 9001
+    &:hover
+        background :#444
+        cursor: pointer
+
+#menu
+    width: 250px
+    top: 0px
+    left: 0px
+    padding: 10px 0
+    position: absolute
+    background-color: trans
+    z-index: 9001
+    a
+        display: block
+        padding: 5px 15px
+        &.active
+            background:glow
+            color:dark
+
+#next, #josm
+    text-align: center
+    width: 50%
+    line-height: 80px
+    font-size: 30px
+    bottom: 0px
+    cursor: pointer
+
+#josm
+    left:0
+
+#next
+    right:0
+
+#login
+    cursor: pointer
+    padding: 15px 20px
+    text-align: center
+    height: 50px
+    font-size: 20px
+    letter-spacing: -1px
+    bottom: 10px
+    left: 10px
+
+.leaflet-bar, #map .leaflet-control-layers
+    border: 0px
+    background: dark
+
+.leaflet-bar a, .leaflet-bar a:hover
+    border-bottom: none
+    border-bottom-color: rgba(0,0,0,0)
+
+#name
+    width: 250px
+    text-align: center
+    padding: 10px 15px
+    line-height: 55px
+    font-size: 20px
+    left: 45%

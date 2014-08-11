@@ -1,8 +1,14 @@
 var querystring = require('querystring'),
     omnivore = require('leaflet-omnivore'),
+    BingLayer = require('./bing.js'),
+    osmAuth = require('osm-auth'),
+    store = require('store'),
     Mousetrap = require('mousetrap');
 
 var url = 'http://54.82.204.158:3000/error/';
+
+var baseLayer = store.get('baseLayer'),
+    menuState = store.get('menuState');
 
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
@@ -12,7 +18,6 @@ var auth = osmAuth({
 
 var title = {
     'deadendoneway': 'One-way without exit',
-    // 'highwaywater': 'Highways crossing water',
     'impossibleangle': 'Sharp angles',
     'mixedlayer': 'Mixed layer tagging',
     'nonclosedways': 'Nonclosed ways',
@@ -22,6 +27,12 @@ var title = {
     'unconnected_minor1': 'Unconnected minor < 1m',
     'unconnected_minor2': 'Unconnected minor < 2m',
     'tigermissing': 'Missing TIGER'
+};
+
+var featureStyle = {
+    color: '#FF00B7',
+    opacity: 1,
+    weight: 4
 };
 
 var current = {};
@@ -34,17 +45,14 @@ var map = L.mapbox.map('map', null, {
 }).setView([22.76, -25.84], 3);
 
 map.attributionControl.setPosition('topright');
+map.zoomControl.setPosition('topright');
 
 var layers = {
-    'Bing Satellite': new L.BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
+    'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
     'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
     'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g'),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
 };
-
-// set the initial baselayer
-var baseLayer = localStorage.getItem('baseLayer');
-var menuState = localStorage.getItem('menuState');
 
 if (baseLayer && layers[baseLayer]) {
     layers[baseLayer].addTo(map);
@@ -55,7 +63,7 @@ if (baseLayer && layers[baseLayer]) {
 L.control.layers(layers).addTo(map);
 
 map.on('baselayerchange', function(e) {
-    localStorage.setItem('baseLayer', e.name);
+    store.set('baseLayer', e.name);
 });
 
 $('#login').on('click', function() {
@@ -70,32 +78,30 @@ $('#login').on('click', function() {
 
 $(load);
 
-var loader = {};
-loader.deadendoneway = keeprights;
-loader.highwaywater = keeprights;
-loader.impossibleangle = keeprights;
-loader.mixedlayer = keeprights;
-loader.nonclosedways = keeprights;
-
-loader.unconnected_major1 = unconnected;
-loader.unconnected_major2 = unconnected;
-loader.unconnected_major5 = unconnected;
-loader.unconnected_minor1 = unconnected;
-loader.unconnected_minor2 = unconnected;
-
-loader.tigermissing = tigermissing;
+var loader = {
+    deadendoneway: keeprights,
+    highwaywater: keeprights,
+    impossibleangle: keeprights,
+    mixedlayer: keeprights,
+    nonclosedways: keeprights,
+    unconnected_major1: unconnected,
+    unconnected_major2: unconnected,
+    unconnected_major5: unconnected,
+    unconnected_minor1: unconnected,
+    unconnected_minor2: unconnected,
+    tigermissing: tigermissing
+};
 
 function keeprights(data) {
     data = JSON.parse(data);
     current = data;
-    console.log(current);
     var full = data.object_type == 'way' ? '/full' : '';
 
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
         dataType: 'xml',
         success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).addTo(map);
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
             omnivore.wkt.parse(data.st_astext).addTo(map);
@@ -106,18 +112,6 @@ function keeprights(data) {
         title: title[qs('error')]
     });
 }
-
-$('h1').on('click', function() {
-    if ($('#menu').hasClass('hidden')) {
-        $('#menu').removeClass('hidden');
-        localStorage.setItem('menuState', true);
-        // no longer hidden
-    } else {
-        $('#menu').addClass('hidden');
-        localStorage.setItem('menuState', 'hidden');
-        // hidden
-    }
-});
 
 $('#next').on('click', function() {
     $('#map').addClass('loading');
@@ -136,7 +130,8 @@ Mousetrap.bind(['enter'], function() {
 
 var alt = false;
 Mousetrap.bind(['s'], function() {
-    if (alt = !alt) $('.leaflet-control-layers-base input:eq(1)').click();
+    alt = !alt;
+    if (alt) $('.leaflet-control-layers-base input:eq(1)').click();
     else $('.leaflet-control-layers-base input:eq(2)').click();
 });
 
@@ -177,20 +172,19 @@ function unconnected(data) {
     data = JSON.parse(data);
     current = data;
     // we're assuming they all have a node and a way, which might not hold true
-    console.log(current);
     // first the way, then the node
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way_id + '/full',
         dataType: "xml",
         success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).addTo(map);
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/node' + '/' + data.node_id,
                 dataType: "xml",
                 success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).addTo(map);
+                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
                 }
             });
         }
@@ -227,22 +221,22 @@ function renderUI(data) {
             .text(data.name)
             .removeClass('hidden');
     } else {
-        console.log($('#name').addClass('hidden'));
+        $('#name').addClass('hidden');
     }
 }
 
 function renderMenu() {
-    var html = '';
+    var $menu = $('#menu');
+    var err = qs('error');
     for (var item in title) {
-        if (item != qs('error')) html += '<a href="' + window.location.href.split(qs('error')).join(item) + '">' + title[item] + '</a>';
+        $menu.append(
+            $('<a></a>')
+                .attr('href', window.location.href.split(qs('error')).join(item))
+                .attr('class', item == err ? 'active' : '')
+                .text(title[item]));
     }
-    $('#menu').html(html);
-    if (localStorage.getItem('menuState') !== 'hidden') $('#menu').removeClass('hidden');
 }
 
 function qs(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    return querystring.parse(window.location.search.slice(1))[name];
 }
