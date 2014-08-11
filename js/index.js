@@ -231,7 +231,7 @@ function renderMenu() {
     for (var item in title) {
         $menu.append(
             $('<a></a>')
-                .attr('href', window.location.href.split(qs('error')).join(item))
+                .attr('href', '?' + querystring.encode({ error: item }))
                 .attr('class', item == err ? 'active' : '')
                 .text(title[item]));
     }
