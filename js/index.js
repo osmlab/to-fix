@@ -29,6 +29,8 @@ var title = {
     'tigermissing': 'Missing/misaligned TIGER'
 };
 
+var DEFAULT = 'deadendoneway';
+
 var featureStyle = {
     color: '#FF00B7',
     opacity: 1,
@@ -148,7 +150,7 @@ function load() {
             url: url + qs('error')
         }).done(function(data) {
             $('#map').removeClass('loading');
-            loader[qs('error')](data);
+            loader[qs('error') || DEFAULT](data);
         });
     // } else {
     //     $('#login').removeClass('hidden');
