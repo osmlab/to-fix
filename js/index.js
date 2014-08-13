@@ -52,7 +52,9 @@ map.zoomControl.setPosition('topright');
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
     'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g'),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
+        detectRetina: false
+    }),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
 };
 
