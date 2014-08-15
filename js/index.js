@@ -26,7 +26,8 @@ var title = {
     'unconnected_major5': 'Unconnected major < 5m',
     'unconnected_minor1': 'Unconnected minor < 1m',
     'unconnected_minor2': 'Unconnected minor < 2m',
-    'tigermissing': 'Missing/misaligned TIGER'
+    'tigermissing': 'Missing/misaligned TIGER',
+    'northeast_highway_intersects_building': 'Highway/building overlap'
 };
 
 var DEFAULT = 'deadendoneway';
@@ -93,7 +94,8 @@ var loader = {
     unconnected_major5: unconnected,
     unconnected_minor1: unconnected,
     unconnected_minor2: unconnected,
-    tigermissing: tigermissing
+    tigermissing: tigermissing,
+    northeast_highway_intersects_building: nyc_overlaps
 };
 
 function keeprights(data) {
@@ -157,6 +159,34 @@ function load() {
     // } else {
     //     $('#login').removeClass('hidden');
     // }
+}
+
+function nyc_overlaps(data) {
+    data = JSON.parse(data);
+    current = data;
+    console.log(data);
+
+    // just the building for now
+    $.ajax({
+        url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.bldg + '/full',
+        dataType: "xml",
+        success: function (xml) {
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
+            current.bounds = layer.getBounds();
+            map.fitBounds(current.bounds);
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.hwy + '/full',
+                dataType: "xml",
+                success: function (xml) {
+                    console.log(xml);
+                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
+                }
+            });
+        }
+    });
+    renderUI({
+        title: title[qs('error')]
+    });
 }
 
 function tigermissing(data) {
