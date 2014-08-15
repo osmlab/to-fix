@@ -152,7 +152,6 @@ function load() {
         renderMenu();
         if (qs('error') === '') {
             window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
-            // trailing slash from simplehttpserver is screwing things up
         }
 
         $.ajax({
