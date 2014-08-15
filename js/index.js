@@ -38,6 +38,12 @@ var featureStyle = {
     weight: 4
 };
 
+var altStyle = {
+    color: '#00BFFF',
+    opacity: 1,
+    weight: 4
+};
+
 var current = {};
 
 var map = L.mapbox.map('map', null, {
@@ -168,18 +174,17 @@ function nyc_overlaps(data) {
 
     // just the building for now
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.bldg + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.hwy + '/full',
         dataType: "xml",
         success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(map);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.hwy + '/full',
+                url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.bldg + '/full',
                 dataType: "xml",
                 success: function (xml) {
-                    console.log(xml);
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(map);
+                    current.bounds = layer.getBounds();
+                    map.fitBounds(current.bounds);
                 }
             });
         }
