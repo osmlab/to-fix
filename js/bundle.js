@@ -52,7 +52,7 @@ module.exports = L.TileLayer.extend({
             }
             _this.initMetadata();
         };
-        var url = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/" + this.options.type + "?include=ImageryProviders&jsonp=" + cbid + "&key=" + this._key;
+        var url = window.location.protocol + "//dev.virtualearth.net/REST/v1/Imagery/Metadata/" + this.options.type + "?include=ImageryProviders&jsonp=" + cbid + "&key=" + this._key;
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = url;
