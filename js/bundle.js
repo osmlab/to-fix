@@ -271,8 +271,8 @@ Mousetrap.bind(['s'], function() {
 function load() {
     // if (auth.authenticated()) {
         renderMenu();
-        if (qs('error') === '') {
-            window.location.href = window.location.href + '?error=' + Object.keys(title)[0];
+        if (qs('error') === undefined) {
+            window.location.href = window.location.href + '?error=' + DEFAULT;
         }
 
         $.ajax({
