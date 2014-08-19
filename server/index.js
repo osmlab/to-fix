@@ -1,6 +1,7 @@
 var http = require('http'),
     Route = require('routes-router'),
-    levelup = require('levelup');
+    levelup = require('levelup'),
+    leveldown = require('leveldown');
 
 var router = Route();
 var headers = {
@@ -18,34 +19,33 @@ http.createServer(router).listen(port, function() {
 
 router.addRoute('/error/:error', {
     GET: function(req, res, opts) {
-        try {
-            db = levelup('./' + opts.error + '.ldb', {
-                createIfMissing: false
-            });
-        } catch (e) {
-            res.writeHead(404, headers);
-            return res.end('No such error');
-        }
+        var location = './' + opts.error + '.ldb';
 
-        var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
-
-        // how is leveldb sorting?
-        db.createReadStream({limit: 1, lt: (+new Date())})
-            .on('data', function(data) {
-                db.del(data.key, function() {
-                    // limbo
-                    db.put(newKey, data.value, function(err) {
-                        db.close();
-                        data.key = newKey;
-                        data.value = JSON.parse(data.value);
-                        res.writeHead(200, headers);
-                        return res.end(JSON.stringify(data));
+        levelup(location, {createIfMissing: false}, function(err, db) {
+            var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
+            // how is leveldb sorting?
+            db.createReadStream({limit: 1, lt: (+new Date())})
+                .on('data', function(data) {
+                    db.del(data.key, function() {
+                        // limbo
+                        db.put(newKey, data.value, function(err) {
+                            db.close();
+                            data.key = newKey;
+                            data.value = JSON.parse(data.value);
+                            res.writeHead(200, headers);
+                            return res.end(JSON.stringify(data));
+                        });
                     });
+                })
+                .on('error', function(data) {
+                    db.close();
+                    return error(res, 500, 'Something wrong with the database');
                 });
-            })
-            .on('error', function(data) {
-                db.close();
-                res.writeHead(404, headers);
-            });
+        });
     }
 });
+
+function error(res, code, errString) {
+    res.writeHead(code, headers);
+    return res.end(errString);
+}
