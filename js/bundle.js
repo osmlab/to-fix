@@ -137,18 +137,40 @@ var auth = osmAuth({
     landing: location.href.replace('/index.html', '').replace(location.search, '') + '/land.html'
 });
 
-var title = {
-    'deadendoneway': 'Impossible one-ways',
-    'impossibleangle': 'Kinks',
-    'mixedlayer': 'Mixed layers',
-    'nonclosedways': 'Broken polygons',
-    'unconnected_major1': 'Unconnected major < 1m',
-    'unconnected_major2': 'Unconnected major < 2m',
-    'unconnected_major5': 'Unconnected major < 5m',
-    'unconnected_minor1': 'Unconnected minor < 1m',
-    'unconnected_minor2': 'Unconnected minor < 2m',
-    'tigermissing': 'Missing/misaligned TIGER',
-    'northeast_highway_intersects_building': 'Highway/building overlap'
+var tasks = {
+    'deadendoneway': {
+        title: 'Impossible one-ways',
+        loader: keeprights },
+    'impossibleangle': {
+        title: 'Kinks',
+        loader: keeprights },
+    'mixedlayer': {
+        title: 'Mixed layers',
+        loader: keeprights },
+    'nonclosedways': {
+        title: 'Broken polygons',
+        loader: keeprights },
+    'unconnected_major1': {
+        title: 'Unconnected major < 1m',
+        loader: unconnected },
+    'unconnected_major2': {
+        title: 'Unconnected major < 2m',
+        loader: unconnected },
+    'unconnected_major5': {
+        title: 'Unconnected major < 5m',
+        loader: unconnected },
+    'unconnected_minor1': {
+        title: 'Unconnected minor < 1m',
+        loader: unconnected },
+    'unconnected_minor2': {
+        title: 'Unconnected minor < 2m',
+        loader: unconnected },
+    'tigermissing': {
+        title: 'Missing/misaligned TIGER',
+        loader: tigermissing },
+    'northeast_highway_intersects_building': {
+        title: 'Highway/building overlap',
+        loader: nyc_overlaps }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -212,21 +234,6 @@ $('#login').on('click', function() {
 
 $(load);
 
-var loader = {
-    deadendoneway: keeprights,
-    highwaywater: keeprights,
-    impossibleangle: keeprights,
-    mixedlayer: keeprights,
-    nonclosedways: keeprights,
-    unconnected_major1: unconnected,
-    unconnected_major2: unconnected,
-    unconnected_major5: unconnected,
-    unconnected_minor1: unconnected,
-    unconnected_minor2: unconnected,
-    tigermissing: tigermissing,
-    northeast_highway_intersects_building: nyc_overlaps
-};
-
 function keeprights(data) {
     data = JSON.parse(data).value;
     current = data;
@@ -244,7 +251,7 @@ function keeprights(data) {
     });
 
     renderUI({
-        title: title[qs('error')]
+        title: tasks[qs('error')].title
     });
 }
 
@@ -285,7 +292,7 @@ function load() {
             url: url + qs('error')
         }).done(function(data) {
             $('#map').removeClass('loading');
-            loader[qs('error') || DEFAULT](data);
+            tasks[qs('error') || DEFAULT].loader(data);
         });
     // } else {
     //     $('#login').removeClass('hidden');
@@ -315,7 +322,7 @@ function nyc_overlaps(data) {
         }
     });
     renderUI({
-        title: title[qs('error')]
+        title: tasks[qs('error')].title
     });
 }
 
@@ -329,13 +336,14 @@ function tigermissing(data) {
     map.fitBounds(current.bounds);
 
     renderUI({
-        title: title[qs('error')],
+        title: tasks[qs('error')].title,
         name: current.name
     });
 }
 
 function unconnected(data) {
     data = JSON.parse(data).value;
+    console.log(data);
     current = data;
     // we're assuming they all have a node and a way, which might not hold true
     // first the way, then the node
@@ -356,7 +364,7 @@ function unconnected(data) {
         }
     });
     renderUI({
-        title: title[qs('error')]
+        title: tasks[qs('error')].title
     });
 }
 
@@ -394,12 +402,12 @@ function renderUI(data) {
 function renderMenu() {
     var $menu = $('#menu').html('');
     var err = qs('error');
-    for (var item in title) {
+    for (var item in tasks) {
         $menu.append(
             $('<a></a>')
                 .attr('href', '?' + querystring.encode({ error: item }))
                 .attr('class', item == err ? 'active' : '')
-                .text(title[item]));
+                .text(tasks[item].title));
     }
 }
 
