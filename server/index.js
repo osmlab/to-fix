@@ -22,6 +22,13 @@ router.addRoute('/error/:error', {
         var location = './' + opts.error + '.ldb';
 
         levelup(location, {createIfMissing: false}, function(err, db) {
+            if (err) {
+                // despite createIfMissing: false it still creates an empty dir, so we remove it
+                return leveldown.destroy(location, function() {
+                    error(res, 500, 'No such database');
+                });
+            }
+
             var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
             // how is leveldb sorting?
             db.createReadStream({limit: 1, lt: (+new Date())})
