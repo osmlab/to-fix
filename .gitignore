@@ -1,3 +1,6 @@
 *.bz2
 *.txt
 *.gml
+*.ldb*
+*.zip
+*.csv

@@ -5,7 +5,7 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.82.204.158:3000/error/';
+var url = 'http://54.89.192.52:3000/error/';
 
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
@@ -105,7 +105,7 @@ var loader = {
 };
 
 function keeprights(data) {
-    data = JSON.parse(data);
+    data = JSON.parse(data).value;
     current = data;
     var full = data.object_type == 'way' ? '/full' : '';
 
@@ -167,7 +167,7 @@ function load() {
 }
 
 function nyc_overlaps(data) {
-    data = JSON.parse(data);
+    data = JSON.parse(data).value;
     current = data;
     console.log(data);
 
@@ -194,7 +194,7 @@ function nyc_overlaps(data) {
 }
 
 function tigermissing(data) {
-    data = JSON.parse(data);
+    data = JSON.parse(data).value;
     current = data;
 
     var layer = omnivore.wkt.parse(data.st_astext).addTo(map);
@@ -209,7 +209,7 @@ function tigermissing(data) {
 }
 
 function unconnected(data) {
-    data = JSON.parse(data);
+    data = JSON.parse(data).value;
     current = data;
     // we're assuming they all have a node and a way, which might not hold true
     // first the way, then the node

@@ -19,15 +19,6 @@ tasks:
 	make keepright-zip
 	make osmi-zip
 
-redis:
-	sudo apt-get update
-	sudo apt-get install redis-server
-	sudo redis-server
-	# run as a service?
-
-populate-tasks:
-	sh populate-redis.sh
-
 update-keepright:
 	echo 'updating keepright'
 	echo "DROP DATABASE keepright;" | psql -U postgres
