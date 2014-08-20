@@ -302,16 +302,18 @@ function load() {
 function nyc_overlaps(data) {
     data = JSON.parse(data).value;
     current = data;
-    console.log(data);
+
+    current.object_type = 'way';
+    current.object_id = data.hwy;
 
     // just the building for now
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.hwy + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + data.hwy + '/full',
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.bldg + '/full',
+                url: 'https://www.openstreetmap.org/api/0.6/way/' + data.bldg + '/full',
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -343,7 +345,6 @@ function tigermissing(data) {
 
 function unconnected(data) {
     data = JSON.parse(data).value;
-    console.log(data);
     current = data;
     // we're assuming they all have a node and a way, which might not hold true
     // first the way, then the node
@@ -373,6 +374,10 @@ function loadJOSM() {
     var left = current.bounds._southWest.lng - 0.0005;
     var top = current.bounds._northEast.lat + 0.0005;
     var right = current.bounds._northEast.lng + 0.0005;
+
+    // get around ajax then window.open blocking
+    var newTab = window.open();
+
     $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
         left: left,
         right: right,
@@ -381,7 +386,14 @@ function loadJOSM() {
         select: current.object_type + current.object_id
     }), {
         error: function() {
-            alert('JOSM is not running - start JOSM and enable Remote Control');
+            // fallback to iD
+            var url = 'http://openstreetmap.us/iD/release/#';
+            if (current.object_type && current.object_id) {
+                url += 'id=' + current.object_type.slice(0, 1) + current.object_id;
+            } else {
+                url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
+            }
+            newTab.location = url;
         }
     });
 }
