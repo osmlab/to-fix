@@ -302,7 +302,6 @@ function load() {
 function nyc_overlaps(data) {
     data = JSON.parse(data).value;
     current = data;
-
     current.object_type = 'way';
     current.object_id = data.hwy;
 
@@ -346,17 +345,18 @@ function tigermissing(data) {
 function unconnected(data) {
     data = JSON.parse(data).value;
     current = data;
-    // we're assuming they all have a node and a way, which might not hold true
-    // first the way, then the node
+    current.object_type = 'node';
+    current.object_id = data.node_id;
+
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way' + '/' + data.way_id + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + data.way_id + '/full',
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node' + '/' + data.node_id,
+                url: 'https://www.openstreetmap.org/api/0.6/node/' + data.node_id,
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
