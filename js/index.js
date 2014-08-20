@@ -254,8 +254,7 @@ function loadJOSM() {
     var top = current.bounds._northEast.lat + 0.0005;
     var right = current.bounds._northEast.lng + 0.0005;
 
-    // get around ajax then window.open blocking
-    var newTab = window.open();
+    var newWindow = window.open('');
 
     $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
         left: left,
@@ -272,7 +271,10 @@ function loadJOSM() {
             } else {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
-            newTab.location = url;
+            newWindow.location = url;
+        },
+        success: function() {
+            newWindow.close();
         }
     });
 }
