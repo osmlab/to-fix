@@ -5,7 +5,8 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.89.192.52:3000/error/';
+// var url = 'http://54.89.192.52:3000/error/';
+var url = 'http://localhost:3001/error/';
 
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
@@ -13,7 +14,7 @@ var baseLayer = store.get('baseLayer'),
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
     oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
-    landing: location.href.replace('/index.html', '').replace(location.search, '') + '/land.html'
+    landing: 'land.html'
 });
 
 var tasks = {
@@ -103,11 +104,19 @@ map.on('baselayerchange', function(e) {
 
 $('#login').on('click', function() {
     auth.authenticate(function(err) {
-        if (err) return console.log(err);
-        if (auth.authenticated()) {
-            $('#login').addClass('hidden');
-            load();
-        }
+        auth.xhr({
+            method: 'GET',
+            path: '/api/0.6/user/details'
+        }, function(err, details) {
+            if (err) return console.log(err);
+            if (auth.authenticated()) {
+                $('#login').addClass('hidden');
+                details = details.getElementsByTagName('user')[0];
+                store.set('username', details.getAttribute('display_name'));
+                store.set('userid', details.getAttribute('id'));
+                load();
+            }
+        });
     });
 });
 
@@ -160,7 +169,7 @@ Mousetrap.bind(['s'], function() {
 });
 
 function load() {
-    // if (auth.authenticated()) {
+    if (auth.authenticated() && store.get('username') && store.get('userid')) {
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
@@ -168,14 +177,16 @@ function load() {
 
         $.ajax({
             crossDomain: true,
-            url: url + qs('error')
+            url: url + qs('error'),
+            type: 'post',
+            data: JSON.stringify({user: store.get('userid')})
         }).done(function(data) {
             $('#map').removeClass('loading');
             tasks[qs('error') || DEFAULT].loader(data);
         });
-    // } else {
-    //     $('#login').removeClass('hidden');
-    // }
+    } else {
+        $('#login').removeClass('hidden');
+    }
 }
 
 function nyc_overlaps(data) {
