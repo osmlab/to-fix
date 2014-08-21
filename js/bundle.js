@@ -275,11 +275,21 @@ $('#next').on('click', function() {
 $('#josm').on('click', loadJOSM);
 
 Mousetrap.bind(['right', 'j'], function() {
-    $('#next').click();
+    $('#next')
+        .addClass('active')
+        .click();
+    setTimeout(function() {
+        $('#next').removeClass('active');
+    }, 200);
 });
 
 Mousetrap.bind(['enter', 'e'], function() {
-    $('#josm').click();
+    $('#josm')
+        .addClass('active')
+        .click();
+    setTimeout(function() {
+        $('#josm').removeClass('active');
+    }, 200);
 });
 
 var alt = false;
@@ -295,12 +305,11 @@ function load() {
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
         }
-
         $.ajax({
             crossDomain: true,
             url: url + qs('error'),
             type: 'post',
-            data: JSON.stringify({user: store.get('userid')})
+            data: JSON.stringify({user: store.get('username')})
         }).done(function(data) {
             $('#map').removeClass('loading');
             tasks[qs('error') || DEFAULT].loader(data);

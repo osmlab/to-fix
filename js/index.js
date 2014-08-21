@@ -154,11 +154,21 @@ $('#next').on('click', function() {
 $('#josm').on('click', loadJOSM);
 
 Mousetrap.bind(['right', 'j'], function() {
-    $('#next').click();
+    $('#next')
+        .addClass('active')
+        .click();
+    setTimeout(function() {
+        $('#next').removeClass('active');
+    }, 200);
 });
 
 Mousetrap.bind(['enter', 'e'], function() {
-    $('#josm').click();
+    $('#josm')
+        .addClass('active')
+        .click();
+    setTimeout(function() {
+        $('#josm').removeClass('active');
+    }, 200);
 });
 
 var alt = false;

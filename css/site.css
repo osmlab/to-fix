@@ -2,10 +2,10 @@ body {
   margin: 0;
   padding: 0;
   background: #000;
-  color: #d8f8ff;
+  color: rgba(255,255,255,0.5);
 }
 #tofix a {
-  color: #d8f8ff;
+  color: rgba(255,255,255,0.5);
 }
 #map {
   position: absolute;
@@ -18,22 +18,25 @@ body {
 #login,
 #name {
   position: absolute;
-  background-color: #000;
+  background-color: rgba(0,0,0,0.75);
   z-index: 9001;
 }
 .controls:hover,
 #login:hover,
-#name:hover {
-  background: #444;
+#name:hover,
+.controls.active,
+#login.active,
+#name.active {
+  background: #000;
+  color: #fff;
   cursor: pointer;
 }
 #menu {
-  width: 250px;
   top: 0px;
   left: 0px;
   padding: 10px 0;
   position: absolute;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0,0,0,0.75);
   z-index: 9001;
 }
 #menu a {
@@ -41,8 +44,7 @@ body {
   padding: 5px 15px;
 }
 #menu a.active {
-  background: #d8f8ff;
-  color: #000;
+  color: #fff;
 }
 #next,
 #josm {
