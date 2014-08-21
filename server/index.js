@@ -27,10 +27,36 @@ router.addRoute('/error/:error', {
             body = JSON.parse(body);
             getNextItem(opts.error, res, function(err, kv) {
                 if (err) return error(res, 500, err);
-                track(opts.error, +new Date() + ':' + body.user, {action: 'got', value: kv.key});
+                track(opts.error, body.user, 'got', {id: kv.key});
                 res.writeHead(200, headers);
                 return res.end(JSON.stringify(kv));
             });
+        });
+    }
+});
+
+router.addRoute('/fixed/:error', {
+    POST: function(req, res, opts) {
+        var body = '';
+        req.on('data', function(data) {
+            body += data;
+        });
+        req.on('end', function() {
+            body = JSON.parse(body);
+            if (body.user && body.state._id) {
+                track(opts.error, body.user, 'fixed', body.state);
+
+                var location = './' + opts.error + '.ldb';
+                levelup(location, {createIfMissing: false}, function(err, db) {
+                    if (err) return console.log(err);
+                    db.del(body.state._id, function() {
+                        db.close();
+                    });
+                });
+
+                res.writeHead(200, headers);
+                return res.end('');
+            }
         });
     }
 });
@@ -50,7 +76,6 @@ function getNextItem(error, res, callback) {
         db.createReadStream({limit: 1, lt: (+new Date())})
             .on('data', function(data) {
                 db.del(data.key, function() {
-                    // limbo
                     db.put(newKey, data.value, function(err) {
                         db.close();
                         data.key = newKey;
@@ -66,9 +91,12 @@ function getNextItem(error, res, callback) {
     });
 }
 
-function track(error, key, value) {
+function track(error, user, action, value) {
+    // value must be an object
     var trackingDb = './' + error + '-tracking.ldb';
-    value = (typeof value == 'object') ? JSON.stringify(value) : value;
+    var key = +new Date() + ':' + user;
+    value._action = action;
+    value = JSON.stringify(value);
     levelup(trackingDb, function(err, db) {
         db.put(key, value, function(err) {
             db.close();

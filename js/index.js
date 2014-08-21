@@ -5,8 +5,8 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-// var url = 'http://54.89.192.52:3000/error/';
-var url = 'http://localhost:3001/error/';
+// var url = 'http://54.89.192.52:3000/';
+var url = 'http://localhost:3001/';
 
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
@@ -151,20 +151,20 @@ function next() {
 }
 
 function markDone() {
-    // post to that thing, move it off the table, then next()
     $.ajax({
         crossDomain: true,
-        url: url + qs('error'),
+        url: url + 'fixed/' + qs('error'),
         type: 'post',
-        data: JSON.stringify({user: store.get('username')})
+        data: JSON.stringify({
+            user: store.get('username'),
+            state: current
+        })
     }).done(next);
 }
 
 $('#skip').on('click', next);
 $('#edit').on('click', edit);
-$('#fixed').on('click', function() {
-    next();
-});
+$('#fixed').on('click', markDone);
 
 Mousetrap.bind(['right', 'j'], function() {
     $('#skip')
@@ -194,7 +194,7 @@ function load() {
         }
         $.ajax({
             crossDomain: true,
-            url: url + qs('error'),
+            url: url + 'error/' + qs('error'),
             type: 'post',
             data: JSON.stringify({user: store.get('username')})
         }).done(function(data) {
