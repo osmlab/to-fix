@@ -24,9 +24,10 @@ router.addRoute('/error/:error', {
             body += data;
         });
         req.on('end', function() {
+            body = JSON.parse(body);
             getNextItem(opts.error, res, function(err, kv) {
                 if (err) return error(res, 500, err);
-                track(error, +new Date() + ':' + body.user, {action: 'got', value: kv.key});
+                track(opts.error, +new Date() + ':' + body.user, {action: 'got', value: kv.key});
                 res.writeHead(200, headers);
                 return res.end(JSON.stringify(kv));
             });
