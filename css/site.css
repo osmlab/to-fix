@@ -53,12 +53,14 @@ body {
   line-height: 80px;
   font-size: 30px;
   bottom: 0px;
+  color: #fff;
   cursor: pointer;
 }
 #josm {
   left: 0;
 }
 #next {
+  border-left: 1px solid #000;
   right: 0;
 }
 #login {
