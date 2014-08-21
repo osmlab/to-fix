@@ -174,12 +174,11 @@ function load() {
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
         }
-
         $.ajax({
             crossDomain: true,
             url: url + qs('error'),
             type: 'post',
-            data: JSON.stringify({user: store.get('userid')})
+            data: JSON.stringify({user: store.get('username')})
         }).done(function(data) {
             $('#map').removeClass('loading');
             tasks[qs('error') || DEFAULT].loader(data);

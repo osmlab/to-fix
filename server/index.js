@@ -19,15 +19,14 @@ http.createServer(router).listen(port, function() {
 
 router.addRoute('/error/:error', {
     POST: function(req, res, opts) {
-        var location = './' + opts.error + '.ldb';
-
         var body = '';
         req.on('data', function(data) {
             body += data;
         });
         req.on('end', function() {
-            getNextItem(location, res, function(err, kv) {
+            getNextItem(opts.error, res, function(err, kv) {
                 if (err) return error(res, 500, err);
+                track(error, +new Date() + ':' + body.user, {action: 'got', value: kv.key});
                 res.writeHead(200, headers);
                 return res.end(JSON.stringify(kv));
             });
@@ -35,7 +34,8 @@ router.addRoute('/error/:error', {
     }
 });
 
-function getNextItem(location, res, callback) {
+function getNextItem(error, res, callback) {
+    var location = './' + error + '.ldb';
     levelup(location, {createIfMissing: false}, function(err, db) {
         if (err) {
             // despite createIfMissing: false it still creates an empty dir, so we remove it
@@ -62,6 +62,16 @@ function getNextItem(location, res, callback) {
                 db.close();
                 return callback('Something wrong with the database');
             });
+    });
+}
+
+function track(error, key, value) {
+    var trackingDb = './' + error + '-tracking.ldb';
+    value = (typeof value == 'object') ? JSON.stringify(value) : value;
+    levelup(trackingDb, function(err, db) {
+        db.put(key, value, function(err) {
+            db.close();
+        });
     });
 }
 
