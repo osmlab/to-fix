@@ -25,9 +25,9 @@ router.addRoute('/error/:error', {
         });
         req.on('end', function() {
             body = JSON.parse(body);
-            getNextItem(opts.error, res, function(err, kv) {
+            getNextItem(opts.params.error, res, function(err, kv) {
                 if (err) return error(res, 500, err);
-                track(opts.error, body.user, 'got', {id: kv.key});
+                track(opts.params.error, body.user, 'got', {id: kv.key});
                 res.writeHead(200, headers);
                 return res.end(JSON.stringify(kv));
             });
@@ -44,9 +44,9 @@ router.addRoute('/fixed/:error', {
         req.on('end', function() {
             body = JSON.parse(body);
             if (body.user && body.state._id) {
-                track(opts.error, body.user, 'fixed', body.state);
+                track(opts.params.error, body.user, 'fixed', body.state);
 
-                var location = './' + opts.error + '.ldb';
+                var location = './' + opts.params.error + '.ldb';
                 levelup(location, {createIfMissing: false}, function(err, db) {
                     if (err) return console.log(err);
                     db.del(body.state._id, function() {
