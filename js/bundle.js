@@ -243,19 +243,17 @@ $('#login').on('click', function() {
 
 $(load);
 
-function keeprights(data) {
-    data = JSON.parse(data).value;
-    current = data;
-    var full = data.object_type == 'way' ? '/full' : '';
+function keeprights() {
+    var full = current._osm_object_type == 'way' ? '/full' : '';
 
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
+        url: 'https://www.openstreetmap.org/api/0.6/' + current.object_type + '/' + current.object_id + full,
         dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
-            omnivore.wkt.parse(data.st_astext).addTo(layerGroup);
+            omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
         }
     });
 
@@ -264,32 +262,42 @@ function keeprights(data) {
     });
 }
 
-$('#next').on('click', function() {
+// used for skipping or after marking something as fixed
+function next() {
     $('#map').addClass('loading');
     layerGroup.getLayers().forEach(function(layer) {
         layerGroup.removeLayer(layer);
     });
     load();
+}
+
+function markDone() {
+    // post to that thing, move it off the table, then next()
+    $.ajax({
+        crossDomain: true,
+        url: url + qs('error'),
+        type: 'post',
+        data: JSON.stringify({user: store.get('username')})
+    }).done(next);
+}
+
+$('#skip').on('click', next);
+$('#edit').on('click', edit);
+$('#fixed').on('click', function() {
+    next();
 });
 
-$('#josm').on('click', loadJOSM);
-
 Mousetrap.bind(['right', 'j'], function() {
-    $('#next')
+    $('#skip')
         .addClass('active')
         .click();
     setTimeout(function() {
-        $('#next').removeClass('active');
+        $('#skip').removeClass('active');
     }, 200);
 });
 
 Mousetrap.bind(['enter', 'e'], function() {
-    $('#josm')
-        .addClass('active')
-        .click();
-    setTimeout(function() {
-        $('#josm').removeClass('active');
-    }, 200);
+    $('#edit').click();
 });
 
 var alt = false;
@@ -311,28 +319,28 @@ function load() {
             type: 'post',
             data: JSON.stringify({user: store.get('username')})
         }).done(function(data) {
+            data = JSON.parse(data);
+            current = data.value;
+            current._id = data.key;
             $('#map').removeClass('loading');
-            tasks[qs('error') || DEFAULT].loader(data);
+            tasks[qs('error') || DEFAULT].loader();
         });
     } else {
         $('#login').removeClass('hidden');
     }
 }
 
-function nyc_overlaps(data) {
-    data = JSON.parse(data).value;
-    current = data;
-    current.object_type = 'way';
-    current.object_id = data.hwy;
+function nyc_overlaps() {
+    current._osm_object_type = 'way';
+    current._osm_object_id = current.bldg;
 
-    // just the building for now
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + data.hwy + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + data.bldg + '/full',
+                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -342,16 +350,14 @@ function nyc_overlaps(data) {
             });
         }
     });
+
     renderUI({
         title: tasks[qs('error')].title
     });
 }
 
-function tigermissing(data) {
-    data = JSON.parse(data).value;
-    current = data;
-
-    var layer = omnivore.wkt.parse(data.st_astext).addTo(layerGroup);
+function tigermissing() {
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
     current.bounds = layer.getBounds();
     map.fitBounds(current.bounds);
@@ -362,21 +368,19 @@ function tigermissing(data) {
     });
 }
 
-function unconnected(data) {
-    data = JSON.parse(data).value;
-    current = data;
-    current.object_type = 'node';
-    current.object_id = data.node_id;
+function unconnected() {
+    current._osm_object_type = 'node';
+    current._osm_object_id = current.node_id;
 
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + data.way_id + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + data.node_id,
+                url: 'https://www.openstreetmap.org/api/0.6/node/' + current.node_id,
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -389,7 +393,7 @@ function unconnected(data) {
     });
 }
 
-function loadJOSM() {
+function edit() {
     var bottom = current.bounds._southWest.lat - 0.0005;
     var left = current.bounds._southWest.lng - 0.0005;
     var top = current.bounds._northEast.lat + 0.0005;
