@@ -48,7 +48,10 @@ router.addRoute('/fixed/:error', {
 
                 var location = './' + opts.params.error + '.ldb';
                 levelup(location, {createIfMissing: false}, function(err, db) {
-                    if (err) return console.log(err);
+                    if (err) {
+                        db.close();
+                        return console.log(err);
+                    }
                     db.del(body.state._id, function() {
                         db.close();
                     });
@@ -64,12 +67,7 @@ router.addRoute('/fixed/:error', {
 function getNextItem(error, res, callback) {
     var location = './' + error + '.ldb';
     levelup(location, {createIfMissing: false}, function(err, db) {
-        if (err) {
-            // despite createIfMissing: false it still creates an empty dir, so we remove it
-            return leveldown.destroy(location, function() {
-                callback('No such database');
-            });
-        }
+        if (err) return callback('Database error');
 
         var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
 
