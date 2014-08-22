@@ -49,7 +49,7 @@ router.addRoute('/fixed/:error', {
                 var location = './' + opts.params.error + '.ldb';
                 levelup(location, {createIfMissing: false}, function(err, db) {
                     if (err) {
-                        db.close();
+                        if (!db.isClosed()) db.close();
                         return console.log(err);
                     }
                     db.del(body.state._id, function() {
@@ -67,7 +67,10 @@ router.addRoute('/fixed/:error', {
 function getNextItem(error, res, callback) {
     var location = './' + error + '.ldb';
     levelup(location, {createIfMissing: false}, function(err, db) {
-        if (err) return callback('Database error');
+        if (err) {
+            if (!db.isClosed()) db.close();
+            return callback('Database error');
+        }
 
         var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
 
@@ -96,6 +99,10 @@ function track(error, user, action, value) {
     value._action = action;
     value = JSON.stringify(value);
     levelup(trackingDb, function(err, db) {
+        if (err) {
+            if (!db.isClosed()) db.close();
+            return;
+        }
         db.put(key, value, function(err) {
             db.close();
         });
