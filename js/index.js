@@ -5,8 +5,8 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-// var url = 'http://54.89.192.52:3000/';
-var url = 'http://localhost:3001/';
+var url = 'http://54.83.186.206:3001/';
+// var url = 'http://localhost:3001/';
 
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
@@ -123,10 +123,12 @@ $('#login').on('click', function() {
 $(load);
 
 function keeprights() {
+    current._osm_object_type = current.object_type;
+    current._osm_object_id = current.object_id;
     var full = current._osm_object_type == 'way' ? '/full' : '';
 
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/' + current.object_type + '/' + current.object_id + full,
+        url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
         dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -259,7 +261,7 @@ function unconnected() {
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current.node_id,
+                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -285,13 +287,13 @@ function edit() {
         right: right,
         top: top,
         bottom: bottom,
-        select: current.object_type + current.object_id
+        select: current._osm_object_type + current._osm_object_id
     }), {
         error: function() {
             // fallback to iD
             var url = 'http://openstreetmap.us/iD/release/#';
-            if (current.object_type && current.object_id) {
-                url += 'id=' + current.object_type.slice(0, 1) + current.object_id;
+            if (current._osm_object_type && current._osm_object_id) {
+                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
             } else {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
