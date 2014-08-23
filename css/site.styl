@@ -1,7 +1,8 @@
 dark = #000
-trans = rgba(0, 0, 0, 0.7)
-glow = #d8f8ff
+trans = rgba(0, 0, 0, 0.75)
+glow = rgba(255, 255, 255, 0.5)
 mid = #333
+bright = #fff
 
 body
     margin: 0
@@ -21,14 +22,14 @@ body
 
 .controls, #login, #name
     position: absolute
-    background-color: dark
+    background-color: trans
     z-index: 9001
-    &:hover
-        background :#444
+    &:hover, &.active
+        background: dark
+        color: bright
         cursor: pointer
 
 #menu
-    width: 250px
     top: 0px
     left: 0px
     padding: 10px 0
@@ -39,22 +40,27 @@ body
         display: block
         padding: 5px 15px
         &.active
-            background:glow
-            color:dark
+            color: bright
 
-#next, #josm
+#skip, #edit, #fixed
     text-align: center
-    width: 50%
+    width: 33.3333%
     line-height: 80px
     font-size: 30px
     bottom: 0px
+    color: bright
     cursor: pointer
 
-#josm
-    left:0
+#edit
+    left: 0
 
-#next
-    right:0
+#skip
+    border-left: 1px solid black
+    left: 33.3333%
+
+#fixed
+    border-left: 1px solid black
+    right: 0
 
 #login
     cursor: pointer
@@ -75,6 +81,7 @@ body
     border-bottom-color: rgba(0,0,0,0)
 
 #name
+    color: bright
     width: 250px
     text-align: center
     padding: 10px 15px

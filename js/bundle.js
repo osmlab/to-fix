@@ -126,7 +126,8 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.89.192.52:3000/error/';
+var url = 'http://54.83.186.206:3001/';
+// var url = 'http://localhost:3001/';
 
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
@@ -134,7 +135,7 @@ var baseLayer = store.get('baseLayer'),
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
     oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
-    landing: location.href.replace('/index.html', '').replace(location.search, '') + '/land.html'
+    landing: 'land.html'
 });
 
 var tasks = {
@@ -224,29 +225,37 @@ map.on('baselayerchange', function(e) {
 
 $('#login').on('click', function() {
     auth.authenticate(function(err) {
-        if (err) return console.log(err);
-        if (auth.authenticated()) {
-            $('#login').addClass('hidden');
-            load();
-        }
+        auth.xhr({
+            method: 'GET',
+            path: '/api/0.6/user/details'
+        }, function(err, details) {
+            if (err) return console.log(err);
+            if (auth.authenticated()) {
+                $('#login').addClass('hidden');
+                details = details.getElementsByTagName('user')[0];
+                store.set('username', details.getAttribute('display_name'));
+                store.set('userid', details.getAttribute('id'));
+                load();
+            }
+        });
     });
 });
 
 $(load);
 
-function keeprights(data) {
-    data = JSON.parse(data).value;
-    current = data;
-    var full = data.object_type == 'way' ? '/full' : '';
+function keeprights() {
+    current._osm_object_type = current.object_type;
+    current._osm_object_id = current.object_id;
+    var full = current._osm_object_type == 'way' ? '/full' : '';
 
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/' + data.object_type + '/' + data.object_id + full,
+        url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
         dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
-            omnivore.wkt.parse(data.st_astext).addTo(layerGroup);
+            omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
         }
     });
 
@@ -255,22 +264,42 @@ function keeprights(data) {
     });
 }
 
-$('#next').on('click', function() {
+// used for skipping or after marking something as fixed
+function next() {
     $('#map').addClass('loading');
     layerGroup.getLayers().forEach(function(layer) {
         layerGroup.removeLayer(layer);
     });
     load();
-});
+}
 
-$('#josm').on('click', loadJOSM);
+function markDone() {
+    $.ajax({
+        crossDomain: true,
+        url: url + 'fixed/' + qs('error'),
+        type: 'post',
+        data: JSON.stringify({
+            user: store.get('username'),
+            state: current
+        })
+    }).done(next);
+}
+
+$('#skip').on('click', next);
+$('#edit').on('click', edit);
+$('#fixed').on('click', markDone);
 
 Mousetrap.bind(['right', 'j'], function() {
-    $('#next').click();
+    $('#skip')
+        .addClass('active')
+        .click();
+    setTimeout(function() {
+        $('#skip').removeClass('active');
+    }, 200);
 });
 
 Mousetrap.bind(['enter', 'e'], function() {
-    $('#josm').click();
+    $('#edit').click();
 });
 
 var alt = false;
@@ -281,38 +310,39 @@ Mousetrap.bind(['s'], function() {
 });
 
 function load() {
-    // if (auth.authenticated()) {
+    if (auth.authenticated() && store.get('username') && store.get('userid')) {
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
         }
-
         $.ajax({
             crossDomain: true,
-            url: url + qs('error')
+            url: url + 'error/' + qs('error'),
+            type: 'post',
+            data: JSON.stringify({user: store.get('username')})
         }).done(function(data) {
+            data = JSON.parse(data);
+            current = data.value;
+            current._id = data.key;
             $('#map').removeClass('loading');
-            tasks[qs('error') || DEFAULT].loader(data);
+            tasks[qs('error') || DEFAULT].loader();
         });
-    // } else {
-    //     $('#login').removeClass('hidden');
-    // }
+    } else {
+        $('#login').removeClass('hidden');
+    }
 }
 
-function nyc_overlaps(data) {
-    data = JSON.parse(data).value;
-    current = data;
-    current.object_type = 'way';
-    current.object_id = data.hwy;
+function nyc_overlaps() {
+    current._osm_object_type = 'way';
+    current._osm_object_id = current.bldg;
 
-    // just the building for now
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + data.hwy + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + data.bldg + '/full',
+                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -322,16 +352,14 @@ function nyc_overlaps(data) {
             });
         }
     });
+
     renderUI({
         title: tasks[qs('error')].title
     });
 }
 
-function tigermissing(data) {
-    data = JSON.parse(data).value;
-    current = data;
-
-    var layer = omnivore.wkt.parse(data.st_astext).addTo(layerGroup);
+function tigermissing() {
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
     current.bounds = layer.getBounds();
     map.fitBounds(current.bounds);
@@ -342,21 +370,19 @@ function tigermissing(data) {
     });
 }
 
-function unconnected(data) {
-    data = JSON.parse(data).value;
-    current = data;
-    current.object_type = 'node';
-    current.object_id = data.node_id;
+function unconnected() {
+    current._osm_object_type = 'node';
+    current._osm_object_id = current.node_id;
 
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + data.way_id + '/full',
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current.bounds = layer.getBounds();
             map.fitBounds(current.bounds);
             $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + data.node_id,
+                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
@@ -369,7 +395,7 @@ function unconnected(data) {
     });
 }
 
-function loadJOSM() {
+function edit() {
     var bottom = current.bounds._southWest.lat - 0.0005;
     var left = current.bounds._southWest.lng - 0.0005;
     var top = current.bounds._northEast.lat + 0.0005;
@@ -382,13 +408,13 @@ function loadJOSM() {
         right: right,
         top: top,
         bottom: bottom,
-        select: current.object_type + current.object_id
+        select: current._osm_object_type + current._osm_object_id
     }), {
         error: function() {
             // fallback to iD
             var url = 'http://openstreetmap.us/iD/release/#';
-            if (current.object_type && current.object_id) {
-                url += 'id=' + current.object_type.slice(0, 1) + current.object_id;
+            if (current._osm_object_type && current._osm_object_id) {
+                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
             } else {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
@@ -2842,7 +2868,7 @@ module.exports = function(o) {
             var authorize_url = o.url + '/oauth/authorize?' + ohauth.qsString({
                 oauth_token: resp.oauth_token,
                 oauth_callback: location.href.replace('index.html', '')
-                    .replace(/#.*/, '') + o.landing
+                    .replace(/#.*/, '').replace(location.search, '') + o.landing
             });
 
             if (o.singlepage) {
