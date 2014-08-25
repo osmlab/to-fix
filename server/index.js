@@ -27,7 +27,7 @@ router.addRoute('/error/:error', {
             body = JSON.parse(body);
             getNextItem(opts.params.error, res, function(err, kv) {
                 if (err) return error(res, 500, err);
-                track(opts.params.error, body.user, 'got', {id: kv.key});
+                track(opts.params.error, body.user, 'got', {_id: kv.key});
                 res.writeHead(200, headers);
                 return res.end(JSON.stringify(kv));
             });
