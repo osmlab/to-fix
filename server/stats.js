@@ -9,27 +9,33 @@ levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
 
     var count = 0;
     var stats = {};
+    var fixedCache = [];
+
+    // first fill in shallow details
+        // on end, loop through and fill in detail
 
     db.createReadStream()
-        .on('data', function(data) {
-            // take some event and data that is associated with it
+        .on('data', function(event) {
+            // take some event and the data associated with it
             // this all needs to be structured better
 
-            data.key = data.key.split(':');
-            var time = data.key[0];
-            var user = data.key[1];
-            data.value = JSON.parse(data.value);
-            var id = data.value._id;
-            var action = data.value._action;
+            // type, time, data
+            // goal: csv
 
-            if (!stats[user]) stats[user] = {};
-            if (!stats[user][id]) stats[user][id] = {};
-            if (!stats[user][id][action]) stats[user][id][action] = [];
+            var data = JSON.parse(event.value);
+            event.key = event.key.split(':');
+            var type = data._action;
+            delete data._action;
+            var time = event.key[0];
+            var user = event.key[1];
 
-            stats[user][id][action] = Math.round(time);
+            if (!stats[user]) stats[user] = [];
 
-            // not sure how we want to organize this
-            // how are we going to display it?
+            stats[user].push({
+                time: Math.round(time),
+                type: type,
+                data: data
+            });
 
             count++;
         })
@@ -38,7 +44,16 @@ levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
             console.log('some error');
         })
         .on('end', function() {
-            console.log('' + count + ' items.');
             console.log(JSON.stringify(stats, null, 4));
+
+            console.log('\n\n\n');
+
+            for (var user in stats) {
+                // build the durations first
+                for (var a = 0; a >= stats[user].length; a++) {
+                    console.log();
+                }
+            }
+
         });
 });
