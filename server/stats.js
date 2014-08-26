@@ -7,7 +7,6 @@ levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
         console.log('db error');
     }
 
-    var count = 0;
     var stats = {};
     var fixedCache = [];
 
@@ -28,30 +27,28 @@ levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
             delete data._action;
             var time = event.key[0];
             var user = event.key[1];
+            var id = data._id;
 
-            if (!stats[user]) stats[user] = [];
+            if (!stats[user]) stats[user] = {};
+            if (!stats[user][id]) stats[user][id] = {};
 
-            stats[user].push({
-                time: Math.round(time),
-                type: type,
+            stats[user][id][type] = {
+                time: +time,
                 data: data
-            });
+            };
 
-            count++;
-        })
-        .on('error', function(data) {
+        }).on('error', function(data) {
             db.close();
             console.log('some error');
-        })
-        .on('end', function() {
-            console.log(JSON.stringify(stats, null, 4));
-
-            console.log('\n\n\n');
-
+        }).on('end', function() {
+            // console.log(JSON.stringify(stats, null, 4));
             for (var user in stats) {
                 // build the durations first
-                for (var a = 0; a >= stats[user].length; a++) {
-                    console.log();
+                for (var error in stats[user]) {
+                    if ('fixed' in stats[user][error] && 'got' in stats[user][error]) {
+                        // duration between got and fixed
+                        var duration = stats[user][error].fixed.time - stats[user][error].got.time;
+                    }
                 }
             }
 
