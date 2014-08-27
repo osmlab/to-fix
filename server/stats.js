@@ -19,7 +19,7 @@ function makeStats(dbLocation) {
     levelup(dbLocation, {createIfMissing: false}, function(err, db) {
         if (err) {
             if (db && !db.isClosed()) db.close();
-            return console.log('db error');
+            return console.log('opening error', err);
         }
 
         var stats = {};
@@ -46,9 +46,9 @@ function makeStats(dbLocation) {
                     data: data
                 };
 
-            }).on('error', function(data) {
+            }).on('error', function(err) {
                 db.close();
-                return console.log('some error');
+                return console.log('reading error', err);
             }).on('end', function() {
                 file.write('time,action,user,duration');
 
