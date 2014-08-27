@@ -1,3 +1,6 @@
+// generates a -stats.csv file for a specified database
+// if no database is specified, it creates one for each *.ldb it finds
+
 var levelup = require('levelup'),
     leveldown = require('leveldown'),
     fs = require('fs');
@@ -5,7 +8,6 @@ var levelup = require('levelup'),
 if (process.argv[2]) {
     makeStats(process.argv[2]);
 } else {
-    // ls *-tracking.ldb
     fs.readdir('./', function(err, erthing) {
         erthing.forEach(function(path) {
             if (path.indexOf('-tracking.ldb') !== -1) makeStats(path);
@@ -44,7 +46,7 @@ function makeStats(dbLocation) {
 
             }).on('error', function(data) {
                 db.close();
-                console.log('some error');
+                return console.log('some error');
             }).on('end', function() {
                 file.write('time,action,user,duration');
 
