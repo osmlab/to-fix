@@ -5,6 +5,8 @@ var levelup = require('levelup'),
     leveldown = require('leveldown'),
     fs = require('fs');
 
+var date = +new Date();
+
 if (process.argv[2]) {
     makeStats(process.argv[2]);
 } else {
@@ -23,7 +25,7 @@ function makeStats(dbLocation) {
         }
 
         var stats = {};
-        var fileName = dbLocation.split('-tracking.ldb').join('-stats.csv');
+        var fileName = dbLocation.split('-tracking.ldb').join('-stats-' + date + '.csv');
         var file = fs.createWriteStream(fileName);
 
         db.createReadStream()
