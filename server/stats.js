@@ -3,7 +3,8 @@
 
 var levelup = require('levelup'),
     leveldown = require('leveldown'),
-    fs = require('fs');
+    fs = require('fs'),
+    async = require('async');
 
 var date = +new Date();
 
@@ -11,17 +12,22 @@ if (process.argv[2]) {
     makeStats(process.argv[2]);
 } else {
     fs.readdir('./', function(err, erthing) {
-        erthing.forEach(function(path) {
-            if (path.indexOf('-tracking.ldb') !== -1) makeStats(path);
+        async.eachSeries(erthing, function(path, next) {
+            if (path.indexOf('-tracking.ldb') !== -1) {
+                makeStats(path, next);
+            } else {
+                next();
+            }
         });
     });
 }
 
-function makeStats(dbLocation) {
+function makeStats(dbLocation, callback) {
     levelup(dbLocation, {createIfMissing: false}, function(err, db) {
         if (err) {
             if (db && !db.isClosed()) db.close();
-            return console.log('opening error', err);
+            console.log('opening error', err);
+            return callback();
         }
 
         var stats = {};
@@ -50,7 +56,8 @@ function makeStats(dbLocation) {
 
             }).on('error', function(err) {
                 db.close();
-                return console.log('reading error', err);
+                console.log('reading error', err);
+                return callback();
             }).on('end', function() {
                 db.close();
                 file.write('time,action,user,duration');
@@ -83,7 +90,8 @@ function makeStats(dbLocation) {
 
                 file.write('\n');
                 file.end();
-                return console.log('wrote to ', fileName);
+                console.log('wrote to ', fileName);
+                return callback();
             });
     });
 }
