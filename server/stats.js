@@ -50,6 +50,7 @@ function makeStats(dbLocation) {
                 db.close();
                 return console.log('reading error', err);
             }).on('end', function() {
+                db.close();
                 file.write('time,action,user,duration');
 
                 // this is nightmarish, might just do it clientside and deal
@@ -80,6 +81,7 @@ function makeStats(dbLocation) {
 
                 file.write('\n');
                 file.end();
+                return console.log('wrote to ', fileName);
             });
     });
 }
