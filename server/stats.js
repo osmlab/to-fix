@@ -34,7 +34,9 @@ function makeStats(dbLocation) {
                 delete data._action;
                 var time = event.key[0];
                 var user = event.key[1];
-                var id = data._id;
+                var id = data._id || data.id;
+                    // data.id was done in the first version by accident
+                    // will remove when those databases are gone completely
 
                 if (!stats[user]) stats[user] = {};
                 if (!stats[user][id]) stats[user][id] = {};
