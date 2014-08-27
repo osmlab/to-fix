@@ -1,5 +1,6 @@
 var levelup = require('levelup'),
-    leveldown = require('leveldown');
+    leveldown = require('leveldown'),
+    overall = require('fs').createWriteStream('overall.csv');
 
 levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
     if (err) {
@@ -8,19 +9,9 @@ levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
     }
 
     var stats = {};
-    var fixedCache = [];
-
-    // first fill in shallow details
-        // on end, loop through and fill in detail
 
     db.createReadStream()
         .on('data', function(event) {
-            // take some event and the data associated with it
-            // this all needs to be structured better
-
-            // type, time, data
-            // goal: csv
-
             var data = JSON.parse(event.value);
             event.key = event.key.split(':');
             var type = data._action;
@@ -41,16 +32,35 @@ levelup(process.argv[2], {createIfMissing: false}, function(err, db) {
             db.close();
             console.log('some error');
         }).on('end', function() {
-            // console.log(JSON.stringify(stats, null, 4));
+            overall.write('time,action,user,duration');
+
+            // this is nightmarish, might just do it clientside and deal
             for (var user in stats) {
-                // build the durations first
-                for (var error in stats[user]) {
-                    if ('fixed' in stats[user][error] && 'got' in stats[user][error]) {
+                for (var id in stats[user]) {
+                    if ('fixed' in stats[user][id] && 'got' in stats[user][id]) {
                         // duration between got and fixed
-                        var duration = stats[user][error].fixed.time - stats[user][error].got.time;
+                        var duration = stats[user][id].fixed.time - stats[user][id].got.time;
+                        stats[user][id].fixed.data.duration = duration;
                     }
+
+                    for (var type in stats[user][id]) {
+                        var line = stats[user][id][type].time + ',';
+                        line += type + ',';
+                        line += user + ',';
+                        if (type == 'fixed') {
+                            line += stats[user][id][type].data.duration;
+                        } else {
+                            line += 0;
+                        }
+                        overall.write('\n' + line);
+                    }
+
+                    // just overall stats for now
+                    // will want individual user stats soon
                 }
             }
 
+            overall.write('\n');
+            overall.end();
         });
 });
