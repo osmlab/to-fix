@@ -33,18 +33,18 @@ var tasks = {
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
-    'unconnected_major2': {
-        title: 'Unconnected major < 2m',
-        loader: unconnected },
+    // 'unconnected_major2': {
+    //     title: 'Unconnected major < 2m',
+    //     loader: unconnected },
     'unconnected_major5': {
         title: 'Unconnected major < 5m',
         loader: unconnected },
     'unconnected_minor1': {
         title: 'Unconnected minor < 1m',
         loader: unconnected },
-    'unconnected_minor2': {
-        title: 'Unconnected minor < 2m',
-        loader: unconnected },
+    // 'unconnected_minor2': {
+    //     title: 'Unconnected minor < 2m',
+    //     loader: unconnected },
     'tigermissing': {
         title: 'Missing/misaligned TIGER',
         loader: tigermissing },
