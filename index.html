@@ -8,8 +8,8 @@
   <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
   <script src='//osmlab.github.io/to-fix/js/jquery-tourbus.min.js'></script>
   <link href='//api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
-  <link href='//www.mapbox.com/base/latest/base.css' rel='stylesheet'>
   <link rel='stylesheet' href='//osmlab.github.io/to-fix/css/jquery-tourbus.min.css'>
+  <link href='//www.mapbox.com/base/latest/base.css' rel='stylesheet'>
   <link href='css/site.css' rel='stylesheet'>
 </head>
 <body id='tofix'>
@@ -18,7 +18,7 @@
   <h2 id='login' class='hidden'>Login with your OSM account »</h2>
   <h2 id='skip' class='controls hidden'>SKIP</h2>
   <h2 id='edit' class='controls hidden'>EDIT</h2>
-  <h2 id='fixed' class='controls hidden'>FIXED »</h2>
+  <h2 id='fixed' class='controls hidden disabled'>FIXED »</h2>
   <div id='name' class='controls hidden'></div>
   <div class='dark' id='map'></div>
 
@@ -27,27 +27,27 @@
 
     <li data-orientation='centered'>
       <h3>The map shows the current item task at hand</h3>
-      <span class='tourbus-next rcon next'>Next</span>
+      <div class='tourbus-next rcon next'></div>
     </li>
 
     <li data-el='#menu' data-orientation='right' data-align='center'>
       <h3>Select different tasks to work on</h3>
-      <span class='tourbus-next rcon next'>Next</span>
+      <div class='tourbus-next rcon next'></div>
     </li>
 
     <li data-el='#edit' data-orientation='top' data-align='center' data-width='240'>
-      <h3>Open the current task in an editor to make the necessary changes</h3>
-      <span class='tourbus-next rcon next'>Next</span>
+      <h3>Edit the current item and make the necessary changes</h3>
+      <div class='tourbus-next rcon next'></div>
     </li>
 
     <li data-el='#skip' data-orientation='top' data-align='center' data-width='240'>
-      <p>If the task is too difficult or not possible to solve, skip it and move on to the next one</p>
-      <span class='tourbus-next rcon next'>Next</span>
+      <h3>Skip the item if it's too difficult or not possible to solve</h3>
+      <div class='tourbus-next rcon next'></div>
     </li>
 
     <li data-el='#fixed' data-orientation='top' data-align='center' data-width='240'>
-      <p>Mark the current item as being done so no one else has to work on it</p>
-      <span class='tourbus-stop rcon next'>Next</span>
+      <h3>Mark the current item as being done so no one else has to work on it</h3>
+      <div class='tourbus-stop rcon next'></div>
     </li>
 
   </ol>
@@ -56,9 +56,20 @@
     .tourbus-container, .tourbus-container a {
       color: black !important;
     }
+
+    .tourbus-leg-inner {
+      padding: 0;
+    }
+
+    .tourbus-leg-inner h3 {
+      padding: 20px;
+    }
+
     .tourbus-next, .tourbus-stop {
-      float: right;
-      padding-top: 10px;
+      border-top: 1px solid #ccc;
+      padding: 10px 20px;
+      text-align: center;
+      cursor: pointer;
     }
   </style>
 
