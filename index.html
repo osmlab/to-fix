@@ -64,6 +64,9 @@
 
   <script src='js/bundle.js'></script>
   <script>
+    $('.tourbus-next').click(function() {
+      console.log(+new Date());
+    });
 
     $(function(){
       var tour = $('#walkthrough').tourbus({
