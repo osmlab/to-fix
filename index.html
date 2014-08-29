@@ -14,25 +14,30 @@
 </head>
 <body id='tofix'>
 
-  <div id='menu'></div>
-
-  <div id='intro-modal' class="pin-left col12 fill-darken3 dark center z1">
+  <div id='intro-modal' class="pin-left col12 fill-darken2 dark center z1">
     <div id='intro-modal-content' class="limiter">
-      <div class="col10 margin1">
-        <h1 class="space-bottom4 fancy">to-fix</h1>
-        <div class="pill center col6 margin3">
-          <span class="col6 button stroke" href="#walkthrough">Start the Walkthrough</span><!--
-          --><span class="col6 button stroke">Fix stuff »</span>
+      <div class='col10 margin1'>
+        <h1 class='fancy'>to-fix</h1>
+        <h2 class='space-bottom2'>Fix shit</h2>
+        <div class='pill center col6 margin3'>
+          <span class='col6 button stroke' href='#walkthrough'>Start the Walkthrough</span><!--
+          --><span class='col6 button stroke'>Go »</span>
         </div>
       </div>
     </div>
   </div>
 
-  <h2 id='skip' class='controls hidden'>SKIP</h2>
-  <h2 id='edit' class='controls hidden'>EDIT</h2>
-  <h2 id='fixed' class='controls hidden disabled'>FIXED »</h2>
+  <div id='hidden-controls' class='hidden'>
+    <div id='menu'></div>
+
+    <h2 id='edit' class='controls'>EDIT</h2>
+    <h2 id='skip' class='controls'>SKIP</h2>
+    <h2 id='fixed' class='controls disabled'>FIXED »</h2>
+
+  </div>
+
   <div id='name' class='controls hidden'></div>
-  <div class='dark' id='map'></div>
+  <div id='map' class='dark'></div>
 
   <ol class='tourbus-legs' id='walkthrough'>
     <li data-orientation='centered'>
