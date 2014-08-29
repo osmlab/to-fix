@@ -95,3 +95,12 @@ body {
   font-size: 20px;
   left: 45%;
 }
+.disabled {
+  cursor: default !important;
+  opacity: 0.5;
+}
+.disabled:hover {
+  cursor: default !important;
+  opacity: 0.5;
+  background: rgba(0,0,0,0.75);
+}

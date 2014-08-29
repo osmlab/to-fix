@@ -274,6 +274,12 @@ function next() {
 }
 
 function markDone() {
+    $('#fixed')
+        .addClass('disabled')
+        .unbind();
+
+    Mousetrap.unbind(['enter', 'e']);
+
     $.ajax({
         crossDomain: true,
         url: url + 'fixed/' + qs('error'),
@@ -287,7 +293,6 @@ function markDone() {
 
 $('#skip').on('click', next);
 $('#edit').on('click', edit);
-$('#fixed').on('click', markDone);
 
 Mousetrap.bind(['right', 'j'], function() {
     $('#skip')
@@ -298,9 +303,16 @@ Mousetrap.bind(['right', 'j'], function() {
     }, 200);
 });
 
-Mousetrap.bind(['enter', 'e'], function() {
-    $('#edit').click();
-});
+
+function enableDone() {
+    $('#fixed').removeClass('disabled');
+
+    Mousetrap.bind(['enter', 'e'], function() {
+        $('#edit').click();
+    });
+
+    $('#fixed').on('click', markDone);
+}
 
 var alt = false;
 Mousetrap.bind(['s'], function() {
@@ -419,9 +431,11 @@ function edit() {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
             newWindow.location = url;
+            enableDone();
         },
         success: function() {
             newWindow.close();
+            enableDone();
         }
     });
 }

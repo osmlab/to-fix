@@ -1,6 +1,7 @@
 dark = #000
 trans = rgba(0, 0, 0, 0.75)
 glow = rgba(255, 255, 255, 0.5)
+disabled = rgba(0, 0, 0, 0.5)
 mid = #333
 bright = #fff
 
@@ -86,3 +87,11 @@ body
     line-height: 55px
     font-size: 20px
     left: 45%
+
+.disabled
+    cursor: default !important
+    opacity: 0.5
+    &:hover
+        cursor: default !important
+        opacity: 0.5
+        background: trans
