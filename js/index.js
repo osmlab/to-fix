@@ -145,6 +145,7 @@ function keeprights() {
 
 // used for skipping or after marking something as fixed
 function next() {
+    $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
     layerGroup.getLayers().forEach(function(layer) {
         layerGroup.removeLayer(layer);
@@ -153,10 +154,6 @@ function next() {
 }
 
 function markDone() {
-    $('#fixed')
-        .addClass('disabled')
-        .unbind();
-
     Mousetrap.unbind(['enter', 'e']);
 
     $.ajax({
