@@ -15,76 +15,50 @@
 <body id='tofix'>
 
   <div id='menu'></div>
-  <h2 id='login' class='hidden'>Login with your OSM account »</h2>
+
+  <div id='intro-modal' class="pin-left col12 fill-darken3 dark center z1">
+    <div id='intro-modal-content' class="limiter">
+      <div class="col10 margin1">
+        <h1 class="space-bottom4 fancy">to-fix</h1>
+        <div class="pill center col6 margin3">
+          <span class="col6 button stroke" href="#walkthrough">Start the Walkthrough</span><!--
+          --><span class="col6 button stroke">Fix stuff »</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <h2 id='skip' class='controls hidden'>SKIP</h2>
   <h2 id='edit' class='controls hidden'>EDIT</h2>
   <h2 id='fixed' class='controls hidden disabled'>FIXED »</h2>
   <div id='name' class='controls hidden'></div>
   <div class='dark' id='map'></div>
 
-  <!-- walkthrough -->
   <ol class='tourbus-legs' id='walkthrough'>
-
     <li data-orientation='centered'>
       <h3>The map shows the current item task at hand</h3>
       <div class='tourbus-next rcon next'></div>
     </li>
-
     <li data-el='#menu' data-orientation='right' data-align='center'>
       <h3>Select different tasks to work on</h3>
       <div class='tourbus-next rcon next'></div>
     </li>
-
     <li data-el='#edit' data-orientation='top' data-align='center' data-width='240'>
       <h3>Edit the current item and make the necessary changes</h3>
       <div class='tourbus-next rcon next'></div>
     </li>
-
     <li data-el='#skip' data-orientation='top' data-align='center' data-width='240'>
       <h3>Skip the item if it's too difficult or not possible to solve</h3>
       <div class='tourbus-next rcon next'></div>
     </li>
-
     <li data-el='#fixed' data-orientation='top' data-align='center' data-width='240'>
       <h3>Mark the current item as being done so no one else has to work on it</h3>
       <div class='tourbus-stop rcon next'></div>
     </li>
-
   </ol>
-
-  <style type="text/css">
-    .tourbus-container, .tourbus-container a {
-      color: black !important;
-    }
-
-    .tourbus-leg-inner {
-      padding: 0;
-    }
-
-    .tourbus-leg-inner h3 {
-      padding: 20px;
-    }
-
-    .tourbus-next, .tourbus-stop {
-      border-top: 1px solid #ccc;
-      padding: 10px 20px;
-      text-align: center;
-      cursor: pointer;
-    }
-  </style>
 
   <script src='js/bundle.js'></script>
   <script>
-    $('.tourbus-next').click(function() {
-      console.log(+new Date());
-    });
-
-    $(function(){
-      var tour = $('#walkthrough').tourbus({
-        autoDepart: true
-      });
-    });
-
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
