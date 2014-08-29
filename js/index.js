@@ -102,6 +102,12 @@ map.on('baselayerchange', function(e) {
     store.set('baseLayer', e.name);
 });
 
+$('#walkthrough').on('click', function() {
+    var tour = $('#walkthrough').tourbus({
+        autoDepart: true
+    });
+});
+
 $('#login').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
@@ -179,15 +185,14 @@ Mousetrap.bind(['right', 'j'], function() {
     }, 200);
 });
 
-
 function enableDone() {
-    $('#fixed').removeClass('disabled');
-
-    Mousetrap.bind(['enter', 'e'], function() {
-        $('#edit').click();
-    });
-
-    $('#fixed').on('click', markDone);
+    setTimeout(function() {
+        $('#fixed').removeClass('disabled');
+        Mousetrap.bind(['enter', 'e'], function() {
+            $('#edit').click();
+        });
+        $('#fixed').on('click', markDone);
+    }, 5000);
 }
 
 var alt = false;
@@ -217,6 +222,7 @@ function load() {
         });
     } else {
         $('#login').removeClass('hidden');
+        $('#walkthrough').removeClass('hidden');
     }
 }
 
@@ -278,6 +284,7 @@ function unconnected() {
             });
         }
     });
+
     renderUI({
         title: tasks[qs('error')].title
     });
