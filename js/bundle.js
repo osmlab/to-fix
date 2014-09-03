@@ -240,16 +240,12 @@ map.on('baselayerchange', function(e) {
 var tour = $('.tourbus-legs').tourbus({
     onDepart: function() {
         renderMenu();
-        $('#intro-modal').hide();
-        $('#hidden-controls')
-            .removeClass('hidden')
-            .addClass('clickthrough');
+        $('#intro-modal').addClass('hidden');
+        controls(true);
     },
     onStop: function() {
-        $('#intro-modal').show();
-        $('#hidden-controls')
-            .addClass('hidden')
-            .removeClass('clickthrough');
+        controls(false);
+        $('#intro-modal').removeClass('hidden');
     }
 });
 
@@ -350,8 +346,20 @@ Mousetrap.bind(['s'], function() {
     else $('.leaflet-control-layers-base input:eq(2)').click();
 });
 
+function controls(show) {
+    if (show) {
+        $('#hidden-controls').removeClass('hidden');
+    } else {
+        $('#hidden-controls')
+            .addClass('hidden')
+            .removeClass('clickthrough');
+    }
+}
+
 function load() {
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
+        $('#intro-modal').addClass('hidden');
+        controls(true);
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
@@ -369,6 +377,12 @@ function load() {
             tasks[qs('error') || DEFAULT].loader();
         });
     } else {
+
+        console.log('no load');
+        console.log('authenticated', auth.authenticate());
+        console.log('username', store.get('username'));
+        console.log('userid', store.get('userid'));
+
         pushLoop();
         var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
@@ -493,7 +507,7 @@ function edit() {
 }
 
 function renderUI(data) {
-    // $('#hidden-controls').removeClass('hidden');
+    $('#hidden-controls').removeClass('hidden');
     if (data.title) $('#title').html(data.title);
 
     if (data.name && data.name.length) {
