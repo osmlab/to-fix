@@ -136,7 +136,7 @@ $('#start-walkthrough').on('click', function() {
     tour.trigger('depart.tourbus');
 });
 
-$('#login').on('click', function() {
+$('#go').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -144,7 +144,6 @@ $('#login').on('click', function() {
         }, function(err, details) {
             if (err) return console.log(err);
             if (auth.authenticated()) {
-                $('#login').addClass('hidden');
                 details = details.getElementsByTagName('user')[0];
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
@@ -251,7 +250,6 @@ function load() {
     } else {
         pushLoop();
         var player = setInterval(pushLoop, 5000);
-        $('#login').removeClass('hidden');
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
