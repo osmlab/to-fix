@@ -237,24 +237,26 @@ map.on('baselayerchange', function(e) {
     store.set('baseLayer', e.name);
 });
 
+var tour = $('.tourbus-legs').tourbus({
+    onDepart: function() {
+        console.log('depart');
+        renderMenu();
+        $('#intro-modal').hide();
+        $('#hidden-controls')
+            .removeClass('hidden')
+            .addClass('clickthrough');
+    },
+    onStop: function() {
+        $('#intro-modal').show();
+        $('#hidden-controls')
+            .addClass('hidden')
+            .removeClass('clickthrough');
+    }
+});
+
 $('#start-walkthrough').on('click', function() {
-    $('#intro-modal').hide();
-
-    // show the controls and make them not clickable
-    $('#hidden-controls')
-        .removeClass('hidden')
-        .addClass('clickthrough');
-
-    renderMenu();
-    $('.tourbus-legs').tourbus({
-        autoDepart: true,
-        onStop: function() {
-            $('#intro-modal').show();
-            $('#hidden-controls')
-                .addClass('hidden')
-                .removeClass('clickthrough');
-        }
-    });
+    console.log('start click');
+    tour.trigger('depart.tourbus');
 });
 
 $('#login').on('click', function() {
@@ -438,8 +440,6 @@ function tigermissing() {
 function unconnected() {
     current._osm_object_type = 'node';
     current._osm_object_id = current.node_id;
-
-    console.log(current);
 
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
