@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/aaron/to-fix-update/js/bing.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/aaron/to_fix/js/bing.js":[function(require,module,exports){
 module.exports = L.TileLayer.extend({
     options: {
         subdomains: [0, 1, 2, 3],
@@ -118,7 +118,7 @@ module.exports = L.TileLayer.extend({
     }
 });
 
-},{}],"/Users/aaron/to-fix-update/js/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/js/index.js":[function(require,module,exports){
 var querystring = require('querystring'),
     omnivore = require('leaflet-omnivore'),
     BingLayer = require('./bing.js'),
@@ -131,6 +131,21 @@ var url = 'http://54.80.108.9:3001/';
 
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
+
+var PLAY = 0;
+var randomPlay = [{
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5605656,51.3243174],[-0.5606235,51.3242914],[-0.5607212,51.3242498],[-0.5608437,51.3241887],[-0.5609295,51.32414],[-0.5609951,51.3241058],[-0.5610768,51.3240632],[-0.5611601,51.3240219],[-0.5612531,51.3239709],[-0.5612718,51.32396],[-0.5614974,51.3238289],[-0.5615251,51.3238028],[-0.5615719,51.3237587]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall Lane"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5615719,51.3237587]},"type":"Feature","properties":{}}]}
+}, {
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[6.1773575,49.1255727],[6.1768639,49.1258967],[6.1766857,49.1260137],[6.1766721,49.1260365],[6.1766765,49.1260613],[6.1767016,49.1260829],[6.1767281,49.1260965],[6.1769134,49.1262067],[6.1769337,49.1262188]]},"type":"Feature","properties":{"highway":"pedestrian","name":"Square Paille-Maille","source":"cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2009"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[6.1769337,49.1262188]},"type":"Feature","properties":{}}]}
+}, {
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5608437,51.3241887],[-0.5608931,51.3242352],[-0.5609987,51.324321],[-0.5612412,51.3245343]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall End"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5612412,51.3245343]},"type":"Feature","properties":{}}]}
+}, {
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-2.1959028,51.2504598],[-2.1960627,51.2507108],[-2.1961876,51.2508979],[-2.1962628,51.2510072],[-2.1963248,51.2510954],[-2.1963602,51.2511509],[-2.1963853,51.2511974],[-2.196402,51.2512444],[-2.1964071,51.2512694],[-2.1964121,51.2512936],[-2.1964838,51.2515612]]},"type":"Feature","properties":{"highway":"residential","name":"School Lane","source":"Bing"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-2.1964838,51.2515612]},"type":"Feature","properties":{}}]}
+}];
 
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
@@ -198,6 +213,7 @@ var map = L.mapbox.map('map', null, {
 }).setView([22.76, -25.84], 3);
 
 var layerGroup = L.layerGroup().addTo(map);
+var loopGroup = L.layerGroup().addTo(map);
 
 map.attributionControl.setPosition('topright');
 map.zoomControl.setPosition('topright');
@@ -205,16 +221,14 @@ map.zoomControl.setPosition('topright');
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
     'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
-        detectRetina: false
-    }),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
 };
 
 if (baseLayer && layers[baseLayer]) {
     layers[baseLayer].addTo(map);
 } else {
-    layers['Mapbox Streets'].addTo(map);
+    layers['Mapbox Satellite'].addTo(map);
 }
 
 L.control.layers(layers).addTo(map);
@@ -223,7 +237,23 @@ map.on('baselayerchange', function(e) {
     store.set('baseLayer', e.name);
 });
 
-$('#login').on('click', function() {
+var tour = $('.tourbus-legs').tourbus({
+    onDepart: function() {
+        renderMenu();
+        $('#intro-modal').addClass('hidden');
+        controls(true);
+    },
+    onStop: function() {
+        controls(false);
+        $('#intro-modal').removeClass('hidden');
+    }
+});
+
+$('#start-walkthrough').on('click', function() {
+    tour.trigger('depart.tourbus');
+});
+
+$('#go').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -231,7 +261,6 @@ $('#login').on('click', function() {
         }, function(err, details) {
             if (err) return console.log(err);
             if (auth.authenticated()) {
-                $('#login').addClass('hidden');
                 details = details.getElementsByTagName('user')[0];
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
@@ -266,6 +295,7 @@ function keeprights() {
 
 // used for skipping or after marking something as fixed
 function next() {
+    $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
     layerGroup.getLayers().forEach(function(layer) {
         layerGroup.removeLayer(layer);
@@ -274,6 +304,8 @@ function next() {
 }
 
 function markDone() {
+    Mousetrap.unbind(['enter', 'e']);
+
     $.ajax({
         crossDomain: true,
         url: url + 'fixed/' + qs('error'),
@@ -287,7 +319,6 @@ function markDone() {
 
 $('#skip').on('click', next);
 $('#edit').on('click', edit);
-$('#fixed').on('click', markDone);
 
 Mousetrap.bind(['right', 'j'], function() {
     $('#skip')
@@ -298,9 +329,15 @@ Mousetrap.bind(['right', 'j'], function() {
     }, 200);
 });
 
-Mousetrap.bind(['enter', 'e'], function() {
-    $('#edit').click();
-});
+function enableDone() {
+    setTimeout(function() {
+        $('#fixed').removeClass('disabled');
+        Mousetrap.bind(['enter', 'e'], function() {
+            $('#edit').click();
+        });
+        $('#fixed').on('click', markDone);
+    }, 5000);
+}
 
 var alt = false;
 Mousetrap.bind(['s'], function() {
@@ -309,8 +346,20 @@ Mousetrap.bind(['s'], function() {
     else $('.leaflet-control-layers-base input:eq(2)').click();
 });
 
+function controls(show) {
+    if (show) {
+        $('#hidden-controls').removeClass('hidden');
+    } else {
+        $('#hidden-controls')
+            .addClass('hidden')
+            .removeClass('clickthrough');
+    }
+}
+
 function load() {
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
+        $('#intro-modal').addClass('hidden');
+        controls(true);
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
@@ -328,8 +377,30 @@ function load() {
             tasks[qs('error') || DEFAULT].loader();
         });
     } else {
-        $('#login').removeClass('hidden');
+        pushLoop();
+        var player = setInterval(pushLoop, 5000);
+        $('#start-walkthrough')
+            .removeClass('hidden')
+            .on('click', function() {
+                clearInterval(player);
+            });
     }
+}
+
+function pushLoop() {
+    // remove anything that might already be on the loopGroup
+    loopGroup.getLayers().forEach(function(layer) {
+        loopGroup.removeLayer(layer);
+    });
+
+    var way = L.geoJson(randomPlay[PLAY].way).addTo(loopGroup);
+    var node = L.geoJson(randomPlay[PLAY].node).addTo(loopGroup);
+
+    map.fitBounds(way.getBounds());
+    node.setStyle(altStyle);
+    way.setStyle(featureStyle);
+
+    PLAY = (PLAY < randomPlay.length - 1) ? (PLAY + 1) : 0;
 }
 
 function nyc_overlaps() {
@@ -390,6 +461,7 @@ function unconnected() {
             });
         }
     });
+
     renderUI({
         title: tasks[qs('error')].title
     });
@@ -419,15 +491,17 @@ function edit() {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
             newWindow.location = url;
+            enableDone();
         },
         success: function() {
             newWindow.close();
+            enableDone();
         }
     });
 }
 
 function renderUI(data) {
-    $('.controls').removeClass('hidden');
+    $('#hidden-controls').removeClass('hidden');
     if (data.title) $('#title').html(data.title);
 
     if (data.name && data.name.length) {
@@ -455,7 +529,7 @@ function qs(name) {
     return querystring.parse(window.location.search.slice(1))[name];
 }
 
-},{"./bing.js":"/Users/aaron/to-fix-update/js/bing.js","leaflet-omnivore":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to-fix-update/node_modules/mousetrap/mousetrap.js","osm-auth":"/Users/aaron/to-fix-update/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix-update/node_modules/store/store.js"}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
+},{"./bing.js":"/Users/aaron/to_fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to_fix/node_modules/mousetrap/mousetrap.js","osm-auth":"/Users/aaron/to_fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to_fix/node_modules/store/store.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
 var xhr = require('corslite'),
     csv2geojson = require('csv2geojson'),
     wellknown = require('wellknown'),
@@ -676,7 +750,7 @@ function parseXML(str) {
     }
 }
 
-},{"corslite":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
+},{"corslite":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
 function corslite(url, callback, cors) {
     var sent = false;
 
@@ -771,7 +845,7 @@ function corslite(url, callback, cors) {
 
 if (typeof module !== 'undefined') module.exports = corslite;
 
-},{}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
 var dsv = require('dsv'),
     sexagesimal = require('sexagesimal');
 
@@ -958,12 +1032,12 @@ module.exports = {
     toPolygon: toPolygon
 };
 
-},{"dsv":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
+},{"dsv":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
 
 
 module.exports = new Function("dsv.version = \"0.0.3\";\n\ndsv.tsv = dsv(\"\\t\");\ndsv.csv = dsv(\",\");\n\nfunction dsv(delimiter) {\n  var dsv = {},\n      reFormat = new RegExp(\"[\\\"\" + delimiter + \"\\n]\"),\n      delimiterCode = delimiter.charCodeAt(0);\n\n  dsv.parse = function(text, f) {\n    var o;\n    return dsv.parseRows(text, function(row, i) {\n      if (o) return o(row, i - 1);\n      var a = new Function(\"d\", \"return {\" + row.map(function(name, i) {\n        return JSON.stringify(name) + \": d[\" + i + \"]\";\n      }).join(\",\") + \"}\");\n      o = f ? function(row, i) { return f(a(row), i); } : a;\n    });\n  };\n\n  dsv.parseRows = function(text, f) {\n    var EOL = {}, // sentinel value for end-of-line\n        EOF = {}, // sentinel value for end-of-file\n        rows = [], // output rows\n        N = text.length,\n        I = 0, // current character index\n        n = 0, // the current line number\n        t, // the current token\n        eol; // is the current token followed by EOL?\n\n    function token() {\n      if (I >= N) return EOF; // special case: end of file\n      if (eol) return eol = false, EOL; // special case: end of line\n\n      // special case: quotes\n      var j = I;\n      if (text.charCodeAt(j) === 34) {\n        var i = j;\n        while (i++ < N) {\n          if (text.charCodeAt(i) === 34) {\n            if (text.charCodeAt(i + 1) !== 34) break;\n            ++i;\n          }\n        }\n        I = i + 2;\n        var c = text.charCodeAt(i + 1);\n        if (c === 13) {\n          eol = true;\n          if (text.charCodeAt(i + 2) === 10) ++I;\n        } else if (c === 10) {\n          eol = true;\n        }\n        return text.substring(j + 1, i).replace(/\"\"/g, \"\\\"\");\n      }\n\n      // common case: find next delimiter or newline\n      while (I < N) {\n        var c = text.charCodeAt(I++), k = 1;\n        if (c === 10) eol = true; // \\n\n        else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \\r|\\r\\n\n        else if (c !== delimiterCode) continue;\n        return text.substring(j, I - k);\n      }\n\n      // special case: last token before EOF\n      return text.substring(j);\n    }\n\n    while ((t = token()) !== EOF) {\n      var a = [];\n      while (t !== EOL && t !== EOF) {\n        a.push(t);\n        t = token();\n      }\n      if (f && !(a = f(a, n++))) continue;\n      rows.push(a);\n    }\n\n    return rows;\n  };\n\n  dsv.format = function(rows) {\n    if (Array.isArray(rows[0])) return dsv.formatRows(rows); // deprecated; use formatRows\n    var fieldSet = {}, fields = [];\n\n    // Compute unique fields in order of discovery.\n    rows.forEach(function(row) {\n      for (var field in row) {\n        if (!(field in fieldSet)) {\n          fields.push(fieldSet[field] = field);\n        }\n      }\n    });\n\n    return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {\n      return fields.map(function(field) {\n        return formatValue(row[field]);\n      }).join(delimiter);\n    })).join(\"\\n\");\n  };\n\n  dsv.formatRows = function(rows) {\n    return rows.map(formatRow).join(\"\\n\");\n  };\n\n  function formatRow(row) {\n    return row.map(formatValue).join(delimiter);\n  }\n\n  function formatValue(text) {\n    return reFormat.test(text) ? \"\\\"\" + text.replace(/\\\"/g, \"\\\"\\\"\") + \"\\\"\" : text;\n  }\n\n  return dsv;\n}\n" + ";return dsv")();
 
-},{}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
 module.exports = function(x, dims) {
     if (!dims) dims = 'NSEW';
     if (typeof x !== 'string') return null;
@@ -977,7 +1051,7 @@ module.exports = function(x, dims) {
         ((m[4] && m[4] === 'S' || m[4] === 'W') ? -1 : 1);
 };
 
-},{}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
 (function (process){
 toGeoJSON = (function() {
     'use strict';
@@ -1216,7 +1290,7 @@ toGeoJSON = (function() {
 if (typeof module !== 'undefined') module.exports = toGeoJSON;
 
 }).call(this,require('_process'))
-},{"_process":"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
+},{"_process":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
 !function() {
   var topojson = {
     version: "1.6.8",
@@ -1750,7 +1824,7 @@ if (typeof module !== 'undefined') module.exports = toGeoJSON;
   else this.topojson = topojson;
 }();
 
-},{}],"/Users/aaron/to-fix-update/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
 module.exports = parse;
 module.exports.parse = parse;
 module.exports.stringify = stringify;
@@ -1999,7 +2073,7 @@ function stringify(gj) {
     }
 }
 
-},{}],"/Users/aaron/to-fix-update/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
 /**
  * Copyright 2012 Craig Campbell
  *
@@ -2800,7 +2874,7 @@ function stringify(gj) {
 module.exports = mousetrap;
 
 
-},{}],"/Users/aaron/to-fix-update/node_modules/osm-auth/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/osm-auth/index.js":[function(require,module,exports){
 'use strict';
 
 var ohauth = require('ohauth'),
@@ -3060,7 +3134,7 @@ module.exports = function(o) {
     return oauth;
 };
 
-},{"ohauth":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/ohauth/index.js","store":"/Users/aaron/to-fix-update/node_modules/store/store.js","xtend":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/ohauth/index.js":[function(require,module,exports){
+},{"ohauth":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/index.js","store":"/Users/aaron/to_fix/node_modules/store/store.js","xtend":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/index.js":[function(require,module,exports){
 'use strict';
 
 var hashes = require('jshashes'),
@@ -3199,7 +3273,7 @@ ohauth.headerGenerator = function(options) {
 
 module.exports = ohauth;
 
-},{"jshashes":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js","xtend":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js":[function(require,module,exports){
+},{"jshashes":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js","xtend":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js":[function(require,module,exports){
 (function (global){
 /**
  * jshashes - https://github.com/h2non/jshashes
@@ -4968,7 +5042,7 @@ module.exports = ohauth;
 }()); // IIFE
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/has-keys.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/has-keys.js":[function(require,module,exports){
 module.exports = hasKeys
 
 function hasKeys(source) {
@@ -4977,7 +5051,7 @@ function hasKeys(source) {
         typeof source === "function")
 }
 
-},{}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/index.js":[function(require,module,exports){
 var Keys = require("object-keys")
 var hasKeys = require("./has-keys")
 
@@ -5004,11 +5078,11 @@ function extend() {
     return target
 }
 
-},{"./has-keys":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/has-keys.js","object-keys":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js"}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js":[function(require,module,exports){
+},{"./has-keys":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/has-keys.js","object-keys":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js":[function(require,module,exports){
 module.exports = Object.keys || require('./shim');
 
 
-},{"./shim":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js"}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js":[function(require,module,exports){
+},{"./shim":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js":[function(require,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -5032,7 +5106,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js":[function(require,module,exports){
 
 /**!
  * is
@@ -5736,7 +5810,7 @@ is.string = function (value) {
 };
 
 
-},{}],"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js":[function(require,module,exports){
 (function () {
 	"use strict";
 
@@ -5782,7 +5856,7 @@ is.string = function (value) {
 }());
 
 
-},{"foreach":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js","is":"/Users/aaron/to-fix-update/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js"}],"/Users/aaron/to-fix-update/node_modules/store/store.js":[function(require,module,exports){
+},{"foreach":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js","is":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js"}],"/Users/aaron/to_fix/node_modules/store/store.js":[function(require,module,exports){
 ;(function(win){
 	var store = {},
 		doc = win.document,
@@ -5951,9 +6025,9 @@ is.string = function (value) {
 
 })(Function('return this')());
 
-},{}],"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
 
-},{}],"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -6018,7 +6092,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6104,7 +6178,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6191,10 +6265,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/aaron/to-fix-update/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/aaron/to-fix-update/js/index.js"]);
+},{"./decode":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/aaron/to_fix/js/index.js"]);

@@ -16,7 +16,8 @@ body {
 }
 .controls,
 #login,
-#name {
+#name,
+#walkthrough {
   position: absolute;
   background-color: rgba(0,0,0,0.75);
   z-index: 9001;
@@ -24,9 +25,11 @@ body {
 .controls:hover,
 #login:hover,
 #name:hover,
+#walkthrough:hover,
 .controls.active,
 #login.active,
-#name.active {
+#name.active,
+#walkthrough.active {
   background: #000;
   color: #fff;
   cursor: pointer;
@@ -68,13 +71,20 @@ body {
   border-left: 1px solid #000;
   right: 0;
 }
-#login {
+#login,
+#walkthrough {
   cursor: pointer;
   padding: 15px 20px;
   text-align: center;
   bottom: 10px;
   left: 10px;
   color: #fff;
+}
+.clickthrough {
+  pointer-events: none;
+}
+.leaflet-control-container {
+  display: none;
 }
 .leaflet-bar,
 #map .leaflet-control-layers {
@@ -94,4 +104,36 @@ body {
   line-height: 55px;
   font-size: 20px;
   left: 45%;
+}
+.disabled {
+  cursor: default !important;
+  opacity: 0.5;
+}
+.disabled:hover {
+  cursor: default !important;
+  opacity: 0.5;
+  background: rgba(0,0,0,0.75);
+}
+#intro-modal-content {
+  position: absolute;
+  top: 33%;
+  left: 0;
+  right: 0;
+}
+.tourbus-container,
+.tourbus-container a {
+  color: #000 !important;
+}
+.tourbus-leg-inner {
+  padding: 0;
+}
+.tourbus-leg-inner p {
+  padding: 20px 20px 0 20px;
+}
+.tourbus-next,
+.tourbus-stop {
+  border-top: 1px solid #ccc;
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
 }

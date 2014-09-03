@@ -1,6 +1,7 @@
 dark = #000
 trans = rgba(0, 0, 0, 0.75)
 glow = rgba(255, 255, 255, 0.5)
+disabled = rgba(0, 0, 0, 0.5)
 mid = #333
 bright = #fff
 
@@ -20,7 +21,7 @@ body
     width: 100%
     background: dark
 
-.controls, #login, #name
+.controls, #login, #name, #walkthrough
     position: absolute
     background-color: trans
     z-index: 9001
@@ -62,13 +63,19 @@ body
     border-left: 1px solid black
     right: 0
 
-#login
+#login, #walkthrough
     cursor: pointer
     padding: 15px 20px
     text-align: center
     bottom: 10px
     left: 10px
     color: bright
+
+.clickthrough
+    pointer-events: none
+
+.leaflet-control-container
+    display: none
 
 .leaflet-bar, #map .leaflet-control-layers
     border: 0px
@@ -86,3 +93,32 @@ body
     line-height: 55px
     font-size: 20px
     left: 45%
+
+.disabled
+    cursor: default !important
+    opacity: 0.5
+    &:hover
+        cursor: default !important
+        opacity: 0.5
+        background: trans
+
+#intro-modal-content
+    position: absolute
+    top: 33%
+    left: 0
+    right: 0
+
+.tourbus-container, .tourbus-container a
+    color: black !important
+
+.tourbus-leg-inner
+    padding: 0
+
+.tourbus-leg-inner p
+    padding: 20px 20px 0 20px
+
+.tourbus-next, .tourbus-stop
+    border-top: 1px solid #ccc
+    padding: 10px 20px
+    text-align: center
+    cursor: pointer

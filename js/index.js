@@ -11,6 +11,21 @@ var url = 'http://54.80.108.9:3001/';
 var baseLayer = store.get('baseLayer'),
     menuState = store.get('menuState');
 
+var PLAY = 0;
+var randomPlay = [{
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5605656,51.3243174],[-0.5606235,51.3242914],[-0.5607212,51.3242498],[-0.5608437,51.3241887],[-0.5609295,51.32414],[-0.5609951,51.3241058],[-0.5610768,51.3240632],[-0.5611601,51.3240219],[-0.5612531,51.3239709],[-0.5612718,51.32396],[-0.5614974,51.3238289],[-0.5615251,51.3238028],[-0.5615719,51.3237587]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall Lane"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5615719,51.3237587]},"type":"Feature","properties":{}}]}
+}, {
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[6.1773575,49.1255727],[6.1768639,49.1258967],[6.1766857,49.1260137],[6.1766721,49.1260365],[6.1766765,49.1260613],[6.1767016,49.1260829],[6.1767281,49.1260965],[6.1769134,49.1262067],[6.1769337,49.1262188]]},"type":"Feature","properties":{"highway":"pedestrian","name":"Square Paille-Maille","source":"cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2009"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[6.1769337,49.1262188]},"type":"Feature","properties":{}}]}
+}, {
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5608437,51.3241887],[-0.5608931,51.3242352],[-0.5609987,51.324321],[-0.5612412,51.3245343]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall End"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5612412,51.3245343]},"type":"Feature","properties":{}}]}
+}, {
+    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-2.1959028,51.2504598],[-2.1960627,51.2507108],[-2.1961876,51.2508979],[-2.1962628,51.2510072],[-2.1963248,51.2510954],[-2.1963602,51.2511509],[-2.1963853,51.2511974],[-2.196402,51.2512444],[-2.1964071,51.2512694],[-2.1964121,51.2512936],[-2.1964838,51.2515612]]},"type":"Feature","properties":{"highway":"residential","name":"School Lane","source":"Bing"}}]},
+    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-2.1964838,51.2515612]},"type":"Feature","properties":{}}]}
+}];
+
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
     oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
@@ -77,6 +92,7 @@ var map = L.mapbox.map('map', null, {
 }).setView([22.76, -25.84], 3);
 
 var layerGroup = L.layerGroup().addTo(map);
+var loopGroup = L.layerGroup().addTo(map);
 
 map.attributionControl.setPosition('topright');
 map.zoomControl.setPosition('topright');
@@ -84,16 +100,14 @@ map.zoomControl.setPosition('topright');
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
     'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
-        detectRetina: false
-    }),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
 };
 
 if (baseLayer && layers[baseLayer]) {
     layers[baseLayer].addTo(map);
 } else {
-    layers['Mapbox Streets'].addTo(map);
+    layers['Mapbox Satellite'].addTo(map);
 }
 
 L.control.layers(layers).addTo(map);
@@ -102,7 +116,23 @@ map.on('baselayerchange', function(e) {
     store.set('baseLayer', e.name);
 });
 
-$('#login').on('click', function() {
+var tour = $('.tourbus-legs').tourbus({
+    onDepart: function() {
+        renderMenu();
+        $('#intro-modal').addClass('hidden');
+        controls(true);
+    },
+    onStop: function() {
+        controls(false);
+        $('#intro-modal').removeClass('hidden');
+    }
+});
+
+$('#start-walkthrough').on('click', function() {
+    tour.trigger('depart.tourbus');
+});
+
+$('#go').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -110,7 +140,6 @@ $('#login').on('click', function() {
         }, function(err, details) {
             if (err) return console.log(err);
             if (auth.authenticated()) {
-                $('#login').addClass('hidden');
                 details = details.getElementsByTagName('user')[0];
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
@@ -145,6 +174,7 @@ function keeprights() {
 
 // used for skipping or after marking something as fixed
 function next() {
+    $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
     layerGroup.getLayers().forEach(function(layer) {
         layerGroup.removeLayer(layer);
@@ -153,6 +183,8 @@ function next() {
 }
 
 function markDone() {
+    Mousetrap.unbind(['enter', 'e']);
+
     $.ajax({
         crossDomain: true,
         url: url + 'fixed/' + qs('error'),
@@ -166,7 +198,6 @@ function markDone() {
 
 $('#skip').on('click', next);
 $('#edit').on('click', edit);
-$('#fixed').on('click', markDone);
 
 Mousetrap.bind(['right', 'j'], function() {
     $('#skip')
@@ -177,9 +208,15 @@ Mousetrap.bind(['right', 'j'], function() {
     }, 200);
 });
 
-Mousetrap.bind(['enter', 'e'], function() {
-    $('#edit').click();
-});
+function enableDone() {
+    setTimeout(function() {
+        $('#fixed').removeClass('disabled');
+        Mousetrap.bind(['enter', 'e'], function() {
+            $('#edit').click();
+        });
+        $('#fixed').on('click', markDone);
+    }, 5000);
+}
 
 var alt = false;
 Mousetrap.bind(['s'], function() {
@@ -188,8 +225,20 @@ Mousetrap.bind(['s'], function() {
     else $('.leaflet-control-layers-base input:eq(2)').click();
 });
 
+function controls(show) {
+    if (show) {
+        $('#hidden-controls').removeClass('hidden');
+    } else {
+        $('#hidden-controls')
+            .addClass('hidden')
+            .removeClass('clickthrough');
+    }
+}
+
 function load() {
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
+        $('#intro-modal').addClass('hidden');
+        controls(true);
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
@@ -207,8 +256,30 @@ function load() {
             tasks[qs('error') || DEFAULT].loader();
         });
     } else {
-        $('#login').removeClass('hidden');
+        pushLoop();
+        var player = setInterval(pushLoop, 5000);
+        $('#start-walkthrough')
+            .removeClass('hidden')
+            .on('click', function() {
+                clearInterval(player);
+            });
     }
+}
+
+function pushLoop() {
+    // remove anything that might already be on the loopGroup
+    loopGroup.getLayers().forEach(function(layer) {
+        loopGroup.removeLayer(layer);
+    });
+
+    var way = L.geoJson(randomPlay[PLAY].way).addTo(loopGroup);
+    var node = L.geoJson(randomPlay[PLAY].node).addTo(loopGroup);
+
+    map.fitBounds(way.getBounds());
+    node.setStyle(altStyle);
+    way.setStyle(featureStyle);
+
+    PLAY = (PLAY < randomPlay.length - 1) ? (PLAY + 1) : 0;
 }
 
 function nyc_overlaps() {
@@ -269,6 +340,7 @@ function unconnected() {
             });
         }
     });
+
     renderUI({
         title: tasks[qs('error')].title
     });
@@ -298,15 +370,17 @@ function edit() {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
             newWindow.location = url;
+            enableDone();
         },
         success: function() {
             newWindow.close();
+            enableDone();
         }
     });
 }
 
 function renderUI(data) {
-    $('.controls').removeClass('hidden');
+    $('#hidden-controls').removeClass('hidden');
     if (data.title) $('#title').html(data.title);
 
     if (data.name && data.name.length) {
