@@ -239,7 +239,6 @@ map.on('baselayerchange', function(e) {
 
 var tour = $('.tourbus-legs').tourbus({
     onDepart: function() {
-        console.log('depart');
         renderMenu();
         $('#intro-modal').hide();
         $('#hidden-controls')
@@ -255,7 +254,6 @@ var tour = $('.tourbus-legs').tourbus({
 });
 
 $('#start-walkthrough').on('click', function() {
-    console.log('start click');
     tour.trigger('depart.tourbus');
 });
 
