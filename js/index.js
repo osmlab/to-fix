@@ -256,12 +256,6 @@ function load() {
             tasks[qs('error') || DEFAULT].loader();
         });
     } else {
-
-        console.log('no load');
-        console.log('authenticated', auth.authenticate());
-        console.log('username', store.get('username'));
-        console.log('userid', store.get('userid'));
-
         pushLoop();
         var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
