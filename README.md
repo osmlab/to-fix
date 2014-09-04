@@ -1,6 +1,6 @@
 ##to-fix
 
-Gathering and serving up OSM QA data in an actionable way.
+Map tasking
 
 ### Installation
 - create your instance
