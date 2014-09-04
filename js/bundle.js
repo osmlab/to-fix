@@ -349,7 +349,9 @@ Mousetrap.bind(['s'], function() {
 function controls(show) {
     if (show) {
         $('#hidden-controls').removeClass('hidden');
+        $('.leaflet-control-container').removeClass('hidden');
     } else {
+        $('.leaflet-control-container').addClass('hidden');
         $('#hidden-controls')
             .addClass('hidden')
             .removeClass('clickthrough');
@@ -377,6 +379,7 @@ function load() {
             tasks[qs('error') || DEFAULT].loader();
         });
     } else {
+        // controls(false);
         pushLoop();
         var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
