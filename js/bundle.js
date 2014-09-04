@@ -379,12 +379,12 @@ function load() {
             tasks[qs('error') || DEFAULT].loader();
         });
     } else {
-        // controls(false);
         pushLoop();
         var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
+            $('#hidden-controls').addClass('clickthrough');
                 clearInterval(player);
             });
     }

@@ -263,6 +263,7 @@ function load() {
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
+            $('#hidden-controls').addClass('clickthrough');
                 clearInterval(player);
             });
     }
