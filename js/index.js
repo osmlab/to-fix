@@ -65,7 +65,10 @@ var tasks = {
         loader: tigerdelta },
     'northeast_highway_intersects_building': {
         title: 'Highway/building overlap',
-        loader: nyc_overlaps }
+        loader: nyc_overlaps },
+    'inconsistent': {
+        title: 'Inconsistent street names',
+        loader: inconsistent }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -308,6 +311,46 @@ function nyc_overlaps() {
 
     renderUI({
         title: tasks[qs('error')].title
+    });
+}
+
+function inconsistent() {
+
+    current._osm_object_type = 'way';
+    current._osm_object_id = current.incomplete_way_id;
+
+    // possible wrong name (altStyle)
+    $.ajax({
+        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
+        dataType: "xml",
+        success: function (xml) {
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
+            current.bounds = layer.getBounds();
+            map.fitBounds(current.bounds);
+
+            // context ways
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
+                dataType: "xml",
+                success: function (xml) {
+                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
+                }
+            });
+
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
+                dataType: "xml",
+                success: function (xml) {
+                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
+                }
+            });
+
+        }
+    });
+
+    renderUI({
+        title: tasks[qs('error')].title,
+        name: current.name || current.ref
     });
 }
 
