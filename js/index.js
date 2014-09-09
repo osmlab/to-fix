@@ -8,8 +8,8 @@ var querystring = require('querystring'),
 var url = 'http://23.23.52.196:3001/';
 // var url = 'http://localhost:3001/';
 
-var baseLayer = store.get('baseLayer'),
-    menuState = store.get('menuState');
+var baseLayer = store.get('baseLayer');
+var menuState = store.get('menuState');
 
 var PLAY = 0;
 var randomPlay = [{
@@ -360,10 +360,6 @@ function npsdiff() {
     layer.setStyle(featureStyle);
     current.bounds = layer.getBounds();
     map.fitBounds(current.bounds);
-
-    renderUI({
-        title: tasks[qs('error')].title
-    });
 }
 
 function tigerdelta() {
@@ -454,11 +450,13 @@ function renderMenu() {
     var $menu = $('#menu').html('');
     var err = qs('error');
     for (var item in tasks) {
-        $menu.append(
-            $('<a></a>')
-                .attr('href', '?' + querystring.encode({ error: item }))
-                .attr('class', item == err ? 'active' : '')
-                .text(tasks[item].title));
+        if (tasks[item].title) {
+            $menu.append(
+                $('<a></a>')
+                    .attr('href', '?' + querystring.encode({ error: item }))
+                    .attr('class', item == err ? 'active' : '')
+                    .text(tasks[item].title));
+        }
     }
 }
 
