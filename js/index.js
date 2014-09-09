@@ -68,7 +68,9 @@ var tasks = {
         loader: nyc_overlaps },
     'inconsistent': {
         title: 'Inconsistent street names',
-        loader: inconsistent }
+        loader: inconsistent },
+    'npsdiff': {
+        loader: npsdiff }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -315,7 +317,6 @@ function nyc_overlaps() {
 }
 
 function inconsistent() {
-
     current._osm_object_type = 'way';
     current._osm_object_id = current.incomplete_way_id;
 
@@ -351,6 +352,17 @@ function inconsistent() {
     renderUI({
         title: tasks[qs('error')].title,
         name: current.name || current.ref
+    });
+}
+
+function npsdiff() {
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
+    layer.setStyle(featureStyle);
+    current.bounds = layer.getBounds();
+    map.fitBounds(current.bounds);
+
+    renderUI({
+        title: tasks[qs('error')].title
     });
 }
 
