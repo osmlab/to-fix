@@ -436,6 +436,7 @@ function nyc_overlaps() {
 }
 
 function inconsistent() {
+
     current._osm_object_type = 'way';
     current._osm_object_id = current.incomplete_way_id;
 
@@ -469,7 +470,8 @@ function inconsistent() {
     });
 
     renderUI({
-        title: tasks[qs('error')].title
+        title: tasks[qs('error')].title,
+        name: current.name || current.ref
     });
 }
 
