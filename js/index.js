@@ -48,9 +48,9 @@ var tasks = {
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
-    // 'unconnected_major2': {
-    //     title: 'Unconnected major < 2m',
-    //     loader: unconnected },
+    'unconnected_major2': {
+        title: 'Unconnected major < 2m',
+        loader: unconnected },
     'unconnected_major5': {
         title: 'Unconnected major < 5m',
         loader: unconnected },
