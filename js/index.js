@@ -66,8 +66,11 @@ var tasks = {
     'northeast_highway_intersects_building': {
         title: 'Highway/building overlap',
         loader: nyc_overlaps },
-    'inconsistent': {
+    'inconsistent_name': {
         title: 'Inconsistent street names',
+        loader: inconsistent },
+    'inconsistent_ref': {
+        title: 'Inconsistent street refs',
         loader: inconsistent },
     'npsdiff': {
         loader: npsdiff }
@@ -352,7 +355,7 @@ function inconsistent() {
 
     renderUI({
         title: tasks[qs('error')].title,
-        name: current.name || current.ref
+        name: current.tag_suggestion
     });
 }
 
