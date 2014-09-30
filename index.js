@@ -50,7 +50,10 @@ router.addRoute('/fixed/:error', {
                 track(opts.params.error, body.user, 'fixed', body.state);
 
                 var location = './' + opts.params.error + '.ldb';
-                levelup(location, {createIfMissing: false}, function(err, db) {
+                levelup(location, {
+                    createIfMissing: false,
+                    max_open_files: 500
+                }, function(err, db) {
                     if (err) {
                         if (db && !db.isClosed()) db.close();
                         return console.log('/fixed error', err);
@@ -69,8 +72,12 @@ router.addRoute('/fixed/:error', {
 
 function getNextItem(error, res, callback) {
     var location = './' + error + '.ldb';
-    levelup(location, {createIfMissing: false}, function(err, db) {
-        if (err) {
+    levelup(location, {
+        createIfMissing: false,
+        max_open_files: 500
+    }, function(err, db) {
+        if (err !== null) {
+            // we still get empty errors, {}
             if (db && !db.isClosed()) db.close();
             console.log('Database error', err);
             return callback('Database error');
@@ -103,7 +110,9 @@ function track(error, user, action, value) {
     var key = +new Date() + ':' + user;
     value._action = action;
     value = JSON.stringify(value);
-    levelup(trackingDb, function(err, db) {
+    levelup(trackingDb, {
+        max_open_files: 500
+    }, function(err, db) {
         if (err) {
             if (db && !db.isClosed()) db.close();
             console.log('tracking error', err);
