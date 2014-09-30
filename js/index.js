@@ -67,7 +67,6 @@ var tasks = {
         title: 'Highway/building overlap',
         loader: nyc_overlaps },
     'inconsistent': {
-        title: 'Inconsistent street names',
         loader: inconsistent },
     'npsdiff': {
         loader: npsdiff }
