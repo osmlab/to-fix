@@ -9,6 +9,7 @@ Map tasking
 - `sudo apt-get install git make`
 - `git clone https://github.com/osmlab/to-fix.git && cd to-fix/`
 - `sudo make install`
+- `sudo make load`
 
 ### Frontend
 
