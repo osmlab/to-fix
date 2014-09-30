@@ -10,6 +10,7 @@ Map tasking
 - `git clone https://github.com/osmlab/to-fix.git && cd to-fix/`
 - `sudo make install`
 - `sudo make load`
+- `npm run serve`
 
 ### Frontend
 

@@ -25,6 +25,7 @@
   },
   "scripts": {
     "start": "serve & npm run watch & npm run watch-css",
+    "serve": "./node_modules/.bin/forever start index.js",
     "watch": "watchify js/index.js -o js/bundle.js",
     "watch-css": "stylus -w css/site.styl"
   },
