@@ -1,6 +1,6 @@
-##to-fix
+##to-fix - map tasking
 
-Map tasking
+![](example.png)
 
 ### Installation
 - create your instance
@@ -9,6 +9,8 @@ Map tasking
 - `sudo apt-get install git make`
 - `git clone https://github.com/osmlab/to-fix.git && cd to-fix/`
 - `sudo make install`
+- `sudo make load`
+- `npm run serve`
 
 ### Frontend
 

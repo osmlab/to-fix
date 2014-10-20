@@ -7,16 +7,17 @@
     "MD5": "^1.2.1",
     "async": "^0.9.0",
     "csv-parser": "^1.4.4",
+    "http-framework": "^1.2.0",
+    "leaflet-omnivore": "~0.2.0",
     "leveldown": "^0.10.2",
     "levelup": "^0.18.6",
+    "mousetrap": "0.0.1",
+    "osm-auth": "^0.2.6",
     "routes-router": "^3.1.0",
+    "serve": "^1.4.0",
     "store": "~1.3.16",
     "stylus": "~0.47.3",
-    "watchify": "~1.0.1",
-    "osm-auth": "^0.2.6",
-    "mousetrap": "0.0.1",
-    "http-framework": "^1.2.0",
-    "leaflet-omnivore": "~0.2.0"
+    "watchify": "~1.0.1"
   },
   "devDependencies": {
     "forever": "^0.11.1",
@@ -24,7 +25,8 @@
     "hintify": "~0.1.0"
   },
   "scripts": {
-    "start": "serve & npm run watch & npm run watch-css",
+    "start": "./node_modules/.bin/serve & npm run watch & npm run watch-css",
+    "serve": "./node_modules/.bin/forever start index.js",
     "watch": "watchify js/index.js -o js/bundle.js",
     "watch-css": "stylus -w css/site.styl"
   },

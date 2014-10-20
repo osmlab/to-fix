@@ -1,5 +1,5 @@
 // generates a -stats.csv file for a specified database
-// if no database is specified, it creates one for each *.ldb it finds
+// if no database is specified, it creates one for each *-tracking.ldb it finds
 
 var levelup = require('levelup'),
     leveldown = require('leveldown'),

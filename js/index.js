@@ -5,7 +5,7 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://23.23.52.196:3001/';
+var url = 'http://54.225.54.127:3001/';
 // var url = 'http://localhost:3001/';
 
 var baseLayer = store.get('baseLayer');
@@ -67,7 +67,6 @@ var tasks = {
         title: 'Highway/building overlap',
         loader: nyc_overlaps },
     'inconsistent': {
-        title: 'Inconsistent street names',
         loader: inconsistent },
     'npsdiff': {
         loader: npsdiff }
@@ -104,8 +103,9 @@ map.zoomControl.setPosition('topright');
 
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
-    'Mapbox Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
+    'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
     'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
+    'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0'),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
 };
 
