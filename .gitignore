@@ -4,3 +4,4 @@
 *.ldb*
 *.zip
 *.csv
+node_modules/*
