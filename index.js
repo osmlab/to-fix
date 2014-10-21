@@ -32,8 +32,12 @@ http.createServer(router).listen(port, function() {
 });
 
 router.addRoute('/error/:error', {
+<<<<<<< HEAD
     POST: function(req, res, opts) {
         console.log('--- POST /error');
+=======
+    POST: function(req, res, opts) {        
+>>>>>>> redirect-crash
         var body = '';
         req.on('data', function(data) {
             body += data;
@@ -54,9 +58,13 @@ router.addRoute('/error/:error', {
 });
 
 router.addRoute('/fixed/:error', {
+<<<<<<< HEAD
     POST: function(req, res, opts) {
         console.log('--- POST /fixed');
 
+=======
+    POST: function(req, res, opts) {        
+>>>>>>> redirect-crash
         var body = '';
         req.on('data', function(data) {
             body += data;
