@@ -6,7 +6,9 @@ var querystring = require('querystring'),
     Mousetrap = require('mousetrap');
 
 var url = 'http://54.225.54.127:3001/';
-// var url = 'http://localhost:3001/';
+if(location.host.match(/(127\.0\.0\.1|0\.0\.0\.0)/ig)!==null){
+    url = 'http://127.0.0.1:3001/';
+}
 
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
@@ -250,18 +252,20 @@ function load() {
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
         }
-        $.ajax({
-            crossDomain: true,
-            url: url + 'error/' + qs('error'),
-            type: 'post',
-            data: JSON.stringify({user: store.get('username')})
-        }).done(function(data) {
-            data = JSON.parse(data);
-            current = data.value;
-            current._id = data.key;
-            $('#map').removeClass('loading');
-            tasks[qs('error') || DEFAULT].loader();
-        });
+        else {
+            $.ajax({
+                crossDomain: true,
+                url: url + 'error/' + qs('error'),
+                type: 'post',
+                data: JSON.stringify({user: store.get('username')})
+            }).done(function(data) {
+                data = JSON.parse(data);
+                current = data.value;
+                current._id = data.key;
+                $('#map').removeClass('loading');
+                tasks[qs('error') || DEFAULT].loader();
+            });
+        }
     } else {
         pushLoop();
         var player = setInterval(pushLoop, 5000);
