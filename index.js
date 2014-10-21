@@ -33,6 +33,7 @@ http.createServer(router).listen(port, function() {
 
 router.addRoute('/error/:error', {
     POST: function(req, res, opts) {
+        console.log('--- POST /error');
         var body = '';
         req.on('data', function(data) {
             body += data;
@@ -54,6 +55,8 @@ router.addRoute('/error/:error', {
 
 router.addRoute('/fixed/:error', {
     POST: function(req, res, opts) {
+        console.log('--- POST /fixed');
+
         var body = '';
         req.on('data', function(data) {
             body += data;
@@ -75,27 +78,39 @@ router.addRoute('/fixed/:error', {
 });
 
 function getNextItem(error, res, callback) {
+
+    console.log('--- getNextItem()');
+
     var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
 
-    var db = level[error + '.ldb'];
-    db.createReadStream({limit: 1, lt: (+new Date())})
-        .on('data', function(data) {
-            db.del(data.key, function() {
-                db.put(newKey, data.value, function(err) {
-                    if (err) console.log('put', err);
-                    data.key = newKey;
-                    data.value = JSON.parse(data.value);
-                    return callback(null, data);
+    if((error===undefined)||(error==='undefined')){
+        return callback('db type cannot be undefined');
+    }
+    else {
+        var db = level[error + '.ldb'];        
+        db.createReadStream({limit: 1, lt: (+new Date())})
+            .on('data', function(data) {
+                db.del(data.key, function() {
+                    db.put(newKey, data.value, function(err) {
+                        if (err) console.log('put', err);
+                        data.key = newKey;
+                        data.value = JSON.parse(data.value);
+                        return callback(null, data);
+                    });
                 });
-            });
-        })
-        .on('error', function(err) {
-            console.log('CreateReadStream error', err);
-            return callback('Something wrong with the database');
-        });
+            })
+            .on('error', function(err) {
+                console.log('CreateReadStream error', err);
+                return callback('Something wrong with the database');
+            }); 
+    }
+    
 }
 
 function track(error, user, action, value) {
+    console.log('--- track()');
+
+
     // value must be an object
     var key = +new Date() + ':' + user;
     value._action = action;
@@ -108,6 +123,8 @@ function track(error, user, action, value) {
 }
 
 function error(res, code, errString) {
+    console.log('--- error()');
+
     res.writeHead(code, headers);
     return res.end(errString);
 }
