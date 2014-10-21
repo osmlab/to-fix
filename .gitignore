@@ -4,3 +4,5 @@
 *.ldb*
 *.zip
 *.csv
+node_modules/
+js/bundle.js
