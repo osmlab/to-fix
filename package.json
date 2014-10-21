@@ -27,6 +27,8 @@
   "scripts": {
     "start": "./node_modules/.bin/serve & npm run watch & npm run watch-css",
     "serve": "./node_modules/.bin/forever start index.js",
+    "serve-stop": "./node_modules/.bin/forever stop index.js",
+    "log":   "./node_modules/.bin/forever logs index.js",
     "watch": "watchify js/index.js -o js/bundle.js",
     "watch-css": "stylus -w css/site.styl"
   },

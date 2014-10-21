@@ -1,6 +1,6 @@
-unzip keepright-latest.zip
-unzip osmi-latest.zip
-unzip tigerdelta-latest.zip
+unzip -o keepright-latest.zip
+unzip -o osmi-latest.zip
+unzip -o tigerdelta-latest.zip
 
 ls keepright-tasks/*.csv | node import-csv.js
 ls osmi-tasks/*.csv | node import-csv.js
