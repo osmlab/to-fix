@@ -23,6 +23,9 @@ function loadTask(fileLoc) {
     db = levelup('./' + task + '.ldb'),
     count = 0;
 
+    var tracking = levelup('./' + task + '-tracking.ldb');
+    tracking.close();
+
     console.log('importing ' + task);
 
     fs.createReadStream(fileLoc)
