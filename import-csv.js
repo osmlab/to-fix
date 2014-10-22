@@ -1,7 +1,8 @@
 var fs = require('fs'),
     csv = require('csv-parser'),
     levelup = require('levelup'),
-    path = require('path');
+    path = require('path'),
+    md5 = require('MD5');
 
 if (process.stdin.isTTY) {
     if (process.argv[2] === undefined) {
@@ -20,10 +21,10 @@ if (process.stdin.isTTY) {
 
 function loadTask(fileLoc) {
     var task = path.basename(fileLoc).split('.')[0],
-    db = levelup('./' + task + '.ldb'),
+    db = levelup('./ldb/' + task + '.ldb'),
     count = 0;
 
-    var tracking = levelup('./' + task + '-tracking.ldb');
+    var tracking = levelup('./ldb/' + task + '-tracking.ldb');
     tracking.close();
 
     console.log('importing ' + task);
@@ -32,13 +33,15 @@ function loadTask(fileLoc) {
         .pipe(csv())
         .on('data', function(data) {
             // should batch these
-            db.put(count, JSON.stringify(data), function (err) {
+            db.put(count, JSON.stringify({id: md5(JSON.stringify(data)), task_data: data}), function (err) {
                 if (err) console.log('-- error --', err);
             });
             count++;
         })
         .on('end', function() {
             setTimeout(function() {
+                db.put(count, JSON.stringify({id: -1, task_data: null, ignore: true}));
+
                 db.close();
                 console.log('done with ' + task + '. ' + count + ' items imported');
             }, 5000);

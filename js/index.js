@@ -76,6 +76,8 @@ var tasks = {
 
 var DEFAULT = 'deadendoneway';
 
+var ERROR_MESSAGE_TIMEOUT = 5000;
+
 var featureStyle = {
     color: '#FF00B7',
     opacity: 1,
@@ -189,6 +191,20 @@ function next() {
     load();
 }
 
+function showErrorMessage(jqXHR, textStatus, errorThrown) {
+    var errorMessage = jqXHR.responseText;
+    if(textStatus==='timeout') {
+        errorMessage = 'Request timed out.';
+    }
+    $('#error-message span').text(errorMessage).show();
+    $('#error-message').slideDown();
+    setTimeout(function() { 
+        $('#error-message span').fadeOut(function(){
+            $('#error-message').slideUp();     
+        });        
+    }, ERROR_MESSAGE_TIMEOUT );
+}
+
 function markDone() {
     Mousetrap.unbind(['enter', 'e']);
 
@@ -200,7 +216,9 @@ function markDone() {
             user: store.get('username'),
             state: current
         })
-    }).done(next);
+    })
+    .error(showErrorMessage)
+    .done(next);
 }
 
 $('#skip').on('click', next);
@@ -244,7 +262,7 @@ function controls(show) {
     }
 }
 
-function load() {
+function load() {    
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
         $('#intro-modal').addClass('hidden');
         controls(true);
@@ -258,12 +276,23 @@ function load() {
                 url: url + 'error/' + qs('error'),
                 type: 'post',
                 data: JSON.stringify({user: store.get('username')})
-            }).done(function(data) {
+            })
+            .error(showErrorMessage)
+            .done(function(data) {
                 data = JSON.parse(data);
-                current = data.value;
-                current._id = data.key;
-                $('#map').removeClass('loading');
-                tasks[qs('error') || DEFAULT].loader();
+                current = data.value.task_data;
+                
+                // check to be sure we've been served a valid task
+                if (current!==null) {
+                    current._md5 = data.value.id;
+                    current._id = data.key;
+                    $('#map').removeClass('loading');
+                    tasks[qs('error') || DEFAULT].loader();
+                }                
+                else {
+                    $('#map').removeClass('loading');
+                    showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
+                }
             });
         }
     } else {
