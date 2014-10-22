@@ -6,3 +6,5 @@
 *.csv
 node_modules/
 js/bundle.js
+css/site.css
+.lev_history
