@@ -5,7 +5,7 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.225.54.127:3001/';
+var url = 'http://54.161.233.163:3001/';
 // var url = 'http://localhost:3001/';
 
 var baseLayer = store.get('baseLayer');
