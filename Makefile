@@ -9,10 +9,12 @@ northeast_highway_intersects_building.csv:
 
 install:
 	sh install.sh
-load: northeast_highway_intersects_building.csv tigerdelta-latest.zip osmi-latest.zip keepright-latest.zip
+load: clean-ldb northeast_highway_intersects_building.csv tigerdelta-latest.zip osmi-latest.zip keepright-latest.zip	
 	sh load.sh
 stats:
 	sh getStats.sh
-clean:
-	rm northeast_highway_intersects_building.csv tigerdelta-latest.zip osmi-latest.zip keepright-latest.zip
-	rm -rf *.ldb
+clean-ldb:
+	rm -rf ldb
+	mkdir ldb
+clean: clean-ldb
+	rm northeast_highway_intersects_building.csv tigerdelta-latest.zip osmi-latest.zip keepright-latest.zip	
