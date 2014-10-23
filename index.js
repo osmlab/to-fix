@@ -11,21 +11,6 @@ function debug(x){
     process.stderr.write(x + "\n");
 }
 
-var databaseDirectories = fs.readdirSync('./ldb/').filter(function(item) {
-   return item.indexOf('.ldb') > -1;
-});
-databaseDirectories.forEach(function(ldb) {    
-    debug("-- Loading db " + ldb);
-    levelup('./ldb/' + ldb, {
-        createIfMissing: false,
-        max_open_files: 500
-    }, function(err, db) {
-        if(err) {
-            debug('ERROR: ' + err);
-        }
-        level[ldb] = db;
-    });
-});
 
 var router = Route();
 var headers = {
@@ -37,12 +22,30 @@ var headers = {
 var port = 3001;
 var lockperiod = 10*60;
 
-if (process.argv[2]==='--fixed') {
-    fixed = {}; 
+var databaseDirectories = fs.readdirSync('./ldb/').filter(function(item) {
+   return item.indexOf('.ldb') > -1;
+});
+var loaded_db_count = 0;
+databaseDirectories.forEach(function(ldb) {    
+    debug("-- Loading db " + ldb);
+    levelup('./ldb/' + ldb, {
+        createIfMissing: false,
+        max_open_files: 500
+    }, function(err, db) {
+        if(err) {
+            debug('ERROR: ' + err);
+        }
+        level[ldb] = db;
+        loaded_db_count++;
 
-    // wait a second for all the levelDBs to finish loading
-    // someday I will understand the right way to do this. but not today.
-    setTimeout(function() {
+        if(loaded_db_count >= databaseDirectories.length) RunPostInit();
+    });
+});
+
+function RunPostInit(){
+    if (process.argv[2]==='--fixed') {
+        fixed = {}; 
+
         var num_fixed = 0;
         Object.keys(level).forEach(function(db){
             fixed[db] = [];
@@ -57,15 +60,15 @@ if (process.argv[2]==='--fixed') {
                         process.stdout.write(JSON.stringify(fixed));
                     }
                 });               
-        });
-        
-    }, 500);
+        });      
+    }
+    else {
+        http.createServer(router).listen(port, function() {
+            debug('running on port ' + port);
+        });    
+    }
 }
-else {
-    http.createServer(router).listen(port, function() {
-        debug('running on port ' + port);
-    });    
-}
+
 
 
 router.addRoute('/error/:error', {
