@@ -170,8 +170,8 @@ function keeprights() {
         dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            current._bounds = layer.getBounds();
+            map.fitBounds(current._bounds);
             omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
         }
     });
@@ -214,7 +214,7 @@ function markDone() {
         type: 'post',
         data: JSON.stringify({
             user: store.get('username'),
-            state: current
+            state: current,
         })
     })
     .error(showErrorMessage)
@@ -280,11 +280,11 @@ function load() {
             .error(showErrorMessage)
             .done(function(data) {
                 data = JSON.parse(data);
-                current = data.value.task_data;
+                current = data.value;
                 
                 // check to be sure we've been served a valid task
-                if (current!==null) {
-                    current._md5 = data.value.id;
+                if (!current.ignore) {
+                    current = data.value;
                     current._id = data.key;
                     $('#map').removeClass('loading');
                     tasks[qs('error') || DEFAULT].loader();
@@ -337,8 +337,8 @@ function nyc_overlaps() {
                 dataType: "xml",
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                    current.bounds = layer.getBounds();
-                    map.fitBounds(current.bounds);
+                    current._bounds = layer.getBounds();
+                    map.fitBounds(current._bounds);
                 }
             });
         }
@@ -359,8 +359,8 @@ function inconsistent() {
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            current._bounds = layer.getBounds();
+            map.fitBounds(current._bounds);
 
             // context ways
             $.ajax({
@@ -391,15 +391,15 @@ function inconsistent() {
 function npsdiff() {
     var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
-    current.bounds = layer.getBounds();
-    map.fitBounds(current.bounds);
+    current._bounds = layer.getBounds();
+    map.fitBounds(current._bounds);
 }
 
 function tigerdelta() {
     var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
-    current.bounds = layer.getBounds();
-    map.fitBounds(current.bounds);
+    current._bounds = layer.getBounds();
+    map.fitBounds(current._bounds);
 
     renderUI({
         title: tasks[qs('error')].title,
@@ -416,8 +416,8 @@ function unconnected() {
         dataType: "xml",
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            current._bounds = layer.getBounds();
+            map.fitBounds(current._bounds);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
                 dataType: "xml",
@@ -434,10 +434,10 @@ function unconnected() {
 }
 
 function edit() {
-    var bottom = current.bounds._southWest.lat - 0.0005;
-    var left = current.bounds._southWest.lng - 0.0005;
-    var top = current.bounds._northEast.lat + 0.0005;
-    var right = current.bounds._northEast.lng + 0.0005;
+    var bottom = current._bounds._southWest.lat - 0.0005;
+    var left = current._bounds._southWest.lng - 0.0005;
+    var top = current._bounds._northEast.lat + 0.0005;
+    var right = current._bounds._northEast.lng + 0.0005;
 
     var newWindow = window.open('');
 
