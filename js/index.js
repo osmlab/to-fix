@@ -211,7 +211,7 @@ function markDone() {
         type: 'post',
         data: JSON.stringify({
             user: store.get('username'),
-            state: current,
+            state: current
         })
     })
     .error(showErrorMessage)
