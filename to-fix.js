@@ -30,17 +30,17 @@ function decomposeID(id){
     return {
         skipval: parseInt(id.slice(0, SKIPVAL_CHARS), 16),
         hash: id.slice(SKIPVAL_CHARS, SKIPVAL_CHARS + HASH_CHARS)
-    }
+    };
 }
 
 // here purely to ensure that a single hash function is used throughout
 function hashObject(obj){
     return md5(JSON.stringify(obj));
-};
+}
 
 module.exports = {
     composeID: composeID,
     decomposeID: decomposeID,
     hashObject: hashObject,
     TASK_RANGE_LOWER_BOUND: TASK_RANGE_LOWER_BOUND
-}
+};

@@ -8,9 +8,8 @@ var http = require('http'),
 var level = {};
 
 function debug(x){
-    process.stderr.write(x + "\n");
+    process.stderr.write(x + '\n');
 }
-
 
 var router = Route();
 var headers = {
@@ -25,25 +24,25 @@ var lockperiod = 10*60;
 var databaseDirectories = fs.readdirSync('./ldb/').filter(function(item) {
    return item.indexOf('.ldb') > -1;
 });
+
 var loaded_db_count = 0;
-databaseDirectories.forEach(function(ldb) {    
-    debug("-- Loading db " + ldb);
+databaseDirectories.forEach(function(ldb) {
+    debug('-- Loading db ' + ldb);
     levelup('./ldb/' + ldb, {
         createIfMissing: false,
         max_open_files: 500
     }, function(err, db) {
-        if(err) {
-            debug('ERROR: ' + err);
-        }
+        if (err) debug('ERROR: ' + err);
+
         level[ldb] = db;
         loaded_db_count++;
 
-        if(loaded_db_count >= databaseDirectories.length) RunPostInit();
+        if (loaded_db_count >= databaseDirectories.length) RunPostInit();
     });
 });
 
 function RunPostInit(){
-    if (process.argv[2]==='--fixed') {
+    if (process.argv[2] === '--fixed') {
         fixed = {}; 
 
         var num_fixed = 0;
@@ -52,40 +51,37 @@ function RunPostInit(){
 
             level[db].createReadStream({ lt: tofix.TASK_RANGE_LOWER_BOUND})
                 .on('data', function(data) {
-                    fixed[db].push(tofix.decomposeID(data.key).hash)
+                    fixed[db].push(tofix.decomposeID(data.key).hash);
                 })
                 .on('end', function(err) {
                     num_fixed++;
                     if(num_fixed===Object.keys(level).length) {
                         process.stdout.write(JSON.stringify(fixed));
                     }
-                });               
-        });      
-    }
-    else {
+                });
+        });
+    } else {
         http.createServer(router).listen(port, function() {
             debug('running on port ' + port);
-        });    
+        });
     }
 }
 
-
-
 router.addRoute('/error/:error', {
-    POST: function(req, res, opts) {      
+    POST: function(req, res, opts) {
         var body = '';
         req.on('data', function(data) {
             body += data;
         });
-        req.on('end', function() {            
+        req.on('end', function() {
             body = JSON.parse(body);
             getNextItem(opts.params.error, res, function(err, kv) {
                 if (err) {
                     debug('/error route', err);
                     return error(res, 500, err);
-                }                
+                }
                 track(opts.params.error, body.user, 'got', {_id: kv.key});
-                res.writeHead(200, headers);                
+                res.writeHead(200, headers);
                 return res.end(JSON.stringify(kv));
             });
         });
@@ -93,7 +89,7 @@ router.addRoute('/error/:error', {
 });
 
 router.addRoute('/fixed/:error', {
-    POST: function(req, res, opts) {        
+    POST: function(req, res, opts) {
         var body = '';
         req.on('data', function(data) {
             body += data;
@@ -133,8 +129,6 @@ router.addRoute('/fixed/:error', {
                     return res.end('');
 
                 });
-
-                
             }
         });
     }
@@ -143,23 +137,19 @@ router.addRoute('/fixed/:error', {
 function getNextItem(error, res, callback) {
     var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
 
-    if((error===undefined)||(error==='undefined')){
+    if (error === (undefined || 'undefined')) {
         return callback('db type cannot be undefined');
-    }
-    else {            
+    } else {            
         var db = level[error + '.ldb'];
-        if(!db){
-            return callback('Database \'' + error + '\' not loaded');
-        }
+        if (!db)return callback('Database \'' + error + '\' not loaded');
         else {
             db.createReadStream({limit: 1, gt: tofix.TASK_RANGE_LOWER_BOUND})
                 .on('data', function(data) {
                     var task_data = JSON.parse(data.value);                    
                     if (task_data.ignore) {
                         debug('Empty task database for error ' + error);
-                        return callback('No valid tasks available for this error type.')
-                    }
-                    else {
+                        return callback('No valid tasks available for this error type.');
+                    } else {
                         db.del(data.key, function() {
                             var oldID = tofix.decomposeID(data.key);
                             var newID = tofix.composeID((oldID.skipval + 1), oldID.hash);
@@ -176,10 +166,9 @@ function getNextItem(error, res, callback) {
                 .on('error', function(err) {
                     debug('CreateReadStream error', err);
                     return callback('Something wrong with the database for error type \'' + err + '\'');
-                }); 
+                });
         }
     }
-    
 }
 
 function track(error, user, action, value) {
@@ -190,13 +179,13 @@ function track(error, user, action, value) {
     value = JSON.stringify(value);
 
     var db = level[error + '-tracking.ldb'];
-    if(!db) {
-        debug('could not track: database does not exist for', error);
-    }
-    else {
+
+    if (db) {
         db.put(key, value, function(err) {
             if (err) debug('put', err);
-        });        
+        });
+    } else {
+        debug('could not track: database does not exist for', error);
     }
 }
 
