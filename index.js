@@ -21,27 +21,24 @@ var headers = {
 var port = 3001;
 var lockperiod = 10*60;
 
-var databaseDirectories = fs.readdirSync('./ldb/').filter(function(item) {
+var dbs = fs.readdirSync('./ldb/').filter(function(item) {
    return item.indexOf('.ldb') > -1;
 });
 
-var loaded_db_count = 0;
-databaseDirectories.forEach(function(ldb) {
+dbs.forEach(function(ldb, idx) {
     debug('-- Loading db ' + ldb);
     levelup('./ldb/' + ldb, {
         createIfMissing: false,
         max_open_files: 500
     }, function(err, db) {
         if (err) debug('ERROR: ' + err);
-
         level[ldb] = db;
         loaded_db_count++;
-
-        if (loaded_db_count >= databaseDirectories.length) RunPostInit();
+        if (idx >= dbs.length-1) runPostInit();
     });
 });
 
-function RunPostInit(){
+function runPostInit(){
     if (process.argv[2] === '--fixed') {
         fixed = {}; 
 
@@ -55,7 +52,7 @@ function RunPostInit(){
                 })
                 .on('end', function(err) {
                     num_fixed++;
-                    if(num_fixed===Object.keys(level).length) {
+                    if (num_fixed === Object.keys(level).length) {
                         process.stdout.write(JSON.stringify(fixed));
                     }
                 });
@@ -101,13 +98,13 @@ router.addRoute('/fixed/:error', {
 
                 // check that submitted error type exists
                 var db = level[opts.params.error + '.ldb'];
-                if(!db) return error(res, 500, opts.params.error + ' is not a valid error type');
+                if (!db) return error(res, 500, opts.params.error + ' is not a valid error type');
 
                 // retrieve the record's current state -- we can't trust the submitted state
                 // not to have been modified by the clientside JS
                 db.get(body.state._id, function(err, value) {
                     
-                    if(err) {
+                    if (err) {
                         debug('error fetching key value', body.state._id);
                         return error(rs, 500, 'error fetching key value ' + body.state._id);  
                     } 

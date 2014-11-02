@@ -27,7 +27,7 @@ function loadTask(fileLoc, fixedLoc) {
 
     // load list of IDs that are already fixed
     var fixed_list = [];
-    if(fixedLoc !== undefined) {
+    if (fixedLoc !== undefined) {
         if (fixedLoc[0] !== '/') fixedLoc = './' + fixedLoc;
         fixed_list = require(fixedLoc);
         fixed_list = fixed_list[task + '.ldb'] ? fixed_list[task + '.ldb'] : [];
@@ -54,7 +54,7 @@ function loadTask(fileLoc, fixedLoc) {
             setTimeout(function() {                
                 // insert a dummy object in unfixed keyspace if nothing has been inserted
                 // prevents blocking on levelup readstream creation against an empty db
-                if(count==0) {
+                if (count == 0) {
                     var keyval = tofix.composeID(1, tofix.decomposeID(tofix.TASK_RANGE_LOWER_BOUND).hash);
                     db.put(keyval, JSON.stringify({ignore: true}));
                 }

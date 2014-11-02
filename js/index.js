@@ -6,7 +6,7 @@ var querystring = require('querystring'),
     Mousetrap = require('mousetrap');
 
 var url = 'http://54.225.54.127:3001/';
-if(location.host.match(/(127\.0\.0\.1|0\.0\.0\.0)/ig)!==null){
+if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
     url = 'http://127.0.0.1:3001/';
 }
 
@@ -75,7 +75,6 @@ var tasks = {
 };
 
 var DEFAULT = 'deadendoneway';
-
 var ERROR_MESSAGE_TIMEOUT = 5000;
 
 var featureStyle = {
@@ -193,16 +192,14 @@ function next() {
 
 function showErrorMessage(jqXHR, textStatus, errorThrown) {
     var errorMessage = jqXHR.responseText;
-    if(textStatus==='timeout') {
-        errorMessage = 'Request timed out.';
-    }
+    if (textStatus === 'timeout') errorMessage = 'Request timed out.';
     $('#error-message span').text(errorMessage).show();
     $('#error-message').slideDown();
     setTimeout(function() { 
         $('#error-message span').fadeOut(function(){
-            $('#error-message').slideUp();     
-        });        
-    }, ERROR_MESSAGE_TIMEOUT );
+            $('#error-message').slideUp();
+        });
+    }, ERROR_MESSAGE_TIMEOUT);
 }
 
 function markDone() {
@@ -262,15 +259,14 @@ function controls(show) {
     }
 }
 
-function load() {    
+function load() {
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
         $('#intro-modal').addClass('hidden');
         controls(true);
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
-        }
-        else {
+        } else {
             $.ajax({
                 crossDomain: true,
                 url: url + 'error/' + qs('error'),
@@ -288,8 +284,7 @@ function load() {
                     current._id = data.key;
                     $('#map').removeClass('loading');
                     tasks[qs('error') || DEFAULT].loader();
-                }                
-                else {
+                } else {
                     $('#map').removeClass('loading');
                     showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
                 }
@@ -301,7 +296,7 @@ function load() {
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
-            $('#hidden-controls').addClass('clickthrough');
+                $('#hidden-controls').addClass('clickthrough');
                 clearInterval(player);
             });
     }
@@ -329,12 +324,12 @@ function nyc_overlaps() {
 
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
-        dataType: "xml",
+        dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
                     current._bounds = layer.getBounds();
@@ -356,7 +351,7 @@ function inconsistent() {
     // possible wrong name (altStyle)
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
-        dataType: "xml",
+        dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current._bounds = layer.getBounds();
@@ -365,7 +360,7 @@ function inconsistent() {
             // context ways
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
                 }
@@ -373,7 +368,7 @@ function inconsistent() {
 
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
                 }
@@ -413,14 +408,14 @@ function unconnected() {
 
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: "xml",
+        dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
             current._bounds = layer.getBounds();
             map.fitBounds(current._bounds);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
                 }
