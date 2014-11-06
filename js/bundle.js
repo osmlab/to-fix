@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/aaron/to_fix/js/bing.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/aaron/to-fix/js/bing.js":[function(require,module,exports){
 module.exports = L.TileLayer.extend({
     options: {
         subdomains: [0, 1, 2, 3],
@@ -118,7 +118,7 @@ module.exports = L.TileLayer.extend({
     }
 });
 
-},{}],"/Users/aaron/to_fix/js/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/js/index.js":[function(require,module,exports){
 var querystring = require('querystring'),
     omnivore = require('leaflet-omnivore'),
     BingLayer = require('./bing.js'),
@@ -126,10 +126,15 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
+<<<<<<< HEAD
 var url = 'http://54.225.54.127:3001/';
 if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
     url = 'http://127.0.0.1:3001/';
 }
+=======
+var url = 'http://54.80.49.136:3001/';
+// var url = 'http://localhost:3001/';
+>>>>>>> gh-pages
 
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
@@ -168,6 +173,24 @@ var tasks = {
     'nonclosedways': {
         title: 'Broken polygons',
         loader: keeprights },
+    'loopings': {
+        title: 'Loopings',
+        loader: keeprights },
+    'strangelayer': {
+        title: 'Strange layer',
+        loader: keeprights },
+    'highwayhighway': {
+        title: 'Highway intersects highway',
+        loader: keeprights },
+    'highwayfootpath': {
+        title: 'Highway intersects footpath',
+        loader: keeprights },
+    'highwayriverbank': {
+        title: 'Highway intersects water',
+        loader: keeprights },
+    'mispelledtags': {
+        title: 'Mispelled tags',
+        loader: keeprights },
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
@@ -186,13 +209,16 @@ var tasks = {
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
         loader: tigerdelta },
-    'northeast_highway_intersects_building': {
-        title: 'Highway/building overlap',
-        loader: nyc_overlaps },
+    // 'northeast_highway_intersects_building': {
+    //     title: 'Highway/building overlap',
+    //     loader: nyc_overlaps },
     'inconsistent': {
         loader: inconsistent },
     'npsdiff': {
-        loader: npsdiff }
+        loader: npsdiff },
+    'duplicate_ways': {
+        title: 'Duplicate Ways',
+        loader: osmi_geom }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -549,6 +575,17 @@ function unconnected() {
     });
 }
 
+function osmi_geom() {
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
+    layer.setStyle(featureStyle);
+    current.bounds = layer.getBounds();
+    map.fitBounds(current.bounds);
+
+    renderUI({
+        title: tasks[qs('error')].title
+    });
+}
+
 function edit() {
     var bottom = current._bounds._southWest.lat - 0.0005;
     var left = current._bounds._southWest.lng - 0.0005;
@@ -613,7 +650,7 @@ function qs(name) {
     return querystring.parse(window.location.search.slice(1))[name];
 }
 
-},{"./bing.js":"/Users/aaron/to_fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to_fix/node_modules/mousetrap/mousetrap.js","osm-auth":"/Users/aaron/to_fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to_fix/node_modules/store/store.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
+},{"./bing.js":"/Users/aaron/to-fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to-fix/node_modules/mousetrap/mousetrap.js","osm-auth":"/Users/aaron/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js"}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
 var xhr = require('corslite'),
     csv2geojson = require('csv2geojson'),
     wellknown = require('wellknown'),
@@ -834,7 +871,7 @@ function parseXML(str) {
     }
 }
 
-},{"corslite":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
+},{"corslite":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
 function corslite(url, callback, cors) {
     var sent = false;
 
@@ -929,7 +966,7 @@ function corslite(url, callback, cors) {
 
 if (typeof module !== 'undefined') module.exports = corslite;
 
-},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
 var dsv = require('dsv'),
     sexagesimal = require('sexagesimal');
 
@@ -1116,12 +1153,12 @@ module.exports = {
     toPolygon: toPolygon
 };
 
-},{"dsv":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
+},{"dsv":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
 
 
 module.exports = new Function("dsv.version = \"0.0.3\";\n\ndsv.tsv = dsv(\"\\t\");\ndsv.csv = dsv(\",\");\n\nfunction dsv(delimiter) {\n  var dsv = {},\n      reFormat = new RegExp(\"[\\\"\" + delimiter + \"\\n]\"),\n      delimiterCode = delimiter.charCodeAt(0);\n\n  dsv.parse = function(text, f) {\n    var o;\n    return dsv.parseRows(text, function(row, i) {\n      if (o) return o(row, i - 1);\n      var a = new Function(\"d\", \"return {\" + row.map(function(name, i) {\n        return JSON.stringify(name) + \": d[\" + i + \"]\";\n      }).join(\",\") + \"}\");\n      o = f ? function(row, i) { return f(a(row), i); } : a;\n    });\n  };\n\n  dsv.parseRows = function(text, f) {\n    var EOL = {}, // sentinel value for end-of-line\n        EOF = {}, // sentinel value for end-of-file\n        rows = [], // output rows\n        N = text.length,\n        I = 0, // current character index\n        n = 0, // the current line number\n        t, // the current token\n        eol; // is the current token followed by EOL?\n\n    function token() {\n      if (I >= N) return EOF; // special case: end of file\n      if (eol) return eol = false, EOL; // special case: end of line\n\n      // special case: quotes\n      var j = I;\n      if (text.charCodeAt(j) === 34) {\n        var i = j;\n        while (i++ < N) {\n          if (text.charCodeAt(i) === 34) {\n            if (text.charCodeAt(i + 1) !== 34) break;\n            ++i;\n          }\n        }\n        I = i + 2;\n        var c = text.charCodeAt(i + 1);\n        if (c === 13) {\n          eol = true;\n          if (text.charCodeAt(i + 2) === 10) ++I;\n        } else if (c === 10) {\n          eol = true;\n        }\n        return text.substring(j + 1, i).replace(/\"\"/g, \"\\\"\");\n      }\n\n      // common case: find next delimiter or newline\n      while (I < N) {\n        var c = text.charCodeAt(I++), k = 1;\n        if (c === 10) eol = true; // \\n\n        else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \\r|\\r\\n\n        else if (c !== delimiterCode) continue;\n        return text.substring(j, I - k);\n      }\n\n      // special case: last token before EOF\n      return text.substring(j);\n    }\n\n    while ((t = token()) !== EOF) {\n      var a = [];\n      while (t !== EOL && t !== EOF) {\n        a.push(t);\n        t = token();\n      }\n      if (f && !(a = f(a, n++))) continue;\n      rows.push(a);\n    }\n\n    return rows;\n  };\n\n  dsv.format = function(rows) {\n    if (Array.isArray(rows[0])) return dsv.formatRows(rows); // deprecated; use formatRows\n    var fieldSet = {}, fields = [];\n\n    // Compute unique fields in order of discovery.\n    rows.forEach(function(row) {\n      for (var field in row) {\n        if (!(field in fieldSet)) {\n          fields.push(fieldSet[field] = field);\n        }\n      }\n    });\n\n    return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {\n      return fields.map(function(field) {\n        return formatValue(row[field]);\n      }).join(delimiter);\n    })).join(\"\\n\");\n  };\n\n  dsv.formatRows = function(rows) {\n    return rows.map(formatRow).join(\"\\n\");\n  };\n\n  function formatRow(row) {\n    return row.map(formatValue).join(delimiter);\n  }\n\n  function formatValue(text) {\n    return reFormat.test(text) ? \"\\\"\" + text.replace(/\\\"/g, \"\\\"\\\"\") + \"\\\"\" : text;\n  }\n\n  return dsv;\n}\n" + ";return dsv")();
 
-},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
 module.exports = function(x, dims) {
     if (!dims) dims = 'NSEW';
     if (typeof x !== 'string') return null;
@@ -1135,7 +1172,7 @@ module.exports = function(x, dims) {
         ((m[4] && m[4] === 'S' || m[4] === 'W') ? -1 : 1);
 };
 
-},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
 (function (process){
 toGeoJSON = (function() {
     'use strict';
@@ -1374,7 +1411,7 @@ toGeoJSON = (function() {
 if (typeof module !== 'undefined') module.exports = toGeoJSON;
 
 }).call(this,require('_process'))
-},{"_process":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
+},{"_process":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
 !function() {
   var topojson = {
     version: "1.6.8",
@@ -1908,7 +1945,7 @@ if (typeof module !== 'undefined') module.exports = toGeoJSON;
   else this.topojson = topojson;
 }();
 
-},{}],"/Users/aaron/to_fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
 module.exports = parse;
 module.exports.parse = parse;
 module.exports.stringify = stringify;
@@ -2157,7 +2194,7 @@ function stringify(gj) {
     }
 }
 
-},{}],"/Users/aaron/to_fix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
 /**
  * Copyright 2012 Craig Campbell
  *
@@ -2958,7 +2995,7 @@ function stringify(gj) {
 module.exports = mousetrap;
 
 
-},{}],"/Users/aaron/to_fix/node_modules/osm-auth/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/osm-auth/index.js":[function(require,module,exports){
 'use strict';
 
 var ohauth = require('ohauth'),
@@ -3218,7 +3255,7 @@ module.exports = function(o) {
     return oauth;
 };
 
-},{"ohauth":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/index.js","store":"/Users/aaron/to_fix/node_modules/store/store.js","xtend":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/index.js":[function(require,module,exports){
+},{"ohauth":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/ohauth/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","xtend":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/ohauth/index.js":[function(require,module,exports){
 'use strict';
 
 var hashes = require('jshashes'),
@@ -3357,7 +3394,7 @@ ohauth.headerGenerator = function(options) {
 
 module.exports = ohauth;
 
-},{"jshashes":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js","xtend":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js":[function(require,module,exports){
+},{"jshashes":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js","xtend":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js":[function(require,module,exports){
 (function (global){
 /**
  * jshashes - https://github.com/h2non/jshashes
@@ -5126,7 +5163,7 @@ module.exports = ohauth;
 }()); // IIFE
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/has-keys.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/has-keys.js":[function(require,module,exports){
 module.exports = hasKeys
 
 function hasKeys(source) {
@@ -5135,7 +5172,7 @@ function hasKeys(source) {
         typeof source === "function")
 }
 
-},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/index.js":[function(require,module,exports){
 var Keys = require("object-keys")
 var hasKeys = require("./has-keys")
 
@@ -5162,11 +5199,11 @@ function extend() {
     return target
 }
 
-},{"./has-keys":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/has-keys.js","object-keys":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js":[function(require,module,exports){
+},{"./has-keys":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/has-keys.js","object-keys":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js"}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js":[function(require,module,exports){
 module.exports = Object.keys || require('./shim');
 
 
-},{"./shim":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js"}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js":[function(require,module,exports){
+},{"./shim":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js"}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js":[function(require,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -5190,7 +5227,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js":[function(require,module,exports){
 
 /**!
  * is
@@ -5894,7 +5931,7 @@ is.string = function (value) {
 };
 
 
-},{}],"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js":[function(require,module,exports){
 (function () {
 	"use strict";
 
@@ -5940,7 +5977,7 @@ is.string = function (value) {
 }());
 
 
-},{"foreach":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js","is":"/Users/aaron/to_fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js"}],"/Users/aaron/to_fix/node_modules/store/store.js":[function(require,module,exports){
+},{"foreach":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js","is":"/Users/aaron/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js"}],"/Users/aaron/to-fix/node_modules/store/store.js":[function(require,module,exports){
 ;(function(win){
 	var store = {},
 		doc = win.document,
@@ -6109,9 +6146,9 @@ is.string = function (value) {
 
 })(Function('return this')());
 
-},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
 
-},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -6176,7 +6213,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6262,7 +6299,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6349,10 +6386,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/aaron/to_fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/aaron/to_fix/js/index.js"]);
+},{"./decode":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/aaron/to-fix/js/index.js"]);

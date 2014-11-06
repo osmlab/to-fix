@@ -5,7 +5,7 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.225.54.127:3001/';
+var url = 'http://54.80.49.136:3001/';
 if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
     url = 'http://127.0.0.1:3001/';
 }
@@ -47,6 +47,24 @@ var tasks = {
     'nonclosedways': {
         title: 'Broken polygons',
         loader: keeprights },
+    'loopings': {
+        title: 'Loopings',
+        loader: keeprights },
+    'strangelayer': {
+        title: 'Strange layer',
+        loader: keeprights },
+    'highwayhighway': {
+        title: 'Highway intersects highway',
+        loader: keeprights },
+    'highwayfootpath': {
+        title: 'Highway intersects footpath',
+        loader: keeprights },
+    'highwayriverbank': {
+        title: 'Highway intersects water',
+        loader: keeprights },
+    'mispelledtags': {
+        title: 'Mispelled tags',
+        loader: keeprights },
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
@@ -65,13 +83,16 @@ var tasks = {
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
         loader: tigerdelta },
-    'northeast_highway_intersects_building': {
-        title: 'Highway/building overlap',
-        loader: nyc_overlaps },
+    // 'northeast_highway_intersects_building': {
+    //     title: 'Highway/building overlap',
+    //     loader: nyc_overlaps },
     'inconsistent': {
         loader: inconsistent },
     'npsdiff': {
-        loader: npsdiff }
+        loader: npsdiff },
+    'duplicate_ways': {
+        title: 'Duplicate Ways',
+        loader: osmi_geom }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -422,6 +443,17 @@ function unconnected() {
             });
         }
     });
+
+    renderUI({
+        title: tasks[qs('error')].title
+    });
+}
+
+function osmi_geom() {
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
+    layer.setStyle(featureStyle);
+    current.bounds = layer.getBounds();
+    map.fitBounds(current.bounds);
 
     renderUI({
         title: tasks[qs('error')].title
