@@ -126,15 +126,10 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-<<<<<<< HEAD
-var url = 'http://54.225.54.127:3001/';
+var url = 'http://54.91.20.0:3001/';
 if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
     url = 'http://127.0.0.1:3001/';
 }
-=======
-var url = 'http://54.80.49.136:3001/';
-// var url = 'http://localhost:3001/';
->>>>>>> gh-pages
 
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
@@ -358,7 +353,7 @@ function markDone() {
         type: 'post',
         data: JSON.stringify({
             user: store.get('username'),
-            state: current,
+            state: current
         })
     })
     .error(showErrorMessage)
