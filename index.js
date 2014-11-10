@@ -3,8 +3,7 @@ var http = require('http'),
     levelup = require('levelup'),
     leveldown = require('leveldown'),
     fs = require('fs'),
-    md5 = require('crypto').createHash('md5'),
-    tofix = require('./to-fix.js');
+    key = require('./lib/key.js');
 
 var level = {};
 
@@ -48,7 +47,7 @@ function runPostInit(){
 
             level[db].createReadStream({lt: '0001'})
                 .on('data', function(data) {
-                    fixed[db].push(tofix.decomposeID(data.key).hash);
+                    fixed[db].push(key.decompose(data.key).hash);
                 })
                 .on('end', function(err) {
                     num_fixed++;
@@ -106,19 +105,19 @@ router.addRoute('/fixed/:error', {
                     
                     if (err) {
                         debug('error fetching key value', body.state._id);
-                        return error(rs, 500, 'error fetching key value ' + body.state._id);  
+                        return error(rs, 500, 'error fetching key value ' + body.state._id);
                     } 
 
                     // delete the record from positive skipval keyspace
                     db.del(body.state._id, function(err) {
                         if (err){
                             debug('error deleting', err);
-                            return error(rs, 500, 'error deleting key value ' + body.state._id);  
+                            return error(rs, 500, 'error deleting key value ' + body.state._id);
                         } 
-                    
+
                         // move record into skipval=0 keyspace, meaning it's fixed
-                        var oldID = tofix.decomposeID(body.state._id);
-                        var newID = tofix.composeID(0, oldID.hash);
+                        var oldID = key.decompose(body.state._id);
+                        var newID = key.compose(0, oldID.hash);
                         db.put(newID, value);
                     });
 
@@ -143,14 +142,14 @@ function getNextItem(error, res, callback) {
         } else {
             db.createReadStream({limit: 1, gt: '0001'})
                 .on('data', function(data) {
-                    var task_data = JSON.parse(data.value);                    
+                    var task_data = JSON.parse(data.value);
                     if (task_data.ignore) {
                         debug('Empty task database for error ' + error);
                         return callback('No valid tasks available for this error type.');
                     } else {
                         db.del(data.key, function() {
-                            var oldID = tofix.decomposeID(data.key);
-                            var newID = tofix.composeID((oldID.skipval + 1), oldID.hash);
+                            var oldID = key.decompose(data.key);
+                            var newID = key.compose((oldID.skipval + 1), oldID.hash);
 
                             db.put(newID, JSON.stringify(task_data), function(err) {
                                 if (err) debug('put', err);
@@ -173,7 +172,7 @@ function track(error, user, action, value) {
     // value must be an object
     var key = +new Date() + ':' + user;
     value._action = action;
-    value._hash = tofix.decomposeID(value._id).hash;
+    value._hash = key.decompose(value._id).hash;
     value = JSON.stringify(value);
 
     var db = level[error + '-tracking.ldb'];
