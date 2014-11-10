@@ -40,14 +40,15 @@ function loadTask(fileLoc, fixedLoc) {
     fs.createReadStream(fileLoc)
         .pipe(csv())
         .on('data', function(data) {
-            // only load objects that aren't in our fixed list
             var object_hash = key.hashObject(data);
-            var fixed = (fixed_list.indexOf(object_hash) > -1) ? 0 : 1; // fixed=0, unfixed=1
-            var object_id = key.compose(fixed, object_hash);
-            db.put(object_id, JSON.stringify(data), function (err) {
-                if (err) console.log('-- error --', err);
-            });
-            count++;
+            if (fixed_list.indexOf(object_hash) === -1) {
+                // item is not fixed
+                var object_id = key.compose(1, object_hash);
+                db.put(object_id, JSON.stringify(data), function (err) {
+                    if (err) console.log('-- error --', err);
+                });
+                count++;
+            }
         })
         .on('end', function() {
             setTimeout(function() {
