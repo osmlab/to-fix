@@ -33,7 +33,6 @@ dbs.forEach(function(ldb, idx) {
     }, function(err, db) {
         if (err) debug('ERROR: ' + err);
         level[ldb] = db;
-        loaded_db_count++;
         if (idx >= dbs.length-1) runPostInit();
     });
 });
@@ -105,14 +104,14 @@ router.addRoute('/fixed/:error', {
                     if (err) {
                         debug('error fetching key value', body.state._id);
                         return error(rs, 500, 'error fetching key value ' + body.state._id);
-                    } 
+                    }
 
                     // delete the record from positive skipval keyspace
                     db.del(body.state._id, function(err) {
                         if (err){
                             debug('error deleting', err);
                             return error(rs, 500, 'error deleting key value ' + body.state._id);
-                        } 
+                        }
 
                         // move record into skipval=0 keyspace, meaning it's fixed
                         var oldID = key.decompose(body.state._id);
@@ -132,7 +131,7 @@ router.addRoute('/fixed/:error', {
 function getNextItem(error, res, callback) {
     if (error === (undefined || 'undefined')) {
         return callback('db type cannot be undefined');
-    } else {            
+    } else {
         var db = level[error + '.ldb'];
         if (!db) {
             return callback('Database \'' + error + '\' not loaded');
