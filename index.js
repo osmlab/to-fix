@@ -3,6 +3,7 @@ var http = require('http'),
     levelup = require('levelup'),
     leveldown = require('leveldown'),
     fs = require('fs'),
+    md5 = require('crypto').createHash('md5'),
     tofix = require('./to-fix.js');
 
 var level = {};
@@ -41,12 +42,11 @@ dbs.forEach(function(ldb, idx) {
 function runPostInit(){
     if (process.argv[2] === '--fixed') {
         fixed = {}; 
-
         var num_fixed = 0;
         Object.keys(level).forEach(function(db){
             fixed[db] = [];
 
-            level[db].createReadStream({ lt: tofix.TASK_RANGE_LOWER_BOUND})
+            level[db].createReadStream({lt: '0001'})
                 .on('data', function(data) {
                     fixed[db].push(tofix.decomposeID(data.key).hash);
                 })
@@ -138,9 +138,10 @@ function getNextItem(error, res, callback) {
         return callback('db type cannot be undefined');
     } else {            
         var db = level[error + '.ldb'];
-        if (!db)return callback('Database \'' + error + '\' not loaded');
-        else {
-            db.createReadStream({limit: 1, gt: tofix.TASK_RANGE_LOWER_BOUND})
+        if (!db) {
+            return callback('Database \'' + error + '\' not loaded');
+        } else {
+            db.createReadStream({limit: 1, gt: '0001'})
                 .on('data', function(data) {
                     var task_data = JSON.parse(data.value);                    
                     if (task_data.ignore) {
