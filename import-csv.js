@@ -2,8 +2,7 @@ var fs = require('fs'),
     csv = require('csv-parser'),
     levelup = require('levelup'),
     path = require('path'),
-    md5 = require('MD5'),
-    tofix = require('./to-fix.js');
+    key = require('./lib/key.js');
 
 if (process.stdin.isTTY) {
     if (process.argv[2] === undefined) {
@@ -22,8 +21,8 @@ if (process.stdin.isTTY) {
 
 function loadTask(fileLoc, fixedLoc) {
     var task = path.basename(fileLoc).split('.')[0],
-    db = levelup('./ldb/' + task + '.ldb'),
-    count = 0;
+        db = levelup('./ldb/' + task + '.ldb'),
+        count = 0;
 
     // load list of IDs that are already fixed
     var fixed_list = [];
@@ -40,25 +39,24 @@ function loadTask(fileLoc, fixedLoc) {
 
     fs.createReadStream(fileLoc)
         .pipe(csv())
-        .on('data', function(data) {            
+        .on('data', function(data) {
             // only load objects that aren't in our fixed list
-            var object_hash = tofix.hashObject(data);            
+            var object_hash = key.hashObject(data);
             var fixed = (fixed_list.indexOf(object_hash) > -1) ? 0 : 1; // fixed=0, unfixed=1
-            var object_id = tofix.composeID(fixed, object_hash);        
+            var object_id = key.compose(fixed, object_hash);
             db.put(object_id, JSON.stringify(data), function (err) {
                 if (err) console.log('-- error --', err);
             });
-            count++;                
+            count++;
         })
         .on('end', function() {
-            setTimeout(function() {                
+            setTimeout(function() {
                 // insert a dummy object in unfixed keyspace if nothing has been inserted
                 // prevents blocking on levelup readstream creation against an empty db
-                if (count == 0) {
-                    var keyval = tofix.composeID(1, tofix.decomposeID(tofix.TASK_RANGE_LOWER_BOUND).hash);
+                if (count === 0) {
+                    var keyval = key.compose(1, 'random');
                     db.put(keyval, JSON.stringify({ignore: true}));
                 }
-
                 db.close();
 
                 console.log('done with ' + task + '. ' + count + ' items imported');
