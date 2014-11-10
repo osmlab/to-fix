@@ -102,7 +102,6 @@ router.addRoute('/fixed/:error', {
                 // retrieve the record's current state -- we can't trust the submitted state
                 // not to have been modified by the clientside JS
                 db.get(body.state._id, function(err, value) {
-                    
                     if (err) {
                         debug('error fetching key value', body.state._id);
                         return error(rs, 500, 'error fetching key value ' + body.state._id);
@@ -131,8 +130,6 @@ router.addRoute('/fixed/:error', {
 });
 
 function getNextItem(error, res, callback) {
-    var newKey = (+new Date() + lockperiod).toString() + Math.random().toString().slice(1, 4);
-
     if (error === (undefined || 'undefined')) {
         return callback('db type cannot be undefined');
     } else {            
