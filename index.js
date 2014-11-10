@@ -38,28 +38,9 @@ dbs.forEach(function(ldb, idx) {
 });
 
 function runPostInit(){
-    if (process.argv[2] === '--fixed') {
-        fixed = {}; 
-        var num_fixed = 0;
-        Object.keys(level).forEach(function(db){
-            fixed[db] = [];
-
-            level[db].createReadStream({lt: '0001'})
-                .on('data', function(data) {
-                    fixed[db].push(key.decompose(data.key).hash);
-                })
-                .on('end', function(err) {
-                    num_fixed++;
-                    if (num_fixed === Object.keys(level).length) {
-                        process.stdout.write(JSON.stringify(fixed));
-                    }
-                });
-        });
-    } else {
-        http.createServer(router).listen(port, function() {
-            debug('running on port ' + port);
-        });
-    }
+    http.createServer(router).listen(port, function() {
+        debug('running on port ' + port);
+    });
 }
 
 router.addRoute('/error/:error', {
