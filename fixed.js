@@ -7,6 +7,10 @@ var dbs = fs.readdirSync('./ldb/').filter(function(item) {
    return item.indexOf('.ldb') > -1;
 });
 
+fs.stat('./fixed', function(err, stats) {
+    if (err && (err.errno == 34)) fs.mkdirSync('./fixed');
+});
+
 dbs.forEach(function(ldb, idx) {
     levelup('./ldb/' + ldb, {
         createIfMissing: false,
