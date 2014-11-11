@@ -1,13 +1,14 @@
-wget https://to-fix.s3.amazonaws.com/keepright-latest.zip
-wget https://to-fix.s3.amazonaws.com/osmi-latest.zip
-wget https://to-fix.s3.amazonaws.com/tigerdelta-latest.zip
-wget https://to-fix.s3.amazonaws.com/northeast_highway_intersects_building.csv
+#!/bin/sh
 
-unzip keepright-latest.zip
-unzip osmi-latest.zip
-unzip tigerdelta-latest.zip
+unzip -o keepright-latest.zip
+unzip -o osmi-latest.zip
+unzip -o tigerdelta-latest.zip
 
-ls keepright-tasks/*.csv | node import-csv.js
-ls osmi-tasks/*.csv | node import-csv.js
-ls northeast_highway_intersects_building.csv | node import-csv.js
-ls tigerdelta-tasks/*.csv | node import-csv.js
+ls keepright-tasks/*.csv | node import-csv.js $1
+ls osmi-tasks/*.csv | node import-csv.js $1
+ls northeast_highway_intersects_building.csv | node import-csv.js $1
+ls tigerdelta-tasks/*.csv | node import-csv.js $1
+
+rm -rf keepright-tasks
+rm -rf tigerdelta-tasks
+rm -rf osmi-tasks

@@ -7,6 +7,14 @@ body {
 #tofix a {
   color: rgba(255,255,255,0.5);
 }
+#error-message {
+  top: 0px;
+  position: absolute;
+  text-align: center;
+  z-index: 999;
+  width: 100%;
+  display: none;
+}
 #map {
   position: absolute;
   top: 0;

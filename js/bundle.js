@@ -126,8 +126,10 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.91.20.0:3001/';
-// var url = 'http://localhost:3001/';
+var url = 'http://54.204.149.4:3001/';
+if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
+    url = 'http://127.0.0.1:3001/';
+}
 
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
@@ -215,6 +217,7 @@ var tasks = {
 };
 
 var DEFAULT = 'deadendoneway';
+var ERROR_MESSAGE_TIMEOUT = 5000;
 
 var featureStyle = {
     color: '#FF00B7',
@@ -308,8 +311,8 @@ function keeprights() {
         dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            current._bounds = layer.getBounds();
+            map.fitBounds(current._bounds);
             omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
         }
     });
@@ -329,6 +332,18 @@ function next() {
     load();
 }
 
+function showErrorMessage(jqXHR, textStatus, errorThrown) {
+    var errorMessage = jqXHR.responseText;
+    if (textStatus === 'timeout') errorMessage = 'Request timed out.';
+    $('#error-message span').text(errorMessage).show();
+    $('#error-message').slideDown();
+    setTimeout(function() { 
+        $('#error-message span').fadeOut(function(){
+            $('#error-message').slideUp();
+        });
+    }, ERROR_MESSAGE_TIMEOUT);
+}
+
 function markDone() {
     Mousetrap.unbind(['enter', 'e']);
 
@@ -340,7 +355,9 @@ function markDone() {
             user: store.get('username'),
             state: current
         })
-    }).done(next);
+    })
+    .error(showErrorMessage)
+    .done(next);
 }
 
 $('#skip').on('click', next);
@@ -391,26 +408,37 @@ function load() {
         renderMenu();
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
+        } else {
+            $.ajax({
+                crossDomain: true,
+                url: url + 'error/' + qs('error'),
+                type: 'post',
+                data: JSON.stringify({user: store.get('username')})
+            })
+            .error(showErrorMessage)
+            .done(function(data) {
+                data = JSON.parse(data);
+                current = data.value;
+                
+                // check to be sure we've been served a valid task
+                if (!current.ignore) {
+                    current = data.value;
+                    current._id = data.key;
+                    $('#map').removeClass('loading');
+                    tasks[qs('error') || DEFAULT].loader();
+                } else {
+                    $('#map').removeClass('loading');
+                    showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
+                }
+            });
         }
-        $.ajax({
-            crossDomain: true,
-            url: url + 'error/' + qs('error'),
-            type: 'post',
-            data: JSON.stringify({user: store.get('username')})
-        }).done(function(data) {
-            data = JSON.parse(data);
-            current = data.value;
-            current._id = data.key;
-            $('#map').removeClass('loading');
-            tasks[qs('error') || DEFAULT].loader();
-        });
     } else {
         pushLoop();
         var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
-            $('#hidden-controls').addClass('clickthrough');
+                $('#hidden-controls').addClass('clickthrough');
                 clearInterval(player);
             });
     }
@@ -438,16 +466,16 @@ function nyc_overlaps() {
 
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
-        dataType: "xml",
+        dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                    current.bounds = layer.getBounds();
-                    map.fitBounds(current.bounds);
+                    current._bounds = layer.getBounds();
+                    map.fitBounds(current._bounds);
                 }
             });
         }
@@ -465,16 +493,16 @@ function inconsistent() {
     // possible wrong name (altStyle)
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
-        dataType: "xml",
+        dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            current._bounds = layer.getBounds();
+            map.fitBounds(current._bounds);
 
             // context ways
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
                 }
@@ -482,7 +510,7 @@ function inconsistent() {
 
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
                 }
@@ -500,15 +528,15 @@ function inconsistent() {
 function npsdiff() {
     var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
-    current.bounds = layer.getBounds();
-    map.fitBounds(current.bounds);
+    current._bounds = layer.getBounds();
+    map.fitBounds(current._bounds);
 }
 
 function tigerdelta() {
     var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
-    current.bounds = layer.getBounds();
-    map.fitBounds(current.bounds);
+    current._bounds = layer.getBounds();
+    map.fitBounds(current._bounds);
 
     renderUI({
         title: tasks[qs('error')].title,
@@ -522,14 +550,14 @@ function unconnected() {
 
     $.ajax({
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: "xml",
+        dataType: 'xml',
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current.bounds = layer.getBounds();
-            map.fitBounds(current.bounds);
+            current._bounds = layer.getBounds();
+            map.fitBounds(current._bounds);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: "xml",
+                dataType: 'xml',
                 success: function (xml) {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
                 }
@@ -554,10 +582,10 @@ function osmi_geom() {
 }
 
 function edit() {
-    var bottom = current.bounds._southWest.lat - 0.0005;
-    var left = current.bounds._southWest.lng - 0.0005;
-    var top = current.bounds._northEast.lat + 0.0005;
-    var right = current.bounds._northEast.lng + 0.0005;
+    var bottom = current._bounds._southWest.lat - 0.0005;
+    var left = current._bounds._southWest.lng - 0.0005;
+    var top = current._bounds._northEast.lat + 0.0005;
+    var right = current._bounds._northEast.lng + 0.0005;
 
     var newWindow = window.open('');
 
