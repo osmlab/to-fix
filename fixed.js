@@ -7,9 +7,9 @@ var dbs = fs.readdirSync('./ldb/').filter(function(item) {
    return item.indexOf('.ldb') > -1;
 });
 
-fs.stat('./fixed', function(err, stats) {
-    if (err && (err.errno == 34)) fs.mkdirSync('./fixed');
-});
+if (!fs.existsSync('./fixed')) {
+    fs.mkdirSync('./fixed');
+}
 
 dbs.forEach(function(ldb, idx) {
     levelup('./ldb/' + ldb, {
@@ -17,7 +17,7 @@ dbs.forEach(function(ldb, idx) {
         max_open_files: 500
     }, function(err, db) {
         if (err) return console.log(err);
-        var file = fs.createWriteStream('./fixed/' + ldb);
+        var file = fs.createWriteStream('./fixed/' + ldb.split('.ldb')[0]);
         file.once('open', function() {
             db.createReadStream({lt: '0001'})
                 .on('data', function(data) {

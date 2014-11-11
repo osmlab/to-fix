@@ -23,10 +23,10 @@ if (process.stdin.isTTY) {
 function loadTask(fileLoc) {
     var task = path.basename(fileLoc).split('.')[0],
         db = levelup('./ldb/' + task + '.ldb'),
+        fixed_list = [],
         count = 0;
 
-    if (fs.readdirSync('./fixed').indexOf(task) > -1) {
-        var fixed_list = [];
+    if (fs.existsSync('./fixie') && fs.readdirSync('./fixed').indexOf(task) > -1) {
 
         var rl = readline.createInterface({
             input: fs.createReadStream('./fixed/' + task),
