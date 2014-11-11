@@ -10,4 +10,5 @@ elif [ "$unamestr" = 'Linux' ]; then
     ulimit -n 1000000
 fi
 
+mkdir ldb fixed
 npm install
