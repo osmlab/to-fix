@@ -147,7 +147,7 @@ function getNextItem(error, res, callback) {
 
 function track(error, user, action, value) {
     // value must be an object
-    var key = +new Date() + ':' + user;
+    var trackKey = +new Date() + ':' + user;
     value._action = action;
     value._hash = key.decompose(value._id).hash;
     value = JSON.stringify(value);
@@ -155,7 +155,7 @@ function track(error, user, action, value) {
     var db = level[error + '-tracking.ldb'];
 
     if (db) {
-        db.put(key, value, function(err) {
+        db.put(trackKey, value, function(err) {
             if (err) debug('put', err);
         });
     } else {
