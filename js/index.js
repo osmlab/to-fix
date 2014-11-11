@@ -5,7 +5,7 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap');
 
-var url = 'http://54.91.20.0:3001/';
+var url = 'http://54.204.149.4:3001/';
 if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
     url = 'http://127.0.0.1:3001/';
 }
