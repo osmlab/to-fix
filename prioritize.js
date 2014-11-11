@@ -15,9 +15,12 @@ if (process.stdin.isTTY) {
 
     // load geojson files
     var geojson = [];
-    process.argv
-        .filter(function(elem, i) { return (i > 2); })
+    process.argv        
         .forEach(function(elem, i) {
+            if (i <= 2) {
+                // skip these -- not using .filter() to make async logic simpler
+                return true;
+            }
             if (elem === '--slow') {
                 quickMode = false;
             }
@@ -25,11 +28,17 @@ if (process.stdin.isTTY) {
                 console.log('+ loading ' + elem);
                 fs.readFile(elem, function(err, data) {
                     if (err) console.log('# Error loading GeoJSON file ' + elem);
+                    console.log('- Adding GeoJSON file ' + elem);
                     geojson.push(JSON.parse(data));
+                
+                    if(i === process.argv.length-1) ProcessLevelDB();
                 });                
             }
         });
-    
+}
+
+function ProcessLevelDB(){
+    console.log('- Opening LevelDB database ' + process.argv[2]);
     levelup(process.argv[2], function(err, db) {
         if (err) throw(err);
 
@@ -50,9 +59,6 @@ if (process.stdin.isTTY) {
                     } 
 
                     if( gju.pointInPolygon(wellknown.parse(data.value.st_astext), poly.features[0].geometry)) {
-                        
-                        console.log('found overlap at ' + data.value.st_astext);
-
                         overlaps++;
                         if (quickMode) return false;
                     }
