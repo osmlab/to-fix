@@ -10,13 +10,13 @@ if (process.stdin.isTTY) {
     var quickMode = true; // should we bother matching against every geometry or just quit after one hit?
 
     if (process.argv.length < 4) {
-        return console.log('file arguments are required\n`node prioritize.js [leveldb] [geojson1 geojson2 .. ]`');
+        return console.log('file arguments are required\n`node prioritize.js [task] [geojson1 geojson2 ... ]`');
     }
 
     // process command line params, load geojson files
-    var geojson = [];
+    var geojson = {};
     process.argv        
-        .forEach(function(elem, i) {
+        .forEach(function(elem, i) {    
             if (i <= 2) {
                 // skip require params -- choosing not to use .filter() to make async logic simpler below
                 return true;
@@ -27,6 +27,8 @@ if (process.stdin.isTTY) {
                 quickMode = false;
             }
             else {
+                var basename = elem.replace(/\.geojson/, '').replace(/^.*\//, '');
+
                 fs.readFile(elem, function(err, data) {
                     if (err) console.log('# Error loading GeoJSON file ' + elem);                
                     var boundary = JSON.parse(data);
@@ -34,7 +36,7 @@ if (process.stdin.isTTY) {
                         console.log('# failed to load valid GeoJSON from ' + elem);
                     }
                     else {
-                        geojson.push(boundary);  
+                        geojson[basename] = boundary;  
                         console.log('- loaded GeoJSON file ' + elem);  
                     }
                     
@@ -47,7 +49,7 @@ if (process.stdin.isTTY) {
 
 function ProcessLevelDB(){
     console.log('- opening leveldb database ' + process.argv[2]);
-    levelup(process.argv[2], function(err, db) {
+    levelup('./ldb/' + process.argv[2] + '.ldb', function(err, db) {
         if (err) throw(err);
 
         var maxOverlaps = 0;
@@ -60,52 +62,57 @@ function ProcessLevelDB(){
                 if (key.decompose(data.key).skipval === 0) return;
 
                 // check if point is in any geojson geometries
-                var overlaps = 0;
-                geojson.forEach(function(poly) {                    
+                var overlapCount = 0;
+                Object.keys(geojson).forEach(function(k) {                    
                     if (!data.value.st_astext) {              
                         console.log('# missing geometry (st_astext) for key ' + data.key);
                         return false;
                     } 
 
-                    if( gju.pointInPolygon(wellknown.parse(data.value.st_astext), poly.features[0].geometry)) {
-                        overlaps++;
+                    if( gju.pointInPolygon(wellknown.parse(data.value.st_astext), geojson[k].features[0].geometry)) {
+                        if (!data.value.priority) data.value.priority = []; 
+                        data.value.priority.push(k);
+                        overlapCount++;
                         if (quickMode) return false;
                     }
                 });
 
                 // track maximum number of overlaps
-                maxOverlaps = Math.max(maxOverlaps, overlaps);                
+                maxOverlaps = Math.max(maxOverlaps, overlapCount);                
 
-                data.value.overlaps = overlaps;                
+                data.value.overlapCount = overlapCount;                
                 db.put(data.key, JSON.stringify(data.value), function(err) {
-                    if (err) console.log('# error saving key ' + data.key + '#' + overlaps);
+                    if (err) console.log('# error saving key ' + data.key + '#' + overlapCount);
                 });                
             })
             .on('end', function(){
 
                 // iterate through all keys, adding (maxOverlaps - overlap) to each skipval
                 console.log('- reordering tasks')
-                var adjustmentsMade = 0;
-                
+                var adjustmentsMade = 0;            
+
+                var reordered = 0;
                 db.createReadStream()
                     .on('data', function(data) { 
                         data.value = JSON.parse(data.value);  
                        
                         var keyComponents = key.decompose(data.key);
-                        var newKey = key.compose((keyComponents.skipval + (maxOverlaps - parseInt(data.value.overlaps))), keyComponents.hash);                    
+                        var newKey = key.compose((keyComponents.skipval + (maxOverlaps - parseInt(data.value.overlapCount))), keyComponents.hash);                    
 
-                        if (parseInt(data.value.overlaps) > 0) {
-                            adjustmentsMade++;
-                        }
+                        if (parseInt(data.value.overlapCount) > 0) adjustmentsMade++;
 
-                        delete data.value.overlaps;
-                        db.put(newKey, JSON.stringify(data.value), function(err) {
-                            if (err) console.log('# error saving key ' + newKey);                            
+                        delete data.value.overlapCount;
+                        db.del(data.key, function(err){
+                            if (err) console.log('# error deleting key ' + newKey);                                                        
+                            db.put(newKey, JSON.stringify(data.value), function(err) {
+                                if (err) console.log('# error saving key ' + newKey);                              
+                                reordered++;
+                            });                            
                         });
 
                     })
                     .on('end', function() {
-                        console.log('- finished, reprioritized ' + adjustmentsMade + ' tasks')
+                        console.log('- finished, reprioritized ' + adjustmentsMade + '/' + reordered + ' tasks');
                     });
             });
 
