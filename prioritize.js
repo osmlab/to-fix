@@ -34,6 +34,7 @@ if (process.stdin.isTTY) {
         if (err) throw(err);
 
         var maxOverlaps = 0;
+        console.log('- Checking for geometry overlap')
         db.createReadStream()
             .on('data', function(data) {
                 data.value = JSON.parse(data.value);
@@ -67,8 +68,9 @@ if (process.stdin.isTTY) {
                 });                
             })
             .on('end', function(){
-                
+
                 // iterate through all keys, adding (maxOverlaps - overlap) to each skipval
+                console.log('- Reordering tasks')
                 db.createReadStream()
                     .on('data', function(data) { 
                         data.value = JSON.parse(data.value);                               
