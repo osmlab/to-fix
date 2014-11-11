@@ -15,7 +15,7 @@ if (process.stdin.isTTY) {
         var buf = process.stdin.read();
         if (buf === null) return;
         buf.toString().split('\n').forEach(function(file) {
-            if (file.length) loadTask(fileLoc, process.argv[2]);
+            if (file.length) loadTask(file, process.argv[2]);
         });
     });
 }
