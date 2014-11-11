@@ -53,7 +53,7 @@ function loadTask(fileLoc) {
             var object_hash = key.hashObject(data);
             if (fixed_list.indexOf(object_hash) === -1) {
                 // item is not fixed
-                var object_id = key.compose(0, object_hash);
+                var object_id = key.compose(1, object_hash);
                 db.put(object_id, JSON.stringify(data), function (err) {
                     if (err) console.log('-- error --', err);
                 });
