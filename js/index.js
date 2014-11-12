@@ -6,9 +6,7 @@ var querystring = require('querystring'),
     Mousetrap = require('mousetrap');
 
 var url = 'http://54.204.149.4:3001/';
-if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
-    url = 'http://127.0.0.1:3001/';
-}
+if (qs('local')) url = 'http://127.0.0.1:3001/';
 
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
