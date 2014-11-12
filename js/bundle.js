@@ -127,9 +127,7 @@ var querystring = require('querystring'),
     Mousetrap = require('mousetrap');
 
 var url = 'http://54.204.149.4:3001/';
-if (location.host.match(/(127\.0\.0\.1|0\.0\.0\.0|localhost)/ig) !== null) {
-    url = 'http://127.0.0.1:3001/';
-}
+if (qs('local')) url = 'http://127.0.0.1:3001/';
 
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
@@ -251,7 +249,9 @@ var layers = {
     'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
     'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
     'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0'),
-    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
+    })
 };
 
 if (baseLayer && layers[baseLayer]) {

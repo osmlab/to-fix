@@ -130,7 +130,9 @@ var layers = {
     'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
     'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
     'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0'),
-    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
+    })
 };
 
 if (baseLayer && layers[baseLayer]) {
