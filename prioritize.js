@@ -15,8 +15,8 @@ if (process.stdin.isTTY) {
 
     // process command line params, load geojson files
     var geojson = {};
-    process.argv        
-        .forEach(function(elem, i) {    
+    process.argv
+        .forEach(function(elem, i) {
             if (i <= 2) {
                 // skip require params -- choosing not to use .filter() to make async logic simpler below
                 return true;
@@ -30,7 +30,7 @@ if (process.stdin.isTTY) {
                 var basename = elem.replace(/\.geojson/, '').replace(/^.*\//, '');
 
                 fs.readFile(elem, function(err, data) {
-                    if (err) console.log('# Error loading GeoJSON file ' + elem);                
+                    if (err) console.log('# Error loading GeoJSON file ' + elem);
                     var boundary = JSON.parse(data);
                     if((boundary===null) || (!boundary.features)) {
                         console.log('# failed to load valid GeoJSON from ' + elem);
@@ -42,7 +42,7 @@ if (process.stdin.isTTY) {
                     
                     // if all params have been loaded, begin main processing
                     if(i === process.argv.length-1) ProcessLevelDB();
-                });                
+                });
             }
         });
 }
@@ -53,7 +53,7 @@ function ProcessLevelDB(){
         if (err) throw(err);
 
         var maxOverlaps = 0;
-        console.log('- checking for geometry overlap')
+        console.log('- checking for geometry overlap');
         db.createReadStream()
             .on('data', function(data) {
                 data.value = JSON.parse(data.value);
@@ -63,8 +63,8 @@ function ProcessLevelDB(){
 
                 // check if point is in any geojson geometries
                 var overlapCount = 0;
-                Object.keys(geojson).forEach(function(k) {                    
-                    if (!data.value.st_astext) {              
+                Object.keys(geojson).forEach(function(k) {
+                    if (!data.value.st_astext) {
                         console.log('# missing geometry (st_astext) for key ' + data.key);
                         return false;
                     } 
@@ -78,43 +78,39 @@ function ProcessLevelDB(){
                 });
 
                 // track maximum number of overlaps
-                maxOverlaps = Math.max(maxOverlaps, overlapCount);                
+                maxOverlaps = Math.max(maxOverlaps, overlapCount);
 
-                data.value.overlapCount = overlapCount;                
+                data.value.overlapCount = overlapCount;
                 db.put(data.key, JSON.stringify(data.value), function(err) {
                     if (err) console.log('# error saving key ' + data.key + '#' + overlapCount);
-                });                
+                });
             })
             .on('end', function(){
 
                 // iterate through all keys, adding (maxOverlaps - overlap) to each skipval
-                console.log('- reordering tasks')
-                var adjustmentsMade = 0;            
+                console.log('- reordering tasks');
+                var adjustmentsMade = 0;
 
                 var reordered = 0;
                 db.createReadStream()
-                    .on('data', function(data) { 
-                        data.value = JSON.parse(data.value);  
-                       
+                    .on('data', function(data) {
+                        data.value = JSON.parse(data.value);
                         var keyComponents = key.decompose(data.key);
-                        var newKey = key.compose((keyComponents.skipval + (maxOverlaps - parseInt(data.value.overlapCount))), keyComponents.hash);                    
-
+                        var newKey = key.compose((keyComponents.skipval + (maxOverlaps - parseInt(data.value.overlapCount))), keyComponents.hash);
                         if (parseInt(data.value.overlapCount) > 0) adjustmentsMade++;
 
                         delete data.value.overlapCount;
                         db.del(data.key, function(err){
-                            if (err) console.log('# error deleting key ' + newKey);                                                        
+                            if (err) console.log('# error deleting key ' + newKey);
                             db.put(newKey, JSON.stringify(data.value), function(err) {
-                                if (err) console.log('# error saving key ' + newKey);                              
+                                if (err) console.log('# error saving key ' + newKey);
                                 reordered++;
-                            });                            
+                            });
                         });
-
                     })
                     .on('end', function() {
                         console.log('- finished, reprioritized ' + adjustmentsMade + '/' + reordered + ' tasks');
                     });
             });
-
     });
 }
