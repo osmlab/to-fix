@@ -27,7 +27,7 @@ body {
 #name,
 #walkthrough {
   position: absolute;
-  background-color: rgba(0,0,0,0.75);
+  background-color: rgba(0,0,0,0.8);
   z-index: 9001;
 }
 .controls:hover,
@@ -47,7 +47,7 @@ body {
   left: 0px;
   padding: 10px 0;
   position: absolute;
-  background-color: rgba(0,0,0,0.75);
+  background-color: rgba(0,0,0,0.8);
   z-index: 9001;
 }
 #menu a {
@@ -62,8 +62,8 @@ body {
 #fixed {
   text-align: center;
   width: 33.3333%;
-  line-height: 80px;
-  font-size: 30px;
+  line-height: 2.75em;
+  font-size: 25px;
   bottom: 0px;
   color: #fff;
   cursor: pointer;
@@ -106,18 +106,12 @@ body {
   width: 250px;
   text-align: center;
   padding: 10px 15px;
-  line-height: 55px;
+  line-height: 2em;
   font-size: 20px;
   left: 45%;
 }
-.disabled {
-  cursor: default !important;
-  opacity: 0.5;
-}
 .disabled:hover {
   cursor: default !important;
-  opacity: 0.5;
-  background: rgba(0,0,0,0.75);
 }
 #intro-modal-content {
   position: absolute;
