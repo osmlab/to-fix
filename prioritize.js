@@ -1,4 +1,5 @@
 var fs = require('fs'),
+    path = require('path'),
     gju = require('geojson-utils'),
     key = require('./lib/key.js'),
     levelup = require('levelup'),
@@ -25,17 +26,15 @@ if (process.stdin.isTTY) {
             // if using overlapping geojson files, this flag might be useful. otherwise, no.
             if (elem === '--slow') {
                 quickMode = false;
-            }
-            else {
-                var basename = elem.replace(/\.geojson/, '').replace(/^.*\//, '');
+            } else {
+                var basename = path.basename(elem, '.geojson');
 
                 fs.readFile(elem, function(err, data) {
                     if (err) console.log('# Error loading GeoJSON file ' + elem);
                     var boundary = JSON.parse(data);
-                    if((boundary===null) || (!boundary.features)) {
+                    if ((boundary === null) || !boundary.features) {
                         console.log('# failed to load valid GeoJSON from ' + elem);
-                    }
-                    else {
+                    } else {
                         geojson[basename] = boundary;  
                         console.log('- loaded GeoJSON file ' + elem);  
                     }
@@ -69,7 +68,7 @@ function ProcessLevelDB(){
                         return false;
                     } 
 
-                    if( gju.pointInPolygon(wellknown.parse(data.value.st_astext), geojson[k].features[0].geometry)) {
+                    if (gju.pointInPolygon(wellknown.parse(data.value.st_astext), geojson[k].features[0].geometry)) {
                         if (!data.value.priority) data.value.priority = []; 
                         data.value.priority.push(k);
                         overlapCount++;
