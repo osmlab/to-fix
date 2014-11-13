@@ -32,8 +32,8 @@ function loadTask(fileLoc, callback) {
     var tracking = levelup('./ldb/' + task + '-tracking.ldb');
     tracking.close();
 
-    // @TODO: prevent failure on empty fixed/* files
-    if (fs.existsSync('./fixed') && fs.readdirSync('./fixed').indexOf(task) > -1) {
+    // @TODO: make fixedlist task-specific instead of global
+    if (fs.existsSync('./fixed') && (fs.readdirSync('./fixed').indexOf(task) > -1) && (fs.statSync('./fixed/' + task)['size'] > 0)) {
         var rl = readline.createInterface({
             input: fs.createReadStream('./fixed/' + task),
             output: new require('stream')
