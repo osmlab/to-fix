@@ -9,12 +9,10 @@ var fs = require('fs'),
 var verbose = false;
 if (require.main === module) {
     verbose = true;
-    if (process.stdin.isTTY) {
-        if (process.argv[2] === undefined) {
-            return console.log('file argument required \n`node import-csv.js [source csv]`');
-        }
-        loadTask(process.argv[2]);
+    if (process.argv[2] === undefined) {
+        return console.log('file argument required \n`node import-csv.js [source csv]`');
     }
+    loadTask(process.argv[2], function() { });
 }
 
 module.exports = loadTask;
