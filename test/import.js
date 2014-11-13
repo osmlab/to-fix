@@ -52,8 +52,7 @@ tape('Basic import', function(t) {
      .defer(blankslate, true) 
      .awaitAll(function(err, results){        
         if (err) {
-            t.fail();
-            return console.log(err);
+            t.fail(err);
         }
         else {
             var count = results[2];
@@ -75,7 +74,7 @@ tape('correct countTasksBySkipval() behavior', function(t) {
      .defer(blankslate, true) 
      .awaitAll(function(err, results){
         if (err) {
-            console.log(err);
+            t.fail(err);            
         }
         else {
             var count = results[3];
@@ -114,7 +113,7 @@ tape('importing fixed tasks', function(t) {
      
      .awaitAll(function(err, results){
         if(err) {
-            console.log(err);        
+            t.fail(err);
         }
         else {
             var count = results[6];
