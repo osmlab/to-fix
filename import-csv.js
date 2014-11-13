@@ -23,7 +23,6 @@ module.exports = {
 }
 
 function loadTask(fileLoc, callback) {
-
     var task = path.basename(fileLoc).split('.')[0],
         db = levelup('./ldb/' + task + '.ldb'),
         fixed_list = [],
@@ -52,45 +51,56 @@ function loadTask(fileLoc, callback) {
 
     function doImport(fileLoc, callback) {
         if (verbose) { console.log('importing task ' + task); }
+        var q = queue();
+        console.log('okayyyy');
         fs.createReadStream(fileLoc)
             .pipe(csv())
             .on('data', function(data) {
-                var object_hash = key.hashObject(data);
-                if (fixed_list.indexOf(object_hash) === -1) {
-                    // item is not fixed
-                    var object_id = key.compose(1, object_hash);
-                    db.put(object_id, JSON.stringify(data), function (err) {
-                        if (err) console.log('-- error --', err);
-                    });
-                    count++;
-                }
-            })
-            .on('end', function() {
-                setTimeout(function() {
-                    // insert a dummy object in unfixed keyspace if nothing has been inserted
-                    // prevents blocking on levelup readstream creation against an empty db
-                    if (count === 0) {
-                        var keyval = key.compose(1, 'random');
-                        db.put(keyval, JSON.stringify({ignore: true}), function() { db.close(); });
+                console.log('got data');
+                q.defer(function(defercallback){
+                    var object_hash = key.hashObject(data);
+                    if (fixed_list.indexOf(object_hash) === -1) {
+                        // item is not fixed
+                        var object_id = key.compose(1, object_hash);
+                        db.put(object_id, JSON.stringify(data), function (err) {
+                            console.log('inserted ' + object_id);
+                            if (err) console.log('-- error --', err);
+                            defercallback(err, null);
+                        });
+                        count++;
                     }
-                    else {
-                        db.close();
-                    }
-
-                    if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
-
-                    if (callback) callback();
-                }, 5000);
+                });
+                
             });
+        console.log('okayyy2');
+        q.awaitAll(function(results){
+            // insert a dummy object in unfixed keyspace if nothing has been inserted
+            // prevents blocking on levelup readstream creation against an empty db
+            if (count === 0) {
+                var keyval = key.compose(1, 'random');
+                db.put(keyval, JSON.stringify({ignore: true}), function(err) { 
+                    finish();
+                });
+            }
+            else {
+                finish();
+            }
+
+            function finish(){
+                if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
+                db.close(); 
+                if (callback) callback(null);
+            }
+        });
     }
 }
 
-function deleteTask(task, callback){
+function deleteTask(task, callback){    
     var q = queue();
     if (verbose) { console.log('deleting task ' + task); }
     q.defer(fs.unlink, './ldb/' + task + '.ldb')
      .defer(fs.unlink, './ldb/' + task + '-tracking.ldb')
-     .await(callback);    
+     .awaitAll(function(err, results) { callback(err, results); });  
 }
 
 
