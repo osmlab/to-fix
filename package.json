@@ -33,7 +33,8 @@
     "serve-stop": "./node_modules/.bin/forever stop index.js",
     "log": "./node_modules/.bin/forever logs index.js",
     "watch": "watchify js/index.js -o js/bundle.js",
-    "watch-css": "stylus -w css/site.styl"
+    "watch-css": "stylus -w css/site.styl",
+    "test": "tape test/*.js"
   },
   "repository": {
     "type": "git",

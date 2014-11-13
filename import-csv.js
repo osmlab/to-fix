@@ -6,7 +6,9 @@ var fs = require('fs'),
     key = require('./lib/key.js'),
     queue = require('queue-async');
 
+var verbose = false;
 if (require.main === module) {
+    verbose = true;
     if (process.stdin.isTTY) {
         if (process.argv[2] === undefined) {
             return console.log('file argument required \n`node import-csv.js [source csv]`');
@@ -47,7 +49,7 @@ function loadTask(fileLoc, callback) {
     }
 
     function doImport(fileLoc, callback) {
-        console.log('importing ' + task);
+        if (verbose) { console.log('importing task ' + task); }
         fs.createReadStream(fileLoc)
             .pipe(csv())
             .on('data', function(data) {
@@ -73,7 +75,7 @@ function loadTask(fileLoc, callback) {
                         db.close();
                     }
 
-                    console.log('done with ' + task + '. ' + count + ' items imported');
+                    if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
 
                     if (callback) callback();
                 }, 5000);
@@ -83,7 +85,7 @@ function loadTask(fileLoc, callback) {
 
 function deleteTask(task, callback){
     var q = queue();
-    console.log('deleting ' + task);
+    if (verbose) { console.log('deleting task ' + task); }
     q.defer(fs.unlink, './ldb/' + task + '.ldb')
      .defer(fs.unlink, './ldb/' + task + '-tracking.ldb')
      .await(callback);    
