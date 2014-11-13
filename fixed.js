@@ -2,7 +2,8 @@ var fs = require('fs'),
     levelup = require('levelup'),
     leveldown = require('leveldown'),
     queue = require('queue-async'),
-    key = require('./lib/key.js');
+    key = require('./lib/key.js'),
+    rimraf = require('rimraf');
 
 function fixed(callback) {
 
@@ -44,6 +45,7 @@ function fixed(callback) {
         if (callback) callback(err); 
     });
 }
+
 
 module.exports = fixed;
 

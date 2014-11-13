@@ -17,10 +17,7 @@ if (require.main === module) {
     }
 }
 
-module.exports = {
-    loadTask: loadTask,
-    deleteTask: deleteTask
-}
+module.exports = loadTask;
 
 function loadTask(fileLoc, callback) {    
     var task = path.basename(fileLoc).split('.')[0],
@@ -112,16 +109,16 @@ function _doImport(fileLoc, task, fixed_list, callback) {
         
         q.awaitAll(function(err, results){
             if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
-            db.close(function(err){
-                console.log('closing database ' + task);
+            db.close(function(err){                
                 if (callback) callback(err);    
             });                             
         });    
     }); 
 }
 
+/*
 function deleteTask(task, callback){    
-    var q = queue(1);
+    var q = queue();
     if (verbose) { console.log('deleting task ' + task); }
     q.defer(rimraf, './ldb/' + task + '.ldb')
      .defer(rimraf, './ldb/' + task + '-tracking.ldb')
@@ -129,5 +126,4 @@ function deleteTask(task, callback){
         callback(err, results);
      });  
 }
-
-
+*/
