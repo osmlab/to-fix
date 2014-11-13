@@ -207,11 +207,13 @@ var tasks = {
     //     loader: nyc_overlaps },
     'inconsistent': {
         loader: inconsistent },
-    'npsdiff': {
-        loader: npsdiff },
     'duplicate_ways': {
         title: 'Duplicate Ways',
-        loader: osmi_geom }
+        loader: osmi_geom },
+    'unconnected_major_tokyo': {
+        title: 'Unconnected Tokyo',
+        focus: true,
+        loader: unconnected }   
 };
 
 var DEFAULT = 'deadendoneway';
@@ -317,9 +319,7 @@ function keeprights() {
         }
     });
 
-    renderUI({
-        title: tasks[qs('error')].title
-    });
+    renderUI();
 }
 
 // used for skipping or after marking something as fixed
@@ -405,7 +405,11 @@ function load() {
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
         $('#intro-modal').addClass('hidden');
         controls(true);
-        renderMenu();
+        if (tasks[qs('error')].focus) {
+            // put the title in some clever #title thing
+        } else {
+            renderMenu();
+        }
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
         } else {
@@ -481,9 +485,7 @@ function nyc_overlaps() {
         }
     });
 
-    renderUI({
-        title: tasks[qs('error')].title
-    });
+    renderUI();
 }
 
 function inconsistent() {
@@ -520,7 +522,6 @@ function inconsistent() {
     });
 
     renderUI({
-        title: tasks[qs('error')].title,
         name: current.name || current.ref
     });
 }
@@ -539,7 +540,6 @@ function tigerdelta() {
     map.fitBounds(current._bounds);
 
     renderUI({
-        title: tasks[qs('error')].title,
         name: current.name
     });
 }
@@ -565,9 +565,7 @@ function unconnected() {
         }
     });
 
-    renderUI({
-        title: tasks[qs('error')].title
-    });
+    renderUI();
 }
 
 function osmi_geom() {
@@ -576,9 +574,7 @@ function osmi_geom() {
     current.bounds = layer.getBounds();
     map.fitBounds(current.bounds);
 
-    renderUI({
-        title: tasks[qs('error')].title
-    });
+    renderUI();
 }
 
 function edit() {
@@ -615,8 +611,9 @@ function edit() {
 }
 
 function renderUI(data) {
+    if (!data) data = {};
+
     $('#hidden-controls').removeClass('hidden');
-    if (data.title) $('#title').html(data.title);
 
     if (data.name && data.name.length) {
         $('#name')
