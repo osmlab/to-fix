@@ -23,6 +23,7 @@ module.exports = {
 }
 
 function loadTask(fileLoc, callback) {
+
     var task = path.basename(fileLoc).split('.')[0],
         db = levelup('./ldb/' + task + '.ldb'),
         fixed_list = [],
@@ -31,6 +32,7 @@ function loadTask(fileLoc, callback) {
     var tracking = levelup('./ldb/' + task + '-tracking.ldb');
     tracking.close();
 
+    // @TODO: prevent failure on empty fixed/* files
     if (fs.existsSync('./fixed') && fs.readdirSync('./fixed').indexOf(task) > -1) {
         var rl = readline.createInterface({
             input: fs.createReadStream('./fixed/' + task),
