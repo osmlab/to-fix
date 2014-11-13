@@ -1,12 +1,11 @@
 var fs = require('fs'),
     path = require('path'),
-    readline = require('readline'),
     csv = require('csv-parser'),
     levelup = require('levelup'),
     key = require('./lib/key.js'),
     queue = require('queue-async');
 
-var verbose = false;
+var verbose = true;
 if (require.main === module) {
     verbose = true;
     if (process.stdin.isTTY) {
@@ -22,85 +21,134 @@ module.exports = {
     deleteTask: deleteTask
 }
 
-function loadTask(fileLoc, callback) {
+function loadTask(fileLoc, callback) {    
     var task = path.basename(fileLoc).split('.')[0],
-        db = levelup('./ldb/' + task + '.ldb'),
-        fixed_list = [],
-        count = 0;
+        topq = queue();
 
-    var tracking = levelup('./ldb/' + task + '-tracking.ldb');
-    tracking.close();
-
-    // @TODO: make fixedlist task-specific instead of global
-    if (fs.existsSync('./fixed') && (fs.readdirSync('./fixed').indexOf(task) > -1) && (fs.statSync('./fixed/' + task)['size'] > 0)) {
-        var rl = readline.createInterface({
-            input: fs.createReadStream('./fixed/' + task),
-            output: new require('stream')
+    // ensure that we create & close the tracking database before loading anything
+    topq.defer(function(tqcallback){
+        levelup('./ldb/' + task + '-tracking.ldb', {}, function(err, trackingdb){
+            if (err) return tqcallback(err);
+            trackingdb.close(function(err){                                                
+                tqcallback(err);
+            });
         });
+    });
 
-        rl.on('line', function(line) {
-            fixed_list.push(line);
+    topq.awaitAll(function(err, results){
+        // @TODO: make fixedlist task-specific instead of global
+        
+        // perform some tests to see if there's a 'fixed' file for this task
+        var fixedq = queue();
+        fixedq            
+            .defer(function(fqcallback){
+                fs.readdir('./fixed', function(err, files){ 
+                    if (err) return fqcallback(err); 
+                    fqcallback(err, (files.indexOf(task) > -1)); 
+                });
+            })
+            .defer(function(fqcallback){
+                fs.stat('./fixed/' + task, function(err, info){ 
+                    if (err) return fqcallback(err); 
+                    fqcallback(err, (info.size > 0)); 
+                });
+            });
+
+        // once the tests come back, check if they're all positive. if so, load fixes & tasks.
+        fixedq.awaitAll(function(err, results){                        
+            if((!err) && results.every(function(x) { return x; })) {
+                fs.readFile('./fixed/' + task, function(err, data){
+                    var fixed_list = data.toString().split("\n");
+                    _doImport(fileLoc, task, fixed_list, callback);
+                });
+            }            
+            else {
+                _doImport(fileLoc, task, [], callback);
+            }
         });
+    });   
+} 
 
-        rl.on('end', function() {
-            doImport(fileLoc, callback);
-        });
-    } else {
-        doImport(fileLoc, callback);
-    }
+function _doImport(fileLoc, task, fixed_list, callback) {
+    if (verbose) console.log('importing task from ' + fileLoc);
 
-    function doImport(fileLoc, callback) {
-        if (verbose) { console.log('importing task ' + task); }
+    var count = 0;
+
+    levelup('./ldb/' + task + '.ldb', function(err, db){
+
+        if (err) throw callback(err);
+
         var q = queue();
-        console.log('okayyyy');
-        fs.createReadStream(fileLoc)
-            .pipe(csv())
-            .on('data', function(data) {
-                console.log('got data');
-                q.defer(function(defercallback){
+
+        q.defer(function(qcallback){                
+            fs.createReadStream(fileLoc)
+                .pipe(csv())
+                .on('data', function(data) {                    
                     var object_hash = key.hashObject(data);
                     if (fixed_list.indexOf(object_hash) === -1) {
                         // item is not fixed
                         var object_id = key.compose(1, object_hash);
-                        db.put(object_id, JSON.stringify(data), function (err) {
-                            console.log('inserted ' + object_id);
-                            if (err) console.log('-- error --', err);
-                            defercallback(err, null);
-                        });
                         count++;
+                        q.defer(function(qsubcallback){
+                            db.put(object_id, JSON.stringify(data), function(err){
+                                qsubcallback(err);
+                            });
+                        });                            
                     }
+                })
+                .on('end', function(err){                    
+                    if(count === 0) {
+                        var keyval = key.compose(1, 'random');
+                        q.defer(db.put, keyval, JSON.stringify({ignore: true}));                            
+                    }
+                    qcallback(err);
                 });
-                
             });
-        console.log('okayyy2');
-        q.awaitAll(function(results){
-            // insert a dummy object in unfixed keyspace if nothing has been inserted
-            // prevents blocking on levelup readstream creation against an empty db
-            if (count === 0) {
-                var keyval = key.compose(1, 'random');
-                db.put(keyval, JSON.stringify({ignore: true}), function(err) { 
-                    finish();
-                });
-            }
-            else {
-                finish();
-            }
+        
+        q.awaitAll(function(err, results){
+            if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
+            db.close();                             
+            if (callback) callback(null);
+        });    
+    }); 
+}
 
-            function finish(){
-                if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
-                db.close(); 
-                if (callback) callback(null);
-            }
+
+// must not contain subdirectories
+function _deleteNonEmptyDirectory(path, callback) {
+    path = path.replace(/\/$/, '');
+    var q = queue();
+    q.defer(function(defercallback) {
+        fs.readdir(path, function(err, files){        
+            // no matching directory?
+            if (err) return defercallback(err);
+
+            files.forEach(function(f, i){
+                q.defer(fs.unlink, (path + '/' + f));
+                if(i === (files.length-1)) defercallback(null);
+            })
         });
-    }
+    });
+    q.awaitAll(function(err, results) {
+        if(err) callback(err);
+
+        fs.rmdir(path, function(err) {             
+            callback(err, null);
+        });        
+    });
 }
 
 function deleteTask(task, callback){    
     var q = queue();
     if (verbose) { console.log('deleting task ' + task); }
-    q.defer(fs.unlink, './ldb/' + task + '.ldb')
-     .defer(fs.unlink, './ldb/' + task + '-tracking.ldb')
-     .awaitAll(function(err, results) { callback(err, results); });  
+    q.defer(_deleteNonEmptyDirectory, './ldb/' + task + '.ldb')
+     .defer(_deleteNonEmptyDirectory, './ldb/' + task + '-tracking.ldb')
+     .awaitAll(function(err, results) { 
+        // don't throw errors for missing directories
+        if(err && (err.errno === 34) && (err.code === 'ENOENT')) err = null; 
+        
+        callback(err, results); 
+     });  
 }
 
 
