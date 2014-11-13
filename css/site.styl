@@ -1,5 +1,5 @@
 dark = #000
-trans = rgba(0, 0, 0, 0.8)
+trans = rgba(0, 0, 0, 0.75)
 glow = rgba(255, 255, 255, 0.5)
 disabled = rgba(0, 0, 0, 0.5)
 mid = #333
@@ -50,6 +50,18 @@ body
         padding: 5px 15px
         &.active
             color: bright
+
+#title
+    top: 0px
+    left: 0px
+    padding: 10px 15px
+    font-size: 25px
+    line-height: 2em
+    color: #fff
+    position: absolute
+    z-index: 999
+    background: trans
+    display: none
 
 #skip, #edit, #fixed
     text-align: center

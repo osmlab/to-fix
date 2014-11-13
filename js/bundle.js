@@ -405,14 +405,17 @@ function load() {
     if (auth.authenticated() && store.get('username') && store.get('userid')) {
         $('#intro-modal').addClass('hidden');
         controls(true);
-        if (tasks[qs('error')].focus) {
-            // put the title in some clever #title thing
-        } else {
-            renderMenu();
-        }
         if (qs('error') === undefined) {
             window.location.href = window.location.href + '?error=' + DEFAULT;
         } else {
+            if (tasks[qs('error')].focus) {
+                var title = $('#title');
+                title.text(tasks[(qs('error'))].title);
+                title.show();
+            } else {
+                renderMenu();
+            }
+
             $.ajax({
                 crossDomain: true,
                 url: url + 'error/' + qs('error'),
@@ -628,7 +631,7 @@ function renderMenu() {
     var $menu = $('#menu').html('');
     var err = qs('error');
     for (var item in tasks) {
-        if (tasks[item].title) {
+        if (tasks[item].title && !tasks[item].focus) {
             $menu.append(
                 $('<a></a>')
                     .attr('href', '?' + querystring.encode({ error: item }))

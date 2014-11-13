@@ -27,7 +27,7 @@ body {
 #name,
 #walkthrough {
   position: absolute;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0,0,0,0.75);
   z-index: 9001;
 }
 .controls:hover,
@@ -47,7 +47,7 @@ body {
   left: 0px;
   padding: 10px 0;
   position: absolute;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0,0,0,0.75);
   z-index: 9001;
 }
 #menu a {
@@ -56,6 +56,18 @@ body {
 }
 #menu a.active {
   color: #fff;
+}
+#title {
+  top: 0px;
+  left: 0px;
+  padding: 10px 15px;
+  font-size: 25px;
+  line-height: 2em;
+  color: #fff;
+  position: absolute;
+  z-index: 999;
+  background: rgba(0,0,0,0.75);
+  display: none;
 }
 #skip,
 #edit,
