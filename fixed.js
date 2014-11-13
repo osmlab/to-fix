@@ -27,7 +27,7 @@ function fixed(callback) {
                     })
                     .on('end', function(data) {
                         file.end();
-                        if (callback) callback();
+                        if (callback) callback(null);
                     });
             });
         });
