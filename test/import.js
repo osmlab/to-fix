@@ -19,8 +19,8 @@ tape('Basic import', function(t) {
         t.equal(numTasks, 1000, 'Imported 1000 tasks'); 
      });    
 });
-/*
-tape('correct countTasksBySkipval behavior', function(t) {
+
+tape('correct countTasksBySkipval() behavior', function(t) {
     t.plan(2);
 
     var doneTasks = [
@@ -60,7 +60,7 @@ tape('correct countTasksBySkipval behavior', function(t) {
 
 });
 
-
+/*
 tape('importing fixed tasks', function(t) {
     t.plan(2);
 
