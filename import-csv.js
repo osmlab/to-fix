@@ -3,9 +3,10 @@ var fs = require('fs'),
     csv = require('csv-parser'),
     levelup = require('levelup'),
     key = require('./lib/key.js'),
-    queue = require('queue-async');
+    queue = require('queue-async'),
+    rimraf = require('rimraf');
 
-var verbose = true;
+var verbose = false;
 if (require.main === module) {
     verbose = true;
     if (process.stdin.isTTY) {
@@ -89,7 +90,7 @@ function _doImport(fileLoc, task, fixed_list, callback) {
                         // item is not fixed
                         var object_id = key.compose(1, object_hash);
                         count++;
-                        q.defer(function(qsubcallback){
+                        q.defer(function(qsubcallback) {
                             db.put(object_id, JSON.stringify(data), function(err){
                                 qsubcallback(err);
                             });
@@ -99,7 +100,11 @@ function _doImport(fileLoc, task, fixed_list, callback) {
                 .on('end', function(err){                    
                     if(count === 0) {
                         var keyval = key.compose(1, 'random');
-                        q.defer(db.put, keyval, JSON.stringify({ignore: true}));                            
+                        q.defer(function(qsubcallback) {
+                            db.put(keyval, JSON.stringify({ignore: true}), function(err) {
+                                qsubcallback(err);
+                            });
+                        });
                     }
                     qcallback(err);
                 });
@@ -107,47 +112,21 @@ function _doImport(fileLoc, task, fixed_list, callback) {
         
         q.awaitAll(function(err, results){
             if (verbose) { console.log('done with ' + task + '. ' + count + ' items imported'); }
-            db.close();                             
-            if (callback) callback(null);
+            db.close(function(err){
+                console.log('closing database ' + task);
+                if (callback) callback(err);    
+            });                             
         });    
     }); 
 }
 
-
-// must not contain subdirectories
-function _deleteNonEmptyDirectory(path, callback) {
-    path = path.replace(/\/$/, '');
-    var q = queue();
-    q.defer(function(defercallback) {
-        fs.readdir(path, function(err, files){        
-            // no matching directory?
-            if (err) return defercallback(err);
-
-            files.forEach(function(f, i){
-                q.defer(fs.unlink, (path + '/' + f));
-                if(i === (files.length-1)) defercallback(null);
-            })
-        });
-    });
-    q.awaitAll(function(err, results) {
-        if(err) callback(err);
-
-        fs.rmdir(path, function(err) {             
-            callback(err, null);
-        });        
-    });
-}
-
 function deleteTask(task, callback){    
-    var q = queue();
+    var q = queue(1);
     if (verbose) { console.log('deleting task ' + task); }
-    q.defer(_deleteNonEmptyDirectory, './ldb/' + task + '.ldb')
-     .defer(_deleteNonEmptyDirectory, './ldb/' + task + '-tracking.ldb')
-     .awaitAll(function(err, results) { 
-        // don't throw errors for missing directories
-        if(err && (err.errno === 34) && (err.code === 'ENOENT')) err = null; 
-        
-        callback(err, results); 
+    q.defer(rimraf, './ldb/' + task + '.ldb')
+     .defer(rimraf, './ldb/' + task + '-tracking.ldb')
+     .awaitAll(function(err, results) {         
+        callback(err, results);
      });  
 }
 
