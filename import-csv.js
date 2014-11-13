@@ -3,24 +3,24 @@ var fs = require('fs'),
     readline = require('readline'),
     csv = require('csv-parser'),
     levelup = require('levelup'),
-    key = require('./lib/key.js');
+    key = require('./lib/key.js'),
+    queue = require('queue-async');
 
-if (process.stdin.isTTY) {
-    if (process.argv[2] === undefined) {
-        return console.log('file argument required \n`node import-csv.js [source csv]`');
+if (require.main === module) {
+    if (process.stdin.isTTY) {
+        if (process.argv[2] === undefined) {
+            return console.log('file argument required \n`node import-csv.js [source csv]`');
+        }
+        loadTask(process.argv[2]);
     }
-    loadTask(process.argv[2]);
-} else {
-    process.stdin.on('readable', function() {
-        var buf = process.stdin.read();
-        if (buf === null) return;
-        buf.toString().split('\n').forEach(function(file) {
-            if (file.length) loadTask(file, process.argv[2]);
-        });
-    });
 }
 
-function loadTask(fileLoc) {
+module.exports = {
+    loadTask: loadTask,
+    deleteTask: deleteTask
+}
+
+function loadTask(fileLoc, callback) {
     var task = path.basename(fileLoc).split('.')[0],
         db = levelup('./ldb/' + task + '.ldb'),
         fixed_list = [],
@@ -40,13 +40,13 @@ function loadTask(fileLoc) {
         });
 
         rl.on('end', function() {
-            doImport(fileLoc);
+            doImport(fileLoc, callback);
         });
     } else {
-        doImport(fileLoc);
+        doImport(fileLoc, callback);
     }
 
-    function doImport(fileLoc) {
+    function doImport(fileLoc, callback) {
         console.log('importing ' + task);
         fs.createReadStream(fileLoc)
             .pipe(csv())
@@ -67,12 +67,26 @@ function loadTask(fileLoc) {
                     // prevents blocking on levelup readstream creation against an empty db
                     if (count === 0) {
                         var keyval = key.compose(1, 'random');
-                        db.put(keyval, JSON.stringify({ignore: true}));
+                        db.put(keyval, JSON.stringify({ignore: true}), function() { db.close(); });
                     }
-                    db.close();
+                    else {
+                        db.close();
+                    }
 
                     console.log('done with ' + task + '. ' + count + ' items imported');
+
+                    if (callback) callback();
                 }, 5000);
             });
     }
 }
+
+function deleteTask(task, callback){
+    var q = queue();
+    console.log('deleting ' + task);
+    q.defer(fs.unlink, './ldb/' + task + '.ldb')
+     .defer(fs.unlink, './ldb/' + task + '-tracking.ldb')
+     .await(callback);    
+}
+
+
