@@ -31,9 +31,7 @@ function loadTask(fileLoc, callback) {
         });
     });
 
-    topq.awaitAll(function(err, results){
-        // @TODO: make fixedlist task-specific instead of global
-        
+    topq.awaitAll(function(err, results){        
         // perform some tests to see if there's a 'fixed' file for this task
         var fixedq = queue();
         fixedq            
