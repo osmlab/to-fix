@@ -7,14 +7,14 @@ var fs = require('fs'),
     queue = require('queue-async');
 
 // adjusts task skipvals based on geometry, prioritizing particular areas/markets
-
-var quickMode = true; // should we bother matching against every geometry or just quit after one hit?
+var quickMode = true;
 var verbose = false;
 var maxOverlaps = 0;
 var geojson = {};
 
 if (require.main === module) {    
     verbose = true;
+    var quick = true; // should we bother matching against every geometry or just quit after one hit?
     var geojsonFiles = [];
 
     process.argv
@@ -23,16 +23,17 @@ if (require.main === module) {
             // if using overlapping geojson files, this flag might be useful. 
             // otherwise, no.
             if (elem === '--slow') {
-                quickMode = false;
+                quick = false;
             } else {                
                 geojsonFiles.push(elem);
             }
         });
 
-    prioritize(process.argv[2], geojsonFiles, function(){});
+    prioritize(process.argv[2], geojsonFiles, quick, function(){});
 }
 
-function prioritize(task, geojsonFiles, callback) {
+function prioritize(task, geojsonFiles, quick, callback) {
+    quickMode = quick;
     var q = queue();
     geojsonFiles.forEach(function(f) {
         q.defer(load, f);
@@ -84,7 +85,7 @@ function processGeoJSON(task, callback){
             })
             .on('end', function(){
                 q.awaitAll(function(err, results) {
-                    reorder(db, maxOverlaps, function(err){
+                    reorder(db, maxOverlaps, function(err){                        
                         db.close(function(err){
                             callback(err);
                         });
