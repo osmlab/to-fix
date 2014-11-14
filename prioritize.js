@@ -93,19 +93,7 @@ function processGeoJSON(task, callback){
         db.createReadStream()
             .on('data', function(data) {                
                 q.push(data);   
-            });
-            /*
-            .on('end', function(){
-
-                q.awaitAll(function(err, results) {
-                    reorder(db, maxOverlaps, function(err){                        
-                        db.close(function(err){
-                            callback(err);
-                        });
-                    }); 
-                });
-            });
-            */
+            });            
     });
 }
 
