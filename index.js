@@ -84,14 +84,14 @@ router.addRoute('/fixed/:error', {
                 db.get(body.state._id, function(err, value) {
                     if (err) {
                         debug('error fetching key value', body.state._id);
-                        return error(err, 500, 'error fetching key value ' + body.state._id);
+                        return error(res, 500, 'error fetching key value ' + body.state._id);
                     }
 
                     // delete the record from positive skipval keyspace
                     db.del(body.state._id, function(err) {
                         if (err){
                             debug('error deleting', err);
-                            return error(err, 500, 'error deleting key value ' + body.state._id);
+                            return error(res, 500, 'error deleting key value ' + body.state._id);
                         }
 
                         // move record into skipval=0 keyspace, meaning it's fixed
