@@ -4,7 +4,8 @@ var fs = require('fs'),
     key = require('./lib/key.js'),
     levelup = require('levelup'),
     wellknown = require('wellknown'),
-    queue = require('queue-async');
+    queue = require('queue-async'),
+    async = require('async');
 
 // adjusts task skipvals based on geometry, prioritizing particular areas/markets
 var quickMode = true;
@@ -75,15 +76,27 @@ function processGeoJSON(task, callback){
     levelup('./ldb/' + task + '.ldb', function(err, db) {
         if (err) return callback(err);
 
-        var q = queue();
+        var q = async.queue(function(data, qcallback) {
+            checkOverlaps(db, data, qcallback);
+        });
+
+        q.drain = function() {
+            reorder(db, maxOverlaps, function(err){                        
+                db.close(function(err){
+                    callback(err);
+                });
+            }); 
+        }
 
         maxOverlaps = 0;
         if (verbose) console.log('- checking for geometry overlap');
         db.createReadStream()
-            .on('data', function(data) {
-                q.defer(checkOverlaps, db, data);                
-            })
+            .on('data', function(data) {                
+                q.push(data);   
+            });
+            /*
             .on('end', function(){
+
                 q.awaitAll(function(err, results) {
                     reorder(db, maxOverlaps, function(err){                        
                         db.close(function(err){
@@ -92,6 +105,7 @@ function processGeoJSON(task, callback){
                     }); 
                 });
             });
+            */
     });
 }
 
