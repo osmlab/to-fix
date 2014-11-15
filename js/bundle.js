@@ -581,10 +581,10 @@ function osmi_geom() {
 }
 
 function edit() {
-    var bottom = current._bounds._southWest.lat - 0.0005;
-    var left = current._bounds._southWest.lng - 0.0005;
-    var top = current._bounds._northEast.lat + 0.0005;
-    var right = current._bounds._northEast.lng + 0.0005;
+    var bottom = current._bounds._southWest.lat - 0.001;
+    var left = current._bounds._southWest.lng - 0.001;
+    var top = current._bounds._northEast.lat + 0.001;
+    var right = current._bounds._northEast.lng + 0.001;
 
     var newWindow = window.open('');
 
