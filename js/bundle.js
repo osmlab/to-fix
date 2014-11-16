@@ -316,6 +316,10 @@ function keeprights() {
             current._bounds = layer.getBounds();
             map.fitBounds(current._bounds);
             omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
+        },
+        error: function(err) {
+            console.log(err);
+            next();
         }
     });
 
@@ -565,6 +569,10 @@ function unconnected() {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
                 }
             });
+        },
+        error: function(err) {
+            console.log(err);
+            next();
         }
     });
 
@@ -576,7 +584,6 @@ function osmi_geom() {
     layer.setStyle(featureStyle);
     current.bounds = layer.getBounds();
     map.fitBounds(current.bounds);
-
     renderUI();
 }
 
