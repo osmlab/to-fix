@@ -205,7 +205,6 @@ function keeprights() {
     renderUI();
 }
 
-// used for skipping or after marking something as fixed
 function next() {
     $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
@@ -485,7 +484,6 @@ function unconnected_major_tokyo() {
                 dataType: 'xml',
                 success: function (xml) {
 
-                    console.log(xml);
                     var user = xml.getElementsByTagName('node')[0].getAttribute('user');
                     if (users.indexOf(user) > -1) {
                         console.log('node previously touched by', user);
