@@ -197,7 +197,6 @@ function keeprights() {
             omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
         },
         error: function(err) {
-            console.log(err);
             next();
         }
     });
@@ -449,7 +448,6 @@ function unconnected() {
             });
         },
         error: function(err) {
-            console.log(err);
             next();
         }
     });
@@ -494,12 +492,14 @@ function unconnected_major_tokyo() {
                     var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
                 },
                 error: function(err) {
-                    next();
+                    if (err.status == 410) return markDone();
+                    return next();
                 }
             });
         },
         error: function(err) {
-            next();
+            if (err.status == 410) return markDone();
+            return next();
         }
     });
 
