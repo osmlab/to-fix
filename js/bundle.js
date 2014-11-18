@@ -379,13 +379,14 @@ Mousetrap.bind(['right', 'j'], function() {
 });
 
 function enableDone() {
-    setTimeout(function() {
+    // super temporary
+    // setTimeout(function() {
         $('#fixed').removeClass('disabled');
         Mousetrap.bind(['enter', 'e'], function() {
             $('#edit').click();
         });
         $('#fixed').on('click', markDone);
-    }, 5000);
+    // }, 500);
 }
 
 var alt = false;
@@ -439,6 +440,10 @@ function load() {
                     current._id = data.key;
                     $('#map').removeClass('loading');
                     tasks[qs('error') || DEFAULT].loader();
+
+                    // super temporary
+                    enableDone();
+
                 } else {
                     $('#map').removeClass('loading');
                     showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
