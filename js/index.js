@@ -92,7 +92,11 @@ var tasks = {
     'unconnected_major_tokyo': {
         title: 'Unconnected Tokyo',
         focus: true,
-        loader: unconnected_major_tokyo }   
+        loader: unconnected_tokyo },
+    'unconnected_minor_tokyo': {
+        title: 'Unconnected minor Tokyo',
+        focus: true,
+        loader: unconnected_tokyo }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -455,7 +459,7 @@ function unconnected() {
     renderUI();
 }
 
-function unconnected_major_tokyo() {
+function unconnected_tokyo() {
     current._osm_object_type = 'node';
     current._osm_object_id = current.node_id;
 
