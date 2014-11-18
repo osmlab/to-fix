@@ -27,7 +27,8 @@ function makeStats(dbLocation, callback) {
         if (err) {
             if (db && !db.isClosed()) db.close();
             console.log('opening error', err);
-            return callback();
+            if (callback) return callback();
+            return;
         }
 
         var stats = {};
@@ -57,7 +58,8 @@ function makeStats(dbLocation, callback) {
             }).on('error', function(err) {
                 db.close();
                 console.log('reading error', err);
-                return callback();
+                if (callback) return callback();
+                return;
             }).on('end', function() {
                 db.close();
                 file.write('time,action,user,duration');
@@ -91,7 +93,8 @@ function makeStats(dbLocation, callback) {
                 file.write('\n');
                 file.end();
                 console.log('wrote to ', fileName);
-                return callback();
+                if (callback) return callback();
+                return;
             });
     });
 }
