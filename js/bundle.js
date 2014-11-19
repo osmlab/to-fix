@@ -641,11 +641,10 @@ function unconnected_tokyo() {
 }
 
 function osmi_geom() {
-    console.log(current);
     var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
-    current.bounds = layer.getBounds();
-    map.fitBounds(current.bounds);
+    current._bounds = layer.getBounds();
+    map.fitBounds(current._bounds);
     renderUI();
 }
 
