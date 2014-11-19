@@ -96,7 +96,11 @@ var tasks = {
     'unconnected_minor_tokyo': {
         title: 'Unconnected minor Tokyo',
         focus: true,
-        loader: unconnected_tokyo }
+        loader: unconnected_tokyo },
+    'tokyo_dupes': {
+        title: 'Tokyo Dupes',
+        focus: true,
+        loader: osmi_geom }
 };
 
 var DEFAULT = 'deadendoneway';

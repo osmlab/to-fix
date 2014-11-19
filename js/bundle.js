@@ -217,7 +217,11 @@ var tasks = {
     'unconnected_minor_tokyo': {
         title: 'Unconnected minor Tokyo',
         focus: true,
-        loader: unconnected_tokyo }
+        loader: unconnected_tokyo },
+    'tokyo_dupes': {
+        title: 'Tokyo Dupes',
+        focus: true,
+        loader: osmi_geom }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -637,6 +641,7 @@ function unconnected_tokyo() {
 }
 
 function osmi_geom() {
+    console.log(current);
     var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
     layer.setStyle(featureStyle);
     current.bounds = layer.getBounds();
