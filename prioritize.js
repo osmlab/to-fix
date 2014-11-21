@@ -13,7 +13,7 @@ var verbose = false;
 var maxOverlaps = 0;
 var geojson = {};
 
-if (require.main === module) {    
+if (require.main === module) {
     verbose = true;
     var quick = true; // should we bother matching against every geometry or just quit after one hit?
     var geojsonFiles = [];
@@ -21,11 +21,11 @@ if (require.main === module) {
     process.argv
         .filter(function(elem, i) { return (i>2); })
         .forEach(function(elem, i) {
-            // if using overlapping geojson files, this flag might be useful. 
+            // if using overlapping geojson files, this flag might be useful.
             // otherwise, no.
             if (elem === '--slow') {
                 quick = false;
-            } else {                
+            } else {
                 geojsonFiles.push(elem);
             }
         });
@@ -42,8 +42,7 @@ function prioritize(task, geojsonFiles, quick, callback) {
     q.awaitAll(function(err, results) {
         if (err) {
             callback(err);
-        }
-        else {           
+        } else {
             processGeoJSON(task, function(err) { callback(err); });
         }
     });
@@ -63,14 +62,14 @@ function load(elem, callback) {
             if (verbose) console.log('# ' + err);
             callback(err);
         } else {
-            geojson[basename] = boundary;  
-            if (verbose) console.log('- loaded GeoJSON file ' + elem);  
+            geojson[basename] = boundary;
+            if (verbose) console.log('- loaded GeoJSON file ' + elem);
             callback(null);
-        }    
+        }
     });
 }
 
-function processGeoJSON(task, callback){
+function processGeoJSON(task, callback) {
     if (verbose) console.log('- opening leveldb database ' + task);
 
     levelup('./ldb/' + task + '.ldb', function(err, db) {
@@ -81,19 +80,19 @@ function processGeoJSON(task, callback){
         });
 
         q.drain = function() {
-            reorder(db, maxOverlaps, function(err){                        
-                db.close(function(err){
+            reorder(db, maxOverlaps, function(err) {
+                db.close(function(err) {
                     callback(err);
                 });
-            }); 
-        }
+            });
+        };
 
         maxOverlaps = 0;
         if (verbose) console.log('- checking for geometry overlap');
         db.createReadStream()
-            .on('data', function(data) {                
-                q.push(data);   
-            });            
+            .on('data', function(data) {
+                q.push(data);
+            });
     });
 }
 
@@ -115,7 +114,7 @@ function checkOverlaps(db, data, callback) {
 
         // test for presence of point in polygon
         if (gju.pointInPolygon(wellknown.parse(data.value.st_astext), geojson[k].features[0].geometry)) {
-            if (!data.value.priority) data.value.priority = []; 
+            if (!data.value.priority) data.value.priority = [];
             data.value.priority.push(k);
             overlapCount++;
             if (quickMode) return false;
@@ -151,7 +150,7 @@ function reorder(db, maxOverlaps, callback) {
 
             // rename the task ID to reflect the new skipval
             delete data.value.overlapCount;
-            db.del(data.key, function(err){
+            db.del(data.key, function(err) {
                 if (err && verbose) console.log('# error deleting key ' + newKey);
                 db.put(newKey, JSON.stringify(data.value), function(err) {
                     if (err && verbose) console.log('# error saving key ' + newKey);
