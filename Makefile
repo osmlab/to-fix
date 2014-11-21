@@ -11,7 +11,7 @@ install:
 	sh install.sh
 
 load: northeast_highway_intersects_building.csv tigerdelta-latest.zip osmi-latest.zip keepright-latest.zip
-	node index.js --fixed > fixed.json
+	node fixed.js
 	rm -rf ldb
 	mkdir ldb
 	sh load.sh fixed.json
