@@ -30,7 +30,7 @@ if (require.main === module) {
             }
         });
 
-    prioritize(process.argv[2], geojsonFiles, quick, function(){});
+    prioritize(process.argv[2], geojsonFiles, quick);
 }
 
 function prioritize(task, geojsonFiles, quick, callback) {
@@ -43,7 +43,7 @@ function prioritize(task, geojsonFiles, quick, callback) {
         if (err) {
             callback(err);
         } else {
-            processGeoJSON(task, function(err) { callback(err); });
+            processGeoJSON(task, callback);
         }
     });
 }
@@ -70,6 +70,7 @@ function load(elem, callback) {
 }
 
 function processGeoJSON(task, callback) {
+    if (!callback) callback = function() {};
     if (verbose) console.log('- opening leveldb database ' + task);
 
     levelup('./ldb/' + task + '.ldb', function(err, db) {
