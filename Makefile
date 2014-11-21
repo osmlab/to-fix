@@ -14,8 +14,7 @@ load: northeast_highway_intersects_building.csv tigerdelta-latest.zip osmi-lates
 	node fixed.js
 	rm -rf ldb
 	mkdir ldb
-	sh load.sh fixed.json
-	rm fixed.json
+	sh load.sh
 
 stats:
 	sh getStats.sh
