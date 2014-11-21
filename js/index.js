@@ -100,6 +100,10 @@ var tasks = {
     'tokyo_dupes': {
         title: 'Tokyo Dupes',
         focus: true,
+        loader: osmi_geom },
+    'tokyo_islands': {
+        title: 'Tokyo Islands',
+        focus: true,
         loader: osmi_geom }
 };
 
