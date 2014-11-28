@@ -26,6 +26,28 @@ elif [ "$platform" = 'linux' ]; then
    apt-get install -y zip git vim htop bzip2 curl libleveldb-dev nodejs npm parallel
    ln -s /usr/bin/nodejs /usr/bin/node
 
+   # play nicely with other users
+   sh -c 'echo "
+   local all postgres trust
+   local all all trust
+   host all all 127.0.0.1/32 trust
+   host all all ::1/128 trust
+   host replication postgres samenet trust
+   " > /etc/postgresql/9.3/main/pg_hba.conf'
+
+   sudo killall postgres
+
+   # move postgres to /mnt
+   cd /var/lib/postgresql/9.3
+   mkdir -p /mnt/data/postgres
+   cp -r main /mnt/data/postgres
+   chown -R postgres:postgres /mnt/data/postgres
+   rm -rf main
+   ln -s /mnt/data/postgres/main main
+
+   /etc/init.d/postgresql start
+   sleep 5
+
    pg_user='postgres'
 fi
 
