@@ -50,13 +50,11 @@ elif [ "$platform" = 'linux' ]; then
       mount /dev/mapper/volgroup-lvoldata /mnt
    fi
 
-   # move postgres to /mnt
-   cd /var/lib/postgresql/9.3
    mkdir -p /mnt/data/postgres
-   cp -r main /mnt/data/postgres
+   cp -r /var/lib/postgresql/9.3/main /mnt/data/postgres
    chown -R postgres:postgres /mnt/data/postgres
-   rm -rf main
-   ln -s /mnt/data/postgres/main main
+   rm -rf /var/lib/postgresql/9.3/main
+   ln -s /mnt/data/postgres/main /var/lib/postgresql/9.3/main
 
    /etc/init.d/postgresql start
    sleep 5
