@@ -14,17 +14,12 @@ elif [ "$platform" = 'linux' ]; then
    apt-get -y update
 
    echo "- installing postgres + postgis"
-   apt-get install -y postgres-xc-client
    apt-get install -y libpq-dev libgeos-c1 libgeos++-dev proj-bin mapnik-utils postgresql-9.3 postgresql-9.3-postgis-2.1 postgresql-contrib-9.3 unzip postgresql-client-9.3 postgresql-common postgresql-client-common postgresql-plpython-9.3
-   apt-get install -y zip git vim htop bzip2 curl gdal-bin s3cmd
+   apt-get install -y zip git vim htop bzip2 curl gdal-bin lvm2 nodejs npm parallel
+   ln -s /usr/bin/nodejs /usr/bin/node
 
    echo "- setting up postgres permissions + database"
    chmod a+rx $HOME
-
-   echo "- installing node"
-   apt-get -y update
-   apt-get install -y zip git vim htop bzip2 curl libleveldb-dev nodejs npm parallel
-   ln -s /usr/bin/nodejs /usr/bin/node
 
    # play nicely with other users
    sh -c 'echo "
@@ -36,6 +31,24 @@ elif [ "$platform" = 'linux' ]; then
    " > /etc/postgresql/9.3/main/pg_hba.conf'
 
    sudo killall postgres
+
+   if [ -e "/dev/xvdb" ]; then
+      umount /dev/xvdb || echo "unmount /dev/xvdb no-op"
+      pvcreate /dev/xvdb
+
+      if [ -e "/dev/xvdc" ]; then pvcreate /dev/xvdc; fi
+      if [ -e "/dev/xvdd" ]; then pvcreate /dev/xvdd; fi
+      if [ -e "/dev/xvde" ]; then pvcreate /dev/xvde; fi
+
+      vgcreate volgroup /dev/xvdb
+      if [ -e "/dev/xvdc" ]; then vgextend volgroup /dev/xvdc; fi
+      if [ -e "/dev/xvdd" ]; then vgextend volgroup /dev/xvdd; fi
+      if [ -e "/dev/xvde" ]; then vgextend volgroup /dev/xvde; fi
+
+      lvcreate -I64 -i2 -l +100%FREE volgroup -n lvoldata
+      mkfs.ext4 /dev/mapper/volgroup-lvoldata
+      mount /dev/mapper/volgroup-lvoldata /mnt
+   fi
 
    # move postgres to /mnt
    cd /var/lib/postgresql/9.3
