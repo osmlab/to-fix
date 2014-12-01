@@ -81,9 +81,6 @@ var tasks = {
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
         loader: tigerdelta },
-    // 'northeast_highway_intersects_building': {
-    //     title: 'Highway/building overlap',
-    //     loader: nyc_overlaps },
     'inconsistent': {
         loader: inconsistent },
     'duplicate_ways': {
