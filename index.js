@@ -6,30 +6,27 @@ var http = require('http'),
     key = require('./lib/key.js');
 
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 function debug(x){
     process.stderr.write(x + '\n');
 }
 
-var headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, GET',
-    'Access-Control-Allow-Credentials': false,
-    'Access-Control-Max-Age': '86400'
-};
-var port = 3001;
-
 app.get('/', function(req, res){
-  res.send('hello world');
+    res.send('hey hey hey');
 });
 
 app.post('/error/:error', function(req, res) {
-    getNextItem(opts.params.error, res, function(err, kv) {
+    getNextItem(req.params.error, res, function(err, kv) {
         if (err) {
             debug('/error route', err);
             return error(res, 500, err);
         }
-        track(opts.params.error, req.body.user, 'got', {_id: kv.key});
+        track(req.params.error, req.body.user, 'got', {_id: kv.key});
         res.writeHead(200, headers);
         return res.end(JSON.stringify(kv));
     });
@@ -38,7 +35,7 @@ app.post('/error/:error', function(req, res) {
 app.post('/fixed/:error', function(req, res) {
     var body = req.body;
     if (body.user && body.state._id) {
-        track(opts.params.error, body.user, 'fixed', body.state);
+        track(req.params.error, body.user, 'fixed', body.state);
 
         // mark the thing as done
 
@@ -47,7 +44,7 @@ app.post('/fixed/:error', function(req, res) {
     }
 });
 
-app.listen(port);
+app.listen(3001);
 
 function getNextItem(error, res, callback) {
     if (error === (undefined || 'undefined')) {
