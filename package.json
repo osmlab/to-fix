@@ -14,6 +14,7 @@
     "mousetrap": "0.0.1",
     "osm-auth": "^0.2.6",
     "pg": "^4.0.0",
+    "pg-native": "^1.7.1",
     "queue-async": "^1.0.7",
     "rimraf": "^2.2.8",
     "serve": "^1.4.0",
