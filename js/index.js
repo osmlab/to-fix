@@ -26,11 +26,11 @@ var randomPlay = [{
     node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-2.1964838,51.2515612]},"type":"Feature","properties":{}}]}
 }];
 
-var auth = osmAuth({
-    oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
-    oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
-    landing: 'land.html'
-});
+// var auth = osmAuth({
+//     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
+//     oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
+//     landing: 'land.html'
+// });
 
 var tasks = {
     'deadendoneway': {
@@ -175,22 +175,22 @@ $('#start-walkthrough').on('click', function() {
     tour.trigger('depart.tourbus');
 });
 
-$('#go').on('click', function() {
-    auth.authenticate(function(err) {
-        auth.xhr({
-            method: 'GET',
-            path: '/api/0.6/user/details'
-        }, function(err, details) {
-            if (err) return console.log(err);
-            if (auth.authenticated()) {
-                details = details.getElementsByTagName('user')[0];
-                store.set('username', details.getAttribute('display_name'));
-                store.set('userid', details.getAttribute('id'));
-                load();
-            }
-        });
-    });
-});
+// $('#go').on('click', function() {
+//     auth.authenticate(function(err) {
+//         auth.xhr({
+//             method: 'GET',
+//             path: '/api/0.6/user/details'
+//         }, function(err, details) {
+//             if (err) return console.log(err);
+//             if (auth.authenticated()) {
+//                 details = details.getElementsByTagName('user')[0];
+//                 store.set('username', details.getAttribute('display_name'));
+//                 store.set('userid', details.getAttribute('id'));
+//                 load();
+//             }
+//         });
+//     });
+// });
 
 $(load);
 
@@ -266,14 +266,11 @@ Mousetrap.bind(['right', 'j'], function() {
 });
 
 function enableDone() {
-    // super temporary
-    // setTimeout(function() {
-        $('#fixed').removeClass('disabled');
-        Mousetrap.bind(['enter', 'e'], function() {
-            $('#edit').click();
-        });
-        $('#fixed').on('click', markDone);
-    // }, 500);
+    $('#fixed').removeClass('disabled');
+    Mousetrap.bind(['enter', 'e'], function() {
+        $('#edit').click();
+    });
+    $('#fixed').on('click', markDone);
 }
 
 var alt = false;
@@ -296,7 +293,7 @@ function controls(show) {
 }
 
 function load() {
-    if (auth.authenticated() && store.get('username') && store.get('userid')) {
+    // if (auth.authenticated() && store.get('username') && store.get('userid')) {
         $('#intro-modal').addClass('hidden');
         controls(true);
         if (qs('error') === undefined) {
@@ -337,16 +334,16 @@ function load() {
                 }
             });
         }
-    } else {
-        pushLoop();
-        var player = setInterval(pushLoop, 5000);
-        $('#start-walkthrough')
-            .removeClass('hidden')
-            .on('click', function() {
-                $('#hidden-controls').addClass('clickthrough');
-                clearInterval(player);
-            });
-    }
+    // } else {
+    //     pushLoop();
+    //     var player = setInterval(pushLoop, 5000);
+    //     $('#start-walkthrough')
+    //         .removeClass('hidden')
+    //         .on('click', function() {
+    //             $('#hidden-controls').addClass('clickthrough');
+    //             clearInterval(player);
+    //         });
+    // }
 }
 
 function pushLoop() {
