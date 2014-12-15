@@ -1,150 +1,60 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: rgba(255,255,255,0.5);
+#top-bar {
+    height: 40px;
 }
-#tofix a {
-  color: rgba(255,255,255,0.5);
+
+#top-buttons {
+    height: 40px;
+    text-align: right;
 }
-#error-message {
-  top: 0px;
-  position: absolute;
-  text-align: center;
-  z-index: 999;
-  width: 100%;
-  display: none;
+
+#main {
+    position: absolute;
+    top: 40px;
+    bottom: 0;
+    width: 100%;
 }
+
 #map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  background: #000;
+    position: relative;
+    width: 100%;
+    bottom: 0;
 }
-.controls,
-#login,
-#name,
-#walkthrough {
-  position: absolute;
-  background-color: rgba(0,0,0,0.75);
-  z-index: 9001;
+
+#slider {
+    height: 50px;
+    width: 10px;
+    top: 300px;
+    bottom: 0;
+    position: absolute;
+    z-index: 9999;
 }
-.controls:hover,
-#login:hover,
-#name:hover,
-#walkthrough:hover,
-.controls.active,
-#login.active,
-#name.active,
-#walkthrough.active {
-  background: #000;
-  color: #fff;
-  cursor: pointer;
+
+#actions h2 {
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    padding: 20px;
+    border-left: 1px solid black;
+    text-transform: uppercase;
 }
-#menu {
-  top: 0px;
-  left: 0px;
-  padding: 10px 0;
-  position: absolute;
-  background-color: rgba(0,0,0,0.75);
-  z-index: 9001;
+
+#actions h2:first-of-type {
+    border-left: none;
 }
-#menu a {
-  display: block;
-  padding: 5px 15px;
+
+#actions h2:hover {
+    background: black;
 }
-#menu a.active {
-  color: #fff;
+
+#error-message {
+    top: 0px;
+    position: absolute;
+    text-align: center;
+    z-index: 999;
+    width: 100%;
+    display: none;
 }
-#title {
-  top: 0px;
-  left: 0px;
-  padding: 10px 15px;
-  font-size: 25px;
-  line-height: 2em;
-  color: #fff;
-  position: absolute;
-  z-index: 999;
-  background: rgba(0,0,0,0.75);
-  display: none;
-}
-#skip,
-#edit,
-#fixed {
-  text-align: center;
-  width: 33.3333%;
-  line-height: 2.75em;
-  font-size: 25px;
-  bottom: 0px;
-  color: #fff;
-  cursor: pointer;
-}
-#edit {
-  left: 0;
-}
-#skip {
-  border-left: 1px solid #000;
-  left: 33.3333%;
-}
-#fixed {
-  border-left: 1px solid #000;
-  right: 0;
-}
-#login,
-#walkthrough {
-  cursor: pointer;
-  padding: 15px 20px;
-  text-align: center;
-  bottom: 10px;
-  left: 10px;
-  color: #fff;
-}
-.clickthrough {
-  pointer-events: none;
-}
-.leaflet-bar,
-#map .leaflet-control-layers {
-  border: 0px;
-  background: #000;
-}
-.leaflet-bar a,
-.leaflet-bar a:hover {
-  border-bottom: none;
-  border-bottom-color: rgba(0,0,0,0);
-}
-#name {
-  color: #fff;
-  width: 250px;
-  text-align: center;
-  padding: 10px 15px;
-  line-height: 2em;
-  font-size: 20px;
-  left: 45%;
-}
-.disabled:hover {
-  cursor: default !important;
-}
-#intro-modal-content {
-  position: absolute;
-  top: 33%;
-  left: 0;
-  right: 0;
-}
-.tourbus-container,
-.tourbus-container a {
-  color: #000 !important;
-}
-.tourbus-leg-inner {
-  padding: 0;
-}
-.tourbus-leg-inner p {
-  padding: 20px 20px 0 20px;
-}
-.tourbus-next,
-.tourbus-stop {
-  border-top: 1px solid #ccc;
-  padding: 10px 20px;
-  text-align: center;
-  cursor: pointer;
+
+.fill-dark {
+    background-color: rgba(0,0,0,0.5);
 }

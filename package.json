@@ -19,7 +19,6 @@
     "rimraf": "^2.2.8",
     "serve": "^1.4.0",
     "store": "~1.3.16",
-    "stylus": "~0.47.3",
     "tape": "^3.0.3",
     "watchify": "~1.0.1",
     "wellknown": "^0.3.0"
@@ -30,12 +29,11 @@
     "hintify": "~0.1.0"
   },
   "scripts": {
-    "start": "./node_modules/.bin/serve & npm run watch & npm run watch-css",
+    "start": "./node_modules/.bin/serve & npm run watch",
     "serve": "./node_modules/.bin/forever start index.js",
     "serve-stop": "./node_modules/.bin/forever stop index.js",
     "log": "./node_modules/.bin/forever logs index.js",
     "watch": "watchify js/index.js -o js/bundle.js",
-    "watch-css": "stylus -w css/site.styl",
     "test": "tape test/*.js"
   },
   "repository": {
