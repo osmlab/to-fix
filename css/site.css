@@ -1,32 +1,34 @@
-#top-bar {
-    height: 40px;
+/* overriding base a little, no offense saman :p */
+body {
+    font: 16px/24px "Helvetica Neue", Helvetica, sans-serif;
 }
 
-#top-buttons {
-    height: 40px;
-    text-align: right;
+h1, h2, h3, h4, h5, h6 {
+    color: black;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-weight: bold;
+    margin: 0;
+}
+/* end overriding */
+
+a { color: #666; }
+a:hover { color: #000; }
+
+#sidebar {
+    height: 100%;
 }
 
-#main {
-    position: absolute;
-    top: 40px;
-    bottom: 0;
-    width: 100%;
+#sidebar a {
+    display: block;
+}
+
+#user-stuff {
+    line-height: 2em;
 }
 
 #map {
-    position: relative;
     width: 100%;
-    bottom: 0;
-}
-
-#slider {
-    height: 50px;
-    width: 10px;
-    top: 300px;
-    bottom: 0;
-    position: absolute;
-    z-index: 9999;
+    height: 100%;
 }
 
 #actions h2 {
@@ -56,5 +58,10 @@
 }
 
 .fill-dark {
-    background-color: rgba(0,0,0,0.5);
+    background-color: black;
+}
+
+.fill-black {
+    background: #000;
+    color: white;
 }

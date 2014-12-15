@@ -8,24 +8,25 @@
     <link href='//api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
     <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
-    <link rel="stylesheet" type="text/css" href="css/site.css">
+    <link rel="stylesheet" type="text/css" href="./css/site.css">
+    <link rel="stylesheet" type="text/css" href="./css/colors.min.css">
 </head>
-<body id='tofix' class='fill-grey'>
+<body id='tofix' class='fill-grey unlimiter'>
     <div id="error-message" class="note error">&nbsp;<span></span>&nbsp;</div>
-    <div id='top-bar' class='col12 fill-white keyline-bottom pad1 pad2x unlimiter'>
-        <div id='logo' class='col2'>
-            <h3 class='fancy'>to-fix</h3>
+
+    <div id='sidebar' class='col2 fill-white'>
+        <div id='top-section' class='keyline-bottom pad2'>
+            <a href=""><h1>to-fix</h1></a>
         </div>
-        <div id='top-buttons' class='col10 pad1y' style='text'>
-            <a href="" class='inline pad1x'>stuff</a>
-            <a href="" class='inline pad1x'>settings</a>
-            <a href="" class='inline pad1x'>account</a>
+        <div id='user-stuff' class='container pad2y'>
+            <a class='pad2x' href="">stuff</a>
+            <a class='pad2x' href="">settings</a>
+            <a class='pad2x' href="">account</a>
         </div>
     </div>
-    <div id='main'>
-        <div id='slider' class='fill-white keyline-right keyline-top keyline-bottom'></div>
-        <div id='map' class='col12'></div>
-        <div id='bottom-bar' class='col12 pin-bottom unlimiter'>
+    <div id='main' class='col10'>
+        <div id='map'></div>
+<!--         <div id='bottom-bar' class='col12 pin-bottom'>
             <div class='col3'>&nbsp;</div>
             <div id='actions' class='col6 fill-dark'>
                 <h2 class='col4'>edit</h2>
@@ -34,7 +35,7 @@
             </div>
             <div class='col3'>&nbsp;</div>
         </div>
-    </div>
+ -->    </div>
     <script src='js/bundle.js'></script>
 </body>
 </html>
