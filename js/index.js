@@ -131,14 +131,21 @@ var map = L.mapbox.map('map', null, {
 var layerGroup = L.layerGroup().addTo(map);
 var loopGroup = L.layerGroup().addTo(map);
 
-map.attributionControl.setPosition('topright');
-map.zoomControl.setPosition('topright');
+map.attributionControl.setPosition('bottomright');
+map.zoomControl.setPosition('topleft');
 
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
-    'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
-    'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0'),
+    'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j', {
+        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
+    }),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
+        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
+        detectRetina: false
+    }),
+    'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0', {
+        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
+    }),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
     })
@@ -156,21 +163,21 @@ map.on('baselayerchange', function(e) {
     store.set('baseLayer', e.name);
 });
 
-var tour = $('.tourbus-legs').tourbus({
-    onDepart: function() {
-        renderMenu();
-        $('#intro-modal').addClass('hidden');
-        controls(true);
-    },
-    onStop: function() {
-        controls(false);
-        $('#intro-modal').removeClass('hidden');
-    }
-});
+// var tour = $('.tourbus-legs').tourbus({
+//     onDepart: function() {
+//         renderMenu();
+//         $('#intro-modal').addClass('hidden');
+//         controls(true);
+//     },
+//     onStop: function() {
+//         controls(false);
+//         $('#intro-modal').removeClass('hidden');
+//     }
+// });
 
-$('#start-walkthrough').on('click', function() {
-    tour.trigger('depart.tourbus');
-});
+// $('#start-walkthrough').on('click', function() {
+//     tour.trigger('depart.tourbus');
+// });
 
 $('#go').on('click', function() {
     auth.authenticate(function(err) {
