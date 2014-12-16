@@ -16,12 +16,26 @@ h1, h2, h3, h4, h5, h6 {
     border: 0px;
 }
 
+.leaflet-container .leaflet-control-attribution {
+    background-color: rgba(0,0,0,0.75);
+}
+
+.leaflet-container .leaflet-control-attribution a, .leaflet-container .map-info-container a {
+    color: rgba(255,255,255,0.5);
+}
+
+.mapbox-improve-map {
+    display: none;
+}
+
 /* end overriding */
 
+body { min-width: 800px; }
 a { color: #666; }
 a:hover { color: #000; }
 
 #sidebar {
+    width: 250px;
     height: 100%;
 }
 
@@ -41,6 +55,10 @@ a:hover { color: #000; }
 
 #sidebar .container {
     line-height: 2em;
+}
+
+#main {
+    margin-left: 250px;
 }
 
 #map {
