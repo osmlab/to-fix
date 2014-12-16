@@ -9,6 +9,13 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
     margin: 0;
 }
+
+/* override mapbox.js */
+.leaflet-bar a:hover:first-child, .leaflet-bar a:hover:last-child, .leaflet-bar, .leaflet-control-layers {
+    border-radius: 0;
+    border: 0px;
+}
+
 /* end overriding */
 
 a { color: #666; }
@@ -22,7 +29,17 @@ a:hover { color: #000; }
     display: block;
 }
 
-#user-stuff {
+#sidebar a.selected {
+    background-color: #000;
+    color: white;
+    font-weight: bold;
+}
+
+#top-section {
+    padding-bottom: 0;
+}
+
+#sidebar .container {
     line-height: 2em;
 }
 
@@ -58,7 +75,7 @@ a:hover { color: #000; }
 }
 
 .fill-dark {
-    background-color: black;
+    background-color: rgba(0,0,0,0.75);
 }
 
 .fill-black {
