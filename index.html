@@ -27,18 +27,70 @@
             <a class='pad2x truncate' href="">mispelled tags</a>
         </div>
         <div id='user-stuff' class='container pad2y keyline-top'>
-            <a class='pad2x' href="">stuff</a>
-            <a class='pad2x' href="">settings</a>
-            <a class='pad2x' href="">account</a>
+            <a class='pad2x icon plus' href="">new task</a>
+            <a class='pad2x settings icon sprocket' href="#settings">settings</a>
+            <a class='pad2x icon logout' href="">logout</a>
         </div>
     </div>
     <div id='main' class='unlimiter contain'>
+        <div id='settings' class='animate modal modal-content'>
+            <form id='modal-name' class='modal-popup' method='post'>
+                <div class='col4 modal-body fill-white contain'>
+                    <a href='#close' class='quiet pad1 icon fr close'></a>
+                    <div class='pad1 center'>
+                        <h2>Settings</h2>
+                    </div>
+                    <div class='pad2x pad1y'>
+                        <div class='pad1y'>
+                            <h3 class='col3'>Editor:</h3>
+                            <select name='select' class='select'>
+                                <option class='' value="ideditor">iD</option>
+                                <option class='' value='autoeditor' selected='true'>pick automatically</option>
+                                <option class='' value='josmeditor'>JOSM</option>
+                            </select>
+                        </div>
+                        <div class='pad1y'>
+                            <h3 class='col3'>Editor:</h3>
+                            <select name='select' class='select'>
+                                <option class='' value="ideditor">iD</option>
+                                <option class='' value='autoeditor' selected='true'>pick automatically</option>
+                                <option class='' value='josmeditor'>JOSM</option>
+                            </select>
+                        </div>
+                        <div class='pad1y'>
+                            <h3 class='col3'>Editor:</h3>
+                            <select name='select' class='select'>
+                                <option class='' value="ideditor">iD</option>
+                                <option class='' value='autoeditor' selected='true'>pick automatically</option>
+                                <option class='' value='josmeditor'>JOSM</option>
+                            </select>
+                        </div>
+                        <div class='pad1y'>
+                            <h3 class='col3'>Editor:</h3>
+                            <select name='select' class='select'>
+                                <option class='' value="ideditor">iD</option>
+                                <option class='' value='autoeditor' selected='true'>pick automatically</option>
+                                <option class='' value='josmeditor'>JOSM</option>
+                            </select>
+                        </div>
+                    </div>
+<!--                     <div class='pad2 radio-pill pill clearfix col12'>
+                        <input type='radio' name='editor' id='ideditor'>
+                        <label for='ideditor' class='col4 button icon check'>iD</label>
+                        <input type='radio' name='editor' id='autoeditor' checked='checked'>
+                        <label for='autoeditor' class='col4 button icon check'>(auto select)</label>
+                        <input type='radio' name='editor' id='josm'>
+                        <label for='josm' class='col4 button icon check'>JOSM</label>
+                    </div> -->
+                </div>
+            </form>
+        </div>
         <div id='map'></div>
         <div id='bottom-bar' class='col12 pin-bottom'>
-            <div id='actions' class='margin3 col6 fill-dark'>
-                <h2 class='col4'>edit</h2>
-                <h2 class='col4'>skip</h2>
-                <h2 class='col4'>fixed</h2>
+            <div id='actions' class='col6 margin3 fill-dark'>
+                <h3 class='col4'>edit</h3>
+                <h3 class='col4'>skip</h3>
+                <h3 class='col4'>fixed</h3>
             </div>
         </div>
     </div>
