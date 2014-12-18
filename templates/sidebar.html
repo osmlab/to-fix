@@ -1,0 +1,16 @@
+<% console.log(obj.tasks); %>
+<div id='top-section' class='pad2 keyline-bottom'>
+    <a href=""><h3 class='fancy center'>to-fix</h3></a>
+</div>
+<div id='tasks' class='container pad2y'>
+    <% Object.keys(obj.tasks).forEach(function(task) { %>
+    <a class="pad2x truncate <% if (obj.error == task) { %>selected<% } %>" href="./<% task %>"><%= tasks[task].title %></a>
+    <% }); %>
+</div>
+<div id='user-stuff' class='container pad2y keyline-top'>
+    <!-- if authed -->
+    <!-- if auth level -->
+    <a class='pad2x icon plus' href="./task">new task</a>
+    <a class='pad2x settings icon sprocket' href="#settings">settings</a>
+    <a class='pad2x icon logout' href="">logout</a>
+</div>

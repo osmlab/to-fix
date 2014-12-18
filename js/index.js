@@ -1,9 +1,16 @@
+var fs = require('fs');
+
 var querystring = require('querystring'),
     omnivore = require('leaflet-omnivore'),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
     store = require('store'),
-    Mousetrap = require('mousetrap');
+    Mousetrap = require('mousetrap'),
+    _ = require('underscore');
+
+var templates = {
+    sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template()
+};
 
 var url = 'http://54.204.149.4:3001/';
 if (qs('local')) url = 'http://127.0.0.1:3001/';
@@ -179,7 +186,8 @@ map.on('baselayerchange', function(e) {
 //     tour.trigger('depart.tourbus');
 // });
 
-$('#go').on('click', function() {
+$('#go').on('click', function(e) {
+    e.preventDefault();
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -300,57 +308,61 @@ function controls(show) {
 }
 
 function load() {
-    if (auth.authenticated() && store.get('username') && store.get('userid')) {
-        $('#intro-modal').addClass('hidden');
-        controls(true);
-        if (qs('error') === undefined) {
-            window.location.href = window.location.href + '?error=' + DEFAULT;
-        } else {
-            if (tasks[qs('error')].focus) {
-                var title = $('#title');
-                title.text(tasks[(qs('error'))].title);
-                title.show();
-            } else {
-                renderMenu();
-            }
-
-            $.ajax({
-                crossDomain: true,
-                url: url + 'error/' + qs('error'),
-                type: 'post',
-                data: JSON.stringify({user: store.get('username')})
-            })
-            .error(showErrorMessage)
-            .done(function(data) {
-                data = JSON.parse(data);
-                current = data.value;
-                
-                // check to be sure we've been served a valid task
-                if (!current.ignore) {
-                    current = data.value;
-                    current._id = data.key;
-                    $('#map').removeClass('loading');
-                    tasks[qs('error') || DEFAULT].loader();
-
-                    // super temporary
-                    enableDone();
-
-                } else {
-                    $('#map').removeClass('loading');
-                    showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
-                }
-            });
-        }
-    } else {
+    if (!auth.authenticated() || !store.get('username') || !store.get('userid')) {
         pushLoop();
-        var player = setInterval(pushLoop, 5000);
+        // var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
                 $('#hidden-controls').addClass('clickthrough');
                 clearInterval(player);
             });
+        return;
     }
+
+    $('#intro-modal').addClass('hidden');
+    controls(true);
+    $('#sidebar').html(templates.sidebar({
+        tasks: tasks,
+        current: qs('error')
+    }));
+
+    if (qs('error') === undefined) return window.location.href = window.location.href + '?error=' + DEFAULT;
+
+    if (tasks[qs('error')].focus) {
+        var title = $('#title');
+        title.text(tasks[(qs('error'))].title);
+        title.show();
+    } else {
+        renderMenu();
+    }
+
+    $.ajax({
+        crossDomain: true,
+        url: url + 'error/' + qs('error'),
+        type: 'post',
+        data: JSON.stringify({user: store.get('username')})
+    })
+    .error(showErrorMessage)
+    .done(function(data) {
+        data = JSON.parse(data);
+        current = data.value;
+
+        // check to be sure we've been served a valid task
+        if (!current.ignore) {
+            current = data.value;
+            current._id = data.key;
+            $('#map').removeClass('loading');
+            tasks[qs('error') || DEFAULT].loader();
+
+            // super temporary
+            enableDone();
+
+        } else {
+            $('#map').removeClass('loading');
+            showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
+        }
+    });
 }
 
 function pushLoop() {
