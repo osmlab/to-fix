@@ -9,7 +9,8 @@ var querystring = require('querystring'),
     _ = require('underscore');
 
 var templates = {
-    sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template()
+    sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
+    settings: _(fs.readFileSync('./templates/settings.html', 'utf8')).template()
 };
 
 var url = 'http://54.204.149.4:3001/';
@@ -129,10 +130,8 @@ var altStyle = {
 var current = {};
 
 var map = L.mapbox.map('map', null, {
-    fadeAnimation: false,
-    zoomAnimation: false,
     maxZoom: 18,
-    keyboard: false
+    keyboard: false,
 }).setView([22.76, -25.84], 3);
 
 var layerGroup = L.layerGroup().addTo(map);
@@ -186,7 +185,7 @@ map.on('baselayerchange', function(e) {
 //     tour.trigger('depart.tourbus');
 // });
 
-$('#go').on('click', function(e) {
+$('#sidebar').on('click', '#login', function(e) {
     e.preventDefault();
     auth.authenticate(function(err) {
         auth.xhr({
@@ -198,17 +197,30 @@ $('#go').on('click', function(e) {
                 details = details.getElementsByTagName('user')[0];
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
+                $('#sidebar').html(templates.sidebar({
+                    tasks: tasks,
+                    current: qs('error'),
+                    authed: isAuthenticated()
+                }));
                 load();
             }
         });
     });
 });
 
+$('#sidebar').on('click', '#logout', function(e) {
+    e.preventDefault();
+    auth.logout();
+    window.location.href = '';
+});
+
 $('#sidebar').html(templates.sidebar({
     tasks: tasks,
-    current: qs('error')
+    current: qs('error'),
+    authed: isAuthenticated()
 }));
 
+$('#settings').html(templates.settings());
 $(load);
 
 function keeprights() {
@@ -312,8 +324,12 @@ function controls(show) {
     }
 }
 
+function isAuthenticated() {
+    return (auth.authenticated() && store.get('username') && store.get('userid'));
+}
+
 function load() {
-    if (!auth.authenticated() || !store.get('username') || !store.get('userid')) {
+    if (!isAuthenticated()) {
         pushLoop();
         // var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
