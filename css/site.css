@@ -37,6 +37,7 @@ a { color: #666; }
 a:hover { color: #000; }
 
 #sidebar {
+    position: relative;
     width: 250px;
     height: 100%;
 }
@@ -63,6 +64,12 @@ a:hover { color: #000; }
     line-height: 2em;
 }
 
+#user-stuff {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
 #main {
     margin-left: 250px;
 }
@@ -73,12 +80,9 @@ a:hover { color: #000; }
 }
 
 #actions h3 {
-    text-align: center;
     color: white;
     cursor: pointer;
-    padding: 20px;
     border-left: 1px solid black;
-    text-transform: uppercase;
 }
 
 #actions h3:first-of-type {
@@ -92,7 +96,6 @@ a:hover { color: #000; }
 #error-message {
     top: 0px;
     position: absolute;
-    text-align: center;
     z-index: 999;
     width: 100%;
     display: none;

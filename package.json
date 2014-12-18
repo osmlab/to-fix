@@ -20,6 +20,7 @@
     "serve": "^1.4.0",
     "store": "~1.3.16",
     "tape": "^3.0.3",
+    "underscore": "^1.7.0",
     "watchify": "~1.0.1",
     "wellknown": "^0.3.0"
   },
@@ -33,7 +34,7 @@
     "serve": "./node_modules/.bin/forever start index.js",
     "serve-stop": "./node_modules/.bin/forever stop index.js",
     "log": "./node_modules/.bin/forever logs index.js",
-    "watch": "watchify js/index.js -o js/bundle.js",
+    "watch": "watchify -t brfs js/index.js -o js/bundle.js",
     "test": "tape test/*.js"
   },
   "repository": {

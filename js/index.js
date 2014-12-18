@@ -204,6 +204,11 @@ $('#go').on('click', function(e) {
     });
 });
 
+$('#sidebar').html(templates.sidebar({
+    tasks: tasks,
+    current: qs('error')
+}));
+
 $(load);
 
 function keeprights() {
@@ -322,10 +327,6 @@ function load() {
 
     $('#intro-modal').addClass('hidden');
     controls(true);
-    $('#sidebar').html(templates.sidebar({
-        tasks: tasks,
-        current: qs('error')
-    }));
 
     if (qs('error') === undefined) return window.location.href = window.location.href + '?error=' + DEFAULT;
 
