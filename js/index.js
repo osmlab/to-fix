@@ -171,7 +171,6 @@ map.on('baselayerchange', function(e) {
 
 // var tour = $('.tourbus-legs').tourbus({
 //     onDepart: function() {
-//         renderMenu();
 //         $('#intro-modal').addClass('hidden');
 //         controls(true);
 //     },
@@ -350,8 +349,6 @@ function load() {
         var title = $('#title');
         title.text(tasks[(qs('error'))].title);
         title.show();
-    } else {
-        renderMenu();
     }
 
     $.ajax({
@@ -608,20 +605,6 @@ function renderUI(data) {
             .removeClass('hidden');
     } else {
         $('#name').addClass('hidden');
-    }
-}
-
-function renderMenu() {
-    var $menu = $('#menu').html('');
-    var err = qs('error');
-    for (var item in tasks) {
-        if (tasks[item].title && !tasks[item].focus) {
-            $menu.append(
-                $('<a></a>')
-                    .attr('href', '?' + querystring.encode({ error: item }))
-                    .attr('class', item == err ? 'active' : '')
-                    .text(tasks[item].title));
-        }
     }
 }
 
