@@ -49,7 +49,6 @@ a:hover { color: #000; }
 #sidebar a.selected {
     background-color: #000;
     color: white;
-    font-weight: bold;
 }
 
 #sidebar .icon:not(.big):before {
@@ -117,4 +116,10 @@ a:hover { color: #000; }
 #settings:target {
     bottom: 0;
     opacity: 1;
+}
+
+.avatar {
+    height: 20px;
+    margin-top: 6px;
+    margin-right: 10px;
 }

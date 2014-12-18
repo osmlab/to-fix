@@ -196,6 +196,7 @@ $('#sidebar').on('click', '#login', function(e) {
                 details = details.getElementsByTagName('user')[0];
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
+                store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
                     current: qs('error'),
@@ -216,7 +217,9 @@ $('#sidebar').on('click', '#logout', function(e) {
 $('#sidebar').html(templates.sidebar({
     tasks: tasks,
     current: qs('error'),
-    authed: isAuthenticated()
+    authed: isAuthenticated(),
+    avatar: store.get('avatar'),
+    username: store.get('username')
 }));
 
 $('#settings').html(templates.settings());
@@ -330,7 +333,7 @@ function isAuthenticated() {
 function load() {
     if (!isAuthenticated()) {
         pushLoop();
-        // var player = setInterval(pushLoop, 5000);
+        var player = setInterval(pushLoop, 5000);
         $('#start-walkthrough')
             .removeClass('hidden')
             .on('click', function() {
