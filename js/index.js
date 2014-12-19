@@ -19,21 +19,6 @@ if (qs('local')) url = 'http://127.0.0.1:3001/';
 var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
 
-var PLAY = 0;
-var randomPlay = [{
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5605656,51.3243174],[-0.5606235,51.3242914],[-0.5607212,51.3242498],[-0.5608437,51.3241887],[-0.5609295,51.32414],[-0.5609951,51.3241058],[-0.5610768,51.3240632],[-0.5611601,51.3240219],[-0.5612531,51.3239709],[-0.5612718,51.32396],[-0.5614974,51.3238289],[-0.5615251,51.3238028],[-0.5615719,51.3237587]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall Lane"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5615719,51.3237587]},"type":"Feature","properties":{}}]}
-}, {
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[6.1773575,49.1255727],[6.1768639,49.1258967],[6.1766857,49.1260137],[6.1766721,49.1260365],[6.1766765,49.1260613],[6.1767016,49.1260829],[6.1767281,49.1260965],[6.1769134,49.1262067],[6.1769337,49.1262188]]},"type":"Feature","properties":{"highway":"pedestrian","name":"Square Paille-Maille","source":"cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2009"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[6.1769337,49.1262188]},"type":"Feature","properties":{}}]}
-}, {
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5608437,51.3241887],[-0.5608931,51.3242352],[-0.5609987,51.324321],[-0.5612412,51.3245343]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall End"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5612412,51.3245343]},"type":"Feature","properties":{}}]}
-}, {
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-2.1959028,51.2504598],[-2.1960627,51.2507108],[-2.1961876,51.2508979],[-2.1962628,51.2510072],[-2.1963248,51.2510954],[-2.1963602,51.2511509],[-2.1963853,51.2511974],[-2.196402,51.2512444],[-2.1964071,51.2512694],[-2.1964121,51.2512936],[-2.1964838,51.2515612]]},"type":"Feature","properties":{"highway":"residential","name":"School Lane","source":"Bing"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-2.1964838,51.2515612]},"type":"Feature","properties":{}}]}
-}];
-
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
     oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
@@ -131,11 +116,10 @@ var current = {};
 
 var map = L.mapbox.map('map', null, {
     maxZoom: 18,
-    keyboard: false,
+    keyboard: false
 }).setView([22.76, -25.84], 3);
 
 var layerGroup = L.layerGroup().addTo(map);
-var loopGroup = L.layerGroup().addTo(map);
 
 map.attributionControl.setPosition('bottomright');
 map.zoomControl.setPosition('topleft');
@@ -168,21 +152,6 @@ L.control.layers(layers).addTo(map);
 map.on('baselayerchange', function(e) {
     store.set('baseLayer', e.name);
 });
-
-// var tour = $('.tourbus-legs').tourbus({
-//     onDepart: function() {
-//         $('#intro-modal').addClass('hidden');
-//         controls(true);
-//     },
-//     onStop: function() {
-//         controls(false);
-//         $('#intro-modal').removeClass('hidden');
-//     }
-// });
-
-// $('#start-walkthrough').on('click', function() {
-//     tour.trigger('depart.tourbus');
-// });
 
 $('#sidebar').on('click', '#login', function(e) {
     e.preventDefault();
@@ -332,14 +301,9 @@ function isAuthenticated() {
 
 function load() {
     if (!isAuthenticated()) {
-        pushLoop();
-        var player = setInterval(pushLoop, 5000);
-        $('#start-walkthrough')
-            .removeClass('hidden')
-            .on('click', function() {
-                $('#hidden-controls').addClass('clickthrough');
-                clearInterval(player);
-            });
+        // set some temp vars
+        // limit functionality
+        // but otherwise, act like any other user
         return;
     }
 
@@ -380,22 +344,6 @@ function load() {
             showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
         }
     });
-}
-
-function pushLoop() {
-    // remove anything that might already be on the loopGroup
-    loopGroup.getLayers().forEach(function(layer) {
-        loopGroup.removeLayer(layer);
-    });
-
-    var way = L.geoJson(randomPlay[PLAY].way).addTo(loopGroup);
-    var node = L.geoJson(randomPlay[PLAY].node).addTo(loopGroup);
-
-    map.fitBounds(way.getBounds());
-    node.setStyle(altStyle);
-    way.setStyle(featureStyle);
-
-    PLAY = (PLAY < randomPlay.length - 1) ? (PLAY + 1) : 0;
 }
 
 function nyc_overlaps() {
