@@ -6,7 +6,8 @@ var querystring = require('querystring'),
     osmAuth = require('osm-auth'),
     store = require('store'),
     Mousetrap = require('mousetrap'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    keepright = require('../loaders/keepright.js');
 
 var templates = {
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
@@ -28,34 +29,34 @@ var auth = osmAuth({
 var tasks = {
     'deadendoneway': {
         title: 'Impossible one-ways',
-        loader: keeprights },
+        loader: keepright },
     'impossibleangle': {
         title: 'Kinks',
-        loader: keeprights },
+        loader: keepright },
     'mixedlayer': {
         title: 'Mixed layers',
-        loader: keeprights },
+        loader: keepright },
     'nonclosedways': {
         title: 'Broken polygons',
-        loader: keeprights },
+        loader: keepright },
     'loopings': {
         title: 'Loopings',
-        loader: keeprights },
+        loader: keepright },
     'strangelayer': {
         title: 'Strange layer',
-        loader: keeprights },
+        loader: keepright },
     'highwayhighway': {
         title: 'Highway intersects highway',
-        loader: keeprights },
+        loader: keepright },
     'highwayfootpath': {
         title: 'Highway intersects footpath',
-        loader: keeprights },
+        loader: keepright },
     'highwayriverbank': {
         title: 'Highway intersects water',
-        loader: keeprights },
+        loader: keepright },
     'mispelledtags': {
         title: 'Mispelled tags',
-        loader: keeprights },
+        loader: keepright },
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
@@ -100,6 +101,18 @@ var tasks = {
 var DEFAULT = 'deadendoneway';
 var ERROR_MESSAGE_TIMEOUT = 5000;
 
+var current = {};
+
+map = L.mapbox.map('map', null, {
+    maxZoom: 18,
+    keyboard: false
+}).setView([22.76, -25.84], 3);
+
+map.attributionControl.setPosition('bottomright');
+map.zoomControl.setPosition('topleft');
+
+var layerGroup = L.layerGroup().addTo(map);
+
 var featureStyle = {
     color: '#FF00B7',
     opacity: 1,
@@ -111,18 +124,6 @@ var altStyle = {
     opacity: 1,
     weight: 4
 };
-
-var current = {};
-
-var map = L.mapbox.map('map', null, {
-    maxZoom: 18,
-    keyboard: false
-}).setView([22.76, -25.84], 3);
-
-var layerGroup = L.layerGroup().addTo(map);
-
-map.attributionControl.setPosition('bottomright');
-map.zoomControl.setPosition('topleft');
 
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
@@ -194,29 +195,7 @@ $('#sidebar').html(templates.sidebar({
 $('#settings').html(templates.settings());
 $(load);
 
-function keeprights() {
-    current._osm_object_type = current.object_type;
-    current._osm_object_id = current.object_id;
-    var full = current._osm_object_type == 'way' ? '/full' : '';
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-        },
-        error: function(err) {
-            next();
-        }
-    });
-
-    renderUI();
-}
-
-function next() {
+function next(err, current) {
     $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
     layerGroup.getLayers().forEach(function(layer) {
@@ -328,46 +307,18 @@ function load() {
     .done(function(data) {
         data = JSON.parse(data);
         current = data.value;
+        current._id = data.key;
 
-        // check to be sure we've been served a valid task
-        if (!current.ignore) {
-            current = data.value;
-            current._id = data.key;
-            $('#map').removeClass('loading');
-            tasks[qs('error') || DEFAULT].loader();
+        current._map = map;
+        current._featureStyle = featureStyle;
+        current._layerGroup = layerGroup;
 
-            // super temporary
-            enableDone();
+        $('#map').removeClass('loading');
+        tasks[qs('error') || DEFAULT].loader.initialize(current);
 
-        } else {
-            $('#map').removeClass('loading');
-            showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
-        }
+        // super temporary
+        enableDone();
     });
-}
-
-function nyc_overlaps() {
-    current._osm_object_type = 'way';
-    current._osm_object_id = current.bldg;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                    current._bounds = layer.getBounds();
-                    map.fitBounds(current._bounds);
-                }
-            });
-        }
-    });
-
-    renderUI();
 }
 
 function inconsistent() {
