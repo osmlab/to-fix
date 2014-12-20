@@ -112,7 +112,7 @@ map = L.mapbox.map('map', null, {
 map.attributionControl.setPosition('bottomright');
 map.zoomControl.setPosition('topleft');
 
-var layerGroup = L.layerGroup().addTo(map);
+var featureGroup = L.featureGroup().addTo(map);
 
 var featureStyle = {
     color: '#FF00B7',
@@ -199,8 +199,8 @@ $(load);
 function next(err, current) {
     $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
-    layerGroup.getLayers().forEach(function(layer) {
-        layerGroup.removeLayer(layer);
+    featureGroup.getLayers().forEach(function(layer) {
+        featureGroup.removeLayer(layer);
     });
     load();
 }
@@ -312,7 +312,6 @@ function load() {
 
         current._map = map;
         current._featureStyle = featureStyle;
-        current._layerGroup = layerGroup;
 
         $('#map').removeClass('loading');
         tasks[qs('error') || DEFAULT].loader.initialize(current);
@@ -331,7 +330,7 @@ function inconsistent() {
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
         dataType: 'xml',
         success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
             current._bounds = layer.getBounds();
             map.fitBounds(current._bounds);
 
@@ -340,7 +339,7 @@ function inconsistent() {
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
                 dataType: 'xml',
                 success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
+                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(featureGroup);
                 }
             });
 
@@ -348,7 +347,7 @@ function inconsistent() {
                 url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
                 dataType: 'xml',
                 success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
+                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(featureGroup);
                 }
             });
 
@@ -361,14 +360,14 @@ function inconsistent() {
 }
 
 function npsdiff() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
     layer.setStyle(featureStyle);
     current._bounds = layer.getBounds();
     map.fitBounds(current._bounds);
 }
 
 function tigerdelta() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
+    var layer = omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
     layer.setStyle(featureStyle);
     current._bounds = layer.getBounds();
     map.fitBounds(current._bounds);
@@ -386,14 +385,14 @@ function unconnected() {
         url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
         dataType: 'xml',
         success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
             current._bounds = layer.getBounds();
             map.fitBounds(current._bounds);
             $.ajax({
                 url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
                 dataType: 'xml',
                 success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
+                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
                 }
             });
         },
@@ -424,7 +423,7 @@ function unconnected_tokyo() {
                 return markDone();
             }
 
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
             current._bounds = layer.getBounds();
             map.fitBounds(current._bounds);
             $.ajax({
@@ -439,7 +438,7 @@ function unconnected_tokyo() {
                         return markDone();
                     }
 
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
+                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
                 },
                 error: function(err) {
                     if (err.status == 410) return markDone();
