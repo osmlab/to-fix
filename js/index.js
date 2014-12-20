@@ -10,7 +10,8 @@ var querystring = require('querystring'),
 
 var keepright = require('../loaders/keepright.js'),
     osmi_geom = require('../loaders/osmi_geom.js'),
-    unconnected = require('../loaders/unconnected.js');
+    unconnected = require('../loaders/unconnected.js'),
+    tigerdelta = require('../loaders/tigerdelta.js');
 
 var templates = {
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
@@ -363,17 +364,6 @@ function npsdiff() {
     layer.setStyle(featureStyle);
     current._bounds = layer.getBounds();
     map.fitBounds(current._bounds);
-}
-
-function tigerdelta() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-
-    renderUI({
-        name: current.name
-    });
 }
 
 function unconnected_tokyo() {
