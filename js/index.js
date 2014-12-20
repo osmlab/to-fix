@@ -6,9 +6,11 @@ var querystring = require('querystring'),
     osmAuth = require('osm-auth'),
     store = require('store'),
     Mousetrap = require('mousetrap'),
-    _ = require('underscore'),
-    keepright = require('../loaders/keepright.js'),
-    osmi_geom = require('../loaders/osmi_geom.js');
+    _ = require('underscore');
+
+var keepright = require('../loaders/keepright.js'),
+    osmi_geom = require('../loaders/osmi_geom.js'),
+    unconnected = require('../loaders/unconnected.js');
 
 var templates = {
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
@@ -372,33 +374,6 @@ function tigerdelta() {
     renderUI({
         name: current.name
     });
-}
-
-function unconnected() {
-    current._osm_object_type = 'node';
-    current._osm_object_id = current.node_id;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-                }
-            });
-        },
-        error: function(err) {
-            next();
-        }
-    });
-
-    renderUI();
 }
 
 function unconnected_tokyo() {
