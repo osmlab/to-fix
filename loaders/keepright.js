@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 var _ = require('underscore'),
     omnivore = require('leaflet-omnivore');
 

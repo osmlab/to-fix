@@ -7,7 +7,8 @@ var querystring = require('querystring'),
     store = require('store'),
     Mousetrap = require('mousetrap'),
     _ = require('underscore'),
-    keepright = require('../loaders/keepright.js');
+    keepright = require('../loaders/keepright.js'),
+    osmi_geom = require('../loaders/osmi_geom.js');
 
 var templates = {
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
@@ -452,14 +453,6 @@ function unconnected_tokyo() {
         }
     });
 
-    renderUI();
-}
-
-function osmi_geom() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
     renderUI();
 }
 
