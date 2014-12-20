@@ -102,9 +102,9 @@ var tasks = {
 var DEFAULT = 'deadendoneway';
 var ERROR_MESSAGE_TIMEOUT = 5000;
 
-var current = {};
+window.current = {};
 
-map = L.mapbox.map('map', null, {
+window.map = L.mapbox.map('map', null, {
     maxZoom: 18,
     keyboard: false
 }).setView([22.76, -25.84], 3);
@@ -112,15 +112,15 @@ map = L.mapbox.map('map', null, {
 map.attributionControl.setPosition('bottomright');
 map.zoomControl.setPosition('topleft');
 
-var featureGroup = L.featureGroup().addTo(map);
+window.featureGroup = L.featureGroup().addTo(map);
 
-var featureStyle = {
+window.featureStyle = {
     color: '#FF00B7',
     opacity: 1,
     weight: 4
 };
 
-var altStyle = {
+window.altStyle = {
     color: '#00BFFF',
     opacity: 1,
     weight: 4
@@ -309,9 +309,6 @@ function load() {
         data = JSON.parse(data);
         current = data.value;
         current._id = data.key;
-
-        current._map = map;
-        current._featureStyle = featureStyle;
 
         $('#map').removeClass('loading');
         tasks[qs('error') || DEFAULT].loader.initialize(current);

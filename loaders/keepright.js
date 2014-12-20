@@ -18,7 +18,7 @@ keepright.initialize = function(current, callback) {
         url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
         dataType: 'xml',
         success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(current._featureStyle).addTo(featureGroup);
+            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
             current._bounds = layer.getBounds();
             map.fitBounds(current._bounds);
             omnivore.wkt.parse(current.st_astext).addTo(featureGroup);

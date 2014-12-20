@@ -11,9 +11,9 @@ var osmi_geom = {};
 
 osmi_geom.initialize = function(current, callback) {
     var layer = omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
-    layer.setStyle(current._featureStyle);
+    layer.setStyle(featureStyle);
     current._bounds = layer.getBounds();
-    current._map.fitBounds(current._bounds);
+    map.fitBounds(current._bounds);
     $('#main').append(templates.editbar());
     if (callback) callback(null, current);
 };
