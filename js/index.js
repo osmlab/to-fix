@@ -79,19 +79,9 @@ var tasks = {
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
         loader: tigerdelta },
-    'inconsistent': {
-        loader: inconsistent },
     'duplicate_ways': {
         title: 'Duplicate Ways',
         loader: osmi_geom },
-    'unconnected_major_tokyo': {
-        title: 'Unconnected Tokyo',
-        focus: true,
-        loader: unconnected_tokyo },
-    'unconnected_minor_tokyo': {
-        title: 'Unconnected minor Tokyo',
-        focus: true,
-        loader: unconnected_tokyo },
     'tokyo_dupes': {
         title: 'Tokyo Dupes',
         focus: true,
@@ -319,102 +309,6 @@ function load() {
         // super temporary
         enableDone();
     });
-}
-
-function inconsistent() {
-    current._osm_object_type = 'way';
-    current._osm_object_id = current.incomplete_way_id;
-
-    // possible wrong name (altStyle)
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-
-            // context ways
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(featureGroup);
-                }
-            });
-
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(featureGroup);
-                }
-            });
-
-        }
-    });
-
-    renderUI({
-        name: current.name || current.ref
-    });
-}
-
-function npsdiff() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-}
-
-function unconnected_tokyo() {
-    current._osm_object_type = 'node';
-    current._osm_object_id = current.node_id;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-
-            var users = ['Rub21', 'ediyes', 'Luis36995', 'RichRico', 'dannykath'];
-            // this is obviously very near sighted, but whatever, move fast, etc...
-            // check if the way was touched by one of the users
-            var user = xml.getElementsByTagName('way')[0].getAttribute('user');
-            if (users.indexOf(user) > -1) {
-                console.log('way previously touched by', user);
-                // consider it done
-                return markDone();
-            }
-
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: 'xml',
-                success: function (xml) {
-
-                    var user = xml.getElementsByTagName('node')[0].getAttribute('user');
-                    if (users.indexOf(user) > -1) {
-                        console.log('node previously touched by', user);
-                        // consider it done
-                        return markDone();
-                    }
-
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-                },
-                error: function(err) {
-                    if (err.status == 410) return markDone();
-                    return next();
-                }
-            });
-        },
-        error: function(err) {
-            if (err.status == 410) return markDone();
-            return next();
-        }
-    });
-
-    renderUI();
 }
 
 function edit() {
