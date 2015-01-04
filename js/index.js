@@ -8,6 +8,9 @@ var querystring = require('querystring'),
     Mousetrap = require('mousetrap'),
     _ = require('underscore');
 
+// is there anyway to keep the loaders completely seperate and only import them at runtime?
+    // would this allow us to import external loaders, for example via a gist
+
 var keepright = require('../loaders/keepright.js'),
     osmi_geom = require('../loaders/osmi_geom.js'),
     unconnected = require('../loaders/unconnected.js'),
@@ -21,7 +24,6 @@ var templates = {
 var url = 'http://54.204.149.4:3001/';
 if (qs('local')) url = 'http://127.0.0.1:3001/';
 
-var baseLayer = store.get('baseLayer');
 var menuState = store.get('menuState');
 
 var auth = osmAuth({
@@ -97,16 +99,6 @@ var ERROR_MESSAGE_TIMEOUT = 5000;
 
 window.current = {};
 
-window.map = L.mapbox.map('map', null, {
-    maxZoom: 18,
-    keyboard: false
-}).setView([22.76, -25.84], 3);
-
-map.attributionControl.setPosition('bottomright');
-map.zoomControl.setPosition('topleft');
-
-window.featureGroup = L.featureGroup().addTo(map);
-
 window.featureStyle = {
     color: '#FF00B7',
     opacity: 1,
@@ -118,35 +110,6 @@ window.altStyle = {
     opacity: 1,
     weight: 4
 };
-
-var layers = {
-    'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
-    'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
-    }),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
-        detectRetina: false
-    }),
-    'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
-    }),
-    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
-    })
-};
-
-if (baseLayer && layers[baseLayer]) {
-    layers[baseLayer].addTo(map);
-} else {
-    layers['Mapbox Satellite'].addTo(map);
-}
-
-L.control.layers(layers).addTo(map);
-
-map.on('baselayerchange', function(e) {
-    store.set('baseLayer', e.name);
-});
 
 $('#sidebar').on('click', '#login', function(e) {
     e.preventDefault();

@@ -1,6 +1,7 @@
 var fs = require('fs');
 
 var _ = require('underscore'),
+    map = require('../lib/map.js'),
     omnivore = require('leaflet-omnivore');
 
 var templates = {
@@ -10,6 +11,10 @@ var templates = {
 var keepright = {};
 
 keepright.initialize = function(current, callback) {
+    map();
+};
+
+keepright.next = function() {
     current._osm_object_type = current.object_type;
     current._osm_object_id = current.object_id;
     var full = current._osm_object_type == 'way' ? '/full' : '';
@@ -30,5 +35,18 @@ keepright.initialize = function(current, callback) {
         }
     });
 };
+
+keepright.bind = function() {
+    $('#edit').on('click', function() {
+        console.log('edit');
+    });
+
+    $('#submit').on('click', function() {
+        console.log('submit');
+    });
+};
+
+// when switching #main views
+// $('#main').find('*').unbind();
 
 module.exports = keepright;
