@@ -201,17 +201,6 @@ Mousetrap.bind(['right', 'j'], function() {
     }, 200);
 });
 
-function enableDone() {
-    // super temporary
-    // setTimeout(function() {
-        $('#fixed').removeClass('disabled');
-        Mousetrap.bind(['enter', 'e'], function() {
-            $('#edit').click();
-        });
-        $('#fixed').on('click', markDone);
-    // }, 500);
-}
-
 var alt = false;
 Mousetrap.bind(['s'], function() {
     alt = !alt;
@@ -295,11 +284,9 @@ function edit() {
                 url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
             }
             newWindow.location = url;
-            enableDone();
         },
         success: function() {
             newWindow.close();
-            enableDone();
         }
     });
 }
