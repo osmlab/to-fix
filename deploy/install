@@ -63,3 +63,4 @@ elif [ "$platform" = 'linux' ]; then
 fi
 
 npm install
+mkdir /tmp
