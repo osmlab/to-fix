@@ -5,7 +5,6 @@ var querystring = require('querystring'),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
     store = require('store'),
-    Mousetrap = require('mousetrap'),
     _ = require('underscore');
 
 // is there anyway to keep the loaders completely seperate and only import them at runtime?
@@ -23,8 +22,6 @@ var templates = {
 
 var url = 'http://54.204.149.4:3001/';
 if (qs('local')) url = 'http://127.0.0.1:3001/';
-
-var menuState = store.get('menuState');
 
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
@@ -153,7 +150,6 @@ $('#settings').html(templates.settings());
 $(load);
 
 function next(err, current) {
-    $('#fixed').addClass('disabled').unbind();
     $('#map').addClass('loading');
     featureGroup.getLayers().forEach(function(layer) {
         featureGroup.removeLayer(layer);
@@ -173,52 +169,21 @@ function showErrorMessage(jqXHR, textStatus, errorThrown) {
     }, ERROR_MESSAGE_TIMEOUT);
 }
 
-function markDone() {
-    Mousetrap.unbind(['enter', 'e']);
+// function markDone() {
+//     Mousetrap.unbind(['enter', 'e']);
 
-    $.ajax({
-        crossDomain: true,
-        url: url + 'fixed/' + qs('error'),
-        type: 'post',
-        data: JSON.stringify({
-            user: store.get('username'),
-            state: current
-        })
-    })
-    .error(showErrorMessage)
-    .done(next);
-}
-
-$('#skip').on('click', next);
-$('#edit').on('click', edit);
-
-Mousetrap.bind(['right', 'j'], function() {
-    $('#skip')
-        .addClass('active')
-        .click();
-    setTimeout(function() {
-        $('#skip').removeClass('active');
-    }, 200);
-});
-
-var alt = false;
-Mousetrap.bind(['s'], function() {
-    alt = !alt;
-    if (alt) $('.leaflet-control-layers-base input:eq(1)').click();
-    else $('.leaflet-control-layers-base input:eq(2)').click();
-});
-
-function controls(show) {
-    if (show) {
-        $('#hidden-controls').removeClass('hidden');
-        $('.leaflet-control-container').removeClass('hidden');
-    } else {
-        $('.leaflet-control-container').addClass('hidden');
-        $('#hidden-controls')
-            .addClass('hidden')
-            .removeClass('clickthrough');
-    }
-}
+//     $.ajax({
+//         crossDomain: true,
+//         url: url + 'fixed/' + qs('error'),
+//         type: 'post',
+//         data: JSON.stringify({
+//             user: store.get('username'),
+//             state: current
+//         })
+//     })
+//     .error(showErrorMessage)
+//     .done(next);
+// }
 
 function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));
@@ -231,9 +196,6 @@ function load() {
         // but otherwise, act like any other user
         return;
     }
-
-    $('#intro-modal').addClass('hidden');
-    controls(true);
 
     if (qs('error') === undefined) return window.location.href = window.location.href + '?error=' + DEFAULT;
 
@@ -256,53 +218,8 @@ function load() {
         current._id = data.key;
 
         $('#map').removeClass('loading');
-        tasks[qs('error') || DEFAULT].loader.next(load);
+        return tasks[qs('error') || DEFAULT].loader.next(load);
     });
-}
-
-function edit() {
-    var bottom = current._bounds._southWest.lat - 0.001;
-    var left = current._bounds._southWest.lng - 0.001;
-    var top = current._bounds._northEast.lat + 0.001;
-    var right = current._bounds._northEast.lng + 0.001;
-
-    var newWindow = window.open('');
-
-    $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-        select: current._osm_object_type + current._osm_object_id
-    }), {
-        error: function() {
-            // fallback to iD
-            var url = 'http://openstreetmap.us/iD/release/#';
-            if (current._osm_object_type && current._osm_object_id) {
-                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
-            } else {
-                url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
-            }
-            newWindow.location = url;
-        },
-        success: function() {
-            newWindow.close();
-        }
-    });
-}
-
-function renderUI(data) {
-    if (!data) data = {};
-
-    $('#hidden-controls').removeClass('hidden');
-
-    if (data.name && data.name.length) {
-        $('#name')
-            .text(data.name)
-            .removeClass('hidden');
-    } else {
-        $('#name').addClass('hidden');
-    }
 }
 
 function qs(name) {
