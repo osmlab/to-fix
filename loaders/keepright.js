@@ -10,11 +10,9 @@ var templates = {
 
 var keepright = {};
 
-keepright.initialize = function(current, callback) {
+keepright.next = function(callback) {
     map();
-};
 
-keepright.next = function() {
     current._osm_object_type = current.object_type;
     current._osm_object_id = current.object_id;
     var full = current._osm_object_type == 'way' ? '/full' : '';
@@ -25,24 +23,32 @@ keepright.next = function() {
         success: function (xml) {
             var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
             current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
+            window.map.fitBounds(current._bounds);
             omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
-            $('#main').append(templates.editbar());
-            if (callback) callback(null, current);
+            if (!$('#editbar').length) {
+                $('#main').append(templates.editbar());
+                keepright.bind(callback);
+            }
         },
         error: function(err) {
+            console.log(err);
             if (callback) callback(err, current);
         }
     });
 };
 
-keepright.bind = function() {
+keepright.bind = function(callback) {
     $('#edit').on('click', function() {
         console.log('edit');
     });
 
-    $('#submit').on('click', function() {
+    $('#skip').on('click', function() {
+        callback(null);
+    });
+
+    $('#fixed').on('click', function() {
         console.log('submit');
+        callback(null);
     });
 };
 

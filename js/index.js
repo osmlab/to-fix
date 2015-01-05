@@ -267,10 +267,7 @@ function load() {
         current._id = data.key;
 
         $('#map').removeClass('loading');
-        tasks[qs('error') || DEFAULT].loader.initialize(current);
-
-        // super temporary
-        enableDone();
+        tasks[qs('error') || DEFAULT].loader.next(load);
     });
 }
 
