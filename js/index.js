@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var querystring = require('querystring'),
+var qs = require('querystring').parse(window.location.search.slice(1)),
     omnivore = require('leaflet-omnivore'),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
@@ -9,6 +9,12 @@ var querystring = require('querystring'),
 
 // is there anyway to keep the loaders completely seperate and only import them at runtime?
     // would this allow us to import external loaders, for example via a gist
+
+// how to simplify
+    // don't declare any loaders in index.js
+        // pull them in when needed, they are fully bundled themselves
+        // if they're missing, catch and display an error
+    // map titles and descriptions get put in the loaders themselves
 
 var keepright = require('../loaders/keepright.js'),
     osmi_geom = require('../loaders/osmi_geom.js'),
@@ -19,9 +25,6 @@ var templates = {
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
     settings: _(fs.readFileSync('./templates/settings.html', 'utf8')).template()
 };
-
-var url = 'http://54.204.149.4:3001/';
-if (qs('local')) url = 'http://127.0.0.1:3001/';
 
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
@@ -80,33 +83,12 @@ var tasks = {
         loader: tigerdelta },
     'duplicate_ways': {
         title: 'Duplicate Ways',
-        loader: osmi_geom },
-    'tokyo_dupes': {
-        title: 'Tokyo Dupes',
-        focus: true,
-        loader: osmi_geom },
-    'tokyo_islands': {
-        title: 'Tokyo Islands',
-        focus: true,
         loader: osmi_geom }
 };
 
 var DEFAULT = 'deadendoneway';
-var ERROR_MESSAGE_TIMEOUT = 5000;
 
 window.current = {};
-
-window.featureStyle = {
-    color: '#FF00B7',
-    opacity: 1,
-    weight: 4
-};
-
-window.altStyle = {
-    color: '#00BFFF',
-    opacity: 1,
-    weight: 4
-};
 
 $('#sidebar').on('click', '#login', function(e) {
     e.preventDefault();
@@ -123,7 +105,7 @@ $('#sidebar').on('click', '#login', function(e) {
                 store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
-                    current: qs('error'),
+                    current: qs.error,
                     authed: isAuthenticated()
                 }));
                 load();
@@ -140,88 +122,29 @@ $('#sidebar').on('click', '#logout', function(e) {
 
 $('#sidebar').html(templates.sidebar({
     tasks: tasks,
-    current: qs('error'),
+    current: qs.error,
     authed: isAuthenticated(),
     avatar: store.get('avatar'),
     username: store.get('username')
 }));
 
 $('#settings').html(templates.settings());
-$(load);
-
-function next(err, current) {
-    $('#map').addClass('loading');
-    featureGroup.getLayers().forEach(function(layer) {
-        featureGroup.removeLayer(layer);
-    });
-    load();
-}
-
-function showErrorMessage(jqXHR, textStatus, errorThrown) {
-    var errorMessage = jqXHR.responseText;
-    if (textStatus === 'timeout') errorMessage = 'Request timed out.';
-    $('#error-message span').text(errorMessage).show();
-    $('#error-message').slideDown();
-    setTimeout(function() { 
-        $('#error-message span').fadeOut(function(){
-            $('#error-message').slideUp();
-        });
-    }, ERROR_MESSAGE_TIMEOUT);
-}
-
-// function markDone() {
-//     Mousetrap.unbind(['enter', 'e']);
-
-//     $.ajax({
-//         crossDomain: true,
-//         url: url + 'fixed/' + qs('error'),
-//         type: 'post',
-//         data: JSON.stringify({
-//             user: store.get('username'),
-//             state: current
-//         })
-//     })
-//     .error(showErrorMessage)
-//     .done(next);
-// }
 
 function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));
 }
 
-function load() {
-    if (!isAuthenticated()) {
-        // set some temp vars
-        // limit functionality
-        // but otherwise, act like any other user
+if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
+
+$(function() {
+    var task = tasks[qs.error || DEFAULT].loader;
+    // eventually, remove everything ".loader."
+    // the loader will have everything in it, so calling tasks['smthng'] will take care of it
+    if (!task.auth || (task.auth && isAuthenticated())) {
+        // eventually task.auth will be an array with the different types of allowable authentications
+            // this will correspond with details in localstorage
+        task.next();
+    } else {
         return;
     }
-
-    if (qs('error') === undefined) return window.location.href = window.location.href + '?error=' + DEFAULT;
-
-    if (tasks[qs('error')].focus) {
-        var title = $('#title');
-        title.text(tasks[(qs('error'))].title);
-        title.show();
-    }
-
-    $.ajax({
-        crossDomain: true,
-        url: url + 'error/' + qs('error'),
-        type: 'post',
-        data: JSON.stringify({user: store.get('username')})
-    })
-    .error(showErrorMessage)
-    .done(function(data) {
-        data = JSON.parse(data);
-        current = data.value;
-        current._id = data.key;
-
-        $('#map').removeClass('loading');
-        return tasks[qs('error') || DEFAULT].loader.next(load);
-    });
-}
-
-function qs(name) {
-    return querystring.parse(window.location.search.slice(1))[name];
-}
+});
