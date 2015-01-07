@@ -15,7 +15,7 @@ var keepright = {};
 
 keepright.auth = ['osm'];
 
-keepright.next = function(callback) {
+keepright.next = function() {
     map.init();
 
     core.item(qs.error, function(data) {
@@ -34,26 +34,28 @@ keepright.next = function(callback) {
 
                 if (!$('#editbar').length) {
                     $('#main').append(templates.editbar());
-                    keepright.bind(callback);
+                    keepright.bind();
                 }
             },
             error: function(err) {
-                console.log(err);
-                if (callback) callback(err, current);
+                return keepright.next();
             }
         });
     });
 };
 
-keepright.bind = function(callback) {
+keepright.bind = function() {
     $('#edit').on('click', edit);
 
     $('#skip').on('click', function() {
-        callback(null);
+        map.clear();
+        keepright.next();
+        // core.mark('skip', keepright.next);
     });
 
     $('#fixed').on('click', function() {
-        callback(null);
+        map.clear();
+        // core.mark('done', keepright.next);
     });
 };
 
@@ -87,8 +89,5 @@ function edit() {
         }
     });
 }
-
-// when switching #main views
-// $('#main').find('*').unbind();
 
 module.exports = keepright;
