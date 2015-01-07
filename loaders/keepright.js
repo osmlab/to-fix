@@ -19,35 +19,30 @@ keepright.next = function(callback) {
     map.init();
 
     core.item(qs.error, function(data) {
-        console.log(qs);
-        console.log(window.current);
+        current._osm_object_type = current.object_type;
+        current._osm_object_id = current.object_id;
+        var full = current._osm_object_type == 'way' ? '/full' : '';
+
+        $.ajax({
+            url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
+            dataType: 'xml',
+            success: function (xml) {
+                var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
+                current._bounds = layer.getBounds();
+                window.map.fitBounds(current._bounds);
+                omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
+
+                if (!$('#editbar').length) {
+                    $('#main').append(templates.editbar());
+                    keepright.bind(callback);
+                }
+            },
+            error: function(err) {
+                console.log(err);
+                if (callback) callback(err, current);
+            }
+        });
     });
-
-    // console.log(window.current);
-
-    // current._osm_object_type = current.object_type;
-    // current._osm_object_id = current.object_id;
-    // var full = current._osm_object_type == 'way' ? '/full' : '';
-
-    // $.ajax({
-    //     url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
-    //     dataType: 'xml',
-    //     success: function (xml) {
-    //         var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-    //         current._bounds = layer.getBounds();
-    //         window.map.fitBounds(current._bounds);
-    //         omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
-
-    //         if (!$('#editbar').length) {
-    //             $('#main').append(templates.editbar());
-    //             keepright.bind(callback);
-    //         }
-    //     },
-    //     error: function(err) {
-    //         console.log(err);
-    //         if (callback) callback(err, current);
-    //     }
-    // });
 };
 
 keepright.bind = function(callback) {
