@@ -5,7 +5,8 @@ var core = require('../lib/core'),
     _ = require('underscore'),
     map = require('../lib/map'),
     omnivore = require('leaflet-omnivore'),
-    querystring = require('querystring');
+    querystring = require('querystring'),
+    mouse = require('mousetrap');
 
 var templates = {
     editbar: _(fs.readFileSync('./templates/editbar.html', 'utf8')).template()
@@ -57,6 +58,14 @@ keepright.bind = function() {
         map.clear();
         // core.mark('done', keepright.next);
     });
+
+    mouse.bind('e', function() {
+        $('#edit').click();
+    });
+
+    mouse.bind('s', function() {
+        $('#skip').click();
+    });
 };
 
 function edit() {
@@ -84,8 +93,6 @@ function edit() {
             }
 
             $('#sidebar').hide();
-            $('#main').append('<iframe id="iD-frame" src="' + url + '"frameborder="0"></iframe>');
-            $('#main').css('margin-left', '0px');
 
             // newWindow.location = url;
         },
