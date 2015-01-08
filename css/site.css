@@ -124,7 +124,7 @@ a:hover { color: #000; }
     margin-right: 10px;
 }
 
-#iD-frame {
+#iD {
     position: absolute;
     top: 0;
     left: 0;
@@ -133,10 +133,13 @@ a:hover { color: #000; }
     z-index: 2000;
 }
 
-#iD-escape {
+#iD_escape {
+    position: absolute;
+    right: 0;
+    bottom: 100px;
+    padding: 10px 20px;
     color: black;
     font-weight: bold;
     z-index: 2015;
     cursor: pointer;
-    width: 640px;
 }
