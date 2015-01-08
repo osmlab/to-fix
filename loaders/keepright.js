@@ -65,7 +65,7 @@ function edit() {
     var top = current._bounds._northEast.lat + 0.001;
     var right = current._bounds._northEast.lng + 0.001;
 
-    var newWindow = window.open('');
+    // var newWindow = window.open('');
 
     $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
         left: left,
@@ -82,10 +82,15 @@ function edit() {
             } else {
                 url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
             }
-            newWindow.location = url;
+
+            $('#sidebar').hide();
+            $('#main').append('<iframe id="iD-frame" src="' + url + '"frameborder="0"></iframe>');
+            $('#main').css('margin-left', '0px');
+
+            // newWindow.location = url;
         },
         success: function() {
-            newWindow.close();
+            // newWindow.close();
         }
     });
 }
