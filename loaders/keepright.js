@@ -92,6 +92,22 @@ function edit() {
                 url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
             }
 
+            $('#main')
+                .append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>')
+                .css('margin-left', '0px');
+
+            $('#iD_escape')
+                .removeClass('hidden')
+                .on('click', function() {
+                    $('#iD').remove();
+                    $('#main').css('margin-left', '250px');
+                    $('#sidebar').show();
+                    $('#skip').click();
+                    $('#iD_escape')
+                        .addClass('hidden')
+                        .unbind();
+                });
+
             $('#sidebar').hide();
 
             // newWindow.location = url;
