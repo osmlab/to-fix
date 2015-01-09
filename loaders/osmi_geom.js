@@ -1,12 +1,13 @@
 var fs = require('fs');
 
-var core = require('../lib/core'),
-    querystring = require('querystring'),
+var querystring = require('querystring'),
     qs = querystring.parse(window.location.search.slice(1)),
     _ = require('underscore'),
     omnivore = require('leaflet-omnivore'),
-    map = require('../lib/map'),
     mouse = require('mousetrap');
+
+var core = require('../lib/core'),
+    map = require('../lib/map');
 
 var templates = {
     editbar: _(fs.readFileSync('./templates/editbar.html', 'utf8')).template()
