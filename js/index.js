@@ -106,7 +106,9 @@ $('#sidebar').on('click', '#login', function(e) {
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
                     current: qs.error,
-                    authed: isAuthenticated()
+                    authed: isAuthenticated(),
+                    username: store.get('username'),
+                    avatar: store.get('avatar')
                 }));
                 load();
             }
