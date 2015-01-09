@@ -44,6 +44,15 @@ app.post('/fixed/:error', function(req, res) {
     }
 });
 
+app.post('/import', function(req, res) {
+    // request the url that the user provides
+        // download the csv to a tmp
+
+    // endpoint + UI
+        // specify tablename, use filename path.basename if no specified
+        // specify file location
+});
+
 app.listen(3001);
 
 function getNextItem(error, res, callback) {
