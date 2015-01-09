@@ -1,9 +1,9 @@
 var fs = require('fs');
 
-var qs = require('querystring').parse(window.location.search.slice(1)),
+var querystring = require('querystring'),
+    qs = querystring.parse(window.location.search.slice(1)),
     _ = require('underscore'),
     omnivore = require('leaflet-omnivore'),
-    querystring = require('querystring'),
     mouse = require('mousetrap');
 
 var core = require('../lib/core'),
@@ -20,7 +20,7 @@ var keepright = {
 keepright.next = function() {
     map.init();
 
-    core.item(qs.error, function(data) {
+    core.item(qs.error, function() {
         current._osm_object_type = current.object_type;
         current._osm_object_id = current.object_id;
         var full = current._osm_object_type == 'way' ? '/full' : '';
