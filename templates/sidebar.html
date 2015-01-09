@@ -9,8 +9,8 @@
 <div id='user-stuff' class='container pad2y keyline-top fill-white'>
     <% if (obj.authed) { %>
     <a class='pad2x' target='_blank' href="http://www.openstreetmap.org/user/<%= obj.username %>"><img class='dot avatar' src="<%= obj.avatar %>"><%= obj.username %></a>
-    <a class='pad2x icon plus' href="./task">new task</a>
-    <a class='pad2x settings icon sprocket' href="#settings">settings</a>
+    <!-- <a class='pad2x icon plus' href="./task">new task</a> -->
+    <!-- <a class='pad2x settings icon sprocket' href="#settings">settings</a> -->
     <a id='logout' class='pad2x icon logout' href="">logout</a>
     <% } else { %>
     <a id='login' class='pad2x icon account' href="">login</a>
