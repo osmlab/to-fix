@@ -136,7 +136,7 @@ function isAuthenticated() {
 
 if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
 
-$(function() {
+function load() {
     var task = tasks[qs.error || DEFAULT].loader;
     // eventually, remove everything ".loader."
     // the loader will have everything in it, so calling tasks['smthng'] will take care of it
@@ -147,4 +147,6 @@ $(function() {
     } else {
         return;
     }
-});
+}
+
+$(load);
