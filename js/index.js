@@ -139,9 +139,12 @@ function isAuthenticated() {
 if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
 
 function load() {
-    var task = tasks[qs.error || DEFAULT].loader;
+    var task = tasks[qs.error].loader;
+        // this task hash should be it's own module that can be called by core for core.mark('done')
+            // without needing a callback
+
     // eventually, remove everything ".loader."
-    // the loader will have everything in it, so calling tasks['smthng'] will take care of it
+    // the loader will have everything in it, so calling tasks.smthng will take care of it
     if (!task.auth || (task.auth && isAuthenticated())) {
         // eventually task.auth will be an array with the different types of allowable authentications
             // this will correspond with details in localstorage

@@ -12,9 +12,9 @@ var templates = {
     editbar: _(fs.readFileSync('./templates/editbar.html', 'utf8')).template()
 };
 
-var keepright = {};
-
-keepright.auth = ['osm'];
+var keepright = {
+    auth: ['osm']
+};
 
 keepright.next = function() {
     map.init();
