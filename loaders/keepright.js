@@ -28,7 +28,9 @@ keepright.next = function() {
             url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
             dataType: 'xml',
             success: function (xml) {
-                var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
+                var layer = new L.OSM.DataLayer(xml)
+                    .setStyle(featureStyle)
+                    .addTo(featureGroup);
                 current._bounds = layer.getBounds();
                 window.map.fitBounds(current._bounds);
                 omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
@@ -51,12 +53,11 @@ keepright.bind = function() {
     $('#skip').on('click', function() {
         map.clear();
         keepright.next();
-        // core.mark('skip', keepright.next);
     });
 
     $('#fixed').on('click', function() {
         map.clear();
-        // core.mark('done', keepright.next);
+        core.mark('done', keepright.next);
     });
 
     mouse.bind('e', function() {
@@ -119,9 +120,6 @@ function edit() {
             // it's all commented out because I want to make it a setting in the future
                 // whether iD loads in an iframe or a new window
             // newWindow.close();
-
-            console.log('success');
-
             $('#message')
                 .text('Opened in JOSM')
                 .show();
