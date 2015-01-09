@@ -92,12 +92,17 @@ a:hover { color: #000; }
     background: black;
 }
 
-#error-message {
+#error-message, #message {
     top: 0px;
     position: absolute;
     z-index: 999;
     width: 100%;
     display: none;
+}
+
+#message {
+    background-color: black;
+    color: white;
 }
 
 .fill-dark {

@@ -84,7 +84,7 @@ function edit() {
         select: current._osm_object_type + current._osm_object_id
     }), {
         error: function() {
-            // fallback to iD
+            // if JOSM doesn't respond fallback to iD
             var url = 'http://openstreetmap.us/iD/release/#';
             if (current._osm_object_type && current._osm_object_id) {
                 url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
@@ -113,7 +113,22 @@ function edit() {
             // newWindow.location = url;
         },
         success: function() {
+            // this newWindow dance is to get around some browser limitations
+            // so we always open a new window, if we need it we populate the url, else, just close the empty window
+            // this all happens quick enough to not cause issues for the user
+            // it's all commented out because I want to make it a setting in the future
+                // whether iD loads in an iframe or a new window
             // newWindow.close();
+
+            console.log('success');
+
+            $('#message')
+                .text('Opened in JOSM')
+                .show();
+            $('#message').slideDown();
+            setTimeout(function() {
+                $('#message').slideUp();
+            }, 5000);
         }
     });
 }
