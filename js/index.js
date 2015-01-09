@@ -78,12 +78,12 @@ var tasks = {
     'unconnected_minor2': {
         title: 'Unconnected minor < 2m',
         loader: unconnected },
-    'tigerdelta-named': {
-        title: 'Missing/misaligned TIGER',
-        loader: tigerdelta },
     'duplicate_ways': {
         title: 'Duplicate Ways',
-        loader: osmi_geom }
+        loader: osmi_geom },
+    'tigerdelta-named': {
+        title: 'Missing/misaligned TIGER',
+        loader: tigerdelta }
 };
 
 var DEFAULT = 'deadendoneway';
