@@ -21,10 +21,10 @@ osmi_geom.next = function() {
     map.init();
 
     core.item(qs.error, function() {
-        var layer = omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
+        var layer = omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
         layer.setStyle(featureStyle);
-        current._bounds = layer.getBounds();
-        window.map.fitBounds(current._bounds);
+        current.item._bounds = layer.getBounds();
+        window.map.fitBounds(current.item._bounds);
 
         if (!$('#editbar').length) {
             $('#main').append(templates.editbar());
@@ -56,10 +56,10 @@ osmi_geom.bind = function() {
 };
 
 function edit() {
-    var bottom = current._bounds._southWest.lat - 0.001;
-    var left = current._bounds._southWest.lng - 0.001;
-    var top = current._bounds._northEast.lat + 0.001;
-    var right = current._bounds._northEast.lng + 0.001;
+    var bottom = current.item._bounds._southWest.lat - 0.001;
+    var left = current.item._bounds._southWest.lng - 0.001;
+    var top = current.item._bounds._northEast.lat + 0.001;
+    var right = current.item._bounds._northEast.lng + 0.001;
 
     // var newWindow = window.open('');
 
@@ -68,13 +68,13 @@ function edit() {
         right: right,
         top: top,
         bottom: bottom,
-        select: current._osm_object_type + current._osm_object_id
+        select: current.item._osm_object_type + current.item._osm_object_id
     }), {
         error: function() {
             // if JOSM doesn't respond fallback to iD
             var url = 'http://openstreetmap.us/iD/release/#';
-            if (current._osm_object_type && current._osm_object_id) {
-                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
+            if (current.item._osm_object_type && current.item._osm_object_id) {
+                url += 'id=' + current.item._osm_object_type.slice(0, 1) + current.item._osm_object_id;
             } else {
                 url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
             }

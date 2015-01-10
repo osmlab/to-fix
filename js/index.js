@@ -142,6 +142,8 @@ function load() {
     var task = tasks[qs.error].loader;
         // this task hash should be it's own module that can be called by core for core.mark('done')
             // without needing a callback
+    current.loader = task;
+        // temporary, needs a real module
 
     // eventually, remove everything ".loader."
     // the loader will have everything in it, so calling tasks.smthng will take care of it

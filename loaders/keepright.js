@@ -21,20 +21,20 @@ keepright.next = function() {
     map.init();
 
     core.item(qs.error, function() {
-        current._osm_object_type = current.object_type;
-        current._osm_object_id = current.object_id;
-        var full = current._osm_object_type == 'way' ? '/full' : '';
+        current.item._osm_object_type = current.item.object_type;
+        current.item._osm_object_id = current.item.object_id;
+        var full = current.item._osm_object_type == 'way' ? '/full' : '';
 
         $.ajax({
-            url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
+            url: 'https://www.openstreetmap.org/api/0.6/' + current.item._osm_object_type + '/' + current.item._osm_object_id + full,
             dataType: 'xml',
             success: function (xml) {
                 var layer = new L.OSM.DataLayer(xml)
                     .setStyle(featureStyle)
                     .addTo(featureGroup);
-                current._bounds = layer.getBounds();
-                window.map.fitBounds(current._bounds);
-                omnivore.wkt.parse(current.st_astext).addTo(featureGroup);
+                current.item._bounds = layer.getBounds();
+                window.map.fitBounds(current.item._bounds);
+                omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
 
                 if (!$('#editbar').length) {
                     $('#main').append(templates.editbar());
@@ -71,10 +71,10 @@ keepright.bind = function() {
 };
 
 function edit() {
-    var bottom = current._bounds._southWest.lat - 0.001;
-    var left = current._bounds._southWest.lng - 0.001;
-    var top = current._bounds._northEast.lat + 0.001;
-    var right = current._bounds._northEast.lng + 0.001;
+    var bottom = current.item._bounds._southWest.lat - 0.001;
+    var left = current.item._bounds._southWest.lng - 0.001;
+    var top = current.item._bounds._northEast.lat + 0.001;
+    var right = current.item._bounds._northEast.lng + 0.001;
 
     // var newWindow = window.open('');
 
@@ -83,13 +83,13 @@ function edit() {
         right: right,
         top: top,
         bottom: bottom,
-        select: current._osm_object_type + current._osm_object_id
+        select: current.item._osm_object_type + current.item._osm_object_id
     }), {
         error: function() {
             // if JOSM doesn't respond fallback to iD
             var url = 'http://openstreetmap.us/iD/release/#';
-            if (current._osm_object_type && current._osm_object_id) {
-                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
+            if (current.item._osm_object_type && current.item._osm_object_id) {
+                url += 'id=' + current.item._osm_object_type.slice(0, 1) + current.item._osm_object_id;
             } else {
                 url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
             }
