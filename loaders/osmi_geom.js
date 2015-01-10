@@ -2,9 +2,7 @@ var fs = require('fs');
 
 var querystring = require('querystring'),
     qs = querystring.parse(window.location.search.slice(1)),
-    _ = require('underscore'),
-    omnivore = require('leaflet-omnivore'),
-    mouse = require('mousetrap');
+    omnivore = require('leaflet-omnivore');
 
 var core = require('../lib/core'),
     map = require('../lib/map'),
