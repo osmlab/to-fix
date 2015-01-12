@@ -1,7 +1,14 @@
 <div id='editbar' class='col12 pin-bottom'>
     <div id='actions' class='col6 margin3 fill-dark'>
-        <h3 id='edit' class='col4 pad2 center'>edit</h3>
+    <% console.log(obj); %>
+        <h3 id='edit' class='col4 pad2 center<% if (!obj.auth) { %> strikethrough <% } %>'>edit</h3>
         <h3 id='skip' class='col4 pad2 center'>skip</h3>
-        <h3 id='fixed' class='col4 pad2 center'>fixed</h3>
+        <h3 id='fixed' class='col4 pad2 center<% if (!obj.auth) { %> strikethrough <% } %>'>fixed</h3>
     </div>
 </div>
+
+<!-- 
+    - if someone is not authed, hide the edit and fixed buttons?
+    - nag on edit and fixed buttons?
+    - strikethrough edit/fixed and nag for login?
+-->
