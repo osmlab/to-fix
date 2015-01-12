@@ -116,6 +116,10 @@ $('#sidebar').on('click', '#login', function(e) {
                     username: store.get('username'),
                     avatar: store.get('avatar')
                 }));
+
+                // this is a bit hacky, just refresh?
+                if ($('#editbar').length) $('#editbar').remove();
+
                 load();
             }
         });
