@@ -148,3 +148,7 @@ a:hover { color: #000; }
     z-index: 2015;
     cursor: pointer;
 }
+
+.vhidden {
+    visibility: hidden;
+}
