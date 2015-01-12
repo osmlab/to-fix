@@ -1,76 +1,22 @@
 <html>
 <head>
-  <meta charset=utf-8 />
-  <title>to-fix</title>
-  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-  <script src='//api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>
-  <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
-  <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
-  <script src='//osmlab.github.io/to-fix/js/jquery-tourbus.min.js'></script>
-  <link href='//api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
-  <link rel='stylesheet' href='//osmlab.github.io/to-fix/css/jquery-tourbus.min.css'>
-  <link href='//www.mapbox.com/base/latest/base.css' rel='stylesheet'>
-  <link href='css/site.css' rel='stylesheet'>
+    <meta charset=utf-8 />
+    <title>to-fix</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='http://www.mapbox.com/base/latest/base.css' rel='stylesheet'>
+    <script src='http://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <link href='http://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-osm/v0.1.0/leaflet-osm.js'></script>
+    <link rel="stylesheet" type="text/css" href="./css/site.css">
 </head>
-<body id='tofix'>
-  <div id="error-message" class="note error">&nbsp;<span></span>&nbsp;</div>
-
-  <div id='intro-modal' class="pin-left col12 fill-darken2 dark center z1">
-    <div id='intro-modal-content' class="limiter">
-      <div class='col10 margin1'>
-        <h1 class='fancy space-bottom4'>to-fix</h1>
-        <div class='pill center col6 margin3'>
-          <span class='col6 button stroke' id='start-walkthrough'>Start the Walkthrough</span><!--
-          --><span id='go' class='col6 button stroke'>Fix OpenStreetMap »</span>
-        </div>
-      </div>
+<body id='tofix' class='fill-grey'>
+    <div id='sidebar' class='fl fill-white'></div>
+    <div id='main' class='unlimiter contain'>
+        <div id='message' class='center note keyline-bottom'></div>
+        <div id='error-message' class='center note error'>&nbsp;<span></span>&nbsp;</div>
+        <div id='settings' class='animate modal modal-content'></div>
     </div>
-  </div>
-
-  <div id='hidden-controls' class='hidden'>
-    <div id='menu'></div>
-    <h2 id='title'></h2>
-    <h2 id='edit' class='controls'>EDIT</h2>
-    <h2 id='skip' class='controls'>SKIP</h2>
-    <h2 id='fixed' class='controls disabled'>FIXED »</h2>
-  </div>
-
-  <div id='name' class='controls hidden'></div>
-  <div id='map' class='dark'></div>
-
-  <ol class='tourbus-legs' id='walkthrough'>
-    <li data-orientation='centered'>
-      <p>The map shows the current item task at hand</p>
-      <div class='tourbus-next rcon next'></div>
-    </li>
-    <li data-el='#menu' data-orientation='right' data-align='center'>
-      <p>Select different tasks to work on</p>
-      <div class='tourbus-next rcon next'></div>
-    </li>
-    <li data-el='#edit' data-orientation='top' data-align='center' data-width='240'>
-      <p>Edit the current item and make the necessary changes</p>
-      <div class='tourbus-next rcon next'></div>
-    </li>
-    <li data-el='#skip' data-orientation='top' data-align='center' data-width='240'>
-      <p>Skip the item if it's too difficult or not possible to fix</p>
-      <div class='tourbus-next rcon next'></div>
-    </li>
-    <li data-el='#fixed' data-orientation='top' data-align='center' data-width='240'>
-      <p>Mark the current item as being done and move on to the next item</p>
-      <div id='end-walkthrough' class='tourbus-stop rcon next'>End walkthrough</div>
-    </li>
-  </ol>
-
-  <script src='js/bundle.js'></script>
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-12158002-12', 'auto');
-    ga('send', 'pageview');
-  </script>
-
+    <script src='js/bundle.js'></script>
 </body>
 </html>

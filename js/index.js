@@ -1,30 +1,30 @@
-var querystring = require('querystring'),
+var fs = require('fs');
+
+var qs = require('querystring').parse(window.location.search.slice(1)),
     omnivore = require('leaflet-omnivore'),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
     store = require('store'),
-    Mousetrap = require('mousetrap');
+    _ = require('underscore');
 
-var url = 'http://54.204.149.4:3001/';
-if (qs('local')) url = 'http://127.0.0.1:3001/';
+// is there anyway to keep the loaders completely seperate and only import them at runtime?
+    // would this allow us to import external loaders, for example via a gist
 
-var baseLayer = store.get('baseLayer');
-var menuState = store.get('menuState');
+// how to simplify
+    // don't declare any loaders in index.js
+        // pull them in when needed, they are fully bundled themselves
+        // if they're missing, catch and display an error
+    // map titles and descriptions get put in the loaders themselves
 
-var PLAY = 0;
-var randomPlay = [{
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5605656,51.3243174],[-0.5606235,51.3242914],[-0.5607212,51.3242498],[-0.5608437,51.3241887],[-0.5609295,51.32414],[-0.5609951,51.3241058],[-0.5610768,51.3240632],[-0.5611601,51.3240219],[-0.5612531,51.3239709],[-0.5612718,51.32396],[-0.5614974,51.3238289],[-0.5615251,51.3238028],[-0.5615719,51.3237587]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall Lane"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5615719,51.3237587]},"type":"Feature","properties":{}}]}
-}, {
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[6.1773575,49.1255727],[6.1768639,49.1258967],[6.1766857,49.1260137],[6.1766721,49.1260365],[6.1766765,49.1260613],[6.1767016,49.1260829],[6.1767281,49.1260965],[6.1769134,49.1262067],[6.1769337,49.1262188]]},"type":"Feature","properties":{"highway":"pedestrian","name":"Square Paille-Maille","source":"cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2009"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[6.1769337,49.1262188]},"type":"Feature","properties":{}}]}
-}, {
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-0.5608437,51.3241887],[-0.5608931,51.3242352],[-0.5609987,51.324321],[-0.5612412,51.3245343]]},"type":"Feature","properties":{"highway":"residential","name":"Broomhall End"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-0.5612412,51.3245343]},"type":"Feature","properties":{}}]}
-}, {
-    way: {"type":"FeatureCollection","features":[{"geometry":{"type":"LineString","coordinates":[[-2.1959028,51.2504598],[-2.1960627,51.2507108],[-2.1961876,51.2508979],[-2.1962628,51.2510072],[-2.1963248,51.2510954],[-2.1963602,51.2511509],[-2.1963853,51.2511974],[-2.196402,51.2512444],[-2.1964071,51.2512694],[-2.1964121,51.2512936],[-2.1964838,51.2515612]]},"type":"Feature","properties":{"highway":"residential","name":"School Lane","source":"Bing"}}]},
-    node: {"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":[-2.1964838,51.2515612]},"type":"Feature","properties":{}}]}
-}];
+var keepright = require('../loaders/keepright.js'),
+    osmi_geom = require('../loaders/osmi_geom.js'),
+    unconnected = require('../loaders/unconnected.js'),
+    tigerdelta = require('../loaders/tigerdelta.js');
+
+var templates = {
+    sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
+    settings: _(fs.readFileSync('./templates/settings.html', 'utf8')).template()
+};
 
 var auth = osmAuth({
     url: 'https://www.openstreetmap.org',
@@ -33,37 +33,43 @@ var auth = osmAuth({
     landing: 'land.html'
 });
 
+// just use another qs
+    // loader=keepright&error=deadendoneway
+
+// then all the possible titles are in the loader?
+    // do we just have a description.json ?
+
 var tasks = {
     'deadendoneway': {
         title: 'Impossible one-ways',
-        loader: keeprights },
+        loader: keepright },
     'impossibleangle': {
         title: 'Kinks',
-        loader: keeprights },
+        loader: keepright },
     'mixedlayer': {
         title: 'Mixed layers',
-        loader: keeprights },
+        loader: keepright },
     'nonclosedways': {
         title: 'Broken polygons',
-        loader: keeprights },
+        loader: keepright },
     'loopings': {
         title: 'Loopings',
-        loader: keeprights },
+        loader: keepright },
     'strangelayer': {
         title: 'Strange layer',
-        loader: keeprights },
+        loader: keepright },
     'highwayhighway': {
         title: 'Highway intersects highway',
-        loader: keeprights },
+        loader: keepright },
     'highwayfootpath': {
         title: 'Highway intersects footpath',
-        loader: keeprights },
+        loader: keepright },
     'highwayriverbank': {
         title: 'Highway intersects water',
-        loader: keeprights },
+        loader: keepright },
     'mispelledtags': {
         title: 'Mispelled tags',
-        loader: keeprights },
+        loader: keepright },
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
@@ -79,104 +85,20 @@ var tasks = {
     'unconnected_minor2': {
         title: 'Unconnected minor < 2m',
         loader: unconnected },
-    'tigerdelta-named': {
-        title: 'Missing/misaligned TIGER',
-        loader: tigerdelta },
-    // 'northeast_highway_intersects_building': {
-    //     title: 'Highway/building overlap',
-    //     loader: nyc_overlaps },
-    'inconsistent': {
-        loader: inconsistent },
     'duplicate_ways': {
         title: 'Duplicate Ways',
         loader: osmi_geom },
-    'unconnected_major_tokyo': {
-        title: 'Unconnected Tokyo',
-        focus: true,
-        loader: unconnected_tokyo },
-    'unconnected_minor_tokyo': {
-        title: 'Unconnected minor Tokyo',
-        focus: true,
-        loader: unconnected_tokyo },
-    'tokyo_dupes': {
-        title: 'Tokyo Dupes',
-        focus: true,
-        loader: osmi_geom },
-    'tokyo_islands': {
-        title: 'Tokyo Islands',
-        focus: true,
-        loader: osmi_geom }
+    'tigerdelta-named': {
+        title: 'Missing/misaligned TIGER',
+        loader: tigerdelta }
 };
 
 var DEFAULT = 'deadendoneway';
-var ERROR_MESSAGE_TIMEOUT = 5000;
 
-var featureStyle = {
-    color: '#FF00B7',
-    opacity: 1,
-    weight: 4
-};
+window.current = {};
 
-var altStyle = {
-    color: '#00BFFF',
-    opacity: 1,
-    weight: 4
-};
-
-var current = {};
-
-var map = L.mapbox.map('map', null, {
-    fadeAnimation: false,
-    zoomAnimation: false,
-    maxZoom: 18,
-    keyboard: false
-}).setView([22.76, -25.84], 3);
-
-var layerGroup = L.layerGroup().addTo(map);
-var loopGroup = L.layerGroup().addTo(map);
-
-map.attributionControl.setPosition('topright');
-map.zoomControl.setPosition('topright');
-
-var layers = {
-    'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
-    'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j'),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {detectRetina: false}),
-    'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0'),
-    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
-    })
-};
-
-if (baseLayer && layers[baseLayer]) {
-    layers[baseLayer].addTo(map);
-} else {
-    layers['Mapbox Satellite'].addTo(map);
-}
-
-L.control.layers(layers).addTo(map);
-
-map.on('baselayerchange', function(e) {
-    store.set('baseLayer', e.name);
-});
-
-var tour = $('.tourbus-legs').tourbus({
-    onDepart: function() {
-        renderMenu();
-        $('#intro-modal').addClass('hidden');
-        controls(true);
-    },
-    onStop: function() {
-        controls(false);
-        $('#intro-modal').removeClass('hidden');
-    }
-});
-
-$('#start-walkthrough').on('click', function() {
-    tour.trigger('depart.tourbus');
-});
-
-$('#go').on('click', function() {
+$('#sidebar').on('click', '#login', function(e) {
+    e.preventDefault();
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -187,412 +109,64 @@ $('#go').on('click', function() {
                 details = details.getElementsByTagName('user')[0];
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
+                store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
+                $('#sidebar').html(templates.sidebar({
+                    tasks: tasks,
+                    current: qs.error,
+                    authed: isAuthenticated(),
+                    username: store.get('username'),
+                    avatar: store.get('avatar')
+                }));
+
+                // this is a bit hacky, just refresh?
+                if ($('#editbar').length) $('#editbar').remove();
+
                 load();
             }
         });
     });
 });
 
-$(load);
-
-function keeprights() {
-    current._osm_object_type = current.object_type;
-    current._osm_object_id = current.object_id;
-    var full = current._osm_object_type == 'way' ? '/full' : '';
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-        },
-        error: function(err) {
-            next();
-        }
-    });
-
-    renderUI();
-}
-
-function next() {
-    $('#fixed').addClass('disabled').unbind();
-    $('#map').addClass('loading');
-    layerGroup.getLayers().forEach(function(layer) {
-        layerGroup.removeLayer(layer);
-    });
-    load();
-}
-
-function showErrorMessage(jqXHR, textStatus, errorThrown) {
-    var errorMessage = jqXHR.responseText;
-    if (textStatus === 'timeout') errorMessage = 'Request timed out.';
-    $('#error-message span').text(errorMessage).show();
-    $('#error-message').slideDown();
-    setTimeout(function() { 
-        $('#error-message span').fadeOut(function(){
-            $('#error-message').slideUp();
-        });
-    }, ERROR_MESSAGE_TIMEOUT);
-}
-
-function markDone() {
-    Mousetrap.unbind(['enter', 'e']);
-
-    $.ajax({
-        crossDomain: true,
-        url: url + 'fixed/' + qs('error'),
-        type: 'post',
-        data: JSON.stringify({
-            user: store.get('username'),
-            state: current
-        })
-    })
-    .error(showErrorMessage)
-    .done(next);
-}
-
-$('#skip').on('click', next);
-$('#edit').on('click', edit);
-
-Mousetrap.bind(['right', 'j'], function() {
-    $('#skip')
-        .addClass('active')
-        .click();
-    setTimeout(function() {
-        $('#skip').removeClass('active');
-    }, 200);
+$('#sidebar').on('click', '#logout', function(e) {
+    e.preventDefault();
+    auth.logout();
+    window.location.href = '';
 });
 
-function enableDone() {
-    // super temporary
-    // setTimeout(function() {
-        $('#fixed').removeClass('disabled');
-        Mousetrap.bind(['enter', 'e'], function() {
-            $('#edit').click();
-        });
-        $('#fixed').on('click', markDone);
-    // }, 500);
+$('#sidebar').html(templates.sidebar({
+    tasks: tasks,
+    current: qs.error,
+    authed: isAuthenticated(),
+    avatar: store.get('avatar'),
+    username: store.get('username')
+}));
+
+$('#settings').html(templates.settings());
+
+function isAuthenticated() {
+    return (auth.authenticated() && store.get('username') && store.get('userid'));
 }
 
-var alt = false;
-Mousetrap.bind(['s'], function() {
-    alt = !alt;
-    if (alt) $('.leaflet-control-layers-base input:eq(1)').click();
-    else $('.leaflet-control-layers-base input:eq(2)').click();
-});
-
-function controls(show) {
-    if (show) {
-        $('#hidden-controls').removeClass('hidden');
-        $('.leaflet-control-container').removeClass('hidden');
-    } else {
-        $('.leaflet-control-container').addClass('hidden');
-        $('#hidden-controls')
-            .addClass('hidden')
-            .removeClass('clickthrough');
-    }
-}
+if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
 
 function load() {
-    if (auth.authenticated() && store.get('username') && store.get('userid')) {
-        $('#intro-modal').addClass('hidden');
-        controls(true);
-        if (qs('error') === undefined) {
-            window.location.href = window.location.href + '?error=' + DEFAULT;
-        } else {
-            if (tasks[qs('error')].focus) {
-                var title = $('#title');
-                title.text(tasks[(qs('error'))].title);
-                title.show();
-            } else {
-                renderMenu();
-            }
+    current.loader = tasks[qs.error].loader;
+    // this task hash should be it's own module that can be called by core for core.mark('done')
 
-            $.ajax({
-                crossDomain: true,
-                url: url + 'error/' + qs('error'),
-                type: 'post',
-                data: JSON.stringify({user: store.get('username')})
-            })
-            .error(showErrorMessage)
-            .done(function(data) {
-                data = JSON.parse(data);
-                current = data.value;
-                
-                // check to be sure we've been served a valid task
-                if (!current.ignore) {
-                    current = data.value;
-                    current._id = data.key;
-                    $('#map').removeClass('loading');
-                    tasks[qs('error') || DEFAULT].loader();
+    // eventually, remove everything ".loader."
+    // the loader will have everything in it, so calling tasks.smthng will take care of it
 
-                    // super temporary
-                    enableDone();
+    // allow all tasks reguardless of auth for now, demo purposes and such
+    // if (!current.loader.auth || (current.loader.auth && isAuthenticated())) {
+    //     // eventually task.auth will be an array with the different types of allowable authentications
+    //         // this will correspond with details in localstorage
+    //     current.loader.next();
+    // } else {
+    //     return;
+    // }
 
-                } else {
-                    $('#map').removeClass('loading');
-                    showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
-                }
-            });
-        }
-    } else {
-        pushLoop();
-        var player = setInterval(pushLoop, 5000);
-        $('#start-walkthrough')
-            .removeClass('hidden')
-            .on('click', function() {
-                $('#hidden-controls').addClass('clickthrough');
-                clearInterval(player);
-            });
-    }
+    current.auth = isAuthenticated();
+    current.loader.next();
 }
 
-function pushLoop() {
-    // remove anything that might already be on the loopGroup
-    loopGroup.getLayers().forEach(function(layer) {
-        loopGroup.removeLayer(layer);
-    });
-
-    var way = L.geoJson(randomPlay[PLAY].way).addTo(loopGroup);
-    var node = L.geoJson(randomPlay[PLAY].node).addTo(loopGroup);
-
-    map.fitBounds(way.getBounds());
-    node.setStyle(altStyle);
-    way.setStyle(featureStyle);
-
-    PLAY = (PLAY < randomPlay.length - 1) ? (PLAY + 1) : 0;
-}
-
-function nyc_overlaps() {
-    current._osm_object_type = 'way';
-    current._osm_object_id = current.bldg;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                    current._bounds = layer.getBounds();
-                    map.fitBounds(current._bounds);
-                }
-            });
-        }
-    });
-
-    renderUI();
-}
-
-function inconsistent() {
-    current._osm_object_type = 'way';
-    current._osm_object_id = current.incomplete_way_id;
-
-    // possible wrong name (altStyle)
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-
-            // context ways
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-                }
-            });
-
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-                }
-            });
-
-        }
-    });
-
-    renderUI({
-        name: current.name || current.ref
-    });
-}
-
-function npsdiff() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-}
-
-function tigerdelta() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-
-    renderUI({
-        name: current.name
-    });
-}
-
-function unconnected() {
-    current._osm_object_type = 'node';
-    current._osm_object_id = current.node_id;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                }
-            });
-        },
-        error: function(err) {
-            next();
-        }
-    });
-
-    renderUI();
-}
-
-function unconnected_tokyo() {
-    current._osm_object_type = 'node';
-    current._osm_object_id = current.node_id;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-
-            var users = ['Rub21', 'ediyes', 'Luis36995', 'RichRico', 'dannykath'];
-            // this is obviously very near sighted, but whatever, move fast, etc...
-            // check if the way was touched by one of the users
-            var user = xml.getElementsByTagName('way')[0].getAttribute('user');
-            if (users.indexOf(user) > -1) {
-                console.log('way previously touched by', user);
-                // consider it done
-                return markDone();
-            }
-
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: 'xml',
-                success: function (xml) {
-
-                    var user = xml.getElementsByTagName('node')[0].getAttribute('user');
-                    if (users.indexOf(user) > -1) {
-                        console.log('node previously touched by', user);
-                        // consider it done
-                        return markDone();
-                    }
-
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                },
-                error: function(err) {
-                    if (err.status == 410) return markDone();
-                    return next();
-                }
-            });
-        },
-        error: function(err) {
-            if (err.status == 410) return markDone();
-            return next();
-        }
-    });
-
-    renderUI();
-}
-
-function osmi_geom() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-    renderUI();
-}
-
-function edit() {
-    var bottom = current._bounds._southWest.lat - 0.001;
-    var left = current._bounds._southWest.lng - 0.001;
-    var top = current._bounds._northEast.lat + 0.001;
-    var right = current._bounds._northEast.lng + 0.001;
-
-    var newWindow = window.open('');
-
-    $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-        select: current._osm_object_type + current._osm_object_id
-    }), {
-        error: function() {
-            // fallback to iD
-            var url = 'http://openstreetmap.us/iD/release/#';
-            if (current._osm_object_type && current._osm_object_id) {
-                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
-            } else {
-                url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
-            }
-            newWindow.location = url;
-            enableDone();
-        },
-        success: function() {
-            newWindow.close();
-            enableDone();
-        }
-    });
-}
-
-function renderUI(data) {
-    if (!data) data = {};
-
-    $('#hidden-controls').removeClass('hidden');
-
-    if (data.name && data.name.length) {
-        $('#name')
-            .text(data.name)
-            .removeClass('hidden');
-    } else {
-        $('#name').addClass('hidden');
-    }
-}
-
-function renderMenu() {
-    var $menu = $('#menu').html('');
-    var err = qs('error');
-    for (var item in tasks) {
-        if (tasks[item].title && !tasks[item].focus) {
-            $menu.append(
-                $('<a></a>')
-                    .attr('href', '?' + querystring.encode({ error: item }))
-                    .attr('class', item == err ? 'active' : '')
-                    .text(tasks[item].title));
-        }
-    }
-}
-
-function qs(name) {
-    return querystring.parse(window.location.search.slice(1))[name];
-}
+$(load);
