@@ -121,24 +121,31 @@ module.exports = L.TileLayer.extend({
 },{}],"/Users/aaron/to-fix/js/index.js":[function(require,module,exports){
 
 
-var querystring = require('querystring'),
+var qs = require('querystring').parse(window.location.search.slice(1)),
     omnivore = require('leaflet-omnivore'),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
     store = require('store'),
-    Mousetrap = require('mousetrap'),
     _ = require('underscore');
 
+// is there anyway to keep the loaders completely seperate and only import them at runtime?
+    // would this allow us to import external loaders, for example via a gist
+
+// how to simplify
+    // don't declare any loaders in index.js
+        // pull them in when needed, they are fully bundled themselves
+        // if they're missing, catch and display an error
+    // map titles and descriptions get put in the loaders themselves
+
+var keepright = require('../loaders/keepright.js'),
+    osmi_geom = require('../loaders/osmi_geom.js'),
+    unconnected = require('../loaders/unconnected.js'),
+    tigerdelta = require('../loaders/tigerdelta.js');
+
 var templates = {
-    sidebar: _("<div id='top-section' class='pad2 keyline-bottom'>\n    <a href=\"\"><h3 class='fancy center'>to-fix</h3></a>\n</div>\n<div id='tasks' class='container pad2y'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n    <a class=\"pad2x truncate<% if (obj.current == task) { %> selected<% } %>\" href=\"/?error=<%= task %>\"><%= tasks[task].title %></a>\n    <% }); %>\n</div>\n<div id='user-stuff' class='container pad2y keyline-top fill-white'>\n    <% if (obj.authed) { %>\n    <a class='pad2x' target='_blank' href=\"http://www.openstreetmap.org/user/<%= obj.username %>\"><img class='dot avatar' src=\"<%= obj.avatar %>\"><%= obj.username %></a>\n    <a class='pad2x icon plus' href=\"./task\">new task</a>\n    <a class='pad2x settings icon sprocket' href=\"#settings\">settings</a>\n    <a id='logout' class='pad2x icon logout' href=\"\">logout</a>\n    <% } else { %>\n    <a id='login' class='pad2x icon account' href=\"\">login</a>\n    <% } %>\n</div>\n").template(),
+    sidebar: _("<div id='top-section' class='pad2 keyline-bottom'>\n    <a href=\"\"><h3 class='fancy center'>to-fix</h3></a>\n</div>\n<div id='tasks' class='container pad2y'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n    <a class=\"pad2x truncate<% if (obj.current == task) { %> selected<% } %>\" href=\"/?error=<%= task %>\"><%= tasks[task].title %></a>\n    <% }); %>\n</div>\n<div id='user-stuff' class='container pad2y keyline-top fill-white'>\n    <% if (obj.authed) { %>\n    <a class='pad2x' target='_blank' href=\"http://www.openstreetmap.org/user/<%= obj.username %>\"><img class='dot avatar' src=\"<%= obj.avatar %>\"><%= obj.username %></a>\n    <!-- <a class='pad2x icon plus' href=\"./task\">new task</a> -->\n    <!-- <a class='pad2x settings icon sprocket' href=\"#settings\">settings</a> -->\n    <a id='logout' class='pad2x icon logout' href=\"\">logout</a>\n    <% } else { %>\n    <a id='login' class='pad2x icon account' href=\"\">login to edit</a>\n    <% } %>\n</div>\n").template(),
     settings: _("<form id='modal-name' class='modal-popup' method='post'>\n    <div class='col4 modal-body fill-white contain'>\n        <a href='#close' class='quiet pad1 icon fr close'></a>\n        <div class='pad1 center'>\n            <h2>Settings</h2>\n        </div>\n        <div class='pad2x pad1y'>\n            <div class='pad1y'>\n                <h3 class='col3'>Editor:</h3>\n                <select name='select' class='select'>\n                    <option class='' value=\"ideditor\">iD</option>\n                    <option class='' value='autoeditor' selected='true'>pick automatically</option>\n                    <option class='' value='josmeditor'>JOSM</option>\n                </select>\n            </div>\n        </div>\n    </div>\n</form>\n").template()
 };
-
-var url = 'http://54.204.149.4:3001/';
-if (qs('local')) url = 'http://127.0.0.1:3001/';
-
-var baseLayer = store.get('baseLayer');
-var menuState = store.get('menuState');
 
 var auth = osmAuth({
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
@@ -146,37 +153,43 @@ var auth = osmAuth({
     landing: 'land.html'
 });
 
+// just use another qs
+    // loader=keepright&error=deadendoneway
+
+// then all the possible titles are in the loader?
+    // do we just have a description.json ?
+
 var tasks = {
     'deadendoneway': {
         title: 'Impossible one-ways',
-        loader: keeprights },
+        loader: keepright },
     'impossibleangle': {
         title: 'Kinks',
-        loader: keeprights },
+        loader: keepright },
     'mixedlayer': {
         title: 'Mixed layers',
-        loader: keeprights },
+        loader: keepright },
     'nonclosedways': {
         title: 'Broken polygons',
-        loader: keeprights },
+        loader: keepright },
     'loopings': {
         title: 'Loopings',
-        loader: keeprights },
+        loader: keepright },
     'strangelayer': {
         title: 'Strange layer',
-        loader: keeprights },
+        loader: keepright },
     'highwayhighway': {
         title: 'Highway intersects highway',
-        loader: keeprights },
+        loader: keepright },
     'highwayfootpath': {
         title: 'Highway intersects footpath',
-        loader: keeprights },
+        loader: keepright },
     'highwayriverbank': {
         title: 'Highway intersects water',
-        loader: keeprights },
+        loader: keepright },
     'mispelledtags': {
         title: 'Mispelled tags',
-        loader: keeprights },
+        loader: keepright },
     'unconnected_major1': {
         title: 'Unconnected major < 1m',
         loader: unconnected },
@@ -192,87 +205,17 @@ var tasks = {
     'unconnected_minor2': {
         title: 'Unconnected minor < 2m',
         loader: unconnected },
-    'tigerdelta-named': {
-        title: 'Missing/misaligned TIGER',
-        loader: tigerdelta },
-    'inconsistent': {
-        loader: inconsistent },
     'duplicate_ways': {
         title: 'Duplicate Ways',
         loader: osmi_geom },
-    'unconnected_major_tokyo': {
-        title: 'Unconnected Tokyo',
-        focus: true,
-        loader: unconnected_tokyo },
-    'unconnected_minor_tokyo': {
-        title: 'Unconnected minor Tokyo',
-        focus: true,
-        loader: unconnected_tokyo },
-    'tokyo_dupes': {
-        title: 'Tokyo Dupes',
-        focus: true,
-        loader: osmi_geom },
-    'tokyo_islands': {
-        title: 'Tokyo Islands',
-        focus: true,
-        loader: osmi_geom }
+    'tigerdelta-named': {
+        title: 'Missing/misaligned TIGER',
+        loader: tigerdelta }
 };
 
 var DEFAULT = 'deadendoneway';
-var ERROR_MESSAGE_TIMEOUT = 5000;
 
-var featureStyle = {
-    color: '#FF00B7',
-    opacity: 1,
-    weight: 4
-};
-
-var altStyle = {
-    color: '#00BFFF',
-    opacity: 1,
-    weight: 4
-};
-
-var current = {};
-
-var map = L.mapbox.map('map', null, {
-    maxZoom: 18,
-    keyboard: false
-}).setView([22.76, -25.84], 3);
-
-var layerGroup = L.layerGroup().addTo(map);
-
-map.attributionControl.setPosition('bottomright');
-map.zoomControl.setPosition('topleft');
-
-var layers = {
-    'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
-    'Streets': L.mapbox.tileLayer('aaronlidman.inhj344j', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
-    }),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
-        detectRetina: false
-    }),
-    'Outdoors': L.mapbox.tileLayer('aaronlidman.jgo996i0', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
-    }),
-    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
-    })
-};
-
-if (baseLayer && layers[baseLayer]) {
-    layers[baseLayer].addTo(map);
-} else {
-    layers['Mapbox Satellite'].addTo(map);
-}
-
-L.control.layers(layers).addTo(map);
-
-map.on('baselayerchange', function(e) {
-    store.set('baseLayer', e.name);
-});
+window.current = {};
 
 $('#sidebar').on('click', '#login', function(e) {
     e.preventDefault();
@@ -289,9 +232,15 @@ $('#sidebar').on('click', '#login', function(e) {
                 store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
-                    current: qs('error'),
-                    authed: isAuthenticated()
+                    current: qs.error,
+                    authed: isAuthenticated(),
+                    username: store.get('username'),
+                    avatar: store.get('avatar')
                 }));
+
+                // this is a bit hacky, just refresh?
+                if ($('#editbar').length) $('#editbar').remove();
+
                 load();
             }
         });
@@ -306,385 +255,470 @@ $('#sidebar').on('click', '#logout', function(e) {
 
 $('#sidebar').html(templates.sidebar({
     tasks: tasks,
-    current: qs('error'),
+    current: qs.error,
     authed: isAuthenticated(),
     avatar: store.get('avatar'),
     username: store.get('username')
 }));
 
 $('#settings').html(templates.settings());
-$(load);
-
-function keeprights() {
-    current._osm_object_type = current.object_type;
-    current._osm_object_id = current.object_id;
-    var full = current._osm_object_type == 'way' ? '/full' : '';
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/' + current._osm_object_type + '/' + current._osm_object_id + full,
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-        },
-        error: function(err) {
-            next();
-        }
-    });
-
-    renderUI();
-}
-
-function next() {
-    $('#fixed').addClass('disabled').unbind();
-    $('#map').addClass('loading');
-    layerGroup.getLayers().forEach(function(layer) {
-        layerGroup.removeLayer(layer);
-    });
-    load();
-}
-
-function showErrorMessage(jqXHR, textStatus, errorThrown) {
-    var errorMessage = jqXHR.responseText;
-    if (textStatus === 'timeout') errorMessage = 'Request timed out.';
-    $('#error-message span').text(errorMessage).show();
-    $('#error-message').slideDown();
-    setTimeout(function() { 
-        $('#error-message span').fadeOut(function(){
-            $('#error-message').slideUp();
-        });
-    }, ERROR_MESSAGE_TIMEOUT);
-}
-
-function markDone() {
-    Mousetrap.unbind(['enter', 'e']);
-
-    $.ajax({
-        crossDomain: true,
-        url: url + 'fixed/' + qs('error'),
-        type: 'post',
-        data: JSON.stringify({
-            user: store.get('username'),
-            state: current
-        })
-    })
-    .error(showErrorMessage)
-    .done(next);
-}
-
-$('#skip').on('click', next);
-$('#edit').on('click', edit);
-
-Mousetrap.bind(['right', 'j'], function() {
-    $('#skip')
-        .addClass('active')
-        .click();
-    setTimeout(function() {
-        $('#skip').removeClass('active');
-    }, 200);
-});
-
-function enableDone() {
-    // super temporary
-    // setTimeout(function() {
-        $('#fixed').removeClass('disabled');
-        Mousetrap.bind(['enter', 'e'], function() {
-            $('#edit').click();
-        });
-        $('#fixed').on('click', markDone);
-    // }, 500);
-}
-
-var alt = false;
-Mousetrap.bind(['s'], function() {
-    alt = !alt;
-    if (alt) $('.leaflet-control-layers-base input:eq(1)').click();
-    else $('.leaflet-control-layers-base input:eq(2)').click();
-});
-
-function controls(show) {
-    if (show) {
-        $('#hidden-controls').removeClass('hidden');
-        $('.leaflet-control-container').removeClass('hidden');
-    } else {
-        $('.leaflet-control-container').addClass('hidden');
-        $('#hidden-controls')
-            .addClass('hidden')
-            .removeClass('clickthrough');
-    }
-}
 
 function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));
 }
 
+if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
+
 function load() {
-    if (!isAuthenticated()) {
-        // set some temp vars
-        // limit functionality
-        // but otherwise, act like any other user
-        return;
-    }
+    current.loader = tasks[qs.error].loader;
+    // this task hash should be it's own module that can be called by core for core.mark('done')
 
-    $('#intro-modal').addClass('hidden');
-    controls(true);
+    // eventually, remove everything ".loader."
+    // the loader will have everything in it, so calling tasks.smthng will take care of it
 
-    if (qs('error') === undefined) return window.location.href = window.location.href + '?error=' + DEFAULT;
+    // allow all tasks reguardless of auth for now, demo purposes and such
+    // if (!current.loader.auth || (current.loader.auth && isAuthenticated())) {
+    //     // eventually task.auth will be an array with the different types of allowable authentications
+    //         // this will correspond with details in localstorage
+    //     current.loader.next();
+    // } else {
+    //     return;
+    // }
 
-    if (tasks[qs('error')].focus) {
-        var title = $('#title');
-        title.text(tasks[(qs('error'))].title);
-        title.show();
-    }
+    current.auth = isAuthenticated();
+    current.loader.next();
+}
 
+$(load);
+
+},{"../loaders/keepright.js":"/Users/aaron/to-fix/loaders/keepright.js","../loaders/osmi_geom.js":"/Users/aaron/to-fix/loaders/osmi_geom.js","../loaders/tigerdelta.js":"/Users/aaron/to-fix/loaders/tigerdelta.js","../loaders/unconnected.js":"/Users/aaron/to-fix/loaders/unconnected.js","./bing.js":"/Users/aaron/to-fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","osm-auth":"/Users/aaron/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/lib/core.js":[function(require,module,exports){
+var qs = require('querystring').parse(window.location.search.slice(1)),
+    store = require('store');
+
+var core = {};
+
+var url = 'http://54.204.149.4:3001/';
+if (qs.local) url = 'http://127.0.0.1:3001/';
+
+function request(error, callback) {
     $.ajax({
         crossDomain: true,
-        url: url + 'error/' + qs('error'),
+        url: url + 'error/' + error,
         type: 'post',
         data: JSON.stringify({user: store.get('username')})
     })
-    .error(showErrorMessage)
-    .done(function(data) {
+    .error(jqError)
+    .done(callback);
+}
+
+core.item = function(error, callback) {
+    // eventually remove the need for specifying error
+        // can get by on callback only
+    request(error, function(data) {
         data = JSON.parse(data);
-        current = data.value;
-
-        // check to be sure we've been served a valid task
-        if (!current.ignore) {
-            current = data.value;
-            current._id = data.key;
-            $('#map').removeClass('loading');
-            tasks[qs('error') || DEFAULT].loader();
-
-            // super temporary
-            enableDone();
-
-        } else {
-            $('#map').removeClass('loading');
-            showErrorMessage({responseText: 'No valid tasks available for this error type.'}, null, null);
-        }
+        window.current.item = data.value;
+        window.current.item._id = data.key;
+        return callback();
     });
-}
+};
 
-function nyc_overlaps() {
-    current._osm_object_type = 'way';
-    current._osm_object_id = current.bldg;
+core.mark = function(status, callback) {
+    // mark it as done/inadequate/needing review, mark it as something
+    // do we do those mappings here or on the server?
+        // literal strings?
+        // leave the definitions fluid on purpose
+        // let the loader pick what status to pay attention to and ignore?
+
+    // not doing anything with status yet, we'll want to sort by it eventually
+        // thinking about hstore for "state" eventually, need to think about it a bit
 
     $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.hwy + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.bldg + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                    current._bounds = layer.getBounds();
-                    map.fitBounds(current._bounds);
-                }
-            });
-        }
+        crossDomain: true,
+        url: url + 'fixed/' + qs.error,
+        type: 'post',
+        data: JSON.stringify({
+            user: store.get('username'),
+            state: window.current.item
+        })
+    })
+    .error(jqError)
+    .done(callback);
+
+    // state: current
+    // not liking that at all
+};
+
+core.error = function(message) {
+    $('#error-message span').text(message).show();
+    $('#error-message').slideDown();
+    setTimeout(function() {
+        $('#error-message span').fadeOut(function(){
+            $('#error-message').slideUp();
+        });
+    }, 5000);
+};
+
+function jqError(jqXHR, textStatus, errorThrown) {
+    core.error(textStatus === 'timeout' ?
+        errorMessage = 'Request timed out.' :
+        jqXHR.responseText
+    );
+}
+
+module.exports = core;
+
+},{"querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js"}],"/Users/aaron/to-fix/lib/editbar.js":[function(require,module,exports){
+
+
+var _ = require('underscore'),
+    querystring = require('querystring');
+
+var core = require('./core'),
+    map = require('./map');
+
+var templates = {
+    editbar: _("<div id='editbar' class='col12 pin-bottom'>\n    <div id='actions' class='col6 margin3'>\n        <h3 id='edit' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>edit</h3>\n        <h3 id='skip' class='fill-dark col4 pad2 center'>skip</h3>\n        <h3 id='fixed' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>fixed</h3>\n    </div>\n</div>\n").template()
+};
+
+var editbar = {};
+
+editbar.init = function() {
+    if (!$('#editbar').length) {
+        $('#main').append(templates.editbar(current));
+        editbar.bind();
+    } else {
+        return false;
+    }
+};
+
+editbar.bind = function() {
+    $('#edit').on('click', editbar.edit);
+
+    $('#skip').on('click', function() {
+        map.clear();
+        current.loader.next();
     });
 
-    renderUI();
-}
-
-function inconsistent() {
-    current._osm_object_type = 'way';
-    current._osm_object_id = current.incomplete_way_id;
-
-    // possible wrong name (altStyle)
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.incomplete_way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-
-            // context ways
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_before_way_id + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-                }
-            });
-
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/way/' + current.src_after_way_id + '/full',
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(altStyle).addTo(layerGroup);
-                }
-            });
-
-        }
+    $('#fixed').on('click', function() {
+        map.clear();
+        core.mark('done', current.loader.next);
     });
 
-    renderUI({
-        name: current.name || current.ref
-    });
-}
-
-function npsdiff() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-}
-
-function tigerdelta() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-
-    renderUI({
-        name: current.name
-    });
-}
-
-function unconnected() {
-    current._osm_object_type = 'node';
-    current._osm_object_id = current.node_id;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: 'xml',
-                success: function (xml) {
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                }
-            });
-        },
-        error: function(err) {
-            next();
-        }
+    mouse.bind('e', function() {
+        $('#edit').click();
     });
 
-    renderUI();
-}
-
-function unconnected_tokyo() {
-    current._osm_object_type = 'node';
-    current._osm_object_id = current.node_id;
-
-    $.ajax({
-        url: 'https://www.openstreetmap.org/api/0.6/way/' + current.way_id + '/full',
-        dataType: 'xml',
-        success: function (xml) {
-
-            var users = ['Rub21', 'ediyes', 'Luis36995', 'RichRico', 'dannykath'];
-            // this is obviously very near sighted, but whatever, move fast, etc...
-            // check if the way was touched by one of the users
-            var user = xml.getElementsByTagName('way')[0].getAttribute('user');
-            if (users.indexOf(user) > -1) {
-                console.log('way previously touched by', user);
-                // consider it done
-                return markDone();
-            }
-
-            var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-            current._bounds = layer.getBounds();
-            map.fitBounds(current._bounds);
-            $.ajax({
-                url: 'https://www.openstreetmap.org/api/0.6/node/' + current._osm_object_id,
-                dataType: 'xml',
-                success: function (xml) {
-
-                    var user = xml.getElementsByTagName('node')[0].getAttribute('user');
-                    if (users.indexOf(user) > -1) {
-                        console.log('node previously touched by', user);
-                        // consider it done
-                        return markDone();
-                    }
-
-                    var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(layerGroup);
-                },
-                error: function(err) {
-                    if (err.status == 410) return markDone();
-                    return next();
-                }
-            });
-        },
-        error: function(err) {
-            if (err.status == 410) return markDone();
-            return next();
-        }
+    mouse.bind('s', function() {
+        $('#skip').click();
     });
+};
 
-    renderUI();
-}
+editbar.edit = function() {
+    var bottom = current.item._bounds._southWest.lat - 0.001;
+    var left = current.item._bounds._southWest.lng - 0.001;
+    var top = current.item._bounds._northEast.lat + 0.001;
+    var right = current.item._bounds._northEast.lng + 0.001;
 
-function osmi_geom() {
-    var layer = omnivore.wkt.parse(current.st_astext).addTo(layerGroup);
-    layer.setStyle(featureStyle);
-    current._bounds = layer.getBounds();
-    map.fitBounds(current._bounds);
-    renderUI();
-}
-
-function edit() {
-    var bottom = current._bounds._southWest.lat - 0.001;
-    var left = current._bounds._southWest.lng - 0.001;
-    var top = current._bounds._northEast.lat + 0.001;
-    var right = current._bounds._northEast.lng + 0.001;
-
-    var newWindow = window.open('');
+    // var newWindow = window.open('');
 
     $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
         left: left,
         right: right,
         top: top,
         bottom: bottom,
-        select: current._osm_object_type + current._osm_object_id
+        select: current.item._osm_object_type + current.item._osm_object_id
     }), {
         error: function() {
-            // fallback to iD
+            // if JOSM doesn't respond fallback to iD
             var url = 'http://openstreetmap.us/iD/release/#';
-            if (current._osm_object_type && current._osm_object_id) {
-                url += 'id=' + current._osm_object_type.slice(0, 1) + current._osm_object_id;
+            if (current.item._osm_object_type && current.item._osm_object_id) {
+                url += 'id=' + current.item._osm_object_type.slice(0, 1) + current.item._osm_object_id;
             } else {
-                url += 'map=' + map.getZoom() + '/' + map.getCenter().lng + '/' + map.getCenter().lat;
+                url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
             }
-            newWindow.location = url;
-            enableDone();
+
+            $('#main')
+                .append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>')
+                .css('margin-left', '0px');
+
+            $('#iD_escape')
+                .removeClass('hidden')
+                .on('click', function() {
+                    $('#iD').remove();
+                    $('#main').css('margin-left', '250px');
+                    $('#sidebar').show();
+                    $('#skip').click();
+                    $('#iD_escape')
+                        .addClass('hidden')
+                        .unbind();
+                });
+
+            $('#sidebar').hide();
+
+            // newWindow.localhosttion = url;
         },
         success: function() {
-            newWindow.close();
-            enableDone();
+            // this newWindow dance is to get around some browser limitations
+            // so we always open a new window, if we need it we populate the url, else, just close the empty window
+            // this all happens quick enough to not cause issues for the user
+            // it's all commented out because I want to make it a setting in the future
+                // whether iD loads in an iframe or a new window
+            // newWindow.close();
+            $('#message')
+                .text('Opened in JOSM')
+                .show();
+            $('#message').slideDown();
+            setTimeout(function() {
+                $('#message').slideUp();
+            }, 5000);
         }
     });
-}
+};
 
-function renderUI(data) {
-    if (!data) data = {};
+module.exports = editbar;
 
-    $('#hidden-controls').removeClass('hidden');
+},{"./core":"/Users/aaron/to-fix/lib/core.js","./map":"/Users/aaron/to-fix/lib/map.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/lib/map.js":[function(require,module,exports){
 
-    if (data.name && data.name.length) {
-        $('#name')
-            .text(data.name)
-            .removeClass('hidden');
-    } else {
-        $('#name').addClass('hidden');
-    }
-}
 
-function qs(name) {
-    return querystring.parse(window.location.search.slice(1))[name];
-}
+var _ = require('underscore'),
+    store = require('store'),
+    BingLayer = require('../js/bing.js');
 
-},{"./bing.js":"/Users/aaron/to-fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to-fix/node_modules/mousetrap/mousetrap.js","osm-auth":"/Users/aaron/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
+var templates = {
+    map: _("<div id='map' class='fill-black' style='border-left: 1px solid black;'></div>\n<div id='iD_escape' class='hidden fill-white'>get the next item »</div>\n").template()
+};
+
+// transparent street layer for putting on top of other layers
+var contextLayer = L.mapbox.tileLayer('aaronlidman.87d3cc29', {
+    accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
+    detectRetina: false
+});
+
+var layers = {
+    'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
+        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
+        detectRetina: false
+    }),
+    'Streets': L.mapbox.tileLayer('aaronlidman.jgo996i0', {
+        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
+    }),
+    'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
+    })
+};
+
+var baseLayer = store.get('baseLayer') || 'Streets';
+
+window.featureStyle = {
+    color: '#FF00B7',
+    opacity: 1,
+    weight: 4
+};
+
+window.altStyle = {
+    color: '#00BFFF',
+    opacity: 1,
+    weight: 4
+};
+
+var mapz = {};
+
+mapz.init = function(div) {
+    if ($('#map').length) return false; // map already initialized
+
+    div = div || 'map';
+    $('#main').append(templates.map());
+
+    window.map = L.mapbox.map('map', null, {
+        maxZoom: 18,
+        keyboard: false
+    }).setView([22.76, -25.84], 3);
+
+    layers[baseLayer].addTo(map);
+    if (baseLayer == 'Bing Satellite') contextLayer.addTo(map).bringToFront();
+    L.control.layers(layers).addTo(map);
+
+    map.on('baselayerchange', function(e) {
+        store.set('baseLayer', e.name);
+
+        if (e.name == 'Bing Satellite') {
+            contextLayer.addTo(map).bringToFront();
+        } else {
+            if (map.hasLayer(contextLayer)) map.removeLayer(contextLayer);
+        }
+    });
+
+    window.featureGroup = L.featureGroup().addTo(map);
+
+    map.attributionControl.setPosition('bottomright');
+    map.zoomControl.setPosition('topleft');
+};
+
+mapz.clear = function() {
+    window.featureGroup.getLayers().forEach(function(layer) {
+        window.featureGroup.removeLayer(layer);
+    });
+};
+
+module.exports = mapz;
+
+},{"../js/bing.js":"/Users/aaron/to-fix/js/bing.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/loaders/keepright.js":[function(require,module,exports){
+
+
+var querystring = require('querystring'),
+    qs = querystring.parse(window.location.search.slice(1)),
+    omnivore = require('leaflet-omnivore');
+
+var core = require('../lib/core'),
+    map = require('../lib/map'),
+    editbar = require('../lib/editbar');
+
+var keepright = {
+    auth: ['osm']
+};
+
+keepright.next = function() {
+    map.init();
+    editbar.init();
+
+    core.item(qs.error, function() {
+        current.item._osm_object_type = current.item.object_type;
+        current.item._osm_object_id = current.item.object_id;
+        var full = current.item._osm_object_type == 'way' ? '/full' : '';
+
+        $.ajax({
+            url: 'https://www.openstreetmap.org/api/0.6/' + current.item._osm_object_type + '/' + current.item._osm_object_id + full,
+            dataType: 'xml',
+            success: function (xml) {
+                var layer = new L.OSM.DataLayer(xml)
+                    .setStyle(featureStyle)
+                    .addTo(featureGroup);
+                current.item._bounds = layer.getBounds();
+                window.map.fitBounds(current.item._bounds);
+                omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
+            },
+            error: function(err) {
+                return keepright.next();
+            }
+        });
+    });
+};
+
+module.exports = keepright;
+
+},{"../lib/core":"/Users/aaron/to-fix/lib/core.js","../lib/editbar":"/Users/aaron/to-fix/lib/editbar.js","../lib/map":"/Users/aaron/to-fix/lib/map.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/to-fix/loaders/osmi_geom.js":[function(require,module,exports){
+
+
+var querystring = require('querystring'),
+    qs = querystring.parse(window.location.search.slice(1)),
+    omnivore = require('leaflet-omnivore');
+
+var core = require('../lib/core'),
+    map = require('../lib/map'),
+    editbar = require('../lib/editbar');
+
+var osmi_geom = {
+    auth: ['osm']
+};
+
+osmi_geom.next = function() {
+    map.init();
+    editbar.init();
+
+    core.item(qs.error, function() {
+        var layer = omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
+        layer.setStyle(featureStyle);
+        current.item._bounds = layer.getBounds();
+        window.map.fitBounds(current.item._bounds);
+    });
+};
+
+module.exports = osmi_geom;
+
+},{"../lib/core":"/Users/aaron/to-fix/lib/core.js","../lib/editbar":"/Users/aaron/to-fix/lib/editbar.js","../lib/map":"/Users/aaron/to-fix/lib/map.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/to-fix/loaders/tigerdelta.js":[function(require,module,exports){
+
+
+var querystring = require('querystring'),
+    qs = querystring.parse(window.location.search.slice(1)),
+    omnivore = require('leaflet-omnivore');
+    mouse = require('mousetrap');
+
+var core = require('../lib/core'),
+    map = require('../lib/map'),
+    editbar = require('../lib/editbar');
+
+var tigerdelta = {
+    auth: ['osm']
+};
+
+tigerdelta.next = function () {
+    map.init();
+    editbar.init();
+
+    core.item(qs.error, function() {
+        var layer = omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
+        layer.setStyle(featureStyle);
+        current.item._bounds = layer.getBounds();
+        window.map.fitBounds(current.item._bounds);
+    });
+};
+
+module.exports = tigerdelta;
+
+},{"../lib/core":"/Users/aaron/to-fix/lib/core.js","../lib/editbar":"/Users/aaron/to-fix/lib/editbar.js","../lib/map":"/Users/aaron/to-fix/lib/map.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/to-fix/loaders/unconnected.js":[function(require,module,exports){
+
+
+var querystring = require('querystring'),
+    qs = querystring.parse(window.location.search.slice(1)),
+    omnivore = require('leaflet-omnivore'),
+    mouse = require('mousetrap');
+
+var core = require('../lib/core'),
+    map = require('../lib/map'),
+    editbar = require('../lib/editbar');
+
+var unconnected = {
+    auth: ['osm']
+};
+
+unconnected.next = function() {
+    map.init();
+    editbar.init();
+
+    core.item(qs.error, function() {
+        current.item._osm_object_type = 'node';
+        current.item._osm_object_id = current.item.node_id;
+
+        $.ajax({
+            url: 'https://www.openstreetmap.org/api/0.6/way/' + current.item.way_id + '/full',
+            dataType: 'xml',
+            success: function (xml) {
+                var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
+                current.item._bounds = layer.getBounds();
+                window.map.fitBounds(current.item._bounds);
+
+                $.ajax({
+                    url: 'https://www.openstreetmap.org/api/0.6/node/' + current.item._osm_object_id,
+                    dataType: 'xml',
+                    success: function (xml) {
+                        var layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
+                    },
+                    error: function(err) {
+                        return unconnected.next();
+                    }
+                });
+            },
+            error: function(err) {
+                return unconnected.next();
+            }
+        });
+    });
+};
+
+module.exports = unconnected;
+
+},{"../lib/core":"/Users/aaron/to-fix/lib/core.js","../lib/editbar":"/Users/aaron/to-fix/lib/editbar.js","../lib/map":"/Users/aaron/to-fix/lib/map.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","mousetrap":"/Users/aaron/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
 var xhr = require('corslite'),
     csv2geojson = require('csv2geojson'),
     wellknown = require('wellknown'),
