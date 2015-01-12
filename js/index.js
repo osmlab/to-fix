@@ -27,6 +27,7 @@ var templates = {
 };
 
 var auth = osmAuth({
+    url: 'https://www.openstreetmap.org',
     oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
     oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
     landing: 'land.html'
