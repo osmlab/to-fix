@@ -488,21 +488,17 @@ var templates = {
     map: _("<div id='map' class='fill-black'>\n    <a href=\"http://mapbox.com/\" class='mapbox-maplogo' target=\"_blank\">MapBox</a>\n</div>\n<div id='iD_escape' class='hidden fill-white'>get the next item »</div>\n").template()
 };
 
+L.mapbox.accessToken = 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ';
+
 // transparent street layer for putting on top of other layers
 var contextLayer = L.mapbox.tileLayer('aaronlidman.87d3cc29', {
-    accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
     detectRetina: false
 });
 
 var layers = {
     'Bing Satellite': new BingLayer('Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'),
-    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ',
-        detectRetina: false
-    }),
-    'Streets': L.mapbox.tileLayer('aaronlidman.jgo996i0', {
-        accessToken: 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ'
-    }),
+    'Mapbox Satellite': L.mapbox.tileLayer('aaronlidman.j5kfpn4g', { detectRetina: false }),
+    'Streets': L.mapbox.tileLayer('aaronlidman.jgo996i0'),
     'OSM.org': L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '<a href="http://osm.org">© OpenStreetMap contributors</a>'
     })
