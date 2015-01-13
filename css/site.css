@@ -1,15 +1,13 @@
 /* overriding base a little, no offense saman :p */
-body { font: 16px/24px "Helvetica Neue", Helvetica, sans-serif; }
+body { font: 15px/20px "Helvetica Neue", Helvetica, sans-serif; }
 
 h1, h2, h3, h4, h5, h6 {
     color: black;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     font-weight: bold;
     margin: 0;
-    line-height: 1.5em;
 }
 
-h3 { font-size: 16px; }
 .modal-content .modal-body { border-radius: 0; }
 
 /* override mapbox.js */
@@ -30,11 +28,17 @@ h3 { font-size: 16px; }
     display: none;
 }
 
-/* end overriding */
-
 body { min-width: 800px; }
 a { color: #666; }
 a:hover { color: #000; }
+
+h3.fancy { line-height: 30px;}
+
+/* base addons */
+
+.space-top6 { margin-top: 60px; }
+
+/* components */
 
 #sidebar {
     position: relative;
@@ -42,25 +46,9 @@ a:hover { color: #000; }
     height: 100%;
 }
 
-#sidebar a {
-    display: block;
-}
-
 #sidebar a.selected {
     background-color: #000;
     color: white;
-}
-
-#sidebar .icon:not(.big):before {
-    margin-top: 6px;
-}
-
-#top-section {
-    padding-bottom: 0;
-}
-
-#sidebar .container {
-    line-height: 2em;
 }
 
 #user-stuff {
@@ -125,7 +113,6 @@ a:hover { color: #000; }
 
 .avatar {
     height: 20px;
-    margin-top: 6px;
     margin-right: 10px;
 }
 
