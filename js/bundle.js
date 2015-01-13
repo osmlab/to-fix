@@ -485,7 +485,7 @@ var _ = require('underscore'),
     BingLayer = require('../js/bing.js');
 
 var templates = {
-    map: _("<div id='map' class='fill-black'></div>\n<div id='iD_escape' class='hidden fill-white'>get the next item »</div>\n").template()
+    map: _("<div id='map' class='fill-black'>\n    <a href=\"http://mapbox.com/\" class='mapbox-maplogo' target=\"_blank\">MapBox</a>\n</div>\n<div id='iD_escape' class='hidden fill-white'>get the next item »</div>\n").template()
 };
 
 // transparent street layer for putting on top of other layers
