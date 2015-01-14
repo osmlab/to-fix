@@ -2,16 +2,6 @@
 
 ![](example.png)
 
-### Installation
-- create your instance
-- log in: `ssh -i ~/.ssh/<your key.pem> ubuntu@<instance public DNS>`
-- `cd /mnt`
-- `sudo apt-get install git make`
-- `git clone https://github.com/osmlab/to-fix.git && cd to-fix/`
-- `sudo make install`
-- `sudo make load`
-- `npm run serve`
-
 ### Frontend
 
 The frontend is a static application. The JavaScript portion is built with
