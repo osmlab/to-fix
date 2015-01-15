@@ -74,7 +74,7 @@ var tasks = {
         title: 'Unconnected major',
         loader: unconnected },
     'unconnected_minor1': {
-        title: 'Unconnected minor < 1m',
+        title: 'Unconnected minor',
         loader: unconnected },
     'duplicate_ways': {
         title: 'Duplicate Ways',
