@@ -190,20 +190,11 @@ var tasks = {
     'mispelledtags': {
         title: 'Mispelled tags',
         loader: keepright },
-    'unconnected_major1': {
-        title: 'Unconnected major < 1m',
-        loader: unconnected },
-    'unconnected_major2': {
-        title: 'Unconnected major < 2m',
-        loader: unconnected },
-    'unconnected_major5': {
-        title: 'Unconnected major < 5m',
+    'unconnected_major': {
+        title: 'Unconnected major',
         loader: unconnected },
     'unconnected_minor1': {
         title: 'Unconnected minor < 1m',
-        loader: unconnected },
-    'unconnected_minor2': {
-        title: 'Unconnected minor < 2m',
         loader: unconnected },
     'duplicate_ways': {
         title: 'Duplicate Ways',
