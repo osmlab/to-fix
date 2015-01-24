@@ -188,7 +188,7 @@ var tasks = {
         title: 'Highway intersects water',
         loader: keepright },
     'mispelledtags': {
-        title: 'Mispelled tags',
+        title: 'Misspelled tags',
         loader: keepright },
     'unconnected_major': {
         title: 'Unconnected major',
