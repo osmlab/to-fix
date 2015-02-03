@@ -33,7 +33,7 @@ var core = require('../lib/core'),
                             </tr> \
                         </table>', {maxWidth:500})
             .openPopup();
-        window.map.setView([current.item.lat, current.item.lon], 16)
+        window.map.setView([current.item.lat, current.item.lon], 16);
         current.item._bounds = window.map.getBounds();
     });
  };
