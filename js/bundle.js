@@ -292,8 +292,8 @@ var qs = require('querystring').parse(window.location.search.slice(1)),
 
 var core = {};
 
-var url = 'http://localhost:3001/';
-if (qs.local) url = 'http://localhost:3001/';
+var url = 'http://54.204.149.4:3001/';
+if (qs.local) url = 'http://54.204.149.4:3001/';
 
 function request(error, callback) {
     $.ajax({
@@ -558,45 +558,45 @@ module.exports = mapz;
 
 
 var querystring = require('querystring'),
-	qs = querystring.parse(window.location.search.slice(1));
+    qs = querystring.parse(window.location.search.slice(1));
 
 var core = require('../lib/core'),
-	map = require('../lib/map'),
-	editbar = require('../lib/editbar');
+    map = require('../lib/map'),
+    editbar = require('../lib/editbar');
  
  var bridge_height = {
- 	auth: ['osm']
+    auth: ['osm']
  }
 
  bridge_height.next = function() {
- 	map.init();
- 	editbar.init();
+    map.init();
+    editbar.init();
 
- 	core.item(qs.error, function() {
- 		console.log(current.item);
- 		L.marker([current.item.lat, current.item.lon])
- 			.addTo(window.map)
- 			.bindPopup('<table style="width:450px"> \
- 							<tr> \
- 								<td> Clearance Height </td> \
- 								<td>'+ current.item.height +'</td> \
- 							</tr> \
- 							<tr> \
- 								<td> Feature Carried </td> \
- 								<td>'+ current.item['Feature.Carried'] +'</td> \
- 							</tr> \
- 							<tr> \
- 								<td> Feature intersected </td> \
- 								<td>'+ current.item['Features.Intersected'] +'</dt> \
- 							</tr> \
- 						</table>', {maxWidth:500})
- 			.openPopup();
- 		window.map.setView([current.item.lat, current.item.lon], 16)
- 		current.item._bounds = window.map.getBounds();
- 	});
+    core.item(qs.error, function() {
+        L.marker([current.item.lat, current.item.lon])
+            .addTo(window.map)
+            .bindPopup('<table style="width:450px"> \
+                            <tr> \
+                                <td> Clearance Height </td> \
+                                <td>'+ current.item.height +'</td> \
+                            </tr> \
+                            <tr> \
+                                <td> Feature Carried </td> \
+                                <td>'+ current.item['Feature.Carried'] +'</td> \
+                            </tr> \
+                            <tr> \
+                                <td> Feature intersected </td> \
+                                <td>'+ current.item['Features.Intersected'] +'</dt> \
+                            </tr> \
+                        </table>', {maxWidth:500})
+            .openPopup();
+        window.map.setView([current.item.lat, current.item.lon], 16)
+        current.item._bounds = window.map.getBounds();
+    });
  };
 
  module.exports = bridge_height;
+ 
 },{"../lib/core":"/Users/kelvinabrokwa/Documents/Git/to-fix/lib/core.js","../lib/editbar":"/Users/kelvinabrokwa/Documents/Git/to-fix/lib/editbar.js","../lib/map":"/Users/kelvinabrokwa/Documents/Git/to-fix/lib/map.js","querystring":"/Users/kelvinabrokwa/Documents/Git/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/kelvinabrokwa/Documents/Git/to-fix/loaders/keepright.js":[function(require,module,exports){
 
 
