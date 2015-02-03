@@ -293,7 +293,7 @@ var qs = require('querystring').parse(window.location.search.slice(1)),
 var core = {};
 
 var url = 'http://54.204.149.4:3001/';
-if (qs.local) url = 'http://54.204.149.4:3001/';
+if (qs.local) url = 'http://127.0.0.1:3001/';
 
 function request(error, callback) {
     $.ajax({
@@ -590,7 +590,7 @@ var core = require('../lib/core'),
                             </tr> \
                         </table>', {maxWidth:500})
             .openPopup();
-        window.map.setView([current.item.lat, current.item.lon], 16)
+        window.map.setView([current.item.lat, current.item.lon], 16);
         current.item._bounds = window.map.getBounds();
     });
  };
