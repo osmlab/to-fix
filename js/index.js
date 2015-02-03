@@ -19,7 +19,8 @@ var qs = require('querystring').parse(window.location.search.slice(1)),
 var keepright = require('../loaders/keepright.js'),
     osmi_geom = require('../loaders/osmi_geom.js'),
     unconnected = require('../loaders/unconnected.js'),
-    tigerdelta = require('../loaders/tigerdelta.js');
+    tigerdelta = require('../loaders/tigerdelta.js'),
+    bridge_height = require('../loaders/bridge_height.js');
 
 var templates = {
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
@@ -81,7 +82,10 @@ var tasks = {
         loader: osmi_geom },
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
-        loader: tigerdelta }
+        loader: tigerdelta },
+    'for_to_fix': {
+        title: 'Verify bridge clearance height',
+        loader: bridge_height }
 };
 
 var DEFAULT = 'deadendoneway';
