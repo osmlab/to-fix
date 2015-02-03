@@ -17,7 +17,7 @@ var core = require('../lib/core'),
 
     core.item(qs.error, function() {
         L.marker([current.item.lat, current.item.lon])
-            .addTo(window.map)
+            .addTo(featureGroup)
             .bindPopup('<table style="width:450px"> \
                             <tr> \
                                 <td> Clearance Height </td> \
