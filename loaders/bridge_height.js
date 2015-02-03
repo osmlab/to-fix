@@ -16,7 +16,6 @@ var core = require('../lib/core'),
     editbar.init();
 
     core.item(qs.error, function() {
-        console.log(current.item);
         L.marker([current.item.lat, current.item.lon])
             .addTo(window.map)
             .bindPopup('<table style="width:450px"> \
