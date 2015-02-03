@@ -39,3 +39,4 @@ var core = require('../lib/core'),
  };
 
  module.exports = bridge_height;
+ 
