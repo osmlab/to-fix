@@ -7,6 +7,8 @@ var qs = require('querystring').parse(window.location.search.slice(1)),
     store = require('store'),
     _ = require('underscore');
 
+var $ = window.$ = window.jQuery = require('./jquery.min.js');
+
 // is there anyway to keep the loaders completely seperate and only import them at runtime?
     // would this allow us to import external loaders, for example via a gist
 
@@ -93,12 +95,12 @@ var DEFAULT = 'deadendoneway';
 window.current = {};
 
 $('#sidebar').on('click', '#login', function(e) {
-    e.preventDefault();
+    e.preventDefault();    
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
             path: '/api/0.6/user/details'
-        }, function(err, details) {
+        }, function(err, details) {            
             if (err) return console.log(err);
             if (auth.authenticated()) {
                 details = details.getElementsByTagName('user')[0];
