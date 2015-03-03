@@ -5,7 +5,8 @@ var qs = require('querystring').parse(window.location.search.slice(1)),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
     store = require('store'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    route = require('../lib/route');
 
 // is there anyway to keep the loaders completely seperate and only import them at runtime?
     // would this allow us to import external loaders, for example via a gist
@@ -138,7 +139,10 @@ function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));
 }
 
-if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
+if (qs.error === undefined) {
+    var prepend = (Object.keys(qs).length) ? '&' : '?';
+    window.location.href = window.location.href + prepend + 'error=' + DEFAULT;
+}
 
 function load() {
     current.loader = tasks[qs.error].loader;
@@ -160,4 +164,8 @@ function load() {
     current.loader.next();
 }
 
-$(load);
+route({
+    auth: isAuthenticated(),
+    qs: qs,
+    callback: load
+});

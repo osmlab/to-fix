@@ -125,7 +125,8 @@ var qs = require('querystring').parse(window.location.search.slice(1)),
     BingLayer = require('./bing.js'),
     osmAuth = require('osm-auth'),
     store = require('store'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    route = require('../lib/route');
 
 // is there anyway to keep the loaders completely seperate and only import them at runtime?
     // would this allow us to import external loaders, for example via a gist
@@ -258,10 +259,15 @@ function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));
 }
 
-if (qs.error === undefined) window.location.href = window.location.href + '?error=' + DEFAULT;
+if (qs.error === undefined) {
+    var prepend = (Object.keys(qs).length) ? '&' : '?';
+    window.location.href = window.location.href + prepend + 'error=' + DEFAULT;
+}
 
 function load() {
+    console.log('load');
     current.loader = tasks[qs.error].loader;
+
     // this task hash should be it's own module that can be called by core for core.mark('done')
 
     // eventually, remove everything ".loader."
@@ -280,9 +286,13 @@ function load() {
     current.loader.next();
 }
 
-$(load);
+route({
+    auth: isAuthenticated(),
+    qs: qs,
+    callback: load
+});
 
-},{"../loaders/keepright.js":"/Users/aaron/to-fix/loaders/keepright.js","../loaders/osmi_geom.js":"/Users/aaron/to-fix/loaders/osmi_geom.js","../loaders/tigerdelta.js":"/Users/aaron/to-fix/loaders/tigerdelta.js","../loaders/unconnected.js":"/Users/aaron/to-fix/loaders/unconnected.js","./bing.js":"/Users/aaron/to-fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","osm-auth":"/Users/aaron/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/lib/core.js":[function(require,module,exports){
+},{"../lib/route":"/Users/aaron/to-fix/lib/route.js","../loaders/keepright.js":"/Users/aaron/to-fix/loaders/keepright.js","../loaders/osmi_geom.js":"/Users/aaron/to-fix/loaders/osmi_geom.js","../loaders/tigerdelta.js":"/Users/aaron/to-fix/loaders/tigerdelta.js","../loaders/unconnected.js":"/Users/aaron/to-fix/loaders/unconnected.js","./bing.js":"/Users/aaron/to-fix/js/bing.js","leaflet-omnivore":"/Users/aaron/to-fix/node_modules/leaflet-omnivore/index.js","osm-auth":"/Users/aaron/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/lib/core.js":[function(require,module,exports){
 var qs = require('querystring').parse(window.location.search.slice(1)),
     store = require('store');
 
@@ -550,7 +560,36 @@ mapz.clear = function() {
 
 module.exports = mapz;
 
-},{"../js/bing.js":"/Users/aaron/to-fix/js/bing.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/loaders/keepright.js":[function(require,module,exports){
+},{"../js/bing.js":"/Users/aaron/to-fix/js/bing.js","store":"/Users/aaron/to-fix/node_modules/store/store.js","underscore":"/Users/aaron/to-fix/node_modules/underscore/underscore.js"}],"/Users/aaron/to-fix/lib/route.js":[function(require,module,exports){
+function route(obj) {
+    if (obj.isAuthenticated && obj.qs._ == 'upload') {
+        // render the upload page in #main
+        // just launch a template and run cooresponding code?
+        // how does this jive with with current single load()?
+        console.log('uploading');
+    } else {
+        // remove _=upload, via pushstate?
+        obj.callback();
+        // loop through every object in qs
+            // remove _
+            // put the url back together again
+        // filter?
+        var string = '';
+        var query = Object.keys(obj.qs).filter(function(q) {
+            return q != '_';
+        }).map(function(x) {
+            string += '&' + x + '=' + obj.qs[x];
+        });
+
+        console.log(history.pushState('', 'nothing', '?' + string.slice(1)));
+
+        console.log(query, string);
+    }
+}
+
+module.exports = route;
+
+},{}],"/Users/aaron/to-fix/loaders/keepright.js":[function(require,module,exports){
 
 
 var querystring = require('querystring'),
@@ -3213,8 +3252,8 @@ module.exports = function(o) {
 
         function run() {
             var params = timenonce(getAuth(o)),
-                url = o.url + options.path,
                 oauth_token_secret = token('oauth_token_secret');
+            var url = (options.prefix !== false) ? o.url + options.path : options.path;
 
             // https://tools.ietf.org/html/rfc5849#section-3.4.1.3.1
             if ((!options.options || !options.options.header ||
@@ -6041,17 +6080,21 @@ is.string = function (value) {
 		storage
 
 	store.disabled = false
+	store.version = '1.3.17'
 	store.set = function(key, value) {}
-	store.get = function(key) {}
+	store.get = function(key, defaultVal) {}
+	store.has = function(key) { return store.get(key) !== undefined }
 	store.remove = function(key) {}
 	store.clear = function() {}
 	store.transact = function(key, defaultVal, transactionFn) {
-		var val = store.get(key)
 		if (transactionFn == null) {
 			transactionFn = defaultVal
 			defaultVal = null
 		}
-		if (typeof val == 'undefined') { val = defaultVal || {} }
+		if (defaultVal == null) {
+			defaultVal = {}
+		}
+		var val = store.get(key, defaultVal)
 		transactionFn(val)
 		store.set(key, val)
 	}
@@ -6082,7 +6125,10 @@ is.string = function (value) {
 			storage.setItem(key, store.serialize(val))
 			return val
 		}
-		store.get = function(key) { return store.deserialize(storage.getItem(key)) }
+		store.get = function(key, defaultVal) {
+			var val = store.deserialize(storage.getItem(key))
+			return (val === undefined ? defaultVal : val)
+		}
 		store.remove = function(key) { storage.removeItem(key) }
 		store.clear = function() { storage.clear() }
 		store.getAll = function() {
@@ -6124,7 +6170,7 @@ is.string = function (value) {
 			storage = doc.createElement('div')
 			storageOwner = doc.body
 		}
-		function withIEStorage(storeFunction) {
+		var withIEStorage = function(storeFunction) {
 			return function() {
 				var args = Array.prototype.slice.call(arguments, 0)
 				args.unshift(storage)
@@ -6153,9 +6199,10 @@ is.string = function (value) {
 			storage.save(localStorageName)
 			return val
 		})
-		store.get = withIEStorage(function(storage, key) {
+		store.get = withIEStorage(function(storage, key, defaultVal) {
 			key = ieKeyFix(key)
-			return store.deserialize(storage.getAttribute(key))
+			var val = store.deserialize(storage.getAttribute(key))
+			return (val === undefined ? defaultVal : val)
 		})
 		store.remove = withIEStorage(function(storage, key) {
 			key = ieKeyFix(key)
