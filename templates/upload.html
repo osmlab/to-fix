@@ -2,7 +2,15 @@
     <div class='col8 pad2 margin2 space-top2 fill-white'>
         <h2 class='space-bottom2'>Upload</h2>
         <form id='upload-form' action='http://localhost:8000/csv' method='post'>
+            <label for='file'>CSV:</label>
             <input id='file' type='file' name='thefile'>
+            <br/>
+            <br/>
+            <label for='password'>Password:</label>
+            <input id='password' type='password' name='uploadPassword'>
+            <br/>
+            <br/>
+            <input id='submit' type='submit'>
             <!-- on input change we reveal more fields -->
             <!-- task name -->
             <!-- location slicing -->
