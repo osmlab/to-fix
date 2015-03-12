@@ -108,7 +108,6 @@ var DEFAULT = 'deadendoneway';
 window.current = {};
 
 $('#sidebar').on('click', '#login', function(e) {
-    e.preventDefault();
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -179,7 +178,6 @@ if (qs.error === undefined) {
 }
 
 function load() {
-    current.loader = tasks[qs.error].loader;
     /* TODO This task hash should be it's own module that can be called by core
      * for core.mark('done')
      *
@@ -196,8 +194,9 @@ function load() {
      *      return;
      *      }
      */
-
      window.current.auth = isAuthenticated();
+     window.current.error = tasks[qs.error].title;
+     window.current.loader = tasks[qs.error].loader;
      window.current.loader.next();
 }
 

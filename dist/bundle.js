@@ -109,7 +109,6 @@ var DEFAULT = 'deadendoneway';
 window.current = {};
 
 $('#sidebar').on('click', '#login', function(e) {
-    e.preventDefault();
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -180,7 +179,6 @@ if (qs.error === undefined) {
 }
 
 function load() {
-    current.loader = tasks[qs.error].loader;
     /* TODO This task hash should be it's own module that can be called by core
      * for core.mark('done')
      *
@@ -197,8 +195,9 @@ function load() {
      *      return;
      *      }
      */
-
      window.current.auth = isAuthenticated();
+     window.current.error = tasks[qs.error].title;
+     window.current.loader = tasks[qs.error].loader;
      window.current.loader.next();
 }
 
@@ -313,12 +312,12 @@ var mouse = require('mousetrap');
 var core = require('./core');
 var map = require('./map');
 
-var templates = { editbar: _("<div id='editbar' class='pin-topleft pad1'>\n  <nav id='actions' class='fill-white round'>\n    <a href='#' id='edit' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>edit</a>\n    <a href='#' id='skip' class='pad2'>skip</a>\n    <a href='#' id='fixed' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>\n  </nav>\n</div>\n").template() };
+var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-white round'>\n    <h3 class='pad1x inline'><%= window.current.error %></h3>\n    <nav id='actions' class='tabs'><!--\n      --><a href='#' id='edit' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>edit</a><!--\n      --><a href='#' id='skip' class='pad2'>skip</a><!--\n      --><a href='#' id='fixed' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
 
 module.exports = {
     init: function() {
         if (!$('#editbar').length) {
-            $('#main').append(templates.editbar(window.current));
+            $('#main').append(template(window.current));
             this.bind();
         } else {
             return false;
@@ -24031,7 +24030,7 @@ if (typeof module !== 'undefined') {
 }
 
 },{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/package.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports={
   "author": {
     "name": "Mapbox"
   },

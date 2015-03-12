@@ -1,7 +1,10 @@
 <div id='editbar' class='pin-topleft pad1'>
-  <nav id='actions' class='fill-white round'>
-    <a href='#' id='edit' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>edit</a>
-    <a href='#' id='skip' class='pad2'>skip</a>
-    <a href='#' id='fixed' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>
-  </nav>
+  <div class='fill-white round'>
+    <h3 class='pad1x inline'><%= window.current.error %></h3>
+    <nav id='actions' class='tabs'><!--
+      --><a href='#' id='edit' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>edit</a><!--
+      --><a href='#' id='skip' class='pad2'>skip</a><!--
+      --><a href='#' id='fixed' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>
+    </nav>
+  </div>
 </div>
