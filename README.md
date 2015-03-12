@@ -1,15 +1,13 @@
-##to-fix - map tasking
+to-fix
+---
 
-![](example.png)
+A map tasking manager for OpenStreetMap
 
-### Frontend
-
-The frontend is a static application. The JavaScript portion is built with
-`browserify` and can be updated as follows:
+### Building
 
 ```sh
 $ npm install
 $ npm start
 ```
 
-This will rebuild JS, CSS, and serve on port 3000.
+This will serve a local version to to-fix on http://localhost:3000/

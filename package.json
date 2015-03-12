@@ -4,22 +4,28 @@
   "description": "A task manager for OpenStreetMap duties",
   "main": "index.js",
   "dependencies": {
+    "jquery": "^2.1.3",
     "leaflet-omnivore": "~0.2.0",
+    "leaflet-osm": "^0.1.0",
+    "mapbox.js": "^2.1.5",
     "mousetrap": "0.0.1",
     "osm-auth": "^0.2.6",
+    "raven-js": "^1.1.17",
     "store": "~1.3.16",
     "underscore": "^1.7.0",
     "wellknown": "^0.3.0"
   },
   "devDependencies": {
     "brfs": "~1.2.0",
-    "watchify": "~1.0.1",
+    "eslint": "^0.16.2",
+    "hintify": "~0.1.0",
     "serve": "^1.4.0",
-    "hintify": "~0.1.0"
+    "watchify": "~1.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/serve & npm run watch",
-    "watch": "watchify -t brfs js/index.js -o js/bundle.js"
+    "watch": "watchify -t brfs index.js -o dist/bundle.js",
+    "test": "eslint lib/*.js lib/loaders/*.js lib/ext/*.js"
   },
   "repository": {
     "type": "git",

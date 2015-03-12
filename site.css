@@ -1,0 +1,99 @@
+body {
+  font:15px/20px 'Helvetica Neue', Helvetica, sans-serif;
+  }
+h1, h2, h3, h4, h5, h6 {
+  color:#1b1b1b;
+  font-weight:bold;
+  margin:0;
+  }
+
+/* override mapbox.js */
+.mapbox-improve-map { display: none; }
+
+a { color: #666; }
+a:hover { color: #000; }
+h3.fancy { line-height: 30px;}
+
+/* base addons */
+.space-top6 { margin-top: 60px; }
+
+/* components */
+#sidebar {
+  position: relative;
+  width: 250px;
+  height: 100%;
+  }
+#sidebar a.selected {
+  background-color: #000;
+  color:white;
+  }
+
+#user-stuff {
+  position:absolute;
+  bottom:0;
+  width:100%;
+  }
+#main {
+  margin-left: 250px;
+  }
+.map {
+  width:100%;
+  height:100%;
+  }
+
+#actions h3 {
+  color:white;
+  cursor:pointer;
+  border-left:1px solid black;
+  }
+
+#actions h3:first-of-type {
+  border-left:none;
+  }
+#actions h3:hover {
+  background: black;
+  }
+#error-message, #message {
+  top:0;
+  position:absolute;
+  z-index:1;
+  width:100%;
+  display:none;
+  }
+#message {
+  background-color:black;
+  color:white;
+  }
+
+#settings select {
+  margin-top:5px;
+  }
+#settings:target {
+  bottom:0;
+  opacity:1;
+  }
+.avatar {
+  height:20px;
+  margin-right:10px;
+  }
+#iD {
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:2000;
+  }
+#iD_escape {
+  position:absolute;
+  right:0;
+  bottom:100px;
+  padding:10px 20px;
+  color:black;
+  font-weight:bold;
+  z-index:2015;
+  cursor:pointer;
+  }
+.vhidden {
+  visibility:hidden;
+  }
