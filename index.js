@@ -23,7 +23,7 @@ Raven.config('https://e45a6671d39447fda045d873eba13840@app.getsentry.com/35914')
  * - Map titles and descriptions get put in the loaders themselves
  */
 var keepright = require('./lib/loaders/keepright.js');
-var osmi_geom = require('./lib/loaders/osmigeom.js');
+var osmigeom = require('./lib/loaders/osmigeom.js');
 var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
@@ -47,46 +47,60 @@ var auth = osmAuth({
 var tasks = {
     'deadendoneway': {
         title: 'Impossible one-ways',
-        loader: keepright },
+        loader: keepright
+    },
     'impossibleangle': {
         title: 'Kinks',
-        loader: keepright },
+        loader: keepright
+    },
     'mixedlayer': {
         title: 'Mixed layers',
-        loader: keepright },
+        loader: keepright
+    },
     'nonclosedways': {
         title: 'Broken polygons',
-        loader: keepright },
+        loader: keepright
+    },
     'loopings': {
         title: 'Loopings',
-        loader: keepright },
+        loader: keepright
+    },
     'strangelayer': {
         title: 'Strange layer',
-        loader: keepright },
+        loader: keepright
+    },
     'highwayhighway': {
         title: 'Highway intersects highway',
-        loader: keepright },
+        loader: keepright
+    },
     'highwayfootpath': {
         title: 'Highway intersects footpath',
-        loader: keepright },
+        loader: keepright
+    },
     'highwayriverbank': {
         title: 'Highway intersects water',
-        loader: keepright },
+        loader: keepright
+    },
     'mispelledtags': {
         title: 'Misspelled tags',
-        loader: keepright },
+        loader: keepright
+    },
     'unconnected_major': {
         title: 'Unconnected major',
-        loader: unconnected },
+        loader: unconnected
+    },
     'unconnected_minor1': {
         title: 'Unconnected minor',
-        loader: unconnected },
+        loader: unconnected
+    },
     'duplicate_ways': {
         title: 'Duplicate Ways',
-        loader: osmi_geom },
+        loader: osmigeom
+    },
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
-        loader: tigerdelta }
+        loader: tigerdelta
+    }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -165,9 +179,10 @@ function load() {
      *  } else {
      *      return;
      *      }
-     *      current.auth = isAuthenticated();
-     *      current.loader.next();
      */
+
+     window.current.auth = isAuthenticated();
+     window.current.loader.next();
 }
 
 route({

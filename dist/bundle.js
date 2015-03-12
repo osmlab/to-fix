@@ -24,7 +24,7 @@ Raven.config('https://e45a6671d39447fda045d873eba13840@app.getsentry.com/35914')
  * - Map titles and descriptions get put in the loaders themselves
  */
 var keepright = require('./lib/loaders/keepright.js');
-var osmi_geom = require('./lib/loaders/osmigeom.js');
+var osmigeom = require('./lib/loaders/osmigeom.js');
 var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
@@ -48,46 +48,60 @@ var auth = osmAuth({
 var tasks = {
     'deadendoneway': {
         title: 'Impossible one-ways',
-        loader: keepright },
+        loader: keepright
+    },
     'impossibleangle': {
         title: 'Kinks',
-        loader: keepright },
+        loader: keepright
+    },
     'mixedlayer': {
         title: 'Mixed layers',
-        loader: keepright },
+        loader: keepright
+    },
     'nonclosedways': {
         title: 'Broken polygons',
-        loader: keepright },
+        loader: keepright
+    },
     'loopings': {
         title: 'Loopings',
-        loader: keepright },
+        loader: keepright
+    },
     'strangelayer': {
         title: 'Strange layer',
-        loader: keepright },
+        loader: keepright
+    },
     'highwayhighway': {
         title: 'Highway intersects highway',
-        loader: keepright },
+        loader: keepright
+    },
     'highwayfootpath': {
         title: 'Highway intersects footpath',
-        loader: keepright },
+        loader: keepright
+    },
     'highwayriverbank': {
         title: 'Highway intersects water',
-        loader: keepright },
+        loader: keepright
+    },
     'mispelledtags': {
         title: 'Misspelled tags',
-        loader: keepright },
+        loader: keepright
+    },
     'unconnected_major': {
         title: 'Unconnected major',
-        loader: unconnected },
+        loader: unconnected
+    },
     'unconnected_minor1': {
         title: 'Unconnected minor',
-        loader: unconnected },
+        loader: unconnected
+    },
     'duplicate_ways': {
         title: 'Duplicate Ways',
-        loader: osmi_geom },
+        loader: osmigeom
+    },
     'tigerdelta-named': {
         title: 'Missing/misaligned TIGER',
-        loader: tigerdelta }
+        loader: tigerdelta
+    }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -166,9 +180,10 @@ function load() {
      *  } else {
      *      return;
      *      }
-     *      current.auth = isAuthenticated();
-     *      current.loader.next();
      */
+
+     window.current.auth = isAuthenticated();
+     window.current.loader.next();
 }
 
 route({
@@ -277,110 +292,107 @@ module.exports = core;
 var $ = require('jquery');
 var _ = require('underscore');
 var querystring = require('querystring');
+var mouse = require('mousetrap');
 
 var core = require('./core');
 var map = require('./map');
 
-var templates = {
-    editbar: _("<div id='editbar' class='col12 pin-bottom'>\n    <div id='actions' class='col6 margin3'>\n        <h3 id='edit' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>edit</h3>\n        <h3 id='skip' class='fill-dark col4 pad2 center'>skip</h3>\n        <h3 id='fixed' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>fixed</h3>\n    </div>\n</div>\n").template()
-};
+var templates = { editbar: _("<div id='editbar' class='col12 pin-bottom'>\n    <div id='actions' class='col6 margin3'>\n        <h3 id='edit' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>edit</h3>\n        <h3 id='skip' class='fill-dark col4 pad2 center'>skip</h3>\n        <h3 id='fixed' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>fixed</h3>\n    </div>\n</div>\n").template() };
 
-var editbar = {};
+module.exports = {
+    init: function() {
+        if (!$('#editbar').length) {
+            $('#main').append(templates.editbar(window.current));
+            this.bind();
+        } else {
+            return false;
+        }
+    },
 
-editbar.init = function() {
-    if (!$('#editbar').length) {
-        $('#main').append(templates.editbar(current));
-        editbar.bind();
-    } else {
-        return false;
+    bind: function() {
+        $('#edit').on('click', this.edit);
+
+        $('#skip').on('click', function() {
+            map.clear();
+            window.current.loader.next();
+        });
+
+        $('#fixed').on('click', function() {
+            map.clear();
+            core.mark('done', window.current.loader.next);
+        });
+
+        mouse.bind('e', function() {
+            $('#edit').click();
+        });
+
+        mouse.bind('s', function() {
+            $('#skip').click();
+        });
+    },
+
+    edit: function() {
+        var bottom = window.current.item._bounds._southWest.lat - 0.001;
+        var left = window.current.item._bounds._southWest.lng - 0.001;
+        var top = window.current.item._bounds._northEast.lat + 0.001;
+        var right = window.current.item._bounds._northEast.lng + 0.001;
+
+        $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
+            left: left,
+            right: right,
+            top: top,
+            bottom: bottom,
+            select: window.current.item._osm_object_type + window.current.item._osm_object_id
+        }), {
+            error: function() {
+                // if JOSM doesn't respond fallback to iD
+                var url = 'http://openstreetmap.us/iD/release/#';
+                if (window.current.item._osm_object_type && window.current.item._osm_object_id) {
+                    url += 'id=' + window.current.item._osm_object_type.slice(0, 1) + window.current.item._osm_object_id;
+                } else {
+                    url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
+                }
+
+                $('#main')
+                    .append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>')
+                    .css('margin-left', '0px');
+
+                $('#iD_escape')
+                    .removeClass('hidden')
+                    .on('click', function() {
+                        $('#iD').remove();
+                        $('#main').css('margin-left', '250px');
+                        $('#sidebar').show();
+                        $('#skip').click();
+                        $('#iD_escape')
+                            .addClass('hidden')
+                            .unbind();
+                    });
+
+                $('#sidebar').hide();
+
+                // newWindow.localhosttion = url;
+            },
+            success: function() {
+                // this newWindow dance is to get around some browser limitations
+                // so we always open a new window, if we need it we populate the url, else, just close the empty window
+                // this all happens quick enough to not cause issues for the user
+                // it's all commented out because I want to make it a setting in the future
+                // whether iD loads in an iframe or a new window
+                // newWindow.close();
+                $('#message')
+                    .text('Opened in JOSM')
+                    .show();
+                $('#message').slideDown();
+                window.setTimeout(function() {
+                    $('#message').slideUp();
+                }, 5000);
+            }
+        });
     }
 };
 
-editbar.bind = function() {
-    $('#edit').on('click', editbar.edit);
-
-    $('#skip').on('click', function() {
-        map.clear();
-        current.loader.next();
-    });
-
-    $('#fixed').on('click', function() {
-        map.clear();
-        core.mark('done', current.loader.next);
-    });
-
-    mouse.bind('e', function() {
-        $('#edit').click();
-    });
-
-    mouse.bind('s', function() {
-        $('#skip').click();
-    });
-};
-
-editbar.edit = function() {
-    var bottom = current.item._bounds._southWest.lat - 0.001;
-    var left = current.item._bounds._southWest.lng - 0.001;
-    var top = current.item._bounds._northEast.lat + 0.001;
-    var right = current.item._bounds._northEast.lng + 0.001;
-
-    $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-        select: current.item._osm_object_type + current.item._osm_object_id
-    }), {
-        error: function() {
-            // if JOSM doesn't respond fallback to iD
-            var url = 'http://openstreetmap.us/iD/release/#';
-            if (current.item._osm_object_type && current.item._osm_object_id) {
-                url += 'id=' + current.item._osm_object_type.slice(0, 1) + current.item._osm_object_id;
-            } else {
-                url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
-            }
-
-            $('#main')
-                .append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>')
-                .css('margin-left', '0px');
-
-            $('#iD_escape')
-                .removeClass('hidden')
-                .on('click', function() {
-                    $('#iD').remove();
-                    $('#main').css('margin-left', '250px');
-                    $('#sidebar').show();
-                    $('#skip').click();
-                    $('#iD_escape')
-                        .addClass('hidden')
-                        .unbind();
-                });
-
-            $('#sidebar').hide();
-
-            // newWindow.localhosttion = url;
-        },
-        success: function() {
-            // this newWindow dance is to get around some browser limitations
-            // so we always open a new window, if we need it we populate the url, else, just close the empty window
-            // this all happens quick enough to not cause issues for the user
-            // it's all commented out because I want to make it a setting in the future
-            // whether iD loads in an iframe or a new window
-            // newWindow.close();
-            $('#message')
-                .text('Opened in JOSM')
-                .show();
-            $('#message').slideDown();
-            setTimeout(function() {
-                $('#message').slideUp();
-            }, 5000);
-        }
-    });
-};
-
-module.exports = editbar;
-
-},{"./core":"/Users/tristen/dev/osm/to-fix/lib/core.js","./map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js":[function(require,module,exports){
+},{"./core":"/Users/tristen/dev/osm/to-fix/lib/core.js","./map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","mousetrap":"/Users/tristen/dev/osm/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js":[function(require,module,exports){
 'use strict';
 
 module.exports = L.TileLayer.extend({
@@ -515,39 +527,38 @@ var core = require('../core');
 var map = require('../map');
 var editbar = require('../editbar');
 
-var keepright = {
-    auth: ['osm']
-};
+module.exports = {
+    auth: ['osm'],
 
-keepright.next = function() {
-    map.init();
-    editbar.init();
+    next: function() {
+        var self = this;
+        map.init();
+        editbar.init();
 
-    core.item(qs.error, function() {
-        current.item._osm_object_type = current.item.object_type;
-        current.item._osm_object_id = current.item.object_id;
-        var full = current.item._osm_object_type == 'way' ? '/full' : '';
+        core.item(qs.error, function() {
+            window.current.item._osm_object_type = window.current.item.object_type;
+            window.current.item._osm_object_id = window.current.item.object_id;
+            var full = window.current.item._osm_object_type == 'way' ? '/full' : '';
 
-        $.ajax({
-            url: 'https://www.openstreetmap.org/api/0.6/' + current.item._osm_object_type + '/' + current.item._osm_object_id + full,
-            dataType: 'xml',
-            success: function (xml) {
-                var layer = new L.OSM.DataLayer(xml)
-                    .setStyle(featureStyle)
-                    .addTo(featureGroup);
-                current.item._bounds = layer.getBounds();
-                window.map.fitBounds(current.item._bounds);
-                omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
-            },
-            error: function(err) {
-                if (err) console.warn(err);
-                return keepright.next();
-            }
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/' + window.current.item._osm_object_type + '/' + window.current.item._osm_object_id + full,
+                dataType: 'xml',
+                success: function (xml) {
+                    var layer = new L.OSM.DataLayer(xml)
+                        .setStyle(window.featureStyle)
+                        .addTo(window.featureGroup);
+                    window.current.item._bounds = layer.getBounds();
+                    window.map.fitBounds(window.current.item._bounds);
+                    omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
+                },
+                error: function(err) {
+                    if (err) window.console.warn(err);
+                    return self.next();
+                }
+            });
         });
-    });
+    }
 };
-
-module.exports = keepright;
 
 },{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
 'use strict';
@@ -560,23 +571,23 @@ var map = require('../map');
 var editbar = require('../editbar');
 
 var qs = querystring.parse(window.location.search.slice(1));
-var osmi_geom = {
+var osmigeom = {
     auth: ['osm']
 };
 
-osmi_geom.next = function() {
-    map.init();
-    editbar.init();
+module.exports = {
+    next: function() {
+        map.init();
+        editbar.init();
 
-    core.item(qs.error, function() {
-        var layer = omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
-        layer.setStyle(featureStyle);
-        current.item._bounds = layer.getBounds();
-        window.map.fitBounds(current.item._bounds);
-    });
+        core.item(qs.error, function() {
+            var layer = omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
+            layer.setStyle(window.featureStyle);
+            window.current.item._bounds = layer.getBounds();
+            window.map.fitBounds(window.current.item._bounds);
+        });
+    }
 };
-
-module.exports = osmi_geom;
 
 },{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
 'use strict';
@@ -589,25 +600,25 @@ var core = require('../core');
 var map = require('../map');
 var editbar = require('../editbar');
 
-var tigerdelta = { auth: ['osm'] };
+module.exports = {
+    auth: ['osm'],
+    next: function () {
+        map.init();
+        editbar.init();
 
-tigerdelta.next = function () {
-    map.init();
-    editbar.init();
-
-    core.item(qs.error, function() {
-        var layer = omnivore.wkt.parse(current.item.st_astext).addTo(featureGroup);
-        layer.setStyle(featureStyle);
-        current.item._bounds = layer.getBounds();
-        window.map.fitBounds(current.item._bounds);
-    });
+        core.item(qs.error, function() {
+            var layer = omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
+            layer.setStyle(window.featureStyle);
+            window.current.item._bounds = layer.getBounds();
+            window.map.fitBounds(window.current.item._bounds);
+        });
+    }
 };
-
-module.exports = tigerdelta;
 
 },{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
 'use strict';
 
+var $ = require('jquery');
 var querystring = require('querystring');
 var qs = querystring.parse(window.location.search.slice(1));
 
@@ -615,48 +626,49 @@ var core = require('../core');
 var map = require('../map');
 var editbar = require('../editbar');
 
-var unconnected = { auth: ['osm'] };
 var layer;
 
-unconnected.next = function() {
-    map.init();
-    editbar.init();
+module.exports = {
+    auth: ['osm'],
+    next: function() {
+        var self = this;
+        map.init();
+        editbar.init();
 
-    core.item(qs.error, function() {
-        current.item._osm_object_type = 'node';
-        current.item._osm_object_id = current.item.node_id;
+        core.item(qs.error, function() {
+            window.current.item._osm_object_type = 'node';
+            window.current.item._osm_object_id = window.current.item.node_id;
 
-        $.ajax({
-            url: 'https://www.openstreetmap.org/api/0.6/way/' + current.item.way_id + '/full',
-            dataType: 'xml',
-            success: function(xml) {
-                layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-                current.item._bounds = layer.getBounds();
-                window.map.fitBounds(current.item._bounds);
+            $.ajax({
+                url: 'https://www.openstreetmap.org/api/0.6/way/' + window.current.item.way_id + '/full',
+                dataType: 'xml',
+                success: function(xml) {
+                    layer = new L.OSM.DataLayer(xml).setStyle(window.featureStyle).addTo(window.featureGroup);
+                    window.current.item._bounds = layer.getBounds();
+                    window.map.fitBounds(window.current.item._bounds);
 
-                $.ajax({
-                    url: 'https://www.openstreetmap.org/api/0.6/node/' + current.item._osm_object_id,
-                    dataType: 'xml',
-                    success: function(xml) {
-                        layer = new L.OSM.DataLayer(xml).setStyle(featureStyle).addTo(featureGroup);
-                    },
-                    error: function(err) {
-                        if (err) console.warn(err);
-                        return unconnected.next();
-                    }
-                });
-            },
-            error: function(err) {
-                if (err) console.warn(err);
-                return unconnected.next();
-            }
+                    $.ajax({
+                        url: 'https://www.openstreetmap.org/api/0.6/node/' + window.current.item._osm_object_id,
+                        dataType: 'xml',
+                        success: function(xml) {
+                            layer = new L.OSM.DataLayer(xml).setStyle(window.featureStyle).addTo(window.featureGroup);
+                        },
+                        error: function(err) {
+                            if (err) window.console.warn(err);
+                            return self.next();
+                        }
+                    });
+                },
+                error: function(err) {
+                    if (err) window.console.warn(err);
+                    return self.next();
+                }
+            });
         });
-    });
+    }
 };
 
-module.exports = unconnected;
-
-},{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
+},{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -697,42 +709,43 @@ window.altStyle = {
     weight: 4
 };
 
-var mapz = {};
-mapz.init = function(div) {
-    if ($('#map').length) return false; // map already initialized
+module.exports = {
+    init: function(div) {
 
-    div = div || 'map';
-    $('#main').append(templates.map());
+        // map is already initialized
+        if ($('#map').length) return;
 
-    window.map = L.mapbox.map('map', {'mapbox_logo': true}, {
-        maxZoom: 18,
-        keyboard: false
-    }).setView([22.76, -25.84], 3);
+        div = div || 'map';
+        $('#main').append(templates.map());
 
-    map.zoomControl.setPosition('topright');
+        window.map = L.mapbox.map('map', {'mapbox_logo': true}, {
+            maxZoom: 18,
+            keyboard: false
+        }).setView([22.76, -25.84], 3);
 
-    // Layer controller
-    layers[baseLayer].addTo(map);
-    if (baseLayer == 'Bing Satellite') contextLayer.addTo(map).bringToFront();
-    L.control.layers(layers).addTo(map);
-    map.on('baselayerchange', function(e) {
-        store.set('baseLayer', e.name);
-        if (e.name == 'Bing Satellite') {
-            contextLayer.addTo(map).bringToFront();
-        } else {
-            if (map.hasLayer(contextLayer)) map.removeLayer(contextLayer);
-        }
-    });
-    window.featureGroup = L.featureGroup().addTo(map);
+        window.map.zoomControl.setPosition('topright');
+
+        // Layer controller
+        layers[baseLayer].addTo(window.map);
+        if (baseLayer == 'Bing Satellite') contextLayer.addTo(window.map).bringToFront();
+        L.control.layers(layers).addTo(window.map);
+        window.map.on('baselayerchange', function(e) {
+            store.set('baseLayer', e.name);
+            if (e.name == 'Bing Satellite') {
+                contextLayer.addTo(window.map).bringToFront();
+            } else {
+                if (window.map.hasLayer(contextLayer)) window.map.removeLayer(contextLayer);
+            }
+        });
+        window.featureGroup = L.featureGroup().addTo(window.map);
+    },
+
+    clear: function() {
+        window.featureGroup.getLayers().forEach(function(layer) {
+            window.featureGroup.removeLayer(layer);
+        });
+    }
 };
-
-mapz.clear = function() {
-    window.featureGroup.getLayers().forEach(function(layer) {
-        window.featureGroup.removeLayer(layer);
-    });
-};
-
-module.exports = mapz;
 
 },{"./ext/bing.js":"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/route.js":[function(require,module,exports){
 'use strict';
@@ -23996,7 +24009,7 @@ if (typeof module !== 'undefined') {
 }
 
 },{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/package.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports={
   "author": {
     "name": "Mapbox"
   },
@@ -25976,6 +25989,807 @@ function contains(item, list) {
     }
     return false;
 }
+
+},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
+/**
+ * Copyright 2012 Craig Campbell
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Mousetrap is a simple keyboard shortcut library for Javascript with
+ * no external dependencies
+ *
+ * @version 1.1.2
+ * @url craig.is/killing/mice
+ */
+
+  /**
+   * mapping of special keycodes to their corresponding keys
+   *
+   * everything in this dictionary cannot use keypress events
+   * so it has to be here to map to the correct keycodes for
+   * keyup/keydown events
+   *
+   * @type {Object}
+   */
+  var _MAP = {
+          8: 'backspace',
+          9: 'tab',
+          13: 'enter',
+          16: 'shift',
+          17: 'ctrl',
+          18: 'alt',
+          20: 'capslock',
+          27: 'esc',
+          32: 'space',
+          33: 'pageup',
+          34: 'pagedown',
+          35: 'end',
+          36: 'home',
+          37: 'left',
+          38: 'up',
+          39: 'right',
+          40: 'down',
+          45: 'ins',
+          46: 'del',
+          91: 'meta',
+          93: 'meta',
+          224: 'meta'
+      },
+
+      /**
+       * mapping for special characters so they can support
+       *
+       * this dictionary is only used incase you want to bind a
+       * keyup or keydown event to one of these keys
+       *
+       * @type {Object}
+       */
+      _KEYCODE_MAP = {
+          106: '*',
+          107: '+',
+          109: '-',
+          110: '.',
+          111 : '/',
+          186: ';',
+          187: '=',
+          188: ',',
+          189: '-',
+          190: '.',
+          191: '/',
+          192: '`',
+          219: '[',
+          220: '\\',
+          221: ']',
+          222: '\''
+      },
+
+      /**
+       * this is a mapping of keys that require shift on a US keypad
+       * back to the non shift equivelents
+       *
+       * this is so you can use keyup events with these keys
+       *
+       * note that this will only work reliably on US keyboards
+       *
+       * @type {Object}
+       */
+      _SHIFT_MAP = {
+          '~': '`',
+          '!': '1',
+          '@': '2',
+          '#': '3',
+          '$': '4',
+          '%': '5',
+          '^': '6',
+          '&': '7',
+          '*': '8',
+          '(': '9',
+          ')': '0',
+          '_': '-',
+          '+': '=',
+          ':': ';',
+          '\"': '\'',
+          '<': ',',
+          '>': '.',
+          '?': '/',
+          '|': '\\'
+      },
+
+      /**
+       * this is a list of special strings you can use to map
+       * to modifier keys when you specify your keyboard shortcuts
+       *
+       * @type {Object}
+       */
+      _SPECIAL_ALIASES = {
+          'option': 'alt',
+          'command': 'meta',
+          'return': 'enter',
+          'escape': 'esc'
+      },
+
+      /**
+       * variable to store the flipped version of _MAP from above
+       * needed to check if we should use keypress or not when no action
+       * is specified
+       *
+       * @type {Object|undefined}
+       */
+      _REVERSE_MAP,
+
+      /**
+       * a list of all the callbacks setup via Mousetrap.bind()
+       *
+       * @type {Object}
+       */
+      _callbacks = {},
+
+      /**
+       * direct map of string combinations to callbacks used for trigger()
+       *
+       * @type {Object}
+       */
+      _direct_map = {},
+
+      /**
+       * keeps track of what level each sequence is at since multiple
+       * sequences can start out with the same sequence
+       *
+       * @type {Object}
+       */
+      _sequence_levels = {},
+
+      /**
+       * variable to store the setTimeout call
+       *
+       * @type {null|number}
+       */
+      _reset_timer,
+
+      /**
+       * temporary state where we will ignore the next keyup
+       *
+       * @type {boolean|string}
+       */
+      _ignore_next_keyup = false,
+
+      /**
+       * are we currently inside of a sequence?
+       * type of action ("keyup" or "keydown" or "keypress") or false
+       *
+       * @type {boolean|string}
+       */
+      _inside_sequence = false;
+
+  /**
+   * loop through the f keys, f1 to f19 and add them to the map
+   * programatically
+   */
+  for (var i = 1; i < 20; ++i) {
+      _MAP[111 + i] = 'f' + i;
+  }
+
+  /**
+   * loop through to map numbers on the numeric keypad
+   */
+  for (i = 0; i <= 9; ++i) {
+      _MAP[i + 96] = i;
+  }
+
+  /**
+   * cross browser add event method
+   *
+   * @param {Element|HTMLDocument} object
+   * @param {string} type
+   * @param {Function} callback
+   * @returns void
+   */
+  function _addEvent(object, type, callback) {
+      if (object.addEventListener) {
+          return object.addEventListener(type, callback, false);
+      }
+
+      object.attachEvent('on' + type, callback);
+  }
+
+  /**
+   * takes the event and returns the key character
+   *
+   * @param {Event} e
+   * @return {string}
+   */
+  function _characterFromEvent(e) {
+
+      // for keypress events we should return the character as is
+      if (e.type == 'keypress') {
+          return String.fromCharCode(e.which);
+      }
+
+      // for non keypress events the special maps are needed
+      if (_MAP[e.which]) {
+          return _MAP[e.which];
+      }
+
+      if (_KEYCODE_MAP[e.which]) {
+          return _KEYCODE_MAP[e.which];
+      }
+
+      // if it is not in the special map
+      return String.fromCharCode(e.which).toLowerCase();
+  }
+
+  /**
+   * should we stop this event before firing off callbacks
+   *
+   * @param {Event} e
+   * @return {boolean}
+   */
+  function _stop(e) {
+      var element = e.target || e.srcElement,
+          tag_name = element.tagName;
+
+      // if the element has the class "mousetrap" then no need to stop
+      if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
+          return false;
+      }
+
+      // stop for input, select, and textarea
+      return tag_name == 'INPUT' || tag_name == 'SELECT' || tag_name == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
+  }
+
+  /**
+   * checks if two arrays are equal
+   *
+   * @param {Array} modifiers1
+   * @param {Array} modifiers2
+   * @returns {boolean}
+   */
+  function _modifiersMatch(modifiers1, modifiers2) {
+      return modifiers1.sort().join(',') === modifiers2.sort().join(',');
+  }
+
+  /**
+   * resets all sequence counters except for the ones passed in
+   *
+   * @param {Object} do_not_reset
+   * @returns void
+   */
+  function _resetSequences(do_not_reset) {
+      do_not_reset = do_not_reset || {};
+
+      var active_sequences = false,
+          key;
+
+      for (key in _sequence_levels) {
+          if (do_not_reset[key]) {
+              active_sequences = true;
+              continue;
+          }
+          _sequence_levels[key] = 0;
+      }
+
+      if (!active_sequences) {
+          _inside_sequence = false;
+      }
+  }
+
+  /**
+   * finds all callbacks that match based on the keycode, modifiers,
+   * and action
+   *
+   * @param {string} character
+   * @param {Array} modifiers
+   * @param {string} action
+   * @param {boolean=} remove - should we remove any matches
+   * @param {string=} combination
+   * @returns {Array}
+   */
+  function _getMatches(character, modifiers, action, remove, combination) {
+      var i,
+          callback,
+          matches = [];
+
+      // if there are no events related to this keycode
+      if (!_callbacks[character]) {
+          return [];
+      }
+
+      // if a modifier key is coming up on its own we should allow it
+      if (action == 'keyup' && _isModifier(character)) {
+          modifiers = [character];
+      }
+
+      // loop through all callbacks for the key that was pressed
+      // and see if any of them match
+      for (i = 0; i < _callbacks[character].length; ++i) {
+          callback = _callbacks[character][i];
+
+          // if this is a sequence but it is not at the right level
+          // then move onto the next match
+          if (callback.seq && _sequence_levels[callback.seq] != callback.level) {
+              continue;
+          }
+
+          // if the action we are looking for doesn't match the action we got
+          // then we should keep going
+          if (action != callback.action) {
+              continue;
+          }
+
+          // if this is a keypress event that means that we need to only
+          // look at the character, otherwise check the modifiers as
+          // well
+          if (action == 'keypress' || _modifiersMatch(modifiers, callback.modifiers)) {
+
+              // remove is used so if you change your mind and call bind a
+              // second time with a new function the first one is overwritten
+              if (remove && callback.combo == combination) {
+                  _callbacks[character].splice(i, 1);
+              }
+
+              matches.push(callback);
+          }
+      }
+
+      return matches;
+  }
+
+  /**
+   * takes a key event and figures out what the modifiers are
+   *
+   * @param {Event} e
+   * @returns {Array}
+   */
+  function _eventModifiers(e) {
+      var modifiers = [];
+
+      if (e.shiftKey) {
+          modifiers.push('shift');
+      }
+
+      if (e.altKey) {
+          modifiers.push('alt');
+      }
+
+      if (e.ctrlKey) {
+          modifiers.push('ctrl');
+      }
+
+      if (e.metaKey) {
+          modifiers.push('meta');
+      }
+
+      return modifiers;
+  }
+
+  /**
+   * actually calls the callback function
+   *
+   * if your callback function returns false this will use the jquery
+   * convention - prevent default and stop propogation on the event
+   *
+   * @param {Function} callback
+   * @param {Event} e
+   * @returns void
+   */
+  function _fireCallback(callback, e) {
+      if (callback(e) === false) {
+          if (e.preventDefault) {
+              e.preventDefault();
+          }
+
+          if (e.stopPropagation) {
+              e.stopPropagation();
+          }
+
+          e.returnValue = false;
+          e.cancelBubble = true;
+      }
+  }
+
+  /**
+   * handles a character key event
+   *
+   * @param {string} character
+   * @param {Event} e
+   * @returns void
+   */
+  function _handleCharacter(character, e) {
+
+      // if this event should not happen stop here
+      if (_stop(e)) {
+          return;
+      }
+
+      var callbacks = _getMatches(character, _eventModifiers(e), e.type),
+          i,
+          do_not_reset = {},
+          processed_sequence_callback = false;
+
+      // loop through matching callbacks for this key event
+      for (i = 0; i < callbacks.length; ++i) {
+
+          // fire for all sequence callbacks
+          // this is because if for example you have multiple sequences
+          // bound such as "g i" and "g t" they both need to fire the
+          // callback for matching g cause otherwise you can only ever
+          // match the first one
+          if (callbacks[i].seq) {
+              processed_sequence_callback = true;
+
+              // keep a list of which sequences were matches for later
+              do_not_reset[callbacks[i].seq] = 1;
+              _fireCallback(callbacks[i].callback, e);
+              continue;
+          }
+
+          // if there were no sequence matches but we are still here
+          // that means this is a regular match so we should fire that
+          if (!processed_sequence_callback && !_inside_sequence) {
+              _fireCallback(callbacks[i].callback, e);
+          }
+      }
+
+      // if you are inside of a sequence and the key you are pressing
+      // is not a modifier key then we should reset all sequences
+      // that were not matched by this key event
+      if (e.type == _inside_sequence && !_isModifier(character)) {
+          _resetSequences(do_not_reset);
+      }
+  }
+
+  /**
+   * handles a keydown event
+   *
+   * @param {Event} e
+   * @returns void
+   */
+  function _handleKey(e) {
+
+      // normalize e.which for key events
+      // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
+      e.which = typeof e.which == "number" ? e.which : e.keyCode;
+
+      var character = _characterFromEvent(e);
+
+      // no character found then stop
+      if (!character) {
+          return;
+      }
+
+      if (e.type == 'keyup' && _ignore_next_keyup == character) {
+          _ignore_next_keyup = false;
+          return;
+      }
+
+      _handleCharacter(character, e);
+  }
+
+  /**
+   * determines if the keycode specified is a modifier key or not
+   *
+   * @param {string} key
+   * @returns {boolean}
+   */
+  function _isModifier(key) {
+      return key == 'shift' || key == 'ctrl' || key == 'alt' || key == 'meta';
+  }
+
+  /**
+   * called to set a 1 second timeout on the specified sequence
+   *
+   * this is so after each key press in the sequence you have 1 second
+   * to press the next key before you have to start over
+   *
+   * @returns void
+   */
+  function _resetSequenceTimer() {
+      clearTimeout(_reset_timer);
+      _reset_timer = setTimeout(_resetSequences, 1000);
+  }
+
+  /**
+   * reverses the map lookup so that we can look for specific keys
+   * to see what can and can't use keypress
+   *
+   * @return {Object}
+   */
+  function _getReverseMap() {
+      if (!_REVERSE_MAP) {
+          _REVERSE_MAP = {};
+          for (var key in _MAP) {
+
+              // pull out the numeric keypad from here cause keypress should
+              // be able to detect the keys from the character
+              if (key > 95 && key < 112) {
+                  continue;
+              }
+
+              if (_MAP.hasOwnProperty(key)) {
+                  _REVERSE_MAP[_MAP[key]] = key;
+              }
+          }
+      }
+      return _REVERSE_MAP;
+  }
+
+  /**
+   * picks the best action based on the key combination
+   *
+   * @param {string} key - character for key
+   * @param {Array} modifiers
+   * @param {string=} action passed in
+   */
+  function _pickBestAction(key, modifiers, action) {
+
+      // if no action was picked in we should try to pick the one
+      // that we think would work best for this key
+      if (!action) {
+          action = _getReverseMap()[key] ? 'keydown' : 'keypress';
+      }
+
+      // modifier keys don't work as expected with keypress,
+      // switch to keydown
+      if (action == 'keypress' && modifiers.length) {
+          action = 'keydown';
+      }
+
+      return action;
+  }
+
+  /**
+   * binds a key sequence to an event
+   *
+   * @param {string} combo - combo specified in bind call
+   * @param {Array} keys
+   * @param {Function} callback
+   * @param {string=} action
+   * @returns void
+   */
+  function _bindSequence(combo, keys, callback, action) {
+
+      // start off by adding a sequence level record for this combination
+      // and setting the level to 0
+      _sequence_levels[combo] = 0;
+
+      // if there is no action pick the best one for the first key
+      // in the sequence
+      if (!action) {
+          action = _pickBestAction(keys[0], []);
+      }
+
+      /**
+       * callback to increase the sequence level for this sequence and reset
+       * all other sequences that were active
+       *
+       * @param {Event} e
+       * @returns void
+       */
+      var _increaseSequence = function(e) {
+              _inside_sequence = action;
+              ++_sequence_levels[combo];
+              _resetSequenceTimer();
+          },
+
+          /**
+           * wraps the specified callback inside of another function in order
+           * to reset all sequence counters as soon as this sequence is done
+           *
+           * @param {Event} e
+           * @returns void
+           */
+          _callbackAndReset = function(e) {
+              _fireCallback(callback, e);
+
+              // we should ignore the next key up if the action is key down
+              // or keypress.  this is so if you finish a sequence and
+              // release the key the final key will not trigger a keyup
+              if (action !== 'keyup') {
+                  _ignore_next_keyup = _characterFromEvent(e);
+              }
+
+              // weird race condition if a sequence ends with the key
+              // another sequence begins with
+              setTimeout(_resetSequences, 10);
+          },
+          i;
+
+      // loop through keys one at a time and bind the appropriate callback
+      // function.  for any key leading up to the final one it should
+      // increase the sequence. after the final, it should reset all sequences
+      for (i = 0; i < keys.length; ++i) {
+          _bindSingle(keys[i], i < keys.length - 1 ? _increaseSequence : _callbackAndReset, action, combo, i);
+      }
+  }
+
+  /**
+   * binds a single keyboard combination
+   *
+   * @param {string} combination
+   * @param {Function} callback
+   * @param {string=} action
+   * @param {string=} sequence_name - name of sequence if part of sequence
+   * @param {number=} level - what part of the sequence the command is
+   * @returns void
+   */
+  function _bindSingle(combination, callback, action, sequence_name, level) {
+
+      // make sure multiple spaces in a row become a single space
+      combination = combination.replace(/\s+/g, ' ');
+
+      var sequence = combination.split(' '),
+          i,
+          key,
+          keys,
+          modifiers = [];
+
+      // if this pattern is a sequence of keys then run through this method
+      // to reprocess each pattern one key at a time
+      if (sequence.length > 1) {
+          return _bindSequence(combination, sequence, callback, action);
+      }
+
+      // take the keys from this pattern and figure out what the actual
+      // pattern is all about
+      keys = combination === '+' ? ['+'] : combination.split('+');
+
+      for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+
+          // normalize key names
+          if (_SPECIAL_ALIASES[key]) {
+              key = _SPECIAL_ALIASES[key];
+          }
+
+          // if this is not a keypress event then we should
+          // be smart about using shift keys
+          // this will only work for US keyboards however
+          if (action && action != 'keypress' && _SHIFT_MAP[key]) {
+              key = _SHIFT_MAP[key];
+              modifiers.push('shift');
+          }
+
+          // if this key is a modifier then add it to the list of modifiers
+          if (_isModifier(key)) {
+              modifiers.push(key);
+          }
+      }
+
+      // depending on what the key combination is
+      // we will try to pick the best event for it
+      action = _pickBestAction(key, modifiers, action);
+
+      // make sure to initialize array if this is the first time
+      // a callback is added for this key
+      if (!_callbacks[key]) {
+          _callbacks[key] = [];
+      }
+
+      // remove an existing match if there is one
+      _getMatches(key, modifiers, action, !sequence_name, combination);
+
+      // add this call back to the array
+      // if it is a sequence put it at the beginning
+      // if not put it at the end
+      //
+      // this is important because the way these are processed expects
+      // the sequence ones to come first
+      _callbacks[key][sequence_name ? 'unshift' : 'push']({
+          callback: callback,
+          modifiers: modifiers,
+          action: action,
+          seq: sequence_name,
+          level: level,
+          combo: combination
+      });
+  }
+
+  /**
+   * binds multiple combinations to the same callback
+   *
+   * @param {Array} combinations
+   * @param {Function} callback
+   * @param {string|undefined} action
+   * @returns void
+   */
+  function _bindMultiple(combinations, callback, action) {
+      for (var i = 0; i < combinations.length; ++i) {
+          _bindSingle(combinations[i], callback, action);
+      }
+  }
+
+  // start!
+  _addEvent(document, 'keypress', _handleKey);
+  _addEvent(document, 'keydown', _handleKey);
+  _addEvent(document, 'keyup', _handleKey);
+
+  var mousetrap = {
+
+      /**
+       * binds an event to mousetrap
+       *
+       * can be a single key, a combination of keys separated with +,
+       * a comma separated list of keys, an array of keys, or
+       * a sequence of keys separated by spaces
+       *
+       * be sure to list the modifier keys first to make sure that the
+       * correct key ends up getting bound (the last key in the pattern)
+       *
+       * @param {string|Array} keys
+       * @param {Function} callback
+       * @param {string=} action - 'keypress', 'keydown', or 'keyup'
+       * @returns void
+       */
+      bind: function(keys, callback, action) {
+          _bindMultiple(keys instanceof Array ? keys : [keys], callback, action);
+          _direct_map[keys + ':' + action] = callback;
+          return this;
+      },
+
+      /**
+       * unbinds an event to mousetrap
+       *
+       * the unbinding sets the callback function of the specified key combo
+       * to an empty function and deletes the corresponding key in the
+       * _direct_map dict.
+       *
+       * the keycombo+action has to be exactly the same as
+       * it was defined in the bind method
+       *
+       * TODO: actually remove this from the _callbacks dictionary instead
+       * of binding an empty function
+       *
+       * @param {string|Array} keys
+       * @param {string} action
+       * @returns void
+       */
+      unbind: function(keys, action) {
+          if (_direct_map[keys + ':' + action]) {
+              delete _direct_map[keys + ':' + action];
+              this.bind(keys, function() {}, action);
+          }
+          return this;
+      },
+
+      /**
+       * triggers an event that has already been bound
+       *
+       * @param {string} keys
+       * @param {string=} action
+       * @returns void
+       */
+      trigger: function(keys, action) {
+          _direct_map[keys + ':' + action]();
+          return this;
+      },
+
+      /**
+       * resets the library back to its initial state.  this is useful
+       * if you want to clear out the current keyboard shortcuts and bind
+       * new ones - for example if you switch to another page
+       *
+       * @returns void
+       */
+      reset: function() {
+          _callbacks = {};
+          _direct_map = {};
+          return this;
+      }
+  };
+
+module.exports = mousetrap;
+
 
 },{}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/index.js":[function(require,module,exports){
 'use strict';
