@@ -1,7 +1,4 @@
-<div id='top-section' class='pad1y'>
-    <a class='block' href=""><h3 class='space-top1 fancy center'>to-fix</h3></a>
-</div>
-<div id='tasks' class='container pin-left col12 scroll-v space-top6 space-bottom4'>
+<div id='tasks' class='scroll-v'>
     <% Object.keys(obj.tasks).forEach(function(task) { %>
     <a class="block pad2x pad1y truncate<% if (obj.current == task) { %> selected<% } %>" href="?error=<%= task %>"><%= tasks[task].title %></a>
     <% }); %>
@@ -9,10 +6,8 @@
 <div id='user-stuff' class='container pad1y keyline-top fill-white'>
     <% if (obj.authed) { %>
     <a class='block truncate small col6 pad1x' target='_blank' href="http://www.openstreetmap.org/user/<%= obj.username %>"><img class='dot avatar' src="<%= obj.avatar %>"><%= obj.username %></a>
-    <!-- <a class='pad2x icon plus' href="./task">new task</a> -->
-    <!-- <a class='pad2x settings icon sprocket' href="#settings">settings</a> -->
     <a id='logout' class='col6 text-right block truncate small pad1x icon logout' href="">logout</a>
     <% } else { %>
-    <a id='login' class='pad1x block truncate icon account' href="">login to edit</a>
+    <a href='#' id='login' class='pad1x block truncate icon account'>login to edit</a>
     <% } %>
 </div>

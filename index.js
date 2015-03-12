@@ -135,12 +135,14 @@ $('#sidebar').on('click', '#login', function(e) {
             }
         });
     });
+    return false;
 });
 
 $('#sidebar').on('click', '#logout', function(e) {
     e.preventDefault();
     auth.logout();
     window.location.href = '';
+    return false;
 });
 
 $('#sidebar').html(templates.sidebar({
@@ -152,6 +154,20 @@ $('#sidebar').html(templates.sidebar({
 }));
 
 $('#settings').html(templates.settings());
+
+$('.js-sidebar').on('click', function() {
+    var $el = $(this);
+    var $sidebar = $('#sidebar');
+
+    if ($el.is('.active')) {
+        $el.removeClass('active');
+        $sidebar.removeClass('active');
+    } else {
+        $sidebar.addClass('active');
+        $el.addClass('active');
+    }
+    return false;
+});
 
 function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));

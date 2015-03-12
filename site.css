@@ -7,23 +7,31 @@ h1, h2, h3, h4, h5, h6 {
   margin:0;
   }
 
-/* override mapbox.js */
-.mapbox-improve-map { display: none; }
-
 a { color: #666; }
 a:hover { color: #000; }
-h3.fancy { line-height: 30px;}
 
-/* base addons */
-.space-top6 { margin-top: 60px; }
+/* Base candidates
+------------------------- */
+.row-60     { height:60px; }
+.space-top6 { top:60px; }
 
-/* components */
-#sidebar {
-  position: relative;
-  width: 250px;
-  height: 100%;
+/* Override mapbox.css
+------------------------- */
+.mapbox-improve-map { display: none; }
+
+/* Layout
+------------------------- */
+.sidebar.active ~ .main { width:75%; left:25%; }
+
+.map {
+  width:100%;
+  height:100%;
+  bottom:0;
   }
-#sidebar a.selected {
+
+/* Components
+------------------------- */
+.sidebar a.selected {
   background-color: #000;
   color:white;
   }
@@ -33,42 +41,31 @@ h3.fancy { line-height: 30px;}
   bottom:0;
   width:100%;
   }
-#main {
-  margin-left: 250px;
-  }
-.map {
-  width:100%;
-  height:100%;
-  }
-
-#actions h3 {
+.actions h3 {
   color:white;
   cursor:pointer;
   border-left:1px solid black;
   }
+  .actions h3:first-of-type {
+    border-left:none;
+    }
+  .actions h3:hover {
+    background: black;
+    }
 
-#actions h3:first-of-type {
-  border-left:none;
-  }
-#actions h3:hover {
-  background: black;
-  }
-#error-message, #message {
-  top:0;
-  position:absolute;
-  z-index:1;
-  width:100%;
+.error,
+.note {
   display:none;
   }
-#message {
+.note {
   background-color:black;
   color:white;
   }
 
-#settings select {
+.settings select {
   margin-top:5px;
   }
-#settings:target {
+.settings:target {
   bottom:0;
   opacity:1;
   }

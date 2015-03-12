@@ -29,7 +29,7 @@ var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
 var templates = {
-    sidebar: _("<div id='top-section' class='pad1y'>\n    <a class='block' href=\"\"><h3 class='space-top1 fancy center'>to-fix</h3></a>\n</div>\n<div id='tasks' class='container pin-left col12 scroll-v space-top6 space-bottom4'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n    <a class=\"block pad2x pad1y truncate<% if (obj.current == task) { %> selected<% } %>\" href=\"?error=<%= task %>\"><%= tasks[task].title %></a>\n    <% }); %>\n</div>\n<div id='user-stuff' class='container pad1y keyline-top fill-white'>\n    <% if (obj.authed) { %>\n    <a class='block truncate small col6 pad1x' target='_blank' href=\"http://www.openstreetmap.org/user/<%= obj.username %>\"><img class='dot avatar' src=\"<%= obj.avatar %>\"><%= obj.username %></a>\n    <!-- <a class='pad2x icon plus' href=\"./task\">new task</a> -->\n    <!-- <a class='pad2x settings icon sprocket' href=\"#settings\">settings</a> -->\n    <a id='logout' class='col6 text-right block truncate small pad1x icon logout' href=\"\">logout</a>\n    <% } else { %>\n    <a id='login' class='pad1x block truncate icon account' href=\"\">login to edit</a>\n    <% } %>\n</div>\n").template(),
+    sidebar: _("<div id='tasks' class='scroll-v'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n    <a class=\"block pad2x pad1y truncate<% if (obj.current == task) { %> selected<% } %>\" href=\"?error=<%= task %>\"><%= tasks[task].title %></a>\n    <% }); %>\n</div>\n<div id='user-stuff' class='container pad1y keyline-top fill-white'>\n    <% if (obj.authed) { %>\n    <a class='block truncate small col6 pad1x' target='_blank' href=\"http://www.openstreetmap.org/user/<%= obj.username %>\"><img class='dot avatar' src=\"<%= obj.avatar %>\"><%= obj.username %></a>\n    <a id='logout' class='col6 text-right block truncate small pad1x icon logout' href=\"\">logout</a>\n    <% } else { %>\n    <a href='#' id='login' class='pad1x block truncate icon account'>login to edit</a>\n    <% } %>\n</div>\n").template(),
     settings: _("<form id='modal-name' class='modal-popup' method='post'>\n    <div class='col4 modal-body fill-white contain'>\n        <a href='#close' class='quiet pad1 icon fr close'></a>\n        <div class='pad1 center'>\n            <h2>Settings</h2>\n        </div>\n        <div class='pad2x pad1y'>\n            <div class='pad1y'>\n                <h3 class='col3'>Editor:</h3>\n                <select name='select' class='select'>\n                    <option class='' value=\"ideditor\">iD</option>\n                    <option class='' value='autoeditor' selected='true'>pick automatically</option>\n                    <option class='' value='josmeditor'>JOSM</option>\n                </select>\n            </div>\n        </div>\n    </div>\n</form>\n").template()
 };
 
@@ -136,12 +136,14 @@ $('#sidebar').on('click', '#login', function(e) {
             }
         });
     });
+    return false;
 });
 
 $('#sidebar').on('click', '#logout', function(e) {
     e.preventDefault();
     auth.logout();
     window.location.href = '';
+    return false;
 });
 
 $('#sidebar').html(templates.sidebar({
@@ -153,6 +155,20 @@ $('#sidebar').html(templates.sidebar({
 }));
 
 $('#settings').html(templates.settings());
+
+$('.js-sidebar').on('click', function() {
+    var $el = $(this);
+    var $sidebar = $('#sidebar');
+
+    if ($el.is('.active')) {
+        $el.removeClass('active');
+        $sidebar.removeClass('active');
+    } else {
+        $sidebar.addClass('active');
+        $el.addClass('active');
+    }
+    return false;
+});
 
 function isAuthenticated() {
     return (auth.authenticated() && store.get('username') && store.get('userid'));
