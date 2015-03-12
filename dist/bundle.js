@@ -313,7 +313,7 @@ var mouse = require('mousetrap');
 var core = require('./core');
 var map = require('./map');
 
-var templates = { editbar: _("<div id='editbar' class='col12 pin-bottom'>\n    <div id='actions' class='col6 margin3'>\n        <h3 id='edit' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>edit</h3>\n        <h3 id='skip' class='fill-dark col4 pad2 center'>skip</h3>\n        <h3 id='fixed' class='fill-dark col4 pad2 center<% if (!obj.auth) { %> vhidden <% } %>'>fixed</h3>\n    </div>\n</div>\n").template() };
+var templates = { editbar: _("<div id='editbar' class='pin-topleft pad1'>\n  <nav id='actions' class='fill-white round'>\n    <a href='#' id='edit' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>edit</a>\n    <a href='#' id='skip' class='pad2'>skip</a>\n    <a href='#' id='fixed' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>\n  </nav>\n</div>\n").template() };
 
 module.exports = {
     init: function() {
@@ -326,16 +326,22 @@ module.exports = {
     },
 
     bind: function() {
-        $('#edit').on('click', this.edit);
+        var self = this;
+        $('#edit').on('click', function() {
+            this.edit();
+            return false;
+        });
 
         $('#skip').on('click', function() {
             map.clear();
             window.current.loader.next();
+            return false;
         });
 
         $('#fixed').on('click', function() {
             map.clear();
             core.mark('done', window.current.loader.next);
+            return false;
         });
 
         mouse.bind('e', function() {
@@ -24025,7 +24031,7 @@ if (typeof module !== 'undefined') {
 }
 
 },{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/package.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "author": {
     "name": "Mapbox"
   },

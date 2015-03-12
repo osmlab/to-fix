@@ -41,18 +41,6 @@ a:hover { color: #000; }
   bottom:0;
   width:100%;
   }
-.actions h3 {
-  color:white;
-  cursor:pointer;
-  border-left:1px solid black;
-  }
-  .actions h3:first-of-type {
-    border-left:none;
-    }
-  .actions h3:hover {
-    background: black;
-    }
-
 .error,
 .note {
   display:none;
