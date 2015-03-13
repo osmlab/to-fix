@@ -28,6 +28,7 @@ var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
 var templates = {
+    app: _(fs.readFileSync('./templates/app.html', 'utf8')).template(),
     sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
     settings: _(fs.readFileSync('./templates/settings.html', 'utf8')).template()
 };
@@ -107,7 +108,11 @@ var DEFAULT = 'deadendoneway';
 
 window.current = {};
 
-$('#sidebar').on('click', '#login', function(e) {
+$('body').append(templates.app({
+    sidebar: store.get('sidebar')
+}));
+
+$('.js-login').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -119,6 +124,7 @@ $('#sidebar').on('click', '#login', function(e) {
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
                 store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
+                $('#sidebar').remove();
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
                     current: qs.error,
@@ -137,7 +143,7 @@ $('#sidebar').on('click', '#login', function(e) {
     return false;
 });
 
-$('#sidebar').on('click', '#logout', function() {
+$('.logout').on('click', function() {
     auth.logout();
     window.location.href = '';
     return false;
@@ -160,9 +166,11 @@ $('.js-sidebar-toggle').on('click', function() {
     if ($el.is('.active')) {
         $el.removeClass('active');
         $sidebar.removeClass('active');
+        store.remove('sidebar');
     } else {
         $sidebar.addClass('active');
         $el.addClass('active');
+        store.set('sidebar', true);
     }
     return false;
 });

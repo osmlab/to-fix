@@ -7,32 +7,7 @@
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
   <link href='site.css' rel='stylesheet'>
 </head>
-<body id='tofix' class='fill-light unlimiter'>
-  <header class='fill-orange row-60 col12 clearfix'>
-    <nav class='col3'>
-      <a href='#' class='js-sidebar-toggle sidebar-toggle quiet block fl keyline-right animate pad1 row-60'>
-        <span class='icon big menu'></span>
-      </a>
-      <a href='/' class='pad2x'>
-        <h1 class='inline fancy title'>to-fix</h1>
-      </a>
-    </nav>
-    <div class='col9 text-right pad1'>
-      <nav class='js-mode-controls col12 text-right space pad0y'><!--
-        --><a href='#' data-mode='map' class='js-mode icon pencil active animate short button'>Task</a><!--
-        --><a href='#' data-mode='activity' class='js-mode icon bolt button short animate'>Activity</a><!--
-        --><a href='#' data-mode='stats' class='js-mode icon graph button short animate'>Statistics</a>
-      </nav>
-    </div>
-  </header>
-
-  <div id='sidebar' class='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6'></div>
-  <div id='main' class='main fill-navy-dark col12 pin-bottom space-top6 animate'>
-    <div id='error-message' class='pin-top col12 z10000 center note warning'><span></span></div>
-    <div id='message' class='pin-top col12 z10000 settings animate modal modal-content'></div>
-    <div id='settings' class='pin-top col12 z10000 settings animate modal modal-content'></div>
-  </div>
-
+<body class='unlimiter'>
   <script src='dist/bundle.js'></script>
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

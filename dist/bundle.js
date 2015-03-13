@@ -29,7 +29,8 @@ var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
 var templates = {
-    sidebar: _("<div class='scroll-styled pad2y'>\n\n  <span class='dark block pad1x space-bottom1'>Account</span>\n  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>\n    <% if (obj.authed) { %>\n      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>\n        <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>\n      </a>\n      <div class='col6 pad1x text-right'>\n        <a id='logout' class='truncate pad1x rcon logout button small' href='#'>Logout</a>\n      </div>\n    <% } else { %>\n      <a href='#' id='login' class='pad1x pad0y strong block dark truncate icon account'>login to edit</a>\n    <% } %>\n  </div>\n\n  <span class='dark block pad1x space-bottom1'>Tasks</span>\n  <nav id='tasks' class='space-bottom2'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n      <a class='block strong dark pad1x pad0y truncate<% if (obj.current == task) { %> active<% } %>' href='?error=<%= task %>'>\n        <%= tasks[task].title %>\n      </a>\n    <% }); %>\n  </nav>\n\n</div>\n").template(),
+    app: _("<header class='fill-orange row-60 col12 clearfix'>\n  <nav class='col3'>\n    <a href='#' class='js-sidebar-toggle sidebar-toggle quiet block fl keyline-right animate pad1 row-60<% if (obj.sidebar) { %> active<% } %>'>\n      <span class='icon big menu'></span>\n    </a>\n    <a href='/' class='pad2x'>\n      <h1 class='inline fancy title'>to-fix</h1>\n    </a>\n  </nav>\n  <div class='col9 text-right pad1'>\n    <nav class='js-mode-controls col12 text-right space pad0y'><!--\n      --><a href='#' data-mode='map' class='js-mode icon pencil active animate short button'>Task</a><!--\n      --><a href='#' data-mode='activity' class='js-mode icon bolt button short animate'>Activity</a><!--\n      --><a href='#' data-mode='stats' class='js-mode icon graph button short animate'>Statistics</a>\n    </nav>\n  </div>\n</header>\n\n<div id='sidebar' class='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6<% if (obj.sidebar) { %> active<% } %>'></div>\n<div id='main' class='main fill-navy-dark col12 pin-bottom space-top6 animate'>\n  <div id='error-message' class='pin-top col12 z10000 center note warning'><span></span></div>\n  <div id='message' class='pin-top col12 z10000 settings animate modal modal-content'></div>\n  <div id='settings' class='pin-top col12 z10000 settings animate modal modal-content'></div>\n</div>\n").template(),
+    sidebar: _("<div class='scroll-styled pad2y'>\n\n  <span class='dark block pad1x space-bottom1'>Account</span>\n  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>\n    <% if (obj.authed) { %>\n      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>\n        <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>\n      </a>\n      <div class='col6 pad1x text-right'>\n        <a href='#' class='js-logout truncate pad1x rcon logout button small'>Logout</a>\n      </div>\n    <% } else { %>\n      <a href='#' class='js-login pad1x pad0y strong block dark truncate icon account'>login to edit</a>\n    <% } %>\n  </div>\n\n  <span class='dark block pad1x space-bottom1'>Tasks</span>\n  <nav id='tasks' class='space-bottom2'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n      <a class='block strong dark pad1x pad0y truncate<% if (obj.current == task) { %> active<% } %>' href='?error=<%= task %>'>\n        <%= tasks[task].title %>\n      </a>\n    <% }); %>\n  </nav>\n\n</div>\n").template(),
     settings: _("<form id='modal-name' class='modal-popup' method='post'>\n  <div class='col4 modal-body fill-white contain'>\n    <a href='#close' class='quiet pad1 icon fr close'></a>\n    <div class='pad1 center'>\n      <h2>Settings</h2>\n    </div>\n    <div class='pad2x pad1y'>\n      <div class='pad1y'>\n        <h3 class='col3'>Editor:</h3>\n        <select name='select' class='select'>\n          <option class='' value='ideditor'>iD</option>\n          <option class='' value='autoeditor' selected='true'>pick automatically</option>\n          <option class='' value='josmeditor'>JOSM</option>\n        </select>\n      </div>\n    </div>\n  </div>\n</form>\n").template()
 };
 
@@ -108,7 +109,11 @@ var DEFAULT = 'deadendoneway';
 
 window.current = {};
 
-$('#sidebar').on('click', '#login', function(e) {
+$('body').append(templates.app({
+    sidebar: store.get('sidebar')
+}));
+
+$('.js-login').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
             method: 'GET',
@@ -120,6 +125,7 @@ $('#sidebar').on('click', '#login', function(e) {
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
                 store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
+                $('#sidebar').remove();
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
                     current: qs.error,
@@ -138,7 +144,7 @@ $('#sidebar').on('click', '#login', function(e) {
     return false;
 });
 
-$('#sidebar').on('click', '#logout', function() {
+$('.logout').on('click', function() {
     auth.logout();
     window.location.href = '';
     return false;
@@ -161,9 +167,11 @@ $('.js-sidebar-toggle').on('click', function() {
     if ($el.is('.active')) {
         $el.removeClass('active');
         $sidebar.removeClass('active');
+        store.remove('sidebar');
     } else {
         $sidebar.addClass('active');
         $el.addClass('active');
+        store.set('sidebar', true);
     }
     return false;
 });
@@ -225,7 +233,7 @@ route({
 var $ = require('jquery');
 var _ = require('underscore');
 
-var template = _("<div id='activity' class='js-mode mode dark'>\n  <h1>Activity</h1>\n</div>\n").template();
+var template = _("<div id='activity' class='js-mode mode dark pad2'>\n  <h1>Activity</h1>\n</div>\n").template();
 
 module.exports = {
     init: function() {
@@ -804,7 +812,7 @@ module.exports = route;
 var $ = require('jquery');
 var _ = require('underscore');
 
-var template = _("<div id='stats' class='js-mode mode dark'>\n  <h1>Statistics</h1>\n</div>\n").template();
+var template = _("<div id='stats' class='js-mode mode pad2 dark'>\n  <h1>Statistics</h1>\n</div>\n").template();
 
 module.exports = {
     init: function() {

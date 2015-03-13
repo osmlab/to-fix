@@ -7,10 +7,10 @@
         <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>
       </a>
       <div class='col6 pad1x text-right'>
-        <a id='logout' class='truncate pad1x rcon logout button small' href='#'>Logout</a>
+        <a href='#' class='js-logout truncate pad1x rcon logout button small'>Logout</a>
       </div>
     <% } else { %>
-      <a href='#' id='login' class='pad1x pad0y strong block dark truncate icon account'>login to edit</a>
+      <a href='#' class='js-login pad1x pad0y strong block dark truncate icon account'>login to edit</a>
     <% } %>
   </div>
 
