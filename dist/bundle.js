@@ -481,6 +481,7 @@ module.exports = {
         activity.init();
         stats.init();
 
+        $(window.map.getContainer()).addClass('loading');
         core.item(qs.error, function() {
             window.current.item._osm_object_type = window.current.item.object_type;
             window.current.item._osm_object_id = window.current.item.object_id;
@@ -528,6 +529,7 @@ module.exports = {
         activity.init();
         stats.init();
 
+        $(window.map.getContainer()).addClass('loading');
         core.item(qs.error, function() {
             var layer = omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
             layer.setStyle(window.featureStyle);
@@ -558,6 +560,7 @@ module.exports = {
         activity.init();
         stats.init();
 
+        $(window.map.getContainer()).addClass('loading');
         core.item(qs.error, function() {
             var layer = omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
             layer.setStyle(window.featureStyle);
@@ -590,6 +593,7 @@ module.exports = {
         activity.init();
         stats.init();
 
+        $(window.map.getContainer()).addClass('loading');
         core.item(qs.error, function() {
             window.current.item._osm_object_type = 'node';
             window.current.item._osm_object_id = window.current.item.node_id;
@@ -730,7 +734,7 @@ module.exports = {
         var top = window.current.item._bounds._northEast.lat + 0.001;
         var right = window.current.item._bounds._northEast.lng + 0.001;
 
-        $('#map').addClass('loading');
+        $(window.map.getContainer()).addClass('loading');
         $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
             left: left,
             right: right,
