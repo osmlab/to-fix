@@ -497,6 +497,7 @@ module.exports = {
                     window.current.item._bounds = layer.getBounds();
                     window.map.fitBounds(window.current.item._bounds);
                     omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
+                    $(window.map.getContainer()).removeClass('loading');
                 },
                 error: function(err) {
                     if (err) window.console.warn(err);
@@ -510,6 +511,7 @@ module.exports = {
 },{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
 'use strict';
 
+var $ = require('jquery');
 var querystring = require('querystring');
 var omnivore = require('leaflet-omnivore');
 
@@ -532,13 +534,15 @@ module.exports = {
             layer.setStyle(window.featureStyle);
             window.current.item._bounds = layer.getBounds();
             window.map.fitBounds(window.current.item._bounds);
+            $(window.map.getContainer()).removeClass('loading');
         });
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
 'use strict';
 
+var $ = require('jquery');
 var querystring = require('querystring');
 var omnivore = require('leaflet-omnivore');
 
@@ -560,11 +564,12 @@ module.exports = {
             layer.setStyle(window.featureStyle);
             window.current.item._bounds = layer.getBounds();
             window.map.fitBounds(window.current.item._bounds);
+            $(window.map.getContainer()).removeClass('loading');
         });
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -597,6 +602,7 @@ module.exports = {
                     layer = new L.OSM.DataLayer(xml).setStyle(window.featureStyle).addTo(window.featureGroup);
                     window.current.item._bounds = layer.getBounds();
                     window.map.fitBounds(window.current.item._bounds);
+                    $(window.map.getContainer()).removeClass('loading');
 
                     $.ajax({
                         url: 'https://www.openstreetmap.org/api/0.6/node/' + window.current.item._osm_object_id,
@@ -631,7 +637,7 @@ var mouse = require('mousetrap');
 var BingLayer = require('./ext/bing.js');
 
 var core = require('./core');
-var template = _("<div id='map' class='js-mode mode active map fill-navy-dark'>\n  <div id='editbar' class='pin-topleft pad1 z1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
+var template = _("<div id='map' class='js-mode mode active map fill-navy-dark loading'>\n  <div id='editbar' class='pin-topleft pad1 z1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
 
 // transparent street layer for putting on top of other layers
 var contextLayer = L.mapbox.tileLayer('aaronlidman.87d3cc29', {
@@ -725,6 +731,7 @@ module.exports = {
         var top = window.current.item._bounds._northEast.lat + 0.001;
         var right = window.current.item._bounds._northEast.lng + 0.001;
 
+        $('#map').addClass('loading');
         $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
             left: left,
             right: right,

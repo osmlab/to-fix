@@ -35,6 +35,10 @@ strong { font-weight:bold}
   font-weight:500;
   height:30px;
   }
+.loading:before {
+  background-color:rgba(0,0,0,0.25);
+  z-index:100;
+  }
 
 /* Base candidates
 ------------------------- */
