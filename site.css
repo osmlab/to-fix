@@ -28,10 +28,6 @@ strong { font-weight:bold}
   border-radius:0;
   border-width:0;
   }
-.button               { background-color:transparent; color:rgba(0,0,0,0.5); }
-.button:hover         { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
-.button.active        { background-color:rgba(0,0,0,0.5); color:#fff; }
-
 .button.small {
   font-size:11px;
   line-height:20px;
@@ -48,6 +44,7 @@ strong { font-weight:bold}
 .z1000 { z-index:1000; }
 .z10000 { z-index:10000; }
 
+.fill-orange.button:hover { background-color:#e55e5e; }
 .scroll-styled pre::-webkit-scrollbar,
 .scroll-styled::-webkit-scrollbar {
   width:8px;
@@ -90,6 +87,10 @@ header .title {
   color:rgba(0,0,0,0.5);
   margin:0;
   }
+header .button         { background-color:transparent; color:rgba(0,0,0,0.5); }
+header .button:hover   { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
+header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
+
 .sidebar-toggle:hover,
 .sidebar-toggle.active { background-color:rgba(0,0,0,0.10); }
 
@@ -116,6 +117,10 @@ header .title {
   height:20px;
   margin-right:10px;
   }
+
+/* iD container
+ * elements when editing
+------------------------- */
 #iD {
   position:absolute;
   top:0;
@@ -126,11 +131,6 @@ header .title {
   }
 #iD_escape {
   position:absolute;
-  right:0;
-  bottom:100px;
-  padding:10px 20px;
-  color:black;
-  font-weight:bold;
-  z-index:2015;
-  cursor:pointer;
+  right:10px;
+  top:10px;
   }

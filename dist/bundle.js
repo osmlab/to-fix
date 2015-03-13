@@ -29,7 +29,7 @@ var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
 var templates = {
-    sidebar: _("<div class='scroll-styled pad2y'>\n\n  <span class='dark block pad1x space-bottom1'>Account</span>\n  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>\n    <% if (obj.authed) { %>\n      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>\n        <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>\n      </a>\n      <div class='col6 pad1x text-right'>\n        <a id='logout' class='dark truncate pad1x rcon logout button small' href='#'>Logout</a>\n      </div>\n    <% } else { %>\n      <a href='#' id='login' class='pad1x pad0y strong block dark truncate icon account'>login to edit</a>\n    <% } %>\n  </div>\n\n  <span class='dark block pad1x space-bottom1'>Tasks</span>\n  <nav id='tasks' class='space-bottom2'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n      <a class='block strong dark pad1x pad0y truncate<% if (obj.current == task) { %> active<% } %>' href='?error=<%= task %>'>\n        <%= tasks[task].title %>\n      </a>\n    <% }); %>\n  </nav>\n\n</div>\n").template(),
+    sidebar: _("<div class='scroll-styled pad2y'>\n\n  <span class='dark block pad1x space-bottom1'>Account</span>\n  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>\n    <% if (obj.authed) { %>\n      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>\n        <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>\n      </a>\n      <div class='col6 pad1x text-right'>\n        <a id='logout' class='truncate pad1x rcon logout button small' href='#'>Logout</a>\n      </div>\n    <% } else { %>\n      <a href='#' id='login' class='pad1x pad0y strong block dark truncate icon account'>login to edit</a>\n    <% } %>\n  </div>\n\n  <span class='dark block pad1x space-bottom1'>Tasks</span>\n  <nav id='tasks' class='space-bottom2'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n      <a class='block strong dark pad1x pad0y truncate<% if (obj.current == task) { %> active<% } %>' href='?error=<%= task %>'>\n        <%= tasks[task].title %>\n      </a>\n    <% }); %>\n  </nav>\n\n</div>\n").template(),
     settings: _("<form id='modal-name' class='modal-popup' method='post'>\n  <div class='col4 modal-body fill-white contain'>\n    <a href='#close' class='quiet pad1 icon fr close'></a>\n    <div class='pad1 center'>\n      <h2>Settings</h2>\n    </div>\n    <div class='pad2x pad1y'>\n      <div class='pad1y'>\n        <h3 class='col3'>Editor:</h3>\n        <select name='select' class='select'>\n          <option class='' value='ideditor'>iD</option>\n          <option class='' value='autoeditor' selected='true'>pick automatically</option>\n          <option class='' value='josmeditor'>JOSM</option>\n        </select>\n      </div>\n    </div>\n  </div>\n</form>\n").template()
 };
 
@@ -328,7 +328,7 @@ module.exports = {
     bind: function() {
         var self = this;
         $('#edit').on('click', function() {
-            this.edit();
+            self.edit();
             return false;
         });
 
@@ -375,25 +375,18 @@ module.exports = {
                     url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
                 }
 
-                $('#main')
-                    .append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>')
-                    .css('margin-left', '0px');
-
+                $('#main').append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>');
                 $('#iD_escape')
                     .removeClass('hidden')
                     .on('click', function() {
                         $('#iD').remove();
-                        $('#main').css('margin-left', '250px');
-                        $('#sidebar').show();
                         $('#skip').click();
                         $('#iD_escape')
                             .addClass('hidden')
                             .unbind();
+
+                        return false;
                     });
-
-                $('#sidebar').hide();
-
-                // newWindow.localhosttion = url;
             },
             success: function() {
                 // this newWindow dance is to get around some browser limitations
@@ -700,7 +693,7 @@ var store = require('store');
 var BingLayer = require('./ext/bing.js');
 
 var templates = {
-    map: _("<div id='map' class='map'></div>\n<div id='iD_escape' class='hidden fill-white'>get the next item »</div>\n").template()
+    map: _("<div id='map' class='map'></div>\n<a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>get the next item</a>\n").template()
 };
 
 // transparent street layer for putting on top of other layers
