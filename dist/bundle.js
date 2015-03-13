@@ -586,11 +586,9 @@ var map = require('../map');
 var editbar = require('../editbar');
 
 var qs = querystring.parse(window.location.search.slice(1));
-var osmigeom = {
-    auth: ['osm']
-};
 
 module.exports = {
+    auth: ['osm'],
     next: function() {
         map.init();
         editbar.init();
