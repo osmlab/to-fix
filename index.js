@@ -154,7 +154,7 @@ $('#sidebar').html(templates.sidebar({
 
 $('#settings').html(templates.settings());
 
-$('.js-sidebar').on('click', function() {
+$('.js-sidebar-toggle').on('click', function() {
     var $el = $(this);
     var $sidebar = $('#sidebar');
 

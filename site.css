@@ -1,6 +1,8 @@
+/* Base overrides
+------------------------- */
 body {
-  font:15px/20px 'Helvetica Neue', Helvetica, sans-serif;
-  color:#1b1b1b;
+  font:14px/22px 'Helvetica Neue', Helvetica, sans-serif;
+  color:rgba(0,0,0,0.75);
   }
 h1, h2, h3, h4, h5, h6,
 .tabs a,
@@ -8,13 +10,28 @@ h1, h2, h3, h4, h5, h6,
   font-family:'Helvetica Neue', Helvetica, sans-serif;
   }
 
-a { color: #666; }
-a:hover { color: #000; }
+.tabs a,
+.button {
+  font-weight:bold;
+  font-size:14px;
+  line-height:18px;
+  }
+.tabs a {
+  border-width:0 0 0 1px;
+  padding:10px 20px;
+  }
+.tabs .unround {
+  border-radius:0;
+  }
+.button               { background-color:transparent; color:rgba(0,0,0,0.5); }
+.button:hover         { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.5); }
+.button.active        { background-color:rgba(0,0,0,0.20); color:rgba(0,0,0,0.75); }
 
 /* Base candidates
 ------------------------- */
 .row-60     { height:60px; }
 .space-top6 { top:60px; }
+.vhidden    { visibility:hidden; }
 
 /* Override mapbox.css
 ------------------------- */
@@ -32,6 +49,14 @@ a:hover { color: #000; }
 
 /* Components
 ------------------------- */
+header .title {
+  font-size:20px;
+  line-height:60px;
+  color:rgba(0,0,0,0.5);
+  margin:0;
+  }
+.sidebar-toggle.active { background-color:rgba(0,0,0,0.20); }
+
 .sidebar a.selected {
   background-color: #000;
   color:white;
@@ -79,7 +104,4 @@ a:hover { color: #000; }
   font-weight:bold;
   z-index:2015;
   cursor:pointer;
-  }
-.vhidden {
-  visibility:hidden;
   }

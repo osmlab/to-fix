@@ -155,7 +155,7 @@ $('#sidebar').html(templates.sidebar({
 
 $('#settings').html(templates.settings());
 
-$('.js-sidebar').on('click', function() {
+$('.js-sidebar-toggle').on('click', function() {
     var $el = $(this);
     var $sidebar = $('#sidebar');
 
@@ -312,7 +312,7 @@ var mouse = require('mousetrap');
 var core = require('./core');
 var map = require('./map');
 
-var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-white round'>\n    <h3 class='pad1x inline'><%= window.current.error %></h3>\n    <nav id='actions' class='tabs'><!--\n      --><a href='#' id='edit' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>edit</a><!--\n      --><a href='#' id='skip' class='pad2'>skip</a><!--\n      --><a href='#' id='fixed' class='pad2<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
+var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-white round'>\n    <h3 class='pad1x inline'><%= window.current.error %></h3>\n    <nav id='actions' class='tabs'><!--\n      --><a href='#' id='edit' class='keyline-left unround<% if (!obj.auth) { %> vhidden <% } %>'>edit</a><!--\n      --><a href='#' id='skip' class='keyline-left'>skip</a><!--\n      --><a href='#' id='fixed' class='keyline-left<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
 
 module.exports = {
     init: function() {
