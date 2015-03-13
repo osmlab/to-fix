@@ -1,14 +1,16 @@
 <div class='scroll-styled pad2y'>
 
   <span class='dark block pad1x space-bottom1'>Account</span>
-  <div id='user-stuff' class='space-bottom2 col12 clearfix'>
+  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>
     <% if (obj.authed) { %>
-      <a class='block truncate strong small col6 pad1x dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>
+      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>
         <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>
       </a>
-      <a id='logout' class='col6 text-right block dark truncate small pad1x icon logout' href='#' title='Logout'></a>
+      <div class='col6 pad1x text-right'>
+        <a id='logout' class='dark truncate pad1x rcon logout button small' href='#'>Logout</a>
+      </div>
     <% } else { %>
-      <a href='#' id='login' class='pad1x strong block dark truncate icon account'>login to edit</a>
+      <a href='#' id='login' class='pad1x pad0y strong block dark truncate icon account'>login to edit</a>
     <% } %>
   </div>
 

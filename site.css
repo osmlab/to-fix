@@ -19,9 +19,10 @@ strong { font-weight:bold}
   font-size:13px;
   line-height:18px;
   }
-.tabs a {
+.tabs.short a {
   border-width:0 0 0 1px;
-  padding:10px 20px;
+  padding:5px 20px;
+  height:30px;
   }
 .tabs > *:first-child {
   border-radius:0;
@@ -30,6 +31,14 @@ strong { font-weight:bold}
 .button               { background-color:transparent; color:rgba(0,0,0,0.5); }
 .button:hover         { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
 .button.active        { background-color:rgba(0,0,0,0.5); color:#fff; }
+
+.button.small {
+  font-size:11px;
+  line-height:20px;
+  padding:5px 10px;
+  font-weight:500;
+  height:30px;
+  }
 
 /* Base candidates
 ------------------------- */
