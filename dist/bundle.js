@@ -329,113 +329,7 @@ function jqError(jqXHR, textStatus) {
 
 module.exports = core;
 
-},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js"}],"/Users/tristen/dev/osm/to-fix/lib/editbar.js":[function(require,module,exports){
-'use strict';
-
-
-var $ = require('jquery');
-var _ = require('underscore');
-var querystring = require('querystring');
-var mouse = require('mousetrap');
-
-var core = require('./core');
-var map = require('./map');
-
-var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-darken3 dark round'>\n    <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n    <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n      --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n      --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n      --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
-
-module.exports = {
-    init: function() {
-        if (!$('#editbar').length) {
-            $('#main').append(template(window.current));
-            this.bind();
-        } else {
-            return false;
-        }
-    },
-
-    bind: function() {
-        var self = this;
-        $('#edit').on('click', function() {
-            self.edit();
-            return false;
-        });
-
-        $('#skip').on('click', function() {
-            map.clear();
-            window.current.loader.next();
-            return false;
-        });
-
-        $('#fixed').on('click', function() {
-            map.clear();
-            core.mark('done', window.current.loader.next);
-            return false;
-        });
-
-        mouse.bind('e', function() {
-            $('#edit').click();
-        });
-
-        mouse.bind('s', function() {
-            $('#skip').click();
-        });
-    },
-
-    edit: function() {
-        var bottom = window.current.item._bounds._southWest.lat - 0.001;
-        var left = window.current.item._bounds._southWest.lng - 0.001;
-        var top = window.current.item._bounds._northEast.lat + 0.001;
-        var right = window.current.item._bounds._northEast.lng + 0.001;
-
-        $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
-            left: left,
-            right: right,
-            top: top,
-            bottom: bottom,
-            select: window.current.item._osm_object_type + window.current.item._osm_object_id
-        }), {
-            error: function() {
-                // if JOSM doesn't respond fallback to iD
-                var url = 'http://openstreetmap.us/iD/release/#';
-                if (window.current.item._osm_object_type && window.current.item._osm_object_id) {
-                    url += 'id=' + window.current.item._osm_object_type.slice(0, 1) + window.current.item._osm_object_id;
-                } else {
-                    url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
-                }
-
-                $('#main').append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>');
-                $('#iD_escape')
-                    .removeClass('hidden')
-                    .on('click', function() {
-                        $('#iD').remove();
-                        $('#skip').click();
-                        $('#iD_escape')
-                            .addClass('hidden')
-                            .unbind();
-
-                        return false;
-                    });
-            },
-            success: function() {
-                // this newWindow dance is to get around some browser limitations
-                // so we always open a new window, if we need it we populate the url, else, just close the empty window
-                // this all happens quick enough to not cause issues for the user
-                // it's all commented out because I want to make it a setting in the future
-                // whether iD loads in an iframe or a new window
-                // newWindow.close();
-                $('#message')
-                    .text('Opened in JOSM')
-                    .show();
-                $('#message').slideDown();
-                window.setTimeout(function() {
-                    $('#message').slideUp();
-                }, 5000);
-            }
-        });
-    }
-};
-
-},{"./core":"/Users/tristen/dev/osm/to-fix/lib/core.js","./map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","mousetrap":"/Users/tristen/dev/osm/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js":[function(require,module,exports){
+},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js"}],"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js":[function(require,module,exports){
 'use strict';
 
 module.exports = L.TileLayer.extend({
@@ -570,7 +464,6 @@ var core = require('../core');
 var map = require('../map');
 var activity = require('../activity');
 var stats = require('../stats');
-var editbar = require('../editbar');
 
 module.exports = {
     auth: ['osm'],
@@ -580,7 +473,6 @@ module.exports = {
         map.init();
         activity.init();
         stats.init();
-        editbar.init();
 
         core.item(qs.error, function() {
             window.current.item._osm_object_type = window.current.item.object_type;
@@ -607,7 +499,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
 'use strict';
 
 var querystring = require('querystring');
@@ -617,7 +509,6 @@ var core = require('../core');
 var map = require('../map');
 var activity = require('../activity');
 var stats = require('../stats');
-var editbar = require('../editbar');
 
 var qs = querystring.parse(window.location.search.slice(1));
 
@@ -627,7 +518,6 @@ module.exports = {
         map.init();
         activity.init();
         stats.init();
-        editbar.init();
 
         core.item(qs.error, function() {
             var layer = omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
@@ -638,7 +528,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
 'use strict';
 
 var querystring = require('querystring');
@@ -649,7 +539,6 @@ var core = require('../core');
 var map = require('../map');
 var activity = require('../activity');
 var stats = require('../stats');
-var editbar = require('../editbar');
 
 module.exports = {
     auth: ['osm'],
@@ -657,7 +546,6 @@ module.exports = {
         map.init();
         activity.init();
         stats.init();
-        editbar.init();
 
         core.item(qs.error, function() {
             var layer = omnivore.wkt.parse(window.current.item.st_astext).addTo(window.featureGroup);
@@ -668,7 +556,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -679,7 +567,6 @@ var core = require('../core');
 var map = require('../map');
 var activity = require('../activity');
 var stats = require('../stats');
-var editbar = require('../editbar');
 
 var layer;
 
@@ -690,7 +577,6 @@ module.exports = {
         map.init();
         activity.init();
         stats.init();
-        editbar.init();
 
         core.item(qs.error, function() {
             window.current.item._osm_object_type = 'node';
@@ -725,16 +611,19 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
 var _ = require('underscore');
+var querystring = require('querystring');
 
 var store = require('store');
+var mouse = require('mousetrap');
 var BingLayer = require('./ext/bing.js');
 
-var template = _("<div id='map' class='js-mode mode active map fill-navy-dark'>\n  <div id='editbar' class='pin-topleft pad1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
+var core = require('./core');
+var template = _("<div id='map' class='js-mode mode active map fill-navy-dark'>\n  <div id='editbar' class='pin-topleft pad1 z1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
 
 // transparent street layer for putting on top of other layers
 var contextLayer = L.mapbox.tileLayer('aaronlidman.87d3cc29', {
@@ -765,13 +654,12 @@ window.altStyle = {
 };
 
 module.exports = {
-    init: function(div) {
+    init: function() {
 
         // map is already initialized
         if ($('#map').length) return;
-
-        div = div || 'map';
-        $('#main').append(template());
+        $('#main').append(template(window.current));
+        this.handlers(); // Attach handlers to edit bar
 
         window.map = L.mapbox.map('map', {'mapbox_logo': true}, {
             maxZoom: 18,
@@ -795,6 +683,87 @@ module.exports = {
         window.featureGroup = L.featureGroup().addTo(window.map);
     },
 
+    handlers: function() {
+        var self = this;
+        $('#edit').on('click', function() {
+            self.edit();
+            return false;
+        });
+
+        $('#skip').on('click', function() {
+            self.clear();
+            window.current.loader.next();
+            return false;
+        });
+
+        $('#fixed').on('click', function() {
+            self.clear();
+            core.mark('done', window.current.loader.next);
+            return false;
+        });
+
+        mouse.bind('e', function() {
+            $('#edit').click();
+        });
+
+        mouse.bind('s', function() {
+            $('#skip').click();
+        });
+    },
+
+    edit: function() {
+        var bottom = window.current.item._bounds._southWest.lat - 0.001;
+        var left = window.current.item._bounds._southWest.lng - 0.001;
+        var top = window.current.item._bounds._northEast.lat + 0.001;
+        var right = window.current.item._bounds._northEast.lng + 0.001;
+
+        $.ajax('http://localhost:8111/load_and_zoom?' + querystring.stringify({
+            left: left,
+            right: right,
+            top: top,
+            bottom: bottom,
+            select: window.current.item._osm_object_type + window.current.item._osm_object_id
+        }), {
+            error: function() {
+                // if JOSM doesn't respond fallback to iD
+                var url = 'http://openstreetmap.us/iD/release/#';
+                if (window.current.item._osm_object_type && window.current.item._osm_object_id) {
+                    url += 'id=' + window.current.item._osm_object_type.slice(0, 1) + window.current.item._osm_object_id;
+                } else {
+                    url += 'map=' + window.map.getZoom() + '/' + window.map.getCenter().lng + '/' + window.map.getCenter().lat;
+                }
+
+                $('#main').append('<iframe id="iD" src="' + url + '"frameborder="0"></iframe>');
+                $('#iD_escape')
+                    .removeClass('hidden')
+                    .on('click', function() {
+                        $('#iD').remove();
+                        $('#skip').click();
+                        $('#iD_escape')
+                            .addClass('hidden')
+                            .unbind();
+
+                        return false;
+                    });
+            },
+            success: function() {
+                // this newWindow dance is to get around some browser limitations
+                // so we always open a new window, if we need it we populate the url, else, just close the empty window
+                // this all happens quick enough to not cause issues for the user
+                // it's all commented out because I want to make it a setting in the future
+                // whether iD loads in an iframe or a new window
+                // newWindow.close();
+                $('#message')
+                    .text('Opened in JOSM')
+                    .show();
+                $('#message').slideDown();
+                window.setTimeout(function() {
+                    $('#message').slideUp();
+                }, 5000);
+            }
+        });
+    },
+
     clear: function() {
         window.featureGroup.getLayers().forEach(function(layer) {
             window.featureGroup.removeLayer(layer);
@@ -802,7 +771,7 @@ module.exports = {
     }
 };
 
-},{"./ext/bing.js":"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/route.js":[function(require,module,exports){
+},{"./core":"/Users/tristen/dev/osm/to-fix/lib/core.js","./ext/bing.js":"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","mousetrap":"/Users/tristen/dev/osm/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/route.js":[function(require,module,exports){
 'use strict';
 
 var upload = require('./upload.js');
