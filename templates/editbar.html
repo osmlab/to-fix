@@ -1,10 +1,10 @@
 <div id='editbar' class='pin-topleft pad1'>
-  <div class='fill-white round'>
-    <h3 class='pad1x inline'><%= window.current.error %></h3>
-    <nav id='actions' class='tabs'><!--
-      --><a href='#' id='edit' class='keyline-left unround<% if (!obj.auth) { %> vhidden <% } %>'>edit</a><!--
-      --><a href='#' id='skip' class='keyline-left'>skip</a><!--
-      --><a href='#' id='fixed' class='keyline-left<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>
+  <div class='fill-darken2 dark round'>
+    <h3 class='pad2x inline strong'><%= window.current.error %></h3>
+    <nav id='actions' class='fill-darken2 round-right tabs'><!--
+      --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> vhidden <% } %>'>Edit</a><!--
+      --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--
+      --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> vhidden <% } %>'>Fixed</a>
     </nav>
   </div>
 </div>

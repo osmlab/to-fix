@@ -312,7 +312,7 @@ var mouse = require('mousetrap');
 var core = require('./core');
 var map = require('./map');
 
-var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-white round'>\n    <h3 class='pad1x inline'><%= window.current.error %></h3>\n    <nav id='actions' class='tabs'><!--\n      --><a href='#' id='edit' class='keyline-left unround<% if (!obj.auth) { %> vhidden <% } %>'>edit</a><!--\n      --><a href='#' id='skip' class='keyline-left'>skip</a><!--\n      --><a href='#' id='fixed' class='keyline-left<% if (!obj.auth) { %> vhidden <% } %>'>fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
+var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-darken2 dark round'>\n    <h3 class='pad2x inline strong'><%= window.current.error %></h3>\n    <nav id='actions' class='fill-darken2 round-right tabs'><!--\n      --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> vhidden <% } %>'>Edit</a><!--\n      --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n      --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> vhidden <% } %>'>Fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
 
 module.exports = {
     init: function() {

@@ -1,19 +1,20 @@
 /* Base overrides
 ------------------------- */
 body {
-  font:14px/22px 'Helvetica Neue', Helvetica, sans-serif;
+  font:13px/20px 'Helvetica Neue', Helvetica, sans-serif;
   color:rgba(0,0,0,0.75);
   }
 h1, h2, h3, h4, h5, h6,
+.strong,
 .tabs a,
 .button {
   font-family:'Helvetica Neue', Helvetica, sans-serif;
   }
-
+.strong { font-weight:bold; }
 .tabs a,
 .button {
   font-weight:bold;
-  font-size:14px;
+  font-size:13px;
   line-height:18px;
   }
 .tabs a {
@@ -24,8 +25,8 @@ h1, h2, h3, h4, h5, h6,
   border-radius:0;
   }
 .button               { background-color:transparent; color:rgba(0,0,0,0.5); }
-.button:hover         { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.5); }
-.button.active        { background-color:rgba(0,0,0,0.20); color:rgba(0,0,0,0.75); }
+.button:hover         { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
+.button.active        { background-color:#222b30; color:#fff; }
 
 /* Base candidates
 ------------------------- */
@@ -55,7 +56,8 @@ header .title {
   color:rgba(0,0,0,0.5);
   margin:0;
   }
-.sidebar-toggle.active { background-color:rgba(0,0,0,0.20); }
+.sidebar-toggle:hover,
+.sidebar-toggle.active { background-color:rgba(0,0,0,0.10); }
 
 .sidebar a.selected {
   background-color: #000;
