@@ -48,6 +48,27 @@ strong { font-weight:bold}
 .z1000 { z-index:1000; }
 .z10000 { z-index:10000; }
 
+.scroll-styled pre::-webkit-scrollbar,
+.scroll-styled::-webkit-scrollbar {
+  width:8px;
+  height:8px;
+  border-left:0;
+  background:rgba(0,0,0,0.1);
+  }
+.scroll-styled pre::-webkit-scrollbar-track,
+.scroll-styled::-webkit-scrollbar-track {
+  background:none;
+  }
+.scroll-styled pre::-webkit-scrollbar-thumb,
+.scroll-styled::-webkit-scrollbar-thumb {
+  background:rgba(0,0,0,0.4);
+  border-radius:0;
+  }
+.scroll-styled pre::-webkit-scrollbar:hover,
+.scroll-styled::-webkit-scrollbar:hover {
+  background:rgba(0,0,0,0.4);
+  }
+
 /* Override mapbox.css
 ------------------------- */
 .mapbox-improve-map { display: none; }
