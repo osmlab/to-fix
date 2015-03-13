@@ -137,8 +137,7 @@ $('#sidebar').on('click', '#login', function(e) {
     return false;
 });
 
-$('#sidebar').on('click', '#logout', function(e) {
-    e.preventDefault();
+$('#sidebar').on('click', '#logout', function() {
     auth.logout();
     window.location.href = '';
     return false;
@@ -164,6 +163,19 @@ $('.js-sidebar-toggle').on('click', function() {
     } else {
         $sidebar.addClass('active');
         $el.addClass('active');
+    }
+    return false;
+});
+
+var $modeControls = $('.js-mode-controls').find('a');
+$modeControls.on('click', function() {
+    var $el = $(this);
+    if (!$el.is('.active')) {
+        var mode = $el.data('mode');
+        $modeControls.removeClass('active');
+        $('.js-mode').removeClass('active');
+        $el.addClass('active');
+        $('#' + mode).addClass('active');
     }
     return false;
 });

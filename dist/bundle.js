@@ -138,8 +138,7 @@ $('#sidebar').on('click', '#login', function(e) {
     return false;
 });
 
-$('#sidebar').on('click', '#logout', function(e) {
-    e.preventDefault();
+$('#sidebar').on('click', '#logout', function() {
     auth.logout();
     window.location.href = '';
     return false;
@@ -165,6 +164,19 @@ $('.js-sidebar-toggle').on('click', function() {
     } else {
         $sidebar.addClass('active');
         $el.addClass('active');
+    }
+    return false;
+});
+
+var $modeControls = $('.js-mode-controls').find('a');
+$modeControls.on('click', function() {
+    var $el = $(this);
+    if (!$el.is('.active')) {
+        var mode = $el.data('mode');
+        $modeControls.removeClass('active');
+        $('.js-mode').removeClass('active');
+        $el.addClass('active');
+        $('#' + mode).addClass('active');
     }
     return false;
 });
@@ -207,7 +219,23 @@ route({
     callback: load
 });
 
-},{"./lib/loaders/keepright.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/keepright.js","./lib/loaders/osmigeom.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js","./lib/loaders/tigerdelta.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js","./lib/loaders/unconnected.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js","./lib/route":"/Users/tristen/dev/osm/to-fix/lib/route.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-osm":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-osm/leaflet-osm.js","mapbox.js":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/index.js","osm-auth":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","raven-js":"/Users/tristen/dev/osm/to-fix/node_modules/raven-js/dist/raven.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/core.js":[function(require,module,exports){
+},{"./lib/loaders/keepright.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/keepright.js","./lib/loaders/osmigeom.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js","./lib/loaders/tigerdelta.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js","./lib/loaders/unconnected.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js","./lib/route":"/Users/tristen/dev/osm/to-fix/lib/route.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-osm":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-osm/leaflet-osm.js","mapbox.js":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/index.js","osm-auth":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","raven-js":"/Users/tristen/dev/osm/to-fix/node_modules/raven-js/dist/raven.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/activity.js":[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var template = _("<div id='activity' class='js-mode mode dark'>\n  <h1>Activity</h1>\n</div>\n").template();
+
+module.exports = {
+    init: function() {
+        // map is already initialized
+        if ($('#activity').length) return;
+        $('#main').append(template());
+    }
+};
+
+},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/core.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -313,7 +341,7 @@ var mouse = require('mousetrap');
 var core = require('./core');
 var map = require('./map');
 
-var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-darken2 dark round'>\n    <span class='pad2x strong inline'><%= window.current.error %></span>\n    <nav id='actions' class='fill-darken1 round-right tabs short'><!--\n      --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n      --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n      --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
+var template = _("<div id='editbar' class='pin-topleft pad1'>\n  <div class='fill-darken3 dark round'>\n    <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n    <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n      --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n      --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n      --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n    </nav>\n  </div>\n</div>\n").template();
 
 module.exports = {
     init: function() {
@@ -540,6 +568,8 @@ var omnivore = require('leaflet-omnivore');
 
 var core = require('../core');
 var map = require('../map');
+var activity = require('../activity');
+var stats = require('../stats');
 var editbar = require('../editbar');
 
 module.exports = {
@@ -548,6 +578,8 @@ module.exports = {
     next: function() {
         var self = this;
         map.init();
+        activity.init();
+        stats.init();
         editbar.init();
 
         core.item(qs.error, function() {
@@ -575,7 +607,7 @@ module.exports = {
     }
 };
 
-},{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
 'use strict';
 
 var querystring = require('querystring');
@@ -583,6 +615,8 @@ var omnivore = require('leaflet-omnivore');
 
 var core = require('../core');
 var map = require('../map');
+var activity = require('../activity');
+var stats = require('../stats');
 var editbar = require('../editbar');
 
 var qs = querystring.parse(window.location.search.slice(1));
@@ -591,6 +625,8 @@ module.exports = {
     auth: ['osm'],
     next: function() {
         map.init();
+        activity.init();
+        stats.init();
         editbar.init();
 
         core.item(qs.error, function() {
@@ -602,7 +638,7 @@ module.exports = {
     }
 };
 
-},{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
 'use strict';
 
 var querystring = require('querystring');
@@ -611,12 +647,16 @@ var omnivore = require('leaflet-omnivore');
 var qs = querystring.parse(window.location.search.slice(1));
 var core = require('../core');
 var map = require('../map');
+var activity = require('../activity');
+var stats = require('../stats');
 var editbar = require('../editbar');
 
 module.exports = {
     auth: ['osm'],
     next: function () {
         map.init();
+        activity.init();
+        stats.init();
         editbar.init();
 
         core.item(qs.error, function() {
@@ -628,7 +668,7 @@ module.exports = {
     }
 };
 
-},{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -637,6 +677,8 @@ var qs = querystring.parse(window.location.search.slice(1));
 
 var core = require('../core');
 var map = require('../map');
+var activity = require('../activity');
+var stats = require('../stats');
 var editbar = require('../editbar');
 
 var layer;
@@ -646,6 +688,8 @@ module.exports = {
     next: function() {
         var self = this;
         map.init();
+        activity.init();
+        stats.init();
         editbar.init();
 
         core.item(qs.error, function() {
@@ -681,7 +725,7 @@ module.exports = {
     }
 };
 
-},{"../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
+},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../editbar":"/Users/tristen/dev/osm/to-fix/lib/editbar.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -690,9 +734,7 @@ var _ = require('underscore');
 var store = require('store');
 var BingLayer = require('./ext/bing.js');
 
-var templates = {
-    map: _("<div id='map' class='map'></div>\n<a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>get the next item</a>\n").template()
-};
+var template = _("<div id='map' class='js-mode mode active map fill-navy-dark'>\n  <div id='editbar' class='pin-topleft pad1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
 
 // transparent street layer for putting on top of other layers
 var contextLayer = L.mapbox.tileLayer('aaronlidman.87d3cc29', {
@@ -729,7 +771,7 @@ module.exports = {
         if ($('#map').length) return;
 
         div = div || 'map';
-        $('#main').append(templates.map());
+        $('#main').append(template());
 
         window.map = L.mapbox.map('map', {'mapbox_logo': true}, {
             maxZoom: 18,
@@ -787,7 +829,23 @@ function route(obj) {
 
 module.exports = route;
 
-},{"./upload.js":"/Users/tristen/dev/osm/to-fix/lib/upload.js"}],"/Users/tristen/dev/osm/to-fix/lib/upload.js":[function(require,module,exports){
+},{"./upload.js":"/Users/tristen/dev/osm/to-fix/lib/upload.js"}],"/Users/tristen/dev/osm/to-fix/lib/stats.js":[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var template = _("<div id='stats' class='js-mode mode dark'>\n  <h1>Statistics</h1>\n</div>\n").template();
+
+module.exports = {
+    init: function() {
+        // map is already initialized
+        if ($('#stats').length) return;
+        $('#main').append(template());
+    }
+};
+
+},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/upload.js":[function(require,module,exports){
 'use strict';
 
 

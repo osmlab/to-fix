@@ -66,9 +66,10 @@ strong { font-weight:bold}
   background:rgba(0,0,0,0.4);
   }
 
-/* Override mapbox.css
+/* mapbox.css Overrides
 ------------------------- */
 .mapbox-improve-map { display: none; }
+.leaflet-container { background-color:#222b30; }
 
 /* Layout
 ------------------------- */
@@ -81,6 +82,9 @@ strong { font-weight:bold}
 
 /* Components
 ------------------------- */
+.mode         { display:none; }
+.mode.active  { display:block; }
+
 header .title {
   font-size:22px;
   line-height:60px;
@@ -133,4 +137,6 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   position:absolute;
   right:10px;
   top:10px;
+  color:#fff;
+  font-weight:bold;
   }

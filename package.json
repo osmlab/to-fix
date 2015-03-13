@@ -12,8 +12,7 @@
     "osm-auth": "^0.2.6",
     "raven-js": "^1.1.17",
     "store": "~1.3.16",
-    "underscore": "^1.7.0",
-    "wellknown": "^0.3.0"
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "brfs": "~1.2.0",
