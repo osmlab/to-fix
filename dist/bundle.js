@@ -222,7 +222,7 @@ function request(error, callback) {
     $.ajax({
         crossDomain: true,
         url: url + 'error/' + error,
-        type: 'post',
+        type: 'POST',
         data: JSON.stringify({user: store.get('username')})
     })
     .error(jqError)
@@ -253,11 +253,12 @@ core.mark = function(status, callback) {
     $.ajax({
         crossDomain: true,
         url: url + 'fixed/' + qs.error,
-        type: 'post',
+        type: 'POST',
         data: JSON.stringify({
             user: store.get('username'),
             state: window.current.item
-        })
+        }),
+        contentType: 'text/plain'
     })
     .error(jqError)
     .done(callback);
@@ -268,19 +269,19 @@ core.mark = function(status, callback) {
 
 core.error = function(message) {
     $('#error-message span').text(message).show();
-    $('#error-message').slideDown();
-    setTimeout(function() {
-        $('#error-message span').fadeOut(function() {
-            $('#error-message').slideUp();
+    $('#error-message')
+        .slideDown()
+        .delay(5000)
+        .slideUp(function() {
+            $('#error-message span').fadeOut();
         });
-    }, 5000);
 };
 
 core.upload = function(formData, callback) {
     $.ajax({
         crossDomain: true,
         url: url + 'csv',
-        type: 'post',
+        type: 'POST',
         data: formData,
         processData: false,
         contentType: false
@@ -292,9 +293,9 @@ core.upload = function(formData, callback) {
 };
 
 function jqError(jqXHR, textStatus) {
-    core.error(textStatus === 'timeout' ?
+    core.error((textStatus === 'timeout') ?
         'Request timed out.' :
-        jqXHR.responseText
+        jqXHR.statusText
     );
 }
 

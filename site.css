@@ -45,6 +45,8 @@ strong { font-weight:bold}
 .row-60     { height:60px; }
 .space-top6 { top:60px; }
 .scroll-styled { height:100%; }
+.z1000 { z-index:1000; }
+.z10000 { z-index:10000; }
 
 /* Override mapbox.css
 ------------------------- */
@@ -82,11 +84,6 @@ header .title {
 .note {
   display:none;
   }
-.note {
-  background-color:black;
-  color:white;
-  }
-
 .settings select {
   margin-top:5px;
   }
