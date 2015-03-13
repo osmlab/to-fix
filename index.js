@@ -112,6 +112,16 @@ $('body').append(templates.app({
     sidebar: store.get('sidebar')
 }));
 
+$('#sidebar').html(templates.sidebar({
+    tasks: tasks,
+    current: qs.error,
+    authed: isAuthenticated(),
+    avatar: store.get('avatar'),
+    username: store.get('username')
+}));
+
+$('#settings').html(templates.settings());
+
 $('.js-login').on('click', function() {
     auth.authenticate(function(err) {
         auth.xhr({
@@ -124,7 +134,6 @@ $('.js-login').on('click', function() {
                 store.set('username', details.getAttribute('display_name'));
                 store.set('userid', details.getAttribute('id'));
                 store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
-                $('#sidebar').remove();
                 $('#sidebar').html(templates.sidebar({
                     tasks: tasks,
                     current: qs.error,
@@ -143,21 +152,11 @@ $('.js-login').on('click', function() {
     return false;
 });
 
-$('.logout').on('click', function() {
+$('.js-logout').on('click', function() {
     auth.logout();
     window.location.href = '';
     return false;
 });
-
-$('#sidebar').html(templates.sidebar({
-    tasks: tasks,
-    current: qs.error,
-    authed: isAuthenticated(),
-    avatar: store.get('avatar'),
-    username: store.get('username')
-}));
-
-$('#settings').html(templates.settings());
 
 $('.js-sidebar-toggle').on('click', function() {
     var $el = $(this);
