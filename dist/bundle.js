@@ -472,6 +472,7 @@ var map = require('../map');
 var activity = require('../activity');
 var stats = require('../stats');
 
+// Pulls issues from http://keepright.ipax.at/
 module.exports = {
     auth: ['osm'],
 
