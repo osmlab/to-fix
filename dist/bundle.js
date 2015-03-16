@@ -29,8 +29,8 @@ var unconnected = require('./lib/loaders/unconnected.js');
 var tigerdelta = require('./lib/loaders/tigerdelta.js');
 
 var templates = {
-    app: _("<header class='fill-orange row-60 col12 clearfix'>\n  <nav class='col3'>\n    <a href='#' class='js-sidebar-toggle sidebar-toggle quiet block fl keyline-right animate pad1 row-60<% if (obj.sidebar) { %> active<% } %>'>\n      <span class='icon big menu'></span>\n    </a>\n    <a href='/' class='pad2x'>\n      <h1 class='inline fancy title'>to-fix</h1>\n    </a>\n  </nav>\n  <div class='col9 text-right pad1'>\n    <nav class='js-mode-controls col12 text-right space pad0y'><!--\n      --><a href='#' data-mode='map' class='js-mode icon pencil active animate short button'>Task</a><!--\n      --><a href='#' data-mode='activity' class='js-mode icon bolt button short animate'>Activity</a><!--\n      --><a href='#' data-mode='stats' class='js-mode icon graph button short animate'>Statistics</a>\n    </nav>\n  </div>\n</header>\n\n<div id='sidebar' class='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6<% if (obj.sidebar) { %> active<% } %>'></div>\n<div id='main' class='main fill-navy-dark col12 pin-bottom space-top6 animate'>\n  <div id='error-message' class='pin-top col12 z10000 center note warning'><span></span></div>\n  <div id='message' class='pin-top col12 z10000 settings animate modal modal-content'></div>\n  <div id='settings' class='pin-top col12 z10000 settings animate modal modal-content'></div>\n</div>\n").template(),
-    sidebar: _("<div class='scroll-styled pad2y'>\n\n  <span class='dark block pad1x space-bottom1'>Account</span>\n  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>\n    <% if (obj.authed) { %>\n      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>\n        <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>\n      </a>\n      <div class='col6 pad1x text-right'>\n        <a href='#' class='js-logout rcon logout button small'>Logout</a>\n      </div>\n    <% } else { %>\n      <div class='pad1x'>\n        <a href='#' class='js-login icon account button small'>login to edit</a>\n      </div>\n    <% } %>\n  </div>\n\n  <span class='dark block pad1x space-bottom1'>Tasks</span>\n  <nav id='tasks' class='space-bottom2'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n      <a class='block strong dark pad1x pad0y truncate<% if (obj.current == task) { %> active<% } %>' href='?error=<%= task %>'>\n        <%= tasks[task].title %>\n      </a>\n    <% }); %>\n  </nav>\n\n</div>\n").template(),
+    app: _("<header class='fill-white row-60 col12 clearfix'>\n  <nav class='col3'>\n    <a href='#' class='js-sidebar-toggle sidebar-toggle quiet block fl keyline-right animate pad1 row-60<% if (obj.sidebar) { %> active<% } %>'>\n      <span class='icon big menu'></span>\n    </a>\n    <a href='/' class='pad2x'>\n      <h1 class='inline fancy title'>to-fix</h1>\n    </a>\n  </nav>\n  <div class='col9 text-right pad1'>\n<!--    <nav class='js-mode-controls col12 text-right space pad0y'><a href='#' data-mode='map' class='js-mode icon pencil active animate short button'>Task</a><a href='#' data-mode='activity' class='js-mode icon bolt button short animate'>Activity</a><a href='#' data-mode='stats' class='js-mode icon graph button short animate'>Statistics</a>\n    </nav>\n-->\n  </div>\n</header>\n\n<div id='sidebar' class='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-dark space-top6<% if (obj.sidebar) { %> active<% } %>'></div>\n<div id='main' class='main fill-darken2 col12 pin-bottom space-top6 animate'>\n  <div id='error-message' class='pin-top col12 z10000 center note warning'><span></span></div>\n  <div id='message' class='pin-top col12 z10000 settings animate modal modal-content'></div>\n  <div id='settings' class='pin-top col12 z10000 settings animate modal modal-content'></div>\n</div>\n").template(),
+    sidebar: _("<div class='scroll-styled pad2y'>\n\n  <span class='dark block pad1x space-bottom1'>Account</span>\n  <div id='user-stuff' class='space-bottom2 col12 clearfix mobile-cols'>\n    <% if (obj.authed) { %>\n      <a class='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/<%= obj.username %>' title='Profile on OpenStreetMap'>\n        <img class='dot avatar' src='<%= obj.avatar %>'><%= obj.username %>\n      </a>\n      <div class='col6 pad1x text-right'>\n        <a href='#' class='js-logout rcon fill-dark logout button small'>Logout</a>\n      </div>\n    <% } else { %>\n      <div class='pad1x center'>\n        <a href='#' class='js-login icon account button small'>login to edit</a>\n      </div>\n    <% } %>\n  </div>\n\n  <span class='dark block pad1x space-bottom1'>Tasks</span>\n  <nav id='tasks' class='space-bottom2'>\n    <% Object.keys(obj.tasks).forEach(function(task) { %>\n      <a class='block strong dark pad1x pad0y truncate<% if (obj.current == task) { %> active<% } %>' href='?error=<%= task %>'>\n        <%= tasks[task].title %>\n      </a>\n    <% }); %>\n  </nav>\n  <div id='upload'>\n    <a class='icon plus block strong dark pad1x pad0y truncate' href='/?_=upload'>New task</a>\n  </div>\n\n</div>\n").template(),
     settings: _("<form id='modal-name' class='modal-popup' method='post'>\n  <div class='col4 modal-body fill-white contain'>\n    <a href='#close' class='quiet pad1 icon fr close'></a>\n    <div class='pad1 center'>\n      <h2>Settings</h2>\n    </div>\n    <div class='pad2x pad1y'>\n      <div class='pad1y'>\n        <h3 class='col3'>Editor:</h3>\n        <select name='select' class='select'>\n          <option class='' value='ideditor'>iD</option>\n          <option class='' value='autoeditor' selected='true'>pick automatically</option>\n          <option class='' value='josmeditor'>JOSM</option>\n        </select>\n      </div>\n    </div>\n  </div>\n</form>\n").template()
 };
 
@@ -87,22 +87,22 @@ var tasks = {
         title: 'Misspelled tags',
         loader: keepright
     },
-    'unconnected_major': {
+    'unconnectedmajor': {
         title: 'Unconnected major',
         loader: unconnected
     },
-    'unconnected_minor1': {
+    'unconnectedminor1': {
         title: 'Unconnected minor',
         loader: unconnected
     },
-    'duplicate_ways': {
-        title: 'Duplicate Ways',
-        loader: osmigeom
-    },
-    'tigerdelta-named': {
-        title: 'Missing/misaligned TIGER',
-        loader: tigerdelta
-    }
+    // 'duplicateways': {
+    //     title: 'Duplicate Ways',
+    //     loader: osmigeom
+    // },
+    // 'tigerdeltanamed': {
+    //     title: 'Missing/misaligned TIGER',
+    //     loader: tigerdelta
+    // }
 };
 
 var DEFAULT = 'deadendoneway';
@@ -250,7 +250,7 @@ var qs = require('querystring').parse(window.location.search.slice(1));
 var store = require('store');
 
 var core = {};
-var url = 'http://54.204.149.4:3001/';
+var url = 'http://54.147.184.23:8000/';
 if (qs.local) url = 'http://127.0.0.1:3001/';
 
 function request(error, callback) {
@@ -641,7 +641,7 @@ var mouse = require('mousetrap');
 var BingLayer = require('./ext/bing.js');
 
 var core = require('./core');
-var template = _("<div id='map' class='js-mode mode active map fill-navy-dark loading'>\n  <div id='editbar' class='pin-topleft pad1 z1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
+var template = _("<div id='map' class='js-mode mode active map fill-dark loading'>\n  <div id='editbar' class='pin-topleft pad1 z1'>\n    <div class='fill-darken3 dark round'>\n      <span class='pad2x strong quiet inline'><%= window.current.error %></span>\n      <nav id='actions' class='fill-darken0 round-right tabs short'><!--\n        --><a href='#' id='edit' class='animate unround<% if (!obj.auth) { %> hidden <% } %>'>Edit</a><!--\n        --><a href='#' id='skip' class='keyline-left animate'>Skip</a><!--\n        --><a href='#' id='fixed' class='keyline-left animate<% if (!obj.auth) { %> hidden <% } %>'>Fixed</a>\n      </nav>\n    </div>\n  </div>\n  <a href='#' id='iD_escape' class='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>\n</div>\n").template();
 
 // transparent street layer for putting on top of other layers
 var contextLayer = L.mapbox.tileLayer('aaronlidman.87d3cc29', {
@@ -744,6 +744,8 @@ module.exports = {
             select: window.current.item._osm_object_type + window.current.item._osm_object_id
         }), {
             error: function() {
+                $(window.map.getContainer()).removeClass('loading');
+
                 // if JOSM doesn't respond fallback to iD
                 var url = 'http://openstreetmap.us/iD/release/#';
                 if (window.current.item._osm_object_type && window.current.item._osm_object_id) {
@@ -779,6 +781,8 @@ module.exports = {
                 window.setTimeout(function() {
                     $('#message').slideUp();
                 }, 5000);
+
+                $(window.map.getContainer()).removeClass('loading');
             }
         });
     },

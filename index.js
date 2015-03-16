@@ -94,14 +94,14 @@ var tasks = {
         title: 'Unconnected minor',
         loader: unconnected
     },
-    'duplicateways': {
-        title: 'Duplicate Ways',
-        loader: osmigeom
-    },
-    'tigerdeltanamed': {
-        title: 'Missing/misaligned TIGER',
-        loader: tigerdelta
-    }
+    // 'duplicateways': {
+    //     title: 'Duplicate Ways',
+    //     loader: osmigeom
+    // },
+    // 'tigerdeltanamed': {
+    //     title: 'Missing/misaligned TIGER',
+    //     loader: tigerdelta
+    // }
 };
 
 var DEFAULT = 'deadendoneway';
