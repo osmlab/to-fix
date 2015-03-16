@@ -13,13 +13,15 @@ module.exports = React.createClass({
 
   render: function() {
     var logState;
-    if (this.state.user.auth) {
+    var user = this.state.user;
+
+    if (user.auth) {
       logState = (
         /* jshint ignore:start */
         <div>
           <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/username' title='Profile on OpenStreetMap'>
-            <img className='dot avatar' src='' />
-            username
+            <img className='dot avatar' src={user.avatar} />
+            {user.username}
           </a>
           <div className='col6 pad1x text-right'>
             <a href='#' onClick={actions.userLogout} className='js-logout rcon logout button small'>Logout</a>

@@ -1,13 +1,39 @@
 'use strict';
 
 var Reflux = require('reflux');
+var store = require('store');
 var actions = require('../actions/actions');
 var auth = require('../mixins/auth');
 
 module.exports = Reflux.createStore({
   user: {},
   init: function() {
+    var _this = this;
     this.user.auth = auth.authenticated();
+    if (store.get('osmid')) {
+      this.user.id = store.get('osmid');
+      this.user.username = store.get('username');
+      this.user.avatar = store.get('avatar');
+    } else {
+      auth.xhr({
+        method: 'GET',
+        path: '/api/0.6/user/details'
+      }, function(err, details) {
+        if (err) return console.error(err);
+        details = details.getElementsByTagName('user')[0];
+        var id = store.set('osmid', details.getAttribute('id')),
+          username = store.set('username', details.getAttribute('display_name')),
+          avatar = store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
+
+        _this.user = {
+          auth: auth.authenticated(),
+          id: store.get('osmid'),
+          username: store.get('username'),
+          avatar: store.get('avatar')
+        };
+
+      });
+    }
     this.listenTo(actions.userLogin, this.login);
     this.listenTo(actions.userLogout, this.logout);
   },
@@ -17,23 +43,10 @@ module.exports = Reflux.createStore({
   },
 
   login: function() {
-    var _this = this;
     auth.authenticate(function(err) {
-      auth.xhr({
-        method: 'GET',
-        path: '/api/0.6/user/details'
-      }, function(err, details) {
-        // TODO Handle this error
-        if (err) return console.error(err);
-        details = details.getElementsByTagName('user')[0];
-        _this.user = {
-          auth: auth.authenticated(),
-          id: details.getAttribute('id'),
-          username: details.getAttribute('display_name'),
-          avatar: details.getElementsByTagName('img')[0].getAttribute('href')
-        };
-        _this.trigger(_this.user);
-      });
+      if (err) return console.error(err);
+      this.user.auth = auth.authenticated();
+      this.trigger(this.user);
     });
   },
 
