@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Reflux = require('reflux');
 var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login.jsx');
 

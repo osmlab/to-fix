@@ -12,21 +12,37 @@ module.exports = React.createClass({
   ],
 
   render: function() {
+    var logState;
+    if (this.state.user.auth) {
+      logState = (
+        /* jshint ignore:start */
+        <div>
+          <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/username' title='Profile on OpenStreetMap'>
+            <img className='dot avatar' src='' />
+            username
+          </a>
+          <div className='col6 pad1x text-right'>
+            <a href='#' onClick={actions.userLogout} className='js-logout rcon logout button small'>Logout</a>
+          </div>
+        </div>
+        /* jshint ignore:end */
+      );
+    } else {
+      logState = (
+        /* jshint ignore:start */
+        <div className='pad1x'>
+          <a href='#' onClick={actions.userLogin} className='js-login icon account button small'>login to edit</a>
+        </div>
+        /* jshint ignore:end */
+      );
+    }
+
     return (
     /* jshint ignore:start */
     <div>
       <span className='dark block pad1x space-bottom1'>Account</span>
       <div id='user-stuff' className='space-bottom2 col12 clearfix mobile-cols'>
-        <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/username' title='Profile on OpenStreetMap'>
-          <img className='dot avatar' src='' />
-          username
-        </a>
-        <div className='col6 pad1x text-right'>
-          <a href='#' className='js-logout rcon logout button small'>Logout</a>
-        </div>
-        <div className='pad1x'>
-          <a href='#' onClick={actions.userLogin} className='js-login icon account button small'>login to edit</a>
-        </div>
+        {logState}
       </div>
     </div>
     /* jshint ignore:end */
