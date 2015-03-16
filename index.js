@@ -1,169 +1,226 @@
-var http = require('http'),
-    Route = require('routes-router'),
-    levelup = require('levelup'),
-    leveldown = require('leveldown'),
-    fs = require('fs'),
-    key = require('./lib/key.js');
+require('mapbox.js');
+require('leaflet-osm');
 
-var level = {};
+var $ = require('jquery');
+var fs = require('fs');
+var qs = require('querystring').parse(window.location.search.slice(1));
+var osmAuth = require('osm-auth');
+var store = require('store');
+var _ = require('underscore');
+var route = require('./lib/route');
+var Raven = require('raven-js');
 
-function debug(x){
-    process.stderr.write(x + '\n');
-}
+L.mapbox.accessToken = 'pk.eyJ1IjoiYWFyb25saWRtYW4iLCJhIjoiNTVucTd0TSJ9.wVh5WkYXWJSBgwnScLupiQ';
+Raven.config('https://e45a6671d39447fda045d873eba13840@app.getsentry.com/35914').install();
 
-var router = Route();
-var headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, GET',
-    'Access-Control-Allow-Credentials': false,
-    'Access-Control-Max-Age': '86400'
+/* TODO is there anyway to keep the loaders completely seperate and only import
+ * them at runtime?
+ *
+ * Would this allow us to import external loaders, for example via a gist how to simplify
+ * - Don't declare any loaders in index.js
+ * - Pull them in when needed, they are fully bundled themselves
+ * - If they're missing, catch and display an error
+ * - Map titles and descriptions get put in the loaders themselves
+ */
+var keepright = require('./lib/loaders/keepright.js');
+var osmigeom = require('./lib/loaders/osmigeom.js');
+var unconnected = require('./lib/loaders/unconnected.js');
+var tigerdelta = require('./lib/loaders/tigerdelta.js');
+
+var templates = {
+    app: _(fs.readFileSync('./templates/app.html', 'utf8')).template(),
+    sidebar: _(fs.readFileSync('./templates/sidebar.html', 'utf8')).template(),
+    settings: _(fs.readFileSync('./templates/settings.html', 'utf8')).template()
 };
-var port = 3001;
-var lockperiod = 10*60;
 
-var dbs = fs.readdirSync('./ldb/').filter(function(item) {
-   return item.indexOf('.ldb') > -1;
+var auth = osmAuth({
+    url: 'https://www.openstreetmap.org',
+    oauth_consumer_key: 'KcVfjQsvIdd7dPd1IFsYwrxIUd73cekN1QkqtSMd',
+    oauth_secret: 'K7dFg6rfIhMyvS8cPDVkKVi50XWyX0ibajHnbH8S',
+    landing: 'land.html'
 });
 
-dbs.forEach(function(ldb, idx) {
-    debug('-- Loading db ' + ldb);
-    levelup('./ldb/' + ldb, {
-        createIfMissing: false,
-        max_open_files: 500
-    }, function(err, db) {
-        if (err) debug('ERROR: ' + err);
-        level[ldb] = db;
-        if (idx >= dbs.length-1) runPostInit();
-    });
-});
+// just use another qs
+// loader=keepright&error=deadendoneway
 
-function runPostInit(){
-    http.createServer(router).listen(port, function() {
-        debug('running on port ' + port);
-    });
-}
+// then all the possible titles are in the loader?
+// do we just have a description.json ?
+var tasks = {
+    'deadendoneway': {
+        title: 'Impossible one-ways',
+        loader: keepright
+    },
+    'impossibleangle': {
+        title: 'Kinks',
+        loader: keepright
+    },
+    'mixedlayer': {
+        title: 'Mixed layers',
+        loader: keepright
+    },
+    'nonclosedways': {
+        title: 'Broken polygons',
+        loader: keepright
+    },
+    'loopings': {
+        title: 'Loopings',
+        loader: keepright
+    },
+    'strangelayer': {
+        title: 'Strange layer',
+        loader: keepright
+    },
+    'highwayhighway': {
+        title: 'Highway intersects highway',
+        loader: keepright
+    },
+    'highwayfootpath': {
+        title: 'Highway intersects footpath',
+        loader: keepright
+    },
+    'highwayriverbank': {
+        title: 'Highway intersects water',
+        loader: keepright
+    },
+    'mispelledtags': {
+        title: 'Misspelled tags',
+        loader: keepright
+    },
+    'unconnectedmajor': {
+        title: 'Unconnected major',
+        loader: unconnected
+    },
+    'unconnectedminor1': {
+        title: 'Unconnected minor',
+        loader: unconnected
+    },
+    // 'duplicateways': {
+    //     title: 'Duplicate Ways',
+    //     loader: osmigeom
+    // },
+    // 'tigerdeltanamed': {
+    //     title: 'Missing/misaligned TIGER',
+    //     loader: tigerdelta
+    // }
+};
 
-router.addRoute('/error/:error', {
-    POST: function(req, res, opts) {
-        var body = '';
-        req.on('data', function(data) {
-            body += data;
-        });
-        req.on('end', function() {
-            body = JSON.parse(body);
-            getNextItem(opts.params.error, res, function(err, kv) {
-                if (err) {
-                    debug('/error route', err);
-                    return error(res, 500, err);
-                }
-                track(opts.params.error, body.user, 'got', {_id: kv.key});
-                res.writeHead(200, headers);
-                return res.end(JSON.stringify(kv));
-            });
-        });
-    }
-});
+var DEFAULT = 'unconnectedmajor';
 
-router.addRoute('/fixed/:error', {
-    POST: function(req, res, opts) {
-        var body = '';
-        req.on('data', function(data) {
-            body += data;
-        });
-        req.on('end', function() {
-            body = JSON.parse(body);
-            if (body.user && body.state._id) {
-                track(opts.params.error, body.user, 'fixed', body.state);
+window.current = {};
 
-                // check that submitted error type exists
-                var db = level[opts.params.error + '.ldb'];
-                if (!db) return error(res, 500, opts.params.error + ' is not a valid error type');
+$('body').append(templates.app({
+    sidebar: store.get('sidebar')
+}));
 
-                // retrieve the record's current state -- we can't trust the submitted state
-                // not to have been modified by the clientside JS
-                db.get(body.state._id, function(err, value) {
-                    if (err) {
-                        debug('error fetching key value', body.state._id);
-                        return error(res, 500, 'error fetching key value ' + body.state._id);
-                    }
+$('#sidebar').html(templates.sidebar({
+    tasks: tasks,
+    current: qs.error,
+    authed: isAuthenticated(),
+    avatar: store.get('avatar'),
+    username: store.get('username')
+}));
 
-                    // delete the record from positive skipval keyspace
-                    db.del(body.state._id, function(err) {
-                        if (err){
-                            debug('error deleting', err);
-                            return error(res, 500, 'error deleting key value ' + body.state._id);
-                        }
+$('#settings').html(templates.settings());
 
-                        // move record into skipval=0 keyspace, meaning it's fixed
-                        var oldID = key.decompose(body.state._id);
-                        var newID = key.compose(0, oldID.hash);
-                        db.put(newID, value);
-                    });
+$('.js-login').on('click', function() {
+    auth.authenticate(function(err) {
+        auth.xhr({
+            method: 'GET',
+            path: '/api/0.6/user/details'
+        }, function(err, details) {
+            if (err) return console.log(err);
+            if (auth.authenticated()) {
+                details = details.getElementsByTagName('user')[0];
+                store.set('username', details.getAttribute('display_name'));
+                store.set('userid', details.getAttribute('id'));
+                store.set('avatar', details.getElementsByTagName('img')[0].getAttribute('href'));
+                $('#sidebar').html(templates.sidebar({
+                    tasks: tasks,
+                    current: qs.error,
+                    authed: isAuthenticated(),
+                    username: store.get('username'),
+                    avatar: store.get('avatar')
+                }));
 
-                    res.writeHead(200, headers);
-                    return res.end('');
+                // this is a bit hacky, just refresh?
+                if ($('#editbar').length) $('#editbar').remove();
 
-                });
+                load();
             }
         });
-    }
+    });
+    return false;
 });
 
-function getNextItem(error, res, callback) {
-    if (error === (undefined || 'undefined')) {
-        return callback('db type cannot be undefined');
+$('.js-logout').on('click', function() {
+    auth.logout();
+    window.location.href = '';
+    return false;
+});
+
+$('.js-sidebar-toggle').on('click', function() {
+    var $el = $(this);
+    var $sidebar = $('#sidebar');
+
+    if ($el.is('.active')) {
+        $el.removeClass('active');
+        $sidebar.removeClass('active');
+        store.remove('sidebar');
     } else {
-        var db = level[error + '.ldb'];
-        if (!db) {
-            return callback('Database \'' + error + '\' not loaded');
-        } else {
-            db.createReadStream({limit: 1, gt: '0001'})
-                .on('data', function(data) {
-                    var task_data = JSON.parse(data.value);
-                    if (task_data.ignore) {
-                        debug('Empty task database for error ' + error);
-                        return callback('No valid tasks available for this error type.');
-                    } else {
-                        db.del(data.key, function() {
-                            var oldID = key.decompose(data.key);
-                            var newID = key.compose((oldID.skipval + 1), oldID.hash);
-
-                            db.put(newID, JSON.stringify(task_data), function(err) {
-                                if (err) debug('put', err);
-                                data.key = newID;
-                                data.value = JSON.parse(data.value);
-                                return callback(null, data);
-                            });
-                        });
-                    }
-                })
-                .on('error', function(err) {
-                    debug('CreateReadStream error', err);
-                    return callback('Something wrong with the database for error type \'' + err + '\'');
-                });
-        }
+        $sidebar.addClass('active');
+        $el.addClass('active');
+        store.set('sidebar', true);
     }
-}
+    return false;
+});
 
-function track(error, user, action, value) {
-    // value must be an object
-    var trackKey = +new Date() + ':' + user;
-    value._action = action;
-    value._hash = key.decompose(value._id).hash;
-    value = JSON.stringify(value);
-
-    var db = level[error + '-tracking.ldb'];
-
-    if (db) {
-        db.put(trackKey, value, function(err) {
-            if (err) debug('put', err);
-        });
-    } else {
-        debug('could not track: database does not exist for', error);
+var $modeControls = $('.js-mode-controls').find('a');
+$modeControls.on('click', function() {
+    var $el = $(this);
+    if (!$el.is('.active')) {
+        var mode = $el.data('mode');
+        $modeControls.removeClass('active');
+        $('.js-mode').removeClass('active');
+        $el.addClass('active');
+        $('#' + mode).addClass('active');
     }
+    return false;
+});
+
+function isAuthenticated() {
+    return (auth.authenticated() && store.get('username') && store.get('userid'));
 }
 
-function error(res, code, errString) {
-    res.writeHead(code, headers);
-    return res.end(errString);
+if (qs.error === undefined) {
+    var prepend = (Object.keys(qs).length) ? '&' : '?';
+    window.location.href = window.location.href + prepend + 'error=' + DEFAULT;
 }
+
+function load() {
+    /* TODO This task hash should be it's own module that can be called by core
+     * for core.mark('done')
+     *
+     * eventually, remove everything '.loader.'
+     * the loader will have everything in it, so calling tasks.smthng will take
+     * care of it
+     *
+     * allow all tasks reguardless of auth for now, demo purposes and such
+     * if (!current.loader.auth || (current.loader.auth && isAuthenticated())) {'
+     *      // eventually task.auth will be an array with the different types of allowable authentication
+     *      // this will correspond with details in localstorage
+     *      current.loader.next();
+     *  } else {
+     *      return;
+     *      }
+     */
+     window.current.auth = isAuthenticated();
+     window.current.error = tasks[qs.error].title;
+     window.current.loader = tasks[qs.error].loader;
+     window.current.loader.next();
+}
+
+route({
+    auth: isAuthenticated(),
+    qs: qs,
+    callback: load
+});

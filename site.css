@@ -1,0 +1,149 @@
+/* Base overrides
+------------------------- */
+body {
+  font:13px/20px 'Helvetica Neue', Helvetica, sans-serif;
+  color:rgba(0,0,0,0.75);
+  }
+h1, h2, h3, h4, h5, h6,
+strong,
+.strong,
+.tabs a,
+.button {
+  font-family:'Helvetica Neue', Helvetica, sans-serif;
+  }
+.strong { font-weight:500; }
+strong { font-weight:bold}
+.tabs a,
+.button {
+  font-weight:bold;
+  font-size:13px;
+  line-height:18px;
+  }
+.tabs.short a {
+  border-width:0 0 0 1px;
+  padding:5px 20px;
+  height:30px;
+  }
+.tabs > *:first-child {
+  border-radius:0;
+  border-width:0;
+  }
+.button.small {
+  font-size:11px;
+  line-height:20px;
+  padding:5px 10px;
+  font-weight:500;
+  height:30px;
+  }
+.loading:before {
+  background-color:rgba(0,0,0,0.25);
+  z-index:100;
+  }
+
+/* Base candidates
+------------------------- */
+.row-60     { height:60px; }
+.space-top6 { top:60px; }
+.scroll-styled { height:100%; }
+.z1000 { z-index:1000; }
+.z10000 { z-index:10000; }
+
+.scroll-styled pre::-webkit-scrollbar,
+.scroll-styled::-webkit-scrollbar {
+  width:8px;
+  height:8px;
+  border-left:0;
+  background:rgba(0,0,0,0.1);
+  }
+.scroll-styled pre::-webkit-scrollbar-track,
+.scroll-styled::-webkit-scrollbar-track {
+  background:none;
+  }
+.scroll-styled pre::-webkit-scrollbar-thumb,
+.scroll-styled::-webkit-scrollbar-thumb {
+  background:rgba(0,0,0,0.4);
+  border-radius:0;
+  }
+.scroll-styled pre::-webkit-scrollbar:hover,
+.scroll-styled::-webkit-scrollbar:hover {
+  background:rgba(0,0,0,0.4);
+  }
+
+/* mapbox.css Overrides
+------------------------- */
+.mapbox-improve-map { display: none; }
+.leaflet-container { background-color: #181818; }
+.leaflet-container .leaflet-control-attribution {
+  background-color: rgba(0,0,0,0.75);
+  border-top-left-radius: 3px;
+}
+
+/* Layout
+------------------------- */
+.sidebar.active ~ .main { width:83.3334%; left:16.6666%; }
+.map {
+  width:100%;
+  height:100%;
+  bottom:0;
+  }
+
+/* Components
+------------------------- */
+.mode         { display:none; }
+.mode.active  { display:block; }
+
+header .title {
+  font-size:22px;
+  line-height:60px;
+  color:rgba(0,0,0,0.5);
+  margin:0;
+  }
+header .button         { background-color:transparent; color:rgba(0,0,0,0.5); }
+header .button:hover   { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
+header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
+
+.sidebar-toggle:hover,
+.sidebar-toggle.active { background-color:rgba(0,0,0,0.10); }
+
+.sidebar nav a:hover {
+  background-color:rgba(0,0,0,0.20);
+  }
+.sidebar nav a.active {
+  background-color:rgba(0,0,0,0.75);
+  color:#fff;
+  }
+
+.error,
+.note {
+  display:none;
+  }
+.settings select {
+  margin-top:5px;
+  }
+.settings:target {
+  bottom:0;
+  opacity:1;
+  }
+.avatar {
+  height:20px;
+  margin-right:10px;
+  }
+
+/* iD container
+ * elements when editing
+------------------------- */
+#iD {
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:2000;
+  }
+#iD_escape {
+  position:absolute;
+  right:10px;
+  top:10px;
+  color:#fff;
+  font-weight:bold;
+  }

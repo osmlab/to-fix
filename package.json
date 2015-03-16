@@ -1,44 +1,30 @@
 {
   "name": "to-fix",
   "version": "0.0.0",
-  "description": "",
+  "description": "A task manager for OpenStreetMap duties",
   "main": "index.js",
   "dependencies": {
-    "async": "^0.9.0",
-    "body-parser": "^1.9.3",
-    "csv-parser": "^1.4.4",
-    "express": "^4.10.4",
-    "geojson-utils": "^1.1.0",
-    "http-framework": "^1.2.0",
+    "jquery": "^2.1.3",
     "leaflet-omnivore": "~0.2.0",
-    "leveldown": "^0.10.2",
-    "levelup": "^0.18.6",
+    "leaflet-osm": "^0.1.0",
+    "mapbox.js": "^2.1.5",
     "mousetrap": "0.0.1",
     "osm-auth": "^0.2.6",
-    "pg": "^4.0.0",
-    "pg-native": "^1.7.1",
-    "queue-async": "^1.0.7",
-    "rimraf": "^2.2.8",
-    "routes-router": "^4.1.2",
-    "serve": "^1.4.0",
+    "raven-js": "^1.1.17",
     "store": "~1.3.16",
-    "tape": "^3.0.3",
-    "underscore": "^1.7.0",
-    "watchify": "~1.0.1",
-    "wellknown": "^0.3.0"
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
-    "forever": "^0.11.1",
     "brfs": "~1.2.0",
-    "hintify": "~0.1.0"
+    "eslint": "^0.16.2",
+    "hintify": "~0.1.0",
+    "serve": "^1.4.0",
+    "watchify": "~1.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/serve & npm run watch",
-    "serve": "./node_modules/.bin/forever start index.js",
-    "serve-stop": "./node_modules/.bin/forever stop index.js",
-    "log": "./node_modules/.bin/forever logs index.js",
-    "watch": "watchify -t brfs js/index.js -o js/bundle.js",
-    "test": "tape test/*.js"
+    "watch": "watchify -t brfs index.js -o dist/bundle.js",
+    "test": "eslint lib/*.js lib/loaders/*.js lib/ext/*.js"
   },
   "repository": {
     "type": "git",
