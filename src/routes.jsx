@@ -45,8 +45,8 @@ var App = React.createClass({
 module.exports = (
   /* jshint ignore:start */
   <Route handler={App}>
-    <Route name='task' path='/task:task' handler={Task} />
-    <Route name='activity' path='/activity:task' handler={Activity} />
+    <Route name='task' path='/task/:task' handler={Task} />
+    <Route name='activity' path='/activity/:task' handler={Activity} />
     <Route name='stats' path='/statistics/:task' handler={Stats} />
     <Route name='upload' path='/upload' handler={Upload} />
     <DefaultRoute name='landing' handler={Landing} />

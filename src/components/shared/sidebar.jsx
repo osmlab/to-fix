@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+var Link = require('react-router').Link;
 var appStore = require('../../stores/application');
 var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login.jsx');
@@ -19,7 +20,13 @@ module.exports = React.createClass({
     var tasks = taskItems.map(function(task, i) {
       return (
         /* jshint ignore:start */
-        <a href='#' className='block strong dark pad1x pad0y truncate' key={i}>{task.title}</a>
+        <Link
+          to='task'
+          key={i}
+          className='block strong dark pad1x pad0y truncate'
+          params={{task: task.id}}>
+          {task.title}
+        </Link>
         /* jshint ignore:end */
       );
     });

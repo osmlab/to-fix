@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+var Link = require('react-router').Link;
 
 var appStore = require('../../stores/application');
 var actions = require('../../actions/actions');
@@ -34,9 +35,24 @@ module.exports = React.createClass({
         </nav>
         <div className='col9 text-right pad1'>
           <nav className='js-mode-controls col12 text-right space pad0y'>
-            <a href='#' data-mode='map' className='js-mode icon pencil active animate short button'>Task</a>
-            <a href='#' data-mode='activity' className='js-mode icon bolt button short animate'>Activity</a>
-            <a href='#' data-mode='stats' className='js-mode icon graph button short animate'>Statistics</a>
+            <Link
+              className='icon pencil animate short button'
+              params={{ task: 'goeshere' }}
+              to='task'>
+              Task
+            </Link>
+            <Link
+              className='icon bolt animate short button'
+              params={{ task: 'goeshere' }}
+              to='activity'>
+              Activity
+            </Link>
+            <Link
+              className='icon graph animate short button'
+              params={{ task: 'goeshere' }}
+              to='stats'>
+              Statistic
+            </Link>
           </nav>
         </div>
       </header>
