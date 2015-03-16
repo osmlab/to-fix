@@ -24,7 +24,7 @@ module.exports = React.createClass({
 
     return (
       /* jshint ignore:start */
-      <header className='fill-orange row-60 col12 clearfix'>
+      <header className='fill-light row-60 col12 clearfix'>
         <nav className='col3'>
           <a href='#' onClick={this.toggle} className={toggleClass}>
             <span className='icon big menu'></span>
