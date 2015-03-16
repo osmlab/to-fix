@@ -127,7 +127,7 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   }
 
 /* iD container
- * elements when editing
+ * elements while editing
 ------------------------- */
 #iD {
   position:absolute;
