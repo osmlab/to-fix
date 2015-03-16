@@ -3,6 +3,9 @@
 require('mapbox.js');
 
 var React = require('react');
+var Router = require('react-router');
+
+var actions = require('../actions/actions');
 var config = require('../config');
 var EditBar = require('./workspace/editbar.jsx');
 var MapState = require('../stores/mapstate');
@@ -11,8 +14,15 @@ var BingLayer = require('../ext/bing.js');
 L.mapbox.accessToken = config.accessToken;
 
 module.exports = React.createClass({
-  componentDidMount: function() {
+  mixins: [Router.State],
 
+  statics: {
+    fetchData: function(params) {
+      actions.source.load(params.task);
+    }
+  },
+
+  componentDidMount: function() {
     // TODO Use mapstore to derrive options.
     this.map = L.mapbox.map(this.refs.map.getDOMNode(), {'mapbox_logo': true}, {
       maxZoom: 18,
