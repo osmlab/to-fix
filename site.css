@@ -73,7 +73,11 @@ strong { font-weight:bold}
 /* mapbox.css Overrides
 ------------------------- */
 .mapbox-improve-map { display: none; }
-.leaflet-container { background-color:#222b30; }
+.leaflet-container { background-color: #181818; }
+.leaflet-container .leaflet-control-attribution {
+  background-color: rgba(0,0,0,0.75);
+  border-top-left-radius: 3px;
+}
 
 /* Layout
 ------------------------- */

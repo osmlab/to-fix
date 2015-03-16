@@ -1,4 +1,4 @@
-<header class='fill-orange row-60 col12 clearfix'>
+<header class='fill-white row-60 col12 clearfix'>
   <nav class='col3'>
     <a href='#' class='js-sidebar-toggle sidebar-toggle quiet block fl keyline-right animate pad1 row-60<% if (obj.sidebar) { %> active<% } %>'>
       <span class='icon big menu'></span>
@@ -8,16 +8,14 @@
     </a>
   </nav>
   <div class='col9 text-right pad1'>
-    <nav class='js-mode-controls col12 text-right space pad0y'><!--
-      --><a href='#' data-mode='map' class='js-mode icon pencil active animate short button'>Task</a><!--
-      --><a href='#' data-mode='activity' class='js-mode icon bolt button short animate'>Activity</a><!--
-      --><a href='#' data-mode='stats' class='js-mode icon graph button short animate'>Statistics</a>
+<!--    <nav class='js-mode-controls col12 text-right space pad0y'><a href='#' data-mode='map' class='js-mode icon pencil active animate short button'>Task</a><a href='#' data-mode='activity' class='js-mode icon bolt button short animate'>Activity</a><a href='#' data-mode='stats' class='js-mode icon graph button short animate'>Statistics</a>
     </nav>
+-->
   </div>
 </header>
 
-<div id='sidebar' class='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6<% if (obj.sidebar) { %> active<% } %>'></div>
-<div id='main' class='main fill-navy-dark col12 pin-bottom space-top6 animate'>
+<div id='sidebar' class='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-dark space-top6<% if (obj.sidebar) { %> active<% } %>'></div>
+<div id='main' class='main fill-darken2 col12 pin-bottom space-top6 animate'>
   <div id='error-message' class='pin-top col12 z10000 center note warning'><span></span></div>
   <div id='message' class='pin-top col12 z10000 settings animate modal modal-content'></div>
   <div id='settings' class='pin-top col12 z10000 settings animate modal modal-content'></div>
