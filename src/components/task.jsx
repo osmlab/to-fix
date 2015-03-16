@@ -34,7 +34,7 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <div ref='map' className='mode active map fill-navy-dark'>
-        <Editbar />
+        <EditBar />
         <a href='#' id='iD_escape' className='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>
       </div>
       /* jshint ignore:end */
