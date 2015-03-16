@@ -2,11 +2,20 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+var appStore = require('../../stores/application');
 var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login.jsx');
 
 module.exports = React.createClass({
+  mixins: [
+    Reflux.connect(appStore, 'appSettings')
+  ],
+
   render: function() {
+    var appSettings = this.state.appSettings;
+    var sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
+    if (appSettings.sidebar) sidebarClass += ' active';
+
     var tasks = taskItems.map(function(task, i) {
       return (
         /* jshint ignore:start */
@@ -17,7 +26,7 @@ module.exports = React.createClass({
 
     return (
       /* jshint ignore:start */
-      <div className='sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6 active'>
+      <div className={sidebarClass}>
         <div className='scroll-styled pad2y'>
           <LogIn />
           <span className='dark block pad1x space-bottom1'>Tasks</span>

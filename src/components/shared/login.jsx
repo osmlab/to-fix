@@ -33,7 +33,7 @@ module.exports = React.createClass({
       logState = (
         /* jshint ignore:start */
         <div className='pad1x'>
-          <a href='#' onClick={actions.userLogin} className='js-login icon account button small'>login to edit</a>
+          <a href='#' onClick={actions.userLogin} className='js-login icon osm button small block'>Authorize on OpenStreetMap</a>
         </div>
         /* jshint ignore:end */
       );
