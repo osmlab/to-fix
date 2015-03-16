@@ -48,7 +48,6 @@ strong { font-weight:bold}
 .z1000 { z-index:1000; }
 .z10000 { z-index:10000; }
 
-.fill-orange.button:hover { background-color:#e55e5e; }
 .scroll-styled pre::-webkit-scrollbar,
 .scroll-styled::-webkit-scrollbar {
   width:8px;

@@ -104,7 +104,7 @@ var tasks = {
     // }
 };
 
-var DEFAULT = 'deadendoneway';
+var DEFAULT = 'unconnectedmajor';
 
 window.current = {};
 
