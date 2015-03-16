@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/tristen/dev/osm/to-fix/index.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/aaron/totofix/index.js":[function(require,module,exports){
 require('mapbox.js');
 require('leaflet-osm');
 
@@ -226,7 +226,7 @@ route({
     callback: load
 });
 
-},{"./lib/loaders/keepright.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/keepright.js","./lib/loaders/osmigeom.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js","./lib/loaders/tigerdelta.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js","./lib/loaders/unconnected.js":"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js","./lib/route":"/Users/tristen/dev/osm/to-fix/lib/route.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-osm":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-osm/leaflet-osm.js","mapbox.js":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/index.js","osm-auth":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","raven-js":"/Users/tristen/dev/osm/to-fix/node_modules/raven-js/dist/raven.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/activity.js":[function(require,module,exports){
+},{"./lib/loaders/keepright.js":"/Users/aaron/totofix/lib/loaders/keepright.js","./lib/loaders/osmigeom.js":"/Users/aaron/totofix/lib/loaders/osmigeom.js","./lib/loaders/tigerdelta.js":"/Users/aaron/totofix/lib/loaders/tigerdelta.js","./lib/loaders/unconnected.js":"/Users/aaron/totofix/lib/loaders/unconnected.js","./lib/route":"/Users/aaron/totofix/lib/route.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","leaflet-osm":"/Users/aaron/totofix/node_modules/leaflet-osm/leaflet-osm.js","mapbox.js":"/Users/aaron/totofix/node_modules/mapbox.js/src/index.js","osm-auth":"/Users/aaron/totofix/node_modules/osm-auth/index.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","raven-js":"/Users/aaron/totofix/node_modules/raven-js/dist/raven.js","store":"/Users/aaron/totofix/node_modules/store/store.js","underscore":"/Users/aaron/totofix/node_modules/underscore/underscore.js"}],"/Users/aaron/totofix/lib/activity.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -242,7 +242,7 @@ module.exports = {
     }
 };
 
-},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/core.js":[function(require,module,exports){
+},{"jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","underscore":"/Users/aaron/totofix/node_modules/underscore/underscore.js"}],"/Users/aaron/totofix/lib/core.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -336,7 +336,7 @@ function jqError(jqXHR, textStatus) {
 
 module.exports = core;
 
-},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js"}],"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js":[function(require,module,exports){
+},{"jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/totofix/node_modules/store/store.js"}],"/Users/aaron/totofix/lib/ext/bing.js":[function(require,module,exports){
 'use strict';
 
 module.exports = L.TileLayer.extend({
@@ -459,7 +459,7 @@ module.exports = L.TileLayer.extend({
     }
 });
 
-},{}],"/Users/tristen/dev/osm/to-fix/lib/loaders/keepright.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/lib/loaders/keepright.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -509,7 +509,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/osmigeom.js":[function(require,module,exports){
+},{"../activity":"/Users/aaron/totofix/lib/activity.js","../core":"/Users/aaron/totofix/lib/core.js","../map":"/Users/aaron/totofix/lib/map.js","../stats":"/Users/aaron/totofix/lib/stats.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/aaron/totofix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/totofix/lib/loaders/osmigeom.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -541,7 +541,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/tigerdelta.js":[function(require,module,exports){
+},{"../activity":"/Users/aaron/totofix/lib/activity.js","../core":"/Users/aaron/totofix/lib/core.js","../map":"/Users/aaron/totofix/lib/map.js","../stats":"/Users/aaron/totofix/lib/stats.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/aaron/totofix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/totofix/lib/loaders/tigerdelta.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -572,7 +572,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/loaders/unconnected.js":[function(require,module,exports){
+},{"../activity":"/Users/aaron/totofix/lib/activity.js","../core":"/Users/aaron/totofix/lib/core.js","../map":"/Users/aaron/totofix/lib/map.js","../stats":"/Users/aaron/totofix/lib/stats.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","leaflet-omnivore":"/Users/aaron/totofix/node_modules/leaflet-omnivore/index.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/totofix/lib/loaders/unconnected.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -629,7 +629,7 @@ module.exports = {
     }
 };
 
-},{"../activity":"/Users/tristen/dev/osm/to-fix/lib/activity.js","../core":"/Users/tristen/dev/osm/to-fix/lib/core.js","../map":"/Users/tristen/dev/osm/to-fix/lib/map.js","../stats":"/Users/tristen/dev/osm/to-fix/lib/stats.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/tristen/dev/osm/to-fix/lib/map.js":[function(require,module,exports){
+},{"../activity":"/Users/aaron/totofix/lib/activity.js","../core":"/Users/aaron/totofix/lib/core.js","../map":"/Users/aaron/totofix/lib/map.js","../stats":"/Users/aaron/totofix/lib/stats.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/aaron/totofix/lib/map.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -790,7 +790,7 @@ module.exports = {
     }
 };
 
-},{"./core":"/Users/tristen/dev/osm/to-fix/lib/core.js","./ext/bing.js":"/Users/tristen/dev/osm/to-fix/lib/ext/bing.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","mousetrap":"/Users/tristen/dev/osm/to-fix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/route.js":[function(require,module,exports){
+},{"./core":"/Users/aaron/totofix/lib/core.js","./ext/bing.js":"/Users/aaron/totofix/lib/ext/bing.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","mousetrap":"/Users/aaron/totofix/node_modules/mousetrap/mousetrap.js","querystring":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js","store":"/Users/aaron/totofix/node_modules/store/store.js","underscore":"/Users/aaron/totofix/node_modules/underscore/underscore.js"}],"/Users/aaron/totofix/lib/route.js":[function(require,module,exports){
 'use strict';
 
 var upload = require('./upload.js');
@@ -817,7 +817,7 @@ function route(obj) {
 
 module.exports = route;
 
-},{"./upload.js":"/Users/tristen/dev/osm/to-fix/lib/upload.js"}],"/Users/tristen/dev/osm/to-fix/lib/stats.js":[function(require,module,exports){
+},{"./upload.js":"/Users/aaron/totofix/lib/upload.js"}],"/Users/aaron/totofix/lib/stats.js":[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -833,7 +833,7 @@ module.exports = {
     }
 };
 
-},{"jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/lib/upload.js":[function(require,module,exports){
+},{"jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","underscore":"/Users/aaron/totofix/node_modules/underscore/underscore.js"}],"/Users/aaron/totofix/lib/upload.js":[function(require,module,exports){
 'use strict';
 
 
@@ -868,8 +868,12 @@ upload.init = function() {
         // I know
         formData.append('password', password.value);
 
+        $('#upload-form').addClass('loading');
+
         core.upload(formData, function(err) {
+            $('#upload-form').removeClass('loading');
             if (err) return console.log(err);
+            window.location.href = '/?error=' + name.value.replace(/[^a-zA-Z]+/g, '').toLowerCase();
         });
 
     };
@@ -877,7 +881,7 @@ upload.init = function() {
 
 module.exports = upload;
 
-},{"./core":"/Users/tristen/dev/osm/to-fix/lib/core.js","jquery":"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js","underscore":"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/jquery/dist/jquery.js":[function(require,module,exports){
+},{"./core":"/Users/aaron/totofix/lib/core.js","jquery":"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js","underscore":"/Users/aaron/totofix/node_modules/underscore/underscore.js"}],"/Users/aaron/totofix/node_modules/jquery/dist/jquery.js":[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -10084,7 +10088,7 @@ return jQuery;
 
 }));
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/index.js":[function(require,module,exports){
 var xhr = require('corslite'),
     csv2geojson = require('csv2geojson'),
     wellknown = require('wellknown'),
@@ -10305,7 +10309,7 @@ function parseXML(str) {
     }
 }
 
-},{"corslite":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
+},{"corslite":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js","csv2geojson":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js","togeojson":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js","topojson/topojson.js":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js","wellknown":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js"}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":[function(require,module,exports){
 function corslite(url, callback, cors) {
     var sent = false;
 
@@ -10400,7 +10404,7 @@ function corslite(url, callback, cors) {
 
 if (typeof module !== 'undefined') module.exports = corslite;
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/csv2geojson/index.js":[function(require,module,exports){
 var dsv = require('dsv'),
     sexagesimal = require('sexagesimal');
 
@@ -10587,12 +10591,12 @@ module.exports = {
     toPolygon: toPolygon
 };
 
-},{"dsv":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
+},{"dsv":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js","sexagesimal":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js"}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/dsv/index.js":[function(require,module,exports){
 
 
 module.exports = new Function("dsv.version = \"0.0.3\";\n\ndsv.tsv = dsv(\"\\t\");\ndsv.csv = dsv(\",\");\n\nfunction dsv(delimiter) {\n  var dsv = {},\n      reFormat = new RegExp(\"[\\\"\" + delimiter + \"\\n]\"),\n      delimiterCode = delimiter.charCodeAt(0);\n\n  dsv.parse = function(text, f) {\n    var o;\n    return dsv.parseRows(text, function(row, i) {\n      if (o) return o(row, i - 1);\n      var a = new Function(\"d\", \"return {\" + row.map(function(name, i) {\n        return JSON.stringify(name) + \": d[\" + i + \"]\";\n      }).join(\",\") + \"}\");\n      o = f ? function(row, i) { return f(a(row), i); } : a;\n    });\n  };\n\n  dsv.parseRows = function(text, f) {\n    var EOL = {}, // sentinel value for end-of-line\n        EOF = {}, // sentinel value for end-of-file\n        rows = [], // output rows\n        N = text.length,\n        I = 0, // current character index\n        n = 0, // the current line number\n        t, // the current token\n        eol; // is the current token followed by EOL?\n\n    function token() {\n      if (I >= N) return EOF; // special case: end of file\n      if (eol) return eol = false, EOL; // special case: end of line\n\n      // special case: quotes\n      var j = I;\n      if (text.charCodeAt(j) === 34) {\n        var i = j;\n        while (i++ < N) {\n          if (text.charCodeAt(i) === 34) {\n            if (text.charCodeAt(i + 1) !== 34) break;\n            ++i;\n          }\n        }\n        I = i + 2;\n        var c = text.charCodeAt(i + 1);\n        if (c === 13) {\n          eol = true;\n          if (text.charCodeAt(i + 2) === 10) ++I;\n        } else if (c === 10) {\n          eol = true;\n        }\n        return text.substring(j + 1, i).replace(/\"\"/g, \"\\\"\");\n      }\n\n      // common case: find next delimiter or newline\n      while (I < N) {\n        var c = text.charCodeAt(I++), k = 1;\n        if (c === 10) eol = true; // \\n\n        else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \\r|\\r\\n\n        else if (c !== delimiterCode) continue;\n        return text.substring(j, I - k);\n      }\n\n      // special case: last token before EOF\n      return text.substring(j);\n    }\n\n    while ((t = token()) !== EOF) {\n      var a = [];\n      while (t !== EOL && t !== EOF) {\n        a.push(t);\n        t = token();\n      }\n      if (f && !(a = f(a, n++))) continue;\n      rows.push(a);\n    }\n\n    return rows;\n  };\n\n  dsv.format = function(rows) {\n    if (Array.isArray(rows[0])) return dsv.formatRows(rows); // deprecated; use formatRows\n    var fieldSet = {}, fields = [];\n\n    // Compute unique fields in order of discovery.\n    rows.forEach(function(row) {\n      for (var field in row) {\n        if (!(field in fieldSet)) {\n          fields.push(fieldSet[field] = field);\n        }\n      }\n    });\n\n    return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {\n      return fields.map(function(field) {\n        return formatValue(row[field]);\n      }).join(delimiter);\n    })).join(\"\\n\");\n  };\n\n  dsv.formatRows = function(rows) {\n    return rows.map(formatRow).join(\"\\n\");\n  };\n\n  function formatRow(row) {\n    return row.map(formatValue).join(delimiter);\n  }\n\n  function formatValue(text) {\n    return reFormat.test(text) ? \"\\\"\" + text.replace(/\\\"/g, \"\\\"\\\"\") + \"\\\"\" : text;\n  }\n\n  return dsv;\n}\n" + ";return dsv")();
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/csv2geojson/node_modules/sexagesimal/index.js":[function(require,module,exports){
 module.exports = function(x, dims) {
     if (!dims) dims = 'NSEW';
     if (typeof x !== 'string') return null;
@@ -10606,7 +10610,7 @@ module.exports = function(x, dims) {
         ((m[4] && m[4] === 'S' || m[4] === 'W') ? -1 : 1);
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/togeojson/togeojson.js":[function(require,module,exports){
 (function (process){
 toGeoJSON = (function() {
     'use strict';
@@ -10845,7 +10849,7 @@ toGeoJSON = (function() {
 if (typeof module !== 'undefined') module.exports = toGeoJSON;
 
 }).call(this,require('_process'))
-},{"_process":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
+},{"_process":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","xmldom":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js"}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/topojson/topojson.js":[function(require,module,exports){
 !function() {
   var topojson = {
     version: "1.6.8",
@@ -11379,7 +11383,7 @@ if (typeof module !== 'undefined') module.exports = toGeoJSON;
   else this.topojson = topojson;
 }();
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/wellknown/index.js":[function(require,module,exports){
 module.exports = parse;
 module.exports.parse = parse;
 module.exports.stringify = stringify;
@@ -11628,7 +11632,7 @@ function stringify(gj) {
     }
 }
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-osm/leaflet-osm.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/leaflet-osm/leaflet-osm.js":[function(require,module,exports){
 L.OSM = {};
 
 L.OSM.TileLayer = L.TileLayer.extend({
@@ -11863,9 +11867,9 @@ L.Util.extend(L.OSM, {
   }
 });
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/corslite/corslite.js":[function(require,module,exports){
-module.exports=require("/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js")
-},{"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":"/Users/tristen/dev/osm/to-fix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/leaflet/dist/leaflet-src.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/corslite/corslite.js":[function(require,module,exports){
+module.exports=require("/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js")
+},{"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js":"/Users/aaron/totofix/node_modules/leaflet-omnivore/node_modules/corslite/corslite.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/leaflet/dist/leaflet-src.js":[function(require,module,exports){
 /*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
  (c) 2010-2013, Vladimir Agafonkin
@@ -21046,7 +21050,7 @@ L.Map.include({
 
 
 }(window, document));
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/mustache/mustache.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/mustache/mustache.js":[function(require,module,exports){
 /*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
  * http://github.com/janl/mustache.js
@@ -21599,7 +21603,7 @@ L.Map.include({
 
 }));
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js":[function(require,module,exports){
 var html_sanitize = require('./sanitizer-bundle.js');
 
 module.exports = function(_) {
@@ -21619,7 +21623,7 @@ function cleanUrl(url) {
 
 function cleanId(id) { return id; }
 
-},{"./sanitizer-bundle.js":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/sanitizer-bundle.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/sanitizer-bundle.js":[function(require,module,exports){
+},{"./sanitizer-bundle.js":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/sanitizer-bundle.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/sanitizer-bundle.js":[function(require,module,exports){
 
 // Copyright (C) 2010 Google Inc.
 //
@@ -24067,7 +24071,7 @@ if (typeof module !== 'undefined') {
     module.exports = html_sanitize;
 }
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/package.json":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/package.json":[function(require,module,exports){
 module.exports={
   "author": {
     "name": "Mapbox"
@@ -24115,7 +24119,7 @@ module.exports={
   },
   "_id": "mapbox.js@2.1.5",
   "_shasum": "065a7c4e5a7ff949a01842fa24d6dfb69b6c50c4",
-  "_from": "mapbox.js@*",
+  "_from": "mapbox.js@>=2.1.5-0 <3.0.0-0",
   "_npmVersion": "2.1.6",
   "_nodeVersion": "0.10.33",
   "_npmUser": {
@@ -24261,7 +24265,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/config.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/src/config.js":[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -24271,7 +24275,7 @@ module.exports = {
     REQUIRE_ACCESS_TOKEN: true
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/feature_layer.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/src/feature_layer.js":[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -24388,7 +24392,7 @@ module.exports.featureLayer = function(_, options) {
     return new FeatureLayer(_, options);
 };
 
-},{"./marker":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/marker.js","./request":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/request.js","./simplestyle":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/simplestyle.js","./url":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/url.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js","sanitize-caja":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/geocoder.js":[function(require,module,exports){
+},{"./marker":"/Users/aaron/totofix/node_modules/mapbox.js/src/marker.js","./request":"/Users/aaron/totofix/node_modules/mapbox.js/src/request.js","./simplestyle":"/Users/aaron/totofix/node_modules/mapbox.js/src/simplestyle.js","./url":"/Users/aaron/totofix/node_modules/mapbox.js/src/url.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js","sanitize-caja":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/geocoder.js":[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -24487,7 +24491,7 @@ module.exports = function(url, options) {
     return geocoder;
 };
 
-},{"./request":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/request.js","./url":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/url.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/geocoder_control.js":[function(require,module,exports){
+},{"./request":"/Users/aaron/totofix/node_modules/mapbox.js/src/request.js","./url":"/Users/aaron/totofix/node_modules/mapbox.js/src/url.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/geocoder_control.js":[function(require,module,exports){
 'use strict';
 
 var geocoder = require('./geocoder'),
@@ -24679,7 +24683,7 @@ module.exports.geocoderControl = function(_, options) {
     return new GeocoderControl(_, options);
 };
 
-},{"./geocoder":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/geocoder.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid.js":[function(require,module,exports){
+},{"./geocoder":"/Users/aaron/totofix/node_modules/mapbox.js/src/geocoder.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/grid.js":[function(require,module,exports){
 'use strict';
 
 function utfDecode(c) {
@@ -24697,7 +24701,7 @@ module.exports = function(data) {
     };
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid_control.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/src/grid_control.js":[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -24897,7 +24901,7 @@ module.exports.gridControl = function(_, options) {
     return new GridControl(_, options);
 };
 
-},{"./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js","mustache":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/mustache/mustache.js","sanitize-caja":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid_layer.js":[function(require,module,exports){
+},{"./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js","mustache":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/mustache/mustache.js","sanitize-caja":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/grid_layer.js":[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -25122,11 +25126,11 @@ module.exports.gridLayer = function(_, options) {
     return new GridLayer(_, options);
 };
 
-},{"./grid":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid.js","./load_tilejson":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/load_tilejson.js","./request":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/request.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/index.js":[function(require,module,exports){
+},{"./grid":"/Users/aaron/totofix/node_modules/mapbox.js/src/grid.js","./load_tilejson":"/Users/aaron/totofix/node_modules/mapbox.js/src/load_tilejson.js","./request":"/Users/aaron/totofix/node_modules/mapbox.js/src/request.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/index.js":[function(require,module,exports){
 require('./leaflet');
 require('./mapbox');
 
-},{"./leaflet":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/leaflet.js","./mapbox":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/mapbox.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/info_control.js":[function(require,module,exports){
+},{"./leaflet":"/Users/aaron/totofix/node_modules/mapbox.js/src/leaflet.js","./mapbox":"/Users/aaron/totofix/node_modules/mapbox.js/src/mapbox.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/info_control.js":[function(require,module,exports){
 'use strict';
 
 var InfoControl = L.Control.extend({
@@ -25242,10 +25246,10 @@ module.exports.infoControl = function(options) {
     return new InfoControl(options);
 };
 
-},{"sanitize-caja":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/leaflet.js":[function(require,module,exports){
+},{"sanitize-caja":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/leaflet.js":[function(require,module,exports){
 window.L = require('leaflet/dist/leaflet-src');
 
-},{"leaflet/dist/leaflet-src":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/leaflet/dist/leaflet-src.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/legend_control.js":[function(require,module,exports){
+},{"leaflet/dist/leaflet-src":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/leaflet/dist/leaflet-src.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/legend_control.js":[function(require,module,exports){
 'use strict';
 
 var LegendControl = L.Control.extend({
@@ -25314,7 +25318,7 @@ module.exports.legendControl = function(options) {
     return new LegendControl(options);
 };
 
-},{"sanitize-caja":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/load_tilejson.js":[function(require,module,exports){
+},{"sanitize-caja":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/load_tilejson.js":[function(require,module,exports){
 'use strict';
 
 var request = require('./request'),
@@ -25340,7 +25344,7 @@ module.exports = {
     }
 };
 
-},{"./request":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/request.js","./url":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/url.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/map.js":[function(require,module,exports){
+},{"./request":"/Users/aaron/totofix/node_modules/mapbox.js/src/request.js","./url":"/Users/aaron/totofix/node_modules/mapbox.js/src/url.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/map.js":[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -25527,7 +25531,7 @@ module.exports.map = function(element, _, options) {
     return new LMap(element, _, options);
 };
 
-},{"./feature_layer":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/feature_layer.js","./grid_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid_control.js","./grid_layer":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid_layer.js","./info_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/info_control.js","./legend_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/legend_control.js","./load_tilejson":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/load_tilejson.js","./mapbox_logo":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/mapbox_logo.js","./share_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/share_control.js","./tile_layer":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/tile_layer.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/mapbox.js":[function(require,module,exports){
+},{"./feature_layer":"/Users/aaron/totofix/node_modules/mapbox.js/src/feature_layer.js","./grid_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/grid_control.js","./grid_layer":"/Users/aaron/totofix/node_modules/mapbox.js/src/grid_layer.js","./info_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/info_control.js","./legend_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/legend_control.js","./load_tilejson":"/Users/aaron/totofix/node_modules/mapbox.js/src/load_tilejson.js","./mapbox_logo":"/Users/aaron/totofix/node_modules/mapbox.js/src/mapbox_logo.js","./share_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/share_control.js","./tile_layer":"/Users/aaron/totofix/node_modules/mapbox.js/src/tile_layer.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/mapbox.js":[function(require,module,exports){
 'use strict';
 
 var geocoderControl = require('./geocoder_control'),
@@ -25579,7 +25583,7 @@ window.L.Icon.Default.imagePath =
     '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
     require('../package.json').version + '/images';
 
-},{"../package.json":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/package.json","./config":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/config.js","./feature_layer":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/feature_layer.js","./geocoder":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/geocoder.js","./geocoder_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/geocoder_control.js","./grid_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid_control.js","./grid_layer":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/grid_layer.js","./info_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/info_control.js","./legend_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/legend_control.js","./map":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/map.js","./marker":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/marker.js","./share_control":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/share_control.js","./simplestyle":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/simplestyle.js","./tile_layer":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/tile_layer.js","mustache":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/mustache/mustache.js","sanitize-caja":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/mapbox_logo.js":[function(require,module,exports){
+},{"../package.json":"/Users/aaron/totofix/node_modules/mapbox.js/package.json","./config":"/Users/aaron/totofix/node_modules/mapbox.js/src/config.js","./feature_layer":"/Users/aaron/totofix/node_modules/mapbox.js/src/feature_layer.js","./geocoder":"/Users/aaron/totofix/node_modules/mapbox.js/src/geocoder.js","./geocoder_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/geocoder_control.js","./grid_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/grid_control.js","./grid_layer":"/Users/aaron/totofix/node_modules/mapbox.js/src/grid_layer.js","./info_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/info_control.js","./legend_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/legend_control.js","./map":"/Users/aaron/totofix/node_modules/mapbox.js/src/map.js","./marker":"/Users/aaron/totofix/node_modules/mapbox.js/src/marker.js","./share_control":"/Users/aaron/totofix/node_modules/mapbox.js/src/share_control.js","./simplestyle":"/Users/aaron/totofix/node_modules/mapbox.js/src/simplestyle.js","./tile_layer":"/Users/aaron/totofix/node_modules/mapbox.js/src/tile_layer.js","mustache":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/mustache/mustache.js","sanitize-caja":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/mapbox_logo.js":[function(require,module,exports){
 'use strict';
 
 var MapboxLogoControl = L.Control.extend({
@@ -25613,7 +25617,7 @@ module.exports.mapboxLogoControl = function(options) {
     return new MapboxLogoControl(options);
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/marker.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/src/marker.js":[function(require,module,exports){
 'use strict';
 
 var url = require('./url'),
@@ -25680,7 +25684,7 @@ module.exports = {
     createPopup: createPopup
 };
 
-},{"./url":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/url.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js","sanitize-caja":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/request.js":[function(require,module,exports){
+},{"./url":"/Users/aaron/totofix/node_modules/mapbox.js/src/url.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js","sanitize-caja":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/sanitize-caja/index.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/request.js":[function(require,module,exports){
 'use strict';
 
 var corslite = require('corslite'),
@@ -25712,7 +25716,7 @@ module.exports = function(url, callback) {
     }
 };
 
-},{"./config":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/config.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js","corslite":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/node_modules/corslite/corslite.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/share_control.js":[function(require,module,exports){
+},{"./config":"/Users/aaron/totofix/node_modules/mapbox.js/src/config.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js","corslite":"/Users/aaron/totofix/node_modules/mapbox.js/node_modules/corslite/corslite.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/share_control.js":[function(require,module,exports){
 'use strict';
 
 var urlhelper = require('./url');
@@ -25815,7 +25819,7 @@ module.exports.shareControl = function(_, options) {
     return new ShareControl(_, options);
 };
 
-},{"./load_tilejson":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/load_tilejson.js","./url":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/url.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/simplestyle.js":[function(require,module,exports){
+},{"./load_tilejson":"/Users/aaron/totofix/node_modules/mapbox.js/src/load_tilejson.js","./url":"/Users/aaron/totofix/node_modules/mapbox.js/src/url.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/simplestyle.js":[function(require,module,exports){
 'use strict';
 
 // an implementation of the simplestyle spec for polygon and linestring features
@@ -25862,7 +25866,7 @@ module.exports = {
     defaults: defaults
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/tile_layer.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mapbox.js/src/tile_layer.js":[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -25958,7 +25962,7 @@ module.exports.tileLayer = function(_, options) {
     return new TileLayer(_, options);
 };
 
-},{"./load_tilejson":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/load_tilejson.js","./util":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/url.js":[function(require,module,exports){
+},{"./load_tilejson":"/Users/aaron/totofix/node_modules/mapbox.js/src/load_tilejson.js","./util":"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/url.js":[function(require,module,exports){
 'use strict';
 
 var config = require('./config'),
@@ -26002,7 +26006,7 @@ module.exports.tileJSON = function(urlOrMapID, accessToken) {
     return url;
 };
 
-},{"../package.json":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/package.json","./config":"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/config.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/mapbox.js/src/util.js":[function(require,module,exports){
+},{"../package.json":"/Users/aaron/totofix/node_modules/mapbox.js/package.json","./config":"/Users/aaron/totofix/node_modules/mapbox.js/src/config.js"}],"/Users/aaron/totofix/node_modules/mapbox.js/src/util.js":[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26049,7 +26053,7 @@ function contains(item, list) {
     return false;
 }
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/mousetrap/mousetrap.js":[function(require,module,exports){
 /**
  * Copyright 2012 Craig Campbell
  *
@@ -26850,7 +26854,7 @@ function contains(item, list) {
 module.exports = mousetrap;
 
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/osm-auth/index.js":[function(require,module,exports){
 'use strict';
 
 var ohauth = require('ohauth'),
@@ -27110,7 +27114,7 @@ module.exports = function(o) {
     return oauth;
 };
 
-},{"ohauth":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/ohauth/index.js","store":"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js","xtend":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/ohauth/index.js":[function(require,module,exports){
+},{"ohauth":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/ohauth/index.js","store":"/Users/aaron/totofix/node_modules/store/store.js","xtend":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/ohauth/index.js":[function(require,module,exports){
 'use strict';
 
 var hashes = require('jshashes'),
@@ -27249,7 +27253,7 @@ ohauth.headerGenerator = function(options) {
 
 module.exports = ohauth;
 
-},{"jshashes":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js","xtend":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js":[function(require,module,exports){
+},{"jshashes":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js","xtend":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/index.js"}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/ohauth/node_modules/jshashes/hashes.js":[function(require,module,exports){
 (function (global){
 /**
  * jshashes - https://github.com/h2non/jshashes
@@ -29018,7 +29022,7 @@ module.exports = ohauth;
 }()); // IIFE
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/has-keys.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/has-keys.js":[function(require,module,exports){
 module.exports = hasKeys
 
 function hasKeys(source) {
@@ -29027,7 +29031,7 @@ function hasKeys(source) {
         typeof source === "function")
 }
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/index.js":[function(require,module,exports){
 var Keys = require("object-keys")
 var hasKeys = require("./has-keys")
 
@@ -29054,11 +29058,11 @@ function extend() {
     return target
 }
 
-},{"./has-keys":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/has-keys.js","object-keys":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js":[function(require,module,exports){
+},{"./has-keys":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/has-keys.js","object-keys":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js"}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/index.js":[function(require,module,exports){
 module.exports = Object.keys || require('./shim');
 
 
-},{"./shim":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js":[function(require,module,exports){
+},{"./shim":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js"}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js":[function(require,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -29082,7 +29086,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js":[function(require,module,exports){
 
 /**!
  * is
@@ -29786,7 +29790,7 @@ is.string = function (value) {
 };
 
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/shim.js":[function(require,module,exports){
 (function () {
 	"use strict";
 
@@ -29832,7 +29836,7 @@ is.string = function (value) {
 }());
 
 
-},{"foreach":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js","is":"/Users/tristen/dev/osm/to-fix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js"}],"/Users/tristen/dev/osm/to-fix/node_modules/raven-js/dist/raven.js":[function(require,module,exports){
+},{"foreach":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/foreach/index.js","is":"/Users/aaron/totofix/node_modules/osm-auth/node_modules/xtend/node_modules/object-keys/node_modules/is/index.js"}],"/Users/aaron/totofix/node_modules/raven-js/dist/raven.js":[function(require,module,exports){
 /*! Raven.js 1.1.17 (aa35178) | github.com/getsentry/raven-js */
 
 /*
@@ -31705,7 +31709,7 @@ if (typeof define === 'function' && define.amd) {
 
 })(window);
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/store/store.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/store/store.js":[function(require,module,exports){
 ;(function(win){
 	var store = {},
 		doc = win.document,
@@ -31882,7 +31886,7 @@ if (typeof define === 'function' && define.amd) {
 
 })(Function('return this')());
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/underscore/underscore.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/underscore/underscore.js":[function(require,module,exports){
 //     Underscore.js 1.8.2
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -33420,9 +33424,9 @@ if (typeof define === 'function' && define.amd) {
   }
 }.call(this));
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":[function(require,module,exports){
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -33487,7 +33491,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -33573,7 +33577,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -33660,10 +33664,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+},{}],"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/tristen/dev/osm/to-fix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/tristen/dev/osm/to-fix/index.js"]);
+},{"./decode":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/aaron/totofix/node_modules/watchify/node_modules/browserify/node_modules/querystring-es3/encode.js"}]},{},["/Users/aaron/totofix/index.js"]);
