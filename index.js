@@ -86,19 +86,19 @@ var tasks = {
         title: 'Misspelled tags',
         loader: keepright
     },
-    'unconnected_major': {
+    'unconnectedmajor': {
         title: 'Unconnected major',
         loader: unconnected
     },
-    'unconnected_minor1': {
+    'unconnectedminor1': {
         title: 'Unconnected minor',
         loader: unconnected
     },
-    'duplicate_ways': {
+    'duplicateways': {
         title: 'Duplicate Ways',
         loader: osmigeom
     },
-    'tigerdelta-named': {
+    'tigerdeltanamed': {
         title: 'Missing/misaligned TIGER',
         loader: tigerdelta
     }
