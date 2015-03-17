@@ -727,6 +727,10 @@ module.exports = {
         mouse.bind('s', function() {
             $('#skip').click();
         });
+
+        mouse.bind('f', function() {
+            $('#fixed').click();
+        });
     },
 
     edit: function() {
