@@ -24,7 +24,7 @@ module.exports = React.createClass({
             {user.username}
           </a>
           <div className='col6 pad1x text-right'>
-            <a href='#' onClick={actions.userLogout} className='js-logout rcon logout button small'>Logout</a>
+            <a href='#' onClick={actions.userLogout} className='js-logout rcon logout button small animate'>Logout</a>
           </div>
         </div>
         /* jshint ignore:end */
@@ -33,7 +33,7 @@ module.exports = React.createClass({
       logState = (
         /* jshint ignore:start */
         <div className='pad1x'>
-          <a href='#' onClick={actions.userLogin} className='js-login icon osm button small block'>Authorize on OpenStreetMap</a>
+          <a href='#' onClick={actions.userLogin} className='js-login icon osm button small block animate'>Authorize on OpenStreetMap</a>
         </div>
         /* jshint ignore:end */
       );

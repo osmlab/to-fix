@@ -49,23 +49,19 @@ strong { font-weight:bold}
 .z10000 { z-index:10000; }
 
 .fill-orange.button:hover { background-color:#e55e5e; }
-.scroll-styled pre::-webkit-scrollbar,
 .scroll-styled::-webkit-scrollbar {
   width:8px;
   height:8px;
   border-left:0;
   background:rgba(0,0,0,0.1);
   }
-.scroll-styled pre::-webkit-scrollbar-track,
 .scroll-styled::-webkit-scrollbar-track {
   background:none;
   }
-.scroll-styled pre::-webkit-scrollbar-thumb,
 .scroll-styled::-webkit-scrollbar-thumb {
   background:rgba(0,0,0,0.4);
   border-radius:0;
   }
-.scroll-styled pre::-webkit-scrollbar:hover,
 .scroll-styled::-webkit-scrollbar:hover {
   background:rgba(0,0,0,0.4);
   }

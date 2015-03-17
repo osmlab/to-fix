@@ -1,8 +1,6 @@
 'use strict';
 
 var Reflux = require('reflux');
-var xhr = require('xhr');
-var tasks = require('../data/tasks.json').tasks;
 
 var actions = Reflux.createActions({
   // Authentication based actions
@@ -10,18 +8,13 @@ var actions = Reflux.createActions({
   'userLogout': {},
 
   // Map state
-  'map': {},
+  'baseLayerChange': {},
 
   // Application settings
   'sidebarToggled': {},
 
   // Manages to-fix source types
-  'source': {
-    'load': function(type) {
-      // load source based on type
-      // Filter type out of `tasks`
-    }
-  }
+  'taskData': {}
 });
 
 module.exports = actions;

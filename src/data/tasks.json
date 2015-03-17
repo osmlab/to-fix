@@ -47,13 +47,5 @@
     "id": "unconnected_minor1",
     "title": "Unconnected minor",
     "source": "unconnected"
-  }, {
-    "id": "duplicate_ways",
-    "title": "Duplicate Ways",
-    "source": "osmigeom"
-  }, {
-    "id": "tigerdelta-named",
-    "title": "Missing/misaligned TIGER",
-    "source": "tigerdelta"
   }]
 }

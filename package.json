@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "eslint": "^0.16.2",
+    "hintify": "^0.1.0",
     "reactify": "^1.1.0",
     "serve": "^1.4.0",
     "watchify": "^2.4.0"
