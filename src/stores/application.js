@@ -3,6 +3,7 @@
 var Reflux = require('reflux');
 var store = require('store');
 var actions = require('../actions/actions');
+var postToTaskServer = require('../mixins/task-server').post;
 
 module.exports = Reflux.createStore({
 
@@ -13,6 +14,7 @@ module.exports = Reflux.createStore({
     this.settings.sidebar = sidebar ? true : false;
     this.listenTo(actions.sidebarToggled, this.toggle);
     this.listenTo(actions.editorPreference, this.setEditorPreference);
+    this.listenTo(actions.uploadTasks, this.uploadTasks);
   },
 
   getInitialState: function() {
@@ -21,6 +23,13 @@ module.exports = Reflux.createStore({
 
   setEditorPreference: function(editor) {
     store.set('editor', editor);
+  },
+
+  uploadTasks: function(data) {
+    postToTaskServer('csv', data, function(err, res) {
+      if (err) return console.error(err);
+      // TODO append the new task data path to the sidebar.
+    });
   },
 
   toggle: function() {

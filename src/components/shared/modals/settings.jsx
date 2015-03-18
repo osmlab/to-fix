@@ -42,7 +42,7 @@ module.exports = React.createClass({
         <div className='col4 modal-body fill-navy contain'>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
-            <h1 className='title fancy dark'>Settings</h1>
+            <h2 className='dark'>Settings</h2>
           </div>
 
           <fieldset className='pad2x space-bottom2 dark'>
@@ -55,7 +55,7 @@ module.exports = React.createClass({
             </div>
           </fieldset>
 
-          <div className='pad2x space-bottom2 center dark'>
+          <div className='pad2x space-bottom2 dark'>
             Shortcut keys: <span className='quiet'><code className='fill-darken3'>e</code> Edit <code className='fill-darken3'>s</code> Skip <code className='fill-darken3'>f</code> Fixed</span>
           </div>
 

@@ -18,7 +18,8 @@ var Sidebar = require('./components/shared/sidebar.jsx');
 var Task = require('./components/task.jsx');
 var Activity = require('./components/activity.jsx');
 var Stats = require('./components/stats.jsx');
-var Upload = require('./components/upload.jsx');
+
+var Upload = require('./components/shared/modals/upload.jsx');
 var Settings = require('./components/shared/modals/settings.jsx');
 var actions = require('./actions/actions');
 
@@ -32,25 +33,32 @@ var App = React.createClass({
   mixins: [
     State,
     Reflux.listenTo(actions.openSettings, 'openSettings'),
+    Reflux.listenTo(actions.openUpload, 'openUpload')
   ],
 
   getInitialState: function() {
     return {
-      settingsModal: null
+      settingsModal: null,
+      UploadModal: null
     };
   },
 
-  openSettings: function() {
-    this.setState({ settingsModal: true });
-  },
+  openSettings: function() { this.setState({ settingsModal: true }); },
+  openUpload: function() { this.setState({ uploadModal: true }); },
 
   closeModal: function() {
-    this.setState({ settingsModal: false });
+    this.setState({
+      settingsModal: false,
+      uploadModal: false
+    });
   },
 
   render: function () {
     var settingsModal = (this.state.settingsModal) ?
-      (<Settings onClose={this.closeModal}/>) : ''
+      (<Settings onClose={this.closeModal}/>) : '';
+
+    var uploadModal = (this.state.uploadModal) ?
+      (<Upload onClose={this.closeModal}/>) : '';
 
     return (
       /* jshint ignore:start */
@@ -61,6 +69,7 @@ var App = React.createClass({
           <RouteHandler />
         </div>
         {settingsModal}
+        {uploadModal}
       </div>
       /* jshint ignore:end */
     );
@@ -73,7 +82,6 @@ module.exports = (
     <Route name='task' path='/task/:task' handler={Task} />
     <Route name='activity' path='/activity/:task' handler={Activity} />
     <Route name='stats' path='/statistics/:task' handler={Stats} />
-    <Route name='upload' path='/upload' handler={Upload} />
     <DefaultRoute handler={Task} />
     <Redirect from='/' to={firstTask} />
   </Route>

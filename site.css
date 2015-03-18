@@ -9,18 +9,24 @@ strong,
 button,
 .strong,
 .tabs a,
+input[type],
+label,
+form fieldset label,
 .button {
   font-family:'Helvetica Neue', Helvetica, sans-serif;
   }
 .strong { font-weight:500; }
 strong { font-weight:bold}
 .tabs a,
+input[type='submit'],
 button,
 .button {
   font-weight:bold;
   font-size:13px;
   line-height:18px;
   }
+h1, h2, h3 { font-weight:500; }
+h2 { padding-top:0; padding-bottom:0; }
 .editbar .tabs > * {
   border-width:0 0 0 1px;
   background-color:rgba(0,0,0,0.75);

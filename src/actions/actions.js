@@ -12,8 +12,14 @@ var actions = Reflux.createActions({
 
   // Application settings
   'sidebarToggled': {},
-  'openSettings': {},
   'editorPreference': {},
+
+  // Application management
+  'uploadTasks': {},
+
+  // Modals
+  'openSettings': {},
+  'openUpload': {},
 
   // Manages to-fix tasks
   'taskEdit': {},

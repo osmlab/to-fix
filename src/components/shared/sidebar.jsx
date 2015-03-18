@@ -7,6 +7,7 @@ var Link = Router.Link;
 var appStore = require('../../stores/application');
 var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login.jsx');
+var actions = require('../../actions/actions');
 
 module.exports = React.createClass({
   mixins: [
@@ -41,6 +42,9 @@ module.exports = React.createClass({
           <LogIn />
           <span className='dark block pad1x space-bottom1'>Tasks</span>
           <nav ref='taskList' className='space-bottom2'>{tasks}</nav>
+          <div className='pad1x'>
+            <button onClick={actions.openUpload} className='button icon plus quiet short'>New task</button>
+          </div>
         </div>
       </div>
       /* jshint ignore:end */

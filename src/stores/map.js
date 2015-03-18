@@ -5,6 +5,7 @@ var actions = require('../actions/actions');
 var store = require('store');
 var xhr = require('xhr');
 var taskObj = require('../mixins/task-item');
+var postToTaskServer = require('../mixins/task-server').post;
 var config = require('../config');
 
 module.exports = Reflux.createStore({
@@ -29,7 +30,7 @@ module.exports = Reflux.createStore({
   taskDone: function(task) {
     var _this = this;
     var querystring = '?error=' + task;
-    this.postToTaskServer('fixed/' + querystring, {
+    postToTaskServer('fixed/' + querystring, {
       user: store.get('username'),
       state: this.data.value
     }, function(err, res) {
@@ -45,7 +46,7 @@ module.exports = Reflux.createStore({
     // Clear out what mapData there is
     this.data.mapData = [];
 
-    this.postToTaskServer('error/' + task.id, {
+    postToTaskServer('error/' + task.id, {
       user: store.get('username')
     }, function(err, res) {
       if (err) return console.error(err);
@@ -96,17 +97,6 @@ module.exports = Reflux.createStore({
         _this.data.mapData.push(res.body);
         cb(null);
       });
-    });
-  },
-
-  postToTaskServer: function(path, data, cb) {
-    xhr({
-      uri: config.taskServer + path,
-      json: data,
-      method: 'POST',
-    }, function(err, res) {
-      if (err) cb(err);
-      cb(null, res.body);
     });
   },
 
