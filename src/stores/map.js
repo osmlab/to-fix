@@ -78,7 +78,7 @@ module.exports = Reflux.createStore({
     var full = (this.data.value.object_type === 'way') ? '/full' : '';
     var uri = config.osmApi + this.data.value.object_type + '/' + this.data.value.object_id + full;
     xhr({uri: uri, responseType: 'document'}, function(err, res) {
-      if (err) cb(err);
+      if (err) return cb(err);
       _this.data.mapData.push(res.body);
       cb(null);
     });
@@ -89,12 +89,12 @@ module.exports = Reflux.createStore({
     var uri = config.osmApi + 'way/' + _this.data.value.way_id + '/full';
 
     xhr({uri: uri, responseType: 'document'}, function(err, res) {
-      if (err || res.statusCode != 200) cb(err || { status: res.statusCode });
+      if (err || res.statusCode != 200) return cb(err || { status: res.statusCode });
       _this.data.mapData.push(res.body);
       uri = config.osmApi + 'node/' + _this.data.value.node_id;
 
       xhr({uri: uri, responseType: 'document'}, function(err, res) {
-        if (err || res.statusCode != 200) cb(err || { status: res.statusCode });
+        if (err || res.statusCode != 200) return cb(err || { status: res.statusCode });
         _this.data.mapData.push(res.body);
         cb(null);
       });
@@ -109,7 +109,7 @@ module.exports = Reflux.createStore({
       json: data,
       method: 'POST',
     }, function(err, res) {
-      if (err) cb(err);
+      if (err) return cb(err);
       cb(null, res.body);
     });
   },
