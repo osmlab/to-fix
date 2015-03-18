@@ -63,7 +63,7 @@ module.exports = Reflux.createStore({
           _this.fetchUnconnected(function(err, res) {
             if (err) {
               console.error(err);
-              return _this.taskData(task);
+              return _this.taskData(task.id);
             }
             _this.trigger(_this.data);
           });
