@@ -21,6 +21,9 @@ var actions = Reflux.createActions({
   'openSettings': {},
   'openUpload': {},
 
+  // Dialogs
+  'errorDialog': {},
+
   // Manages to-fix tasks
   'taskEdit': {},
   'taskData': {},

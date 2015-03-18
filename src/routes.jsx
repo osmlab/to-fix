@@ -21,6 +21,7 @@ var Stats = require('./components/stats.jsx');
 
 var Upload = require('./components/shared/modals/upload.jsx');
 var Settings = require('./components/shared/modals/settings.jsx');
+var ErrorDialog = require('./components/shared/error.jsx');
 var actions = require('./actions/actions');
 
 var tasks = require('./data/tasks.json').tasks;
@@ -48,8 +49,8 @@ var App = React.createClass({
 
   closeModal: function() {
     this.setState({
-      settingsModal: false,
-      uploadModal: false
+      settingsModal: null,
+      uploadModal: null
     });
   },
 
@@ -65,8 +66,9 @@ var App = React.createClass({
       <div>
         <Header />
         <Sidebar />
-        <div className='main fill-navy-dark col12 pin-bottom space-top6 animate'>
+        <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate'>
           <RouteHandler />
+          <ErrorDialog />;
         </div>
         {settingsModal}
         {uploadModal}

@@ -4,8 +4,11 @@ var Reflux = require('reflux');
 var actions = require('../actions/actions');
 var store = require('store');
 var xhr = require('xhr');
+
 var taskObj = require('../mixins/task-item');
+var emitError = require('../mixins/error');
 var postToTaskServer = require('../mixins/task-server').post;
+
 var config = require('../config');
 
 module.exports = Reflux.createStore({
@@ -34,7 +37,7 @@ module.exports = Reflux.createStore({
       user: store.get('username'),
       state: this.data.value
     }, function(err, res) {
-      if (err) return console.error(err);
+      if (err) return emitError(err);
         _this.taskData(task);
     });
   },
@@ -49,21 +52,21 @@ module.exports = Reflux.createStore({
     postToTaskServer('error/' + task.id, {
       user: store.get('username')
     }, function(err, res) {
-      if (err) return console.error(err);
+      if (err) return emitError(err);
       _this.data.key = res.key;
       _this.data.value = res.value;
 
       switch (task.source) {
         case 'keepright':
           _this.fetchKeepRight(function(err, res) {
-            if (err) return console.error(err);
+            if (err) return emitError(err);
             _this.trigger(_this.data);
           });
         break;
         case 'unconnected':
           _this.fetchUnconnected(function(err, res) {
             if (err) {
-              console.error(err);
+              emitError(err);
               return _this.taskData(task.id);
             }
             _this.trigger(_this.data);

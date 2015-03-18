@@ -44,7 +44,7 @@ module.exports = React.createClass({
 
     return (
     /* jshint ignore:start */
-    <div className='keyline-bottom space-bottom1'>
+    <div className='space-bottom1'>
       <span className='dark block pad1x space-bottom1'>Account</span>
       <div id='user-stuff' className='space-bottom1 col12 clearfix mobile-cols'>
         {logState}
