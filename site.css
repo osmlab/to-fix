@@ -21,25 +21,26 @@ button,
   font-size:13px;
   line-height:18px;
   }
-.editbar .tabs > * {
+.editbar .tabs > button {
   border-width:0 0 0 1px;
   border-radius:0;
   }
-.editbar .tabs > *:first-child {
-  border-width:0;
-  border-radius:3px 0 0 0;
-  }
-.editbar .tabs > *:last-child {
-  border-radius:0 3px 0 0;
-  }
-.editbar .tabs > button:hover { background-color:rgba(0,0,0,0.9); }
-.button.small {
-  font-size:11px;
-  line-height:20px;
-  padding:5px 10px;
-  font-weight:500;
-  height:30px;
-  }
+  .editbar .tabs > button:first-child {
+    border-width:0;
+    border-radius:3px 0 0 0;
+    }
+  .editbar .tabs > button:last-child {
+    border-radius:0 3px 0 0;
+    }
+  .editbar .tabs > button:hover { background-color:rgba(0,0,0,0.9); }
+  .button.small {
+    font-size:11px;
+    line-height:20px;
+    padding:5px 10px;
+    font-weight:500;
+    height:30px;
+    }
+
 .loading:before {
   background-color:rgba(0,0,0,0.25);
   z-index:100;
@@ -74,7 +75,7 @@ button,
 /* mapbox.css Overrides
 ------------------------- */
 .mapbox-improve-map { display: none; }
-.leaflet-container { background-color:#222b30; }
+.leaflet-container  { background:#fff url(img/tile-bg.png) repeat 0 0; }
 
 /* Layout
 ------------------------- */
@@ -111,17 +112,6 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   color:#fff;
   }
 
-.error,
-.note {
-  display:none;
-  }
-.settings select {
-  margin-top:5px;
-  }
-.settings:target {
-  bottom:0;
-  opacity:1;
-  }
 .avatar {
   height:20px;
   margin-right:10px;
