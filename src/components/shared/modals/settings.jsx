@@ -39,9 +39,11 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <div id='modal' className='animate modal modal-content active'>
-        <div className='col4 modal-body fill-navy-dark contain'>
+        <div className='col4 modal-body fill-navy contain'>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
-          <h1 className='pad2 title fancy dark'>Settings</h1>
+          <div className='pad2'>
+            <h1 className='title fancy dark'>Settings</h1>
+          </div>
 
           <fieldset className='pad2x space-bottom2 dark'>
             <label className='quiet block space-bottom0'>Default editor</label>
@@ -52,6 +54,10 @@ module.exports = React.createClass({
               <label htmlFor='josm' className='col6 button quiet icon check'>JSOM editor</label>
             </div>
           </fieldset>
+
+          <div className='pad2x space-bottom2 center dark'>
+            Shortcut keys: <span className='quiet'><code className='fill-darken3'>e</code> Edit <code className='fill-darken3'>s</code> Skip <code className='fill-darken3'>f</code> Fixed</span>
+          </div>
 
           <div className='pad2x pad1y fill-light round-bottom text-right'>
             <button onClick={this.userLogout} className='rcon logout button quiet animate'>Logout</button>
