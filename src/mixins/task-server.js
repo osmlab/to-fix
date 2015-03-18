@@ -10,7 +10,7 @@ module.exports = {
       json: data,
       method: 'POST',
     }, function(err, res) {
-      if (err) cb(err);
+      if (err) return cb(err);
       cb(null, res.body);
     });
   }

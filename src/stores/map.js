@@ -63,8 +63,8 @@ module.exports = Reflux.createStore({
         case 'unconnected':
           _this.fetchUnconnected(function(err, res) {
             if (err) {
-              _this.taskData(task);
-              return console.error(err);
+              console.error(err);
+              return _this.taskData(task.id);
             }
             _this.trigger(_this.data);
           });
@@ -79,7 +79,7 @@ module.exports = Reflux.createStore({
     var full = (this.data.value.object_type === 'way') ? '/full' : '';
     var uri = config.osmApi + this.data.value.object_type + '/' + this.data.value.object_id + full;
     xhr({uri: uri, responseType: 'document'}, function(err, res) {
-      if (err) cb(err);
+      if (err) return cb(err);
       _this.data.mapData.push(res.body);
       cb(null);
     });
@@ -88,16 +88,20 @@ module.exports = Reflux.createStore({
   fetchUnconnected: function(cb) {
     var _this = this;
     var uri = config.osmApi + 'way/' + _this.data.value.way_id + '/full';
-    xhr({uri: uri}, function(err, res) {
-      if (err) cb(err);
+
+    xhr({uri: uri, responseType: 'document'}, function(err, res) {
+      if (err || res.statusCode != 200) return cb(err || { status: res.statusCode });
       _this.data.mapData.push(res.body);
       uri = config.osmApi + 'node/' + _this.data.value.node_id;
+
       xhr({uri: uri, responseType: 'document'}, function(err, res) {
-        if (err) cb(err);
+        if (err || res.statusCode != 200) return cb(err || { status: res.statusCode });
         _this.data.mapData.push(res.body);
         cb(null);
       });
+
     });
+
   },
 
   baseLayerChange: function(name) {
