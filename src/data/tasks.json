@@ -1,5 +1,13 @@
 {
   "tasks": [{
+    "id": "unconnected_major",
+    "title": "Unconnected major",
+    "source": "unconnected"
+  }, {
+    "id": "unconnected_minor1",
+    "title": "Unconnected minor",
+    "source": "unconnected"
+  }, {
     "id": "deadendoneway",
     "title": "Impossible one-ways",
     "source": "keepright"
@@ -39,13 +47,5 @@
     "id": "mispelledtags",
     "title": "Misspelled tags",
     "source": "keepright"
-  }, {
-    "id": "unconnected_major",
-    "title": "Unconnected major",
-    "source": "unconnected"
-  }, {
-    "id": "unconnected_minor1",
-    "title": "Unconnected minor",
-    "source": "unconnected"
   }]
 }
