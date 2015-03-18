@@ -62,8 +62,8 @@ module.exports = Reflux.createStore({
         case 'unconnected':
           _this.fetchUnconnected(function(err, res) {
             if (err) {
-              _this.taskData(task);
-              return console.error(err);
+              console.error(err);
+              return _this.taskData(task);
             }
             _this.trigger(_this.data);
           });
@@ -87,16 +87,20 @@ module.exports = Reflux.createStore({
   fetchUnconnected: function(cb) {
     var _this = this;
     var uri = config.osmApi + 'way/' + _this.data.value.way_id + '/full';
-    xhr({uri: uri}, function(err, res) {
-      if (err) cb(err);
+
+    xhr({uri: uri, responseType: 'document'}, function(err, res) {
+      if (err || res.statusCode != 200) cb(err || { status: res.statusCode });
       _this.data.mapData.push(res.body);
       uri = config.osmApi + 'node/' + _this.data.value.node_id;
+
       xhr({uri: uri, responseType: 'document'}, function(err, res) {
-        if (err) cb(err);
+        if (err || res.statusCode != 200) cb(err || { status: res.statusCode });
         _this.data.mapData.push(res.body);
         cb(null);
       });
+
     });
+
   },
 
   postToTaskServer: function(path, data, cb) {
