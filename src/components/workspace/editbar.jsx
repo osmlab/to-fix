@@ -45,7 +45,7 @@ module.exports = React.createClass({
     var taskActions = (
       /* jshint ignore:start */
       <nav className='tabs col12 clearfix'>
-        <a onClick={this.skip} className='col12 animate icon refresh'>Another task</a>
+        <a onClick={this.skip} className='col12 animate icon refresh'>Preview another task</a>
       </nav>
       /* jshint ignore:end */
     );
@@ -65,9 +65,9 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <div className='editbar pin-bottomleft col12 pad4 z1'>
-        <div className='dark round col6 margin3'>
+        <div className='round col6 margin3'>
           {taskActions}
-          <div className='fill-darken1 round-bottom col12 pad2x pad1y center strong inline'>{taskTitle}</div>
+          <div className='fill-lighten2 quiet round-bottom col12 pad2x pad1y center strong inline'>{taskTitle}</div>
         </div>
       </div>
       /* jshint ignore:end */

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <body>
+  <script>
+    // This page is called when the oauth handshake 
+    // has completed with OpenStreetMap via `osm-auth`
+    // See its NPM package for details
+    opener.authComplete(window.location.href);
+    window.close();
+  </script>
+  </body>
+</html>

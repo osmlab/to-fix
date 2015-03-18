@@ -24,6 +24,7 @@ button,
 .editbar .tabs > * {
   border-width:0 0 0 1px;
   background-color:rgba(0,0,0,0.75);
+  color:#fff;
   border-radius:0;
   }
   .editbar .tabs > *:first-child {

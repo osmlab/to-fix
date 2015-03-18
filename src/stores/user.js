@@ -8,13 +8,24 @@ var auth = require('../mixins/auth');
 module.exports = Reflux.createStore({
   user: {},
   init: function() {
+    this.user = {
+      auth: auth.authenticated(),
+      id: store.get('osmid'),
+      username: store.get('username'),
+      avatar: store.get('avatar')
+    };
+    this.listenTo(actions.userLogin, this.login);
+    this.listenTo(actions.userLogout, this.logout);
+  },
+
+  getInitialState: function() {
+    return this.user;
+  },
+
+  login: function() {
     var _this = this;
-    this.user.auth = auth.authenticated();
-    if (store.get('osmid')) {
-      this.user.id = store.get('osmid');
-      this.user.username = store.get('username');
-      this.user.avatar = store.get('avatar');
-    } else {
+    auth.authenticate(function(err) {
+      if (err) return console.error(err);
       auth.xhr({
         method: 'GET',
         path: '/api/0.6/user/details'
@@ -31,22 +42,8 @@ module.exports = Reflux.createStore({
           username: store.get('username'),
           avatar: store.get('avatar')
         };
-
+        _this.trigger(_this.user);
       });
-    }
-    this.listenTo(actions.userLogin, this.login);
-    this.listenTo(actions.userLogout, this.logout);
-  },
-
-  getInitialState: function() {
-    return this.user;
-  },
-
-  login: function() {
-    auth.authenticate(function(err) {
-      if (err) return console.error(err);
-      this.user.auth = auth.authenticated();
-      this.trigger(this.user);
     });
   },
 
