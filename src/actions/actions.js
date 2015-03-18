@@ -13,8 +13,10 @@ var actions = Reflux.createActions({
   // Application settings
   'sidebarToggled': {},
 
-  // Manages to-fix source types
-  'taskData': {}
+  // Manages to-fix tasks
+  'taskEdit': {},
+  'taskData': {},
+  'taskDone': {}
 });
 
 module.exports = actions;

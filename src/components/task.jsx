@@ -11,6 +11,8 @@ var Router = require('react-router');
 
 var actions = require('../actions/actions');
 var config = require('../config');
+var qs = require('querystring');
+var xhr = require('xhr');
 var EditBar = require('./workspace/editbar.jsx');
 var MapStore = require('../stores/map');
 var BingLayer = require('../ext/bing.js');
@@ -20,17 +22,40 @@ L.mapbox.accessToken = config.accessToken;
 module.exports = React.createClass({
   mixins: [
     Reflux.connect(MapStore, 'map'),
+    Reflux.listenTo(actions.taskEdit, 'taskEdit'),
     Router.State
   ],
 
   statics: {
     fetchData: function(params) {
-      // actions.taskData(params.task);
+      actions.taskData(params.task);
     }
   },
 
   componentDidUpdate: function() {
-    console.log(this.state);
+    var taskLayer = this.taskLayer;
+    var map = this.map;
+
+    // Clear any previously set layers in taskLayer
+    var prev = taskLayer.getLayers();
+    if (prev) {
+      prev.forEach(function(l) {
+        taskLayer.removeLayer(l);
+      });
+    }
+
+    if (this.state.map.mapData) {
+      this.state.map.mapData.forEach(function(xml) {
+        var layer = new L.OSM.DataLayer(xml)
+          .setStyle({
+            color: '#FF00B7',
+            opacity: 1,
+            weight: 4
+          })
+          .addTo(taskLayer);
+        map.fitBounds(layer.getBounds());
+      });
+    }
   },
 
   componentDidMount: function() {
@@ -67,18 +92,70 @@ module.exports = React.createClass({
       if (e.name === 'Bing Satellite') {
         transparentStreets.addTo(map).bringToFront();
       } else if (map.hasLayer(transparentStreets)) {
-        map.removeLayer(transparentStreets); 
+        map.removeLayer(transparentStreets);
       }
     });
 
+    this.taskLayer = L.featureGroup().addTo(map);
     this.map = map;
   },
+
+  taskEdit: function() {
+    var _this = this;
+    var bounds = this.map.getBounds();
+    var state = this.state.map;
+    var center = this.map.getCenter();
+    var zoom = this.map.getZoom();
+    var bottom = bounds._southWest.lat - 0.001;
+    var left = bounds._southWest.lng - 0.001;
+    var top = bounds._northEast.lat + 0.001;
+    var right = bounds._northEast.lng + 0.001;
+
+    // Try JOSM first
+    // TODO Establish this in a settings panel
+    xhr({
+      uri: config.josm + qs.stringify({
+        left: left,
+        right: right,
+        top: top,
+        bottom: bottom,
+        select: state.value + state.key
+      })
+    }, function(err, res) {
+      // Fallback to iD
+      if (err) {
+        _this.setState({
+          iDEdit: true,
+          iDEditPath: config.iD + 'map=' + zoom + '/' + center.lng + '/' + center.lat
+        });
+      }
+    });
+  },
+
+  iDEditDone: function() {
+    // Set editor state as complete and trigger the done action
+    this.setState({ iDEdit: false });
+    actions.taskData(this.getParams().task);
+  },
+
   render: function() {
+    var iDEditor = '';
+    if (this.state.iDEdit) {
+      iDEditor = (
+      /* jshint ignore:start */
+      <div>
+        <iframe src={this.state.iDEditPath} frameBorder='0' className='ideditor'></iframe>
+        <button onClick={this.iDEditDone} className='ideditor-done z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</button>
+      </div>
+      /* jshint ignore:end */
+      );
+    }
+
     return (
       /* jshint ignore:start */
       <div ref='map' className='mode active map fill-navy-dark'>
         <EditBar />
-        <a href='#' id='iD_escape' className='hidden z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</a>
+        {iDEditor}
       </div>
       /* jshint ignore:end */
     );

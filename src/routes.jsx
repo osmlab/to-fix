@@ -28,14 +28,9 @@ var App = React.createClass({
       <div>
         <Header />
         <Sidebar />
-
-        <div id='main' className='main fill-navy-dark col12 pin-bottom space-top6 animate'>
+        <div className='main fill-navy-dark col12 pin-bottom space-top6 animate'>
           <RouteHandler />
         </div>
-
-        <div id='errors' className='pin-top col12 z10000 center note warning'></div>
-        <div id='message' className='pin-top col12 z10000 animate modal modal-content'></div>
-        <div id='settings' className='pin-top col12 z10000 animate modal modal-content'></div>
       </div>
       /* jshint ignore:end */
     );

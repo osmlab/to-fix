@@ -18,11 +18,24 @@ module.exports = Reflux.createStore({
       baseLayer: store.get('baseLayer') ? store.get('baseLayer') : null
     };
     this.listenTo(actions.taskData, this.taskData);
+    this.listenTo(actions.taskDone, this.taskDone);
     this.listenTo(actions.baseLayerChange, this.baseLayerChange);
   },
 
   getInitialState: function() {
     return this.data;
+  },
+
+  taskDone: function(task) {
+    var _this = this;
+    var querystring = '?error=' + task;
+    this.postToTaskServer('fixed/' + querystring, {
+      user: store.get('username'),
+      state: this.data.value
+    }, function(err, res) {
+      if (err) return console.error(err);
+        _this.taskData(task);
+    });
   },
 
   taskData: function(task) {
@@ -32,7 +45,9 @@ module.exports = Reflux.createStore({
     // Clear out what mapData there is
     this.data.mapData = [];
 
-    this.postToTaskServer('error/' + task.id, function(err, res) {
+    this.postToTaskServer('error/' + task.id, {
+      user: store.get('username')
+    }, function(err, res) {
       if (err) return console.error(err);
       _this.data.key = res.key;
       _this.data.value = res.value;
@@ -59,7 +74,7 @@ module.exports = Reflux.createStore({
     var _this = this;
     var full = (this.data.value.object_type === 'way') ? '/full' : '';
     var uri = config.osmApi + this.data.value.object_type + '/' + this.data.value.object_id + full;
-    xhr({uri: uri}, function(err, res) {
+    xhr({uri: uri, responseType: 'document'}, function(err, res) {
       if (err) cb(err);
       _this.data.mapData.push(res.body);
       cb(null);
@@ -73,7 +88,7 @@ module.exports = Reflux.createStore({
       if (err) cb(err);
       _this.data.mapData.push(res.body);
       uri = config.osmApi + 'node/' + _this.data.value.object_id;
-      xhr({uri: uri}, function(err, res) {
+      xhr({uri: uri, responseType: 'document'}, function(err, res) {
         if (err) cb(err);
         _this.data.mapData.push(res.body);
         cb(null);
@@ -81,11 +96,11 @@ module.exports = Reflux.createStore({
     });
   },
 
-  postToTaskServer: function(path, cb) {
+  postToTaskServer: function(path, data, cb) {
     xhr({
       uri: config.taskServer + path,
+      json: data,
       method: 'POST',
-      json: {user: store.get('username')}
     }, function(err, res) {
       if (err) cb(err);
       cb(null, res.body);
