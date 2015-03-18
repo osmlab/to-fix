@@ -2,17 +2,20 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Link = require('react-router').Link;
+var Router = require('react-router');
+var Link = Router.Link;
 var appStore = require('../../stores/application');
 var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login.jsx');
 
 module.exports = React.createClass({
   mixins: [
-    Reflux.connect(appStore, 'appSettings')
+    Reflux.connect(appStore, 'appSettings'),
+    Router.State
   ],
 
   render: function() {
+    var topLevel = this.getRoutes()[1].name;
     var appSettings = this.state.appSettings;
     var sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
     if (appSettings.sidebar) sidebarClass += ' active';
@@ -21,7 +24,7 @@ module.exports = React.createClass({
       return (
         /* jshint ignore:start */
         <Link
-          to='task'
+          to={topLevel}
           key={i}
           className='block strong dark pad1x pad0y truncate'
           params={{task: task.id}}>

@@ -50,8 +50,8 @@ strong { font-weight:bold}
 
 .fill-orange.button:hover { background-color:#e55e5e; }
 .scroll-styled::-webkit-scrollbar {
-  width:8px;
-  height:8px;
+  width:5px;
+  height:5px;
   border-left:0;
   background:rgba(0,0,0,0.1);
   }
