@@ -21,18 +21,26 @@ button,
   font-size:13px;
   line-height:18px;
   }
-.editbar .tabs > button {
+.editbar .tabs > * {
   border-width:0 0 0 1px;
+  background-color:rgba(0,0,0,0.75);
   border-radius:0;
   }
-  .editbar .tabs > button:first-child {
+  .editbar .tabs > *:first-child {
     border-width:0;
     border-radius:3px 0 0 0;
     }
-  .editbar .tabs > button:last-child {
+  .editbar .tabs > *:last-child {
     border-radius:0 3px 0 0;
     }
-  .editbar .tabs > button:hover { background-color:rgba(0,0,0,0.9); }
+  .editbar .tabs > *:only-child {
+    border-radius:3px 3px 0 0;
+    }
+  .editbar .tabs > a:hover,
+  .editbar .tabs > button:hover {
+    background-color:rgba(0,0,0,0.9);
+    color:#fff;
+    }
   .button.small {
     font-size:11px;
     line-height:20px;
