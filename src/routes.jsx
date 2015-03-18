@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-
+var Reflux = require('reflux');
 var Router = require('react-router');
 var NotFoundRoute = Router.NotFoundRoute;
 var Navigation = Router.Navigation;
@@ -19,6 +19,8 @@ var Task = require('./components/task.jsx');
 var Activity = require('./components/activity.jsx');
 var Stats = require('./components/stats.jsx');
 var Upload = require('./components/upload.jsx');
+var Settings = require('./components/shared/modals/settings.jsx');
+var actions = require('./actions/actions');
 
 var tasks = require('./data/tasks.json').tasks;
 
@@ -27,8 +29,29 @@ var tasks = require('./data/tasks.json').tasks;
 var firstTask = '/task/' + tasks[0].id;
 
 var App = React.createClass({
-  mixins: [State],
+  mixins: [
+    State,
+    Reflux.listenTo(actions.openSettings, 'openSettings'),
+  ],
+
+  getInitialState: function() {
+    return {
+      settingsModal: null
+    };
+  },
+
+  openSettings: function() {
+    this.setState({ settingsModal: true });
+  },
+
+  closeModal: function() {
+    this.setState({ settingsModal: false });
+  },
+
   render: function () {
+    var settingsModal = (this.state.settingsModal) ?
+      (<Settings onClose={this.closeModal}/>) : ''
+
     return (
       /* jshint ignore:start */
       <div>
@@ -37,6 +60,7 @@ var App = React.createClass({
         <div className='main fill-navy-dark col12 pin-bottom space-top6 animate'>
           <RouteHandler />
         </div>
+        {settingsModal}
       </div>
       /* jshint ignore:end */
     );

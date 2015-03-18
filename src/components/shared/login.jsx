@@ -6,6 +6,8 @@ var Reflux = require('reflux');
 var userStore = require('../../stores/user');
 var actions = require('../../actions/actions');
 
+var Settings = require('./modals/settings.jsx');
+
 module.exports = React.createClass({
   mixins: [
     Reflux.connect(userStore, 'user')
@@ -14,6 +16,7 @@ module.exports = React.createClass({
   render: function() {
     var logState;
     var user = this.state.user;
+    var modal = document.getElementById('modal');
 
     if (user.auth) {
       logState = (
@@ -24,7 +27,7 @@ module.exports = React.createClass({
             {user.username}
           </a>
           <div className='col6 pad1x text-right'>
-            <a href='#' onClick={actions.userLogout} className='js-logout rcon logout button small animate'>Logout</a>
+            <button onClick={actions.openSettings} className='icon sprocket button quiet small animate'>Settings</button>
           </div>
         </div>
         /* jshint ignore:end */
@@ -33,7 +36,7 @@ module.exports = React.createClass({
       logState = (
         /* jshint ignore:start */
         <div className='pad1x'>
-          <a href='#' onClick={actions.userLogin} className='js-login icon osm button small block animate'>Authorize on OpenStreetMap</a>
+          <button onClick={actions.userLogin} className='icon osm button small block animate'>Authorize on OpenStreetMap</button>
         </div>
         /* jshint ignore:end */
       );

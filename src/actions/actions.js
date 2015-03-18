@@ -12,6 +12,8 @@ var actions = Reflux.createActions({
 
   // Application settings
   'sidebarToggled': {},
+  'openSettings': {},
+  'editorPreference': {},
 
   // Manages to-fix tasks
   'taskEdit': {},

@@ -12,10 +12,15 @@ module.exports = Reflux.createStore({
     var sidebar = store.get('sidebar');
     this.settings.sidebar = sidebar ? true : false;
     this.listenTo(actions.sidebarToggled, this.toggle);
+    this.listenTo(actions.editorPreference, this.setEditorPreference);
   },
 
   getInitialState: function() {
     return this.settings;
+  },
+
+  setEditorPreference: function(editor) {
+    store.set('editor', editor);
   },
 
   toggle: function() {

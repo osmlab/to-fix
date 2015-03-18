@@ -9,6 +9,7 @@ var React = require('react');
 var Reflux = require('reflux');
 var Router = require('react-router');
 
+var store = require('store');
 var actions = require('../actions/actions');
 var config = require('../config');
 var qs = require('querystring');
@@ -110,26 +111,34 @@ module.exports = React.createClass({
     var left = bounds._southWest.lng - 0.001;
     var top = bounds._northEast.lat + 0.001;
     var right = bounds._northEast.lng + 0.001;
+    var iDEditPath = config.iD + 'map=' + zoom + '/' + center.lng + '/' + center.lat;
 
-    // Try JOSM first
-    // TODO Establish this in a settings panel
-    xhr({
-      uri: config.josm + qs.stringify({
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-        select: state.value + state.key
-      })
-    }, function(err, res) {
-      // Fallback to iD
-      if (err) {
-        _this.setState({
-          iDEdit: true,
-          iDEditPath: config.iD + 'map=' + zoom + '/' + center.lng + '/' + center.lat
-        });
-      }
-    });
+    if (store.get('editor') && store.get('editor') === 'josm') {
+      // Try JOSM first
+      xhr({
+        uri: config.josm + qs.stringify({
+          left: left,
+          right: right,
+          top: top,
+          bottom: bottom,
+          select: state.value + state.key
+        })
+      }, function(err, res) {
+        // Fallback to iD
+        if (err) {
+          _this.setState({
+            iDEdit: true,
+            iDSrcAttribute: iDEditPath
+          });
+        }
+      });
+    } else {
+      // Default is the iD editor
+      _this.setState({
+        iDEdit: true,
+        iDSrcAttribute: iDEditPath
+      });
+    }
   },
 
   iDEditDone: function() {
@@ -144,7 +153,7 @@ module.exports = React.createClass({
       iDEditor = (
       /* jshint ignore:start */
       <div>
-        <iframe src={this.state.iDEditPath} frameBorder='0' className='ideditor'></iframe>
+        <iframe src={this.state.iDSrcAttribute} frameBorder='0' className='ideditor'></iframe>
         <button onClick={this.iDEditDone} className='ideditor-done z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</button>
       </div>
       /* jshint ignore:end */
