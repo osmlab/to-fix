@@ -54,7 +54,7 @@ module.exports = React.createClass({
             weight: 4
           })
           .addTo(taskLayer);
-        map.fitBounds(layer.getBounds());
+        map.fitBounds(layer.getBounds(), { reset: true });
       });
     }
   },
