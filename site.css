@@ -6,6 +6,7 @@ body {
   }
 h1, h2, h3, h4, h5, h6,
 strong,
+button,
 .strong,
 .tabs a,
 .button {
@@ -14,18 +15,18 @@ strong,
 .strong { font-weight:500; }
 strong { font-weight:bold}
 .tabs a,
+button,
 .button {
   font-weight:bold;
   font-size:13px;
   line-height:18px;
   }
-.tabs.short a {
+.editbar .tabs > * {
   border-width:0 0 0 1px;
-  padding:5px 20px;
-  height:30px;
-  }
-.tabs > *:first-child {
   border-radius:0;
+  background-color:transparent;
+  }
+.editbar .tabs > *:first-child {
   border-width:0;
   }
 .button.small {
