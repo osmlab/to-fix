@@ -46,7 +46,7 @@ button,
     font-size:11px;
     line-height:20px;
     padding:5px 10px;
-    font-weight:500;
+    font-weight:bold;
     height:30px;
     }
 
@@ -100,11 +100,14 @@ button,
 .mode         { display:none; }
 .mode.active  { display:block; }
 
-header .title {
+.fancy.title {
   font-size:22px;
+  line-height:24px;
+  margin:0;
+  }
+header .fancy.title {
   line-height:60px;
   color:rgba(0,0,0,0.5);
-  margin:0;
   }
 header .button         { background-color:transparent; color:rgba(0,0,0,0.5); }
 header .button:hover   { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
