@@ -14,7 +14,9 @@ var Raven = require('raven-js');
 
 var userStore = require('./stores/user.js');
 
-Raven.config(config.raven).install();
+Raven.config(config.raven, {
+  whitelistUrls: ['osmlab.github.io/to-fix/']
+}).install();
 
 function doAsync(routes, params) {
   var _this = this;
