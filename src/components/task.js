@@ -38,9 +38,8 @@ module.exports = React.createClass({
     var map = this.map;
 
     // Clear any previously set layers in taskLayer
-    var prev = taskLayer.getLayers();
-    if (prev) {
-      prev.forEach(function(l) {
+    if (taskLayer && taskLayer.getLayers()) {
+      taskLayer.getLayers().forEach(function(l) {
         taskLayer.removeLayer(l);
       });
     }
