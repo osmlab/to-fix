@@ -48,7 +48,7 @@ module.exports = Reflux.createStore({
     // Clear out what mapData there is
     this.data.mapData = [];
 
-    postToTaskServer('error/' + task.id, {
+    postToTaskServer('task/' + task.id, {
       user: store.get('username')
     }, function(err, res) {
       if (err) return emitError(err);
