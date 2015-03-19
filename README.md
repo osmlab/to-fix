@@ -1,13 +1,11 @@
-to-fix
+TO-FIX
 ---
 
-A map tasking manager for OpenStreetMap
+A task manager for OpenStreetMap.
 
 ### Building
 
 ```sh
 $ npm install
-$ npm start
+$ npm start & open http://localhost:3000/
 ```
-
-This will serve a local version to to-fix on http://localhost:3000/

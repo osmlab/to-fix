@@ -6,4 +6,4 @@
 *.csv
 node_modules/
 .lev_history
-js/.bundle.js
+dist/bundle.js

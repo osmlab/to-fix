@@ -6,35 +6,56 @@ body {
   }
 h1, h2, h3, h4, h5, h6,
 strong,
+button,
 .strong,
 .tabs a,
+input[type],
+label,
+form fieldset label,
 .button {
   font-family:'Helvetica Neue', Helvetica, sans-serif;
   }
 .strong { font-weight:500; }
 strong { font-weight:bold}
 .tabs a,
+input[type='submit'],
+button,
 .button {
   font-weight:bold;
   font-size:13px;
   line-height:18px;
   }
-.tabs.short a {
+h1, h2, h3 { font-weight:500; }
+h2 { padding-top:0; padding-bottom:0; }
+.editbar .tabs > * {
   border-width:0 0 0 1px;
-  padding:5px 20px;
-  height:30px;
-  }
-.tabs > *:first-child {
+  background-color:rgba(0,0,0,0.75);
+  color:#fff;
   border-radius:0;
-  border-width:0;
   }
-.button.small {
-  font-size:11px;
-  line-height:20px;
-  padding:5px 10px;
-  font-weight:500;
-  height:30px;
-  }
+  .editbar .tabs > *:first-child {
+    border-width:0;
+    border-radius:3px 0 0 0;
+    }
+  .editbar .tabs > *:last-child {
+    border-radius:0 3px 0 0;
+    }
+  .editbar .tabs > *:only-child {
+    border-radius:3px 3px 0 0;
+    }
+  .editbar .tabs > a:hover,
+  .editbar .tabs > button:hover {
+    background-color:rgba(0,0,0,0.9);
+    color:#fff;
+    }
+  .button.small {
+    font-size:11px;
+    line-height:20px;
+    padding:5px 10px;
+    font-weight:bold;
+    height:30px;
+    }
+
 .loading:before {
   background-color:rgba(0,0,0,0.25);
   z-index:100;
@@ -48,23 +69,20 @@ strong { font-weight:bold}
 .z1000 { z-index:1000; }
 .z10000 { z-index:10000; }
 
-.scroll-styled pre::-webkit-scrollbar,
+.fill-orange.button:hover { background-color:#e55e5e; }
 .scroll-styled::-webkit-scrollbar {
-  width:8px;
-  height:8px;
+  width:5px;
+  height:5px;
   border-left:0;
   background:rgba(0,0,0,0.1);
   }
-.scroll-styled pre::-webkit-scrollbar-track,
 .scroll-styled::-webkit-scrollbar-track {
   background:none;
   }
-.scroll-styled pre::-webkit-scrollbar-thumb,
 .scroll-styled::-webkit-scrollbar-thumb {
   background:rgba(0,0,0,0.4);
   border-radius:0;
   }
-.scroll-styled pre::-webkit-scrollbar:hover,
 .scroll-styled::-webkit-scrollbar:hover {
   background:rgba(0,0,0,0.4);
   }
@@ -72,11 +90,7 @@ strong { font-weight:bold}
 /* mapbox.css Overrides
 ------------------------- */
 .mapbox-improve-map { display: none; }
-.leaflet-container { background-color: #181818; }
-.leaflet-container .leaflet-control-attribution {
-  background-color: rgba(0,0,0,0.75);
-  border-top-left-radius: 3px;
-}
+.leaflet-container  { background:#fff url(img/tile-bg.png) repeat 0 0; }
 
 /* Layout
 ------------------------- */
@@ -89,14 +103,14 @@ strong { font-weight:bold}
 
 /* Components
 ------------------------- */
-.mode         { display:none; }
-.mode.active  { display:block; }
-
-header .title {
+.fancy.title {
   font-size:22px;
+  line-height:24px;
+  margin:0;
+  }
+header .fancy.title {
   line-height:60px;
   color:rgba(0,0,0,0.5);
-  margin:0;
   }
 header .button         { background-color:transparent; color:rgba(0,0,0,0.5); }
 header .button:hover   { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
@@ -109,30 +123,28 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   background-color:rgba(0,0,0,0.20);
   }
 .sidebar nav a.active {
-  background-color:rgba(0,0,0,0.75);
+  background-color:rgba(0,0,0,0.5);
   color:#fff;
   }
 
-.error,
-.note {
-  display:none;
+.dialog .close {
+  background-color:transparent;
+  color:rgba(0,0,0,0.5);
   }
-.settings select {
-  margin-top:5px;
+.dialog .close:hover {
+  background-color:transparent;
+  color:rgba(0,0,0,0.75);
   }
-.settings:target {
-  bottom:0;
-  opacity:1;
-  }
+
 .avatar {
   height:20px;
   margin-right:10px;
   }
 
 /* iD container
- * elements when editing
+ * elements while editing
 ------------------------- */
-#iD {
+.ideditor {
   position:absolute;
   top:0;
   left:0;
@@ -140,10 +152,10 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   width:100%;
   z-index:2000;
   }
-#iD_escape {
-  position:absolute;
-  right:10px;
-  top:10px;
-  color:#fff;
-  font-weight:bold;
-  }
+  .ideditor-done {
+    position:absolute;
+    right:10px;
+    top:10px;
+    color:#fff;
+    font-weight:bold;
+    }
