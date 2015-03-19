@@ -32,10 +32,9 @@ module.exports = Reflux.createStore({
 
   taskDone: function(task) {
     var _this = this;
-    var querystring = '?error=' + task;
-    postToTaskServer('fixed/' + querystring, {
+    postToTaskServer('fixed/' + task, {
       user: store.get('username'),
-      state: this.data.value
+      key: this.data.key
     }, function(err, res) {
       if (err) return emitError(err);
         _this.taskData(task);
@@ -49,7 +48,7 @@ module.exports = Reflux.createStore({
     // Clear out what mapData there is
     this.data.mapData = [];
 
-    postToTaskServer('error/' + task.id, {
+    postToTaskServer('task/' + task.id, {
       user: store.get('username')
     }, function(err, res) {
       if (err) return emitError(err);
