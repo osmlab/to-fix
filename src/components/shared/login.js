@@ -17,12 +17,13 @@ module.exports = React.createClass({
     var logState;
     var user = this.state.user;
     var modal = document.getElementById('modal');
+    var profile = 'http://www.openstreetmap.org/user/' + user.username;
 
     if (user.auth) {
       logState = (
         /* jshint ignore:start */
         <div>
-          <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href='http://www.openstreetmap.org/user/username' title='Profile on OpenStreetMap'>
+          <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href={profile} title='Profile on OpenStreetMap'>
             <img className='dot avatar' src={user.avatar} />
             {user.username}
           </a>
