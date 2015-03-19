@@ -22,7 +22,7 @@ module.exports = React.createClass({
     if (user.auth) {
       logState = (
         /* jshint ignore:start */
-        <div>
+        <div className='col12 clearfix mobile-cols'>
           <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href={profile} title='Profile on OpenStreetMap'>
             <img className='dot avatar' src={user.avatar} />
             {user.username}
