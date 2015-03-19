@@ -24,15 +24,9 @@
   },
   "env": {
     "node": true,
-    "browser": true,
-    "jquery": true
+    "browser": true
   },
   "globals": {
-    "L": true,
-    /* TODO remove the need for these globals. */
-    "featureStyle": true,
-    "featureGroup": true,
-    "current": true,
-    "map": true
+    "L": true
   }
 }
