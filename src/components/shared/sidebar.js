@@ -6,7 +6,7 @@ var Router = require('react-router');
 var Link = Router.Link;
 var appStore = require('../../stores/application');
 var taskItems = require('../../data/tasks.json').tasks;
-var LogIn = require('./login.jsx');
+var LogIn = require('./login');
 var actions = require('../../actions/actions');
 
 module.exports = React.createClass({

@@ -6,7 +6,7 @@ var Reflux = require('reflux');
 var userStore = require('../../stores/user');
 var actions = require('../../actions/actions');
 
-var Settings = require('./modals/settings.jsx');
+var Settings = require('./modals/settings');
 
 module.exports = React.createClass({
   mixins: [

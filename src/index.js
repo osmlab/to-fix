@@ -6,10 +6,10 @@ var Reflux = require('reflux');
 var qs = require('querystring');
 
 var Router = require('react-router');
-var Routes = require('./routes.jsx');
+var Routes = require('./routes');
 var config = require('./config');
 var auth = require('./mixins/auth');
-var Loader = require('./components/shared/loader.jsx');
+var Loader = require('./components/shared/loader');
 var Raven = require('raven-js');
 
 var userStore = require('./stores/user.js');

@@ -8,7 +8,7 @@ module.exports = function(obj) {
   if (obj && obj.status) {
     switch (obj.status) {
       case 410: // GONE
-      err = 'Task loaded was already complete';
+      err = 'A task loaded was already complete';
       break;
     }
   }

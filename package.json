@@ -2,7 +2,7 @@
   "name": "to-fix",
   "version": "0.0.0",
   "description": "A task manager for OpenStreetMap",
-  "main": "src/index.jsx",
+  "main": "src/index.js",
   "dependencies": {
     "leaflet-omnivore": "~0.2.0",
     "leaflet-osm": "^0.1.0",
@@ -24,8 +24,8 @@
     "watchify": "^2.4.0"
   },
   "scripts": {
-    "start": "watchify -d -t reactify src/index.jsx -o dist/bundle.js & serve",
-    "test": "eslint src/*.jsx src/components/*.jsx src/components/**/*.jsx"
+    "start": "watchify -d -t reactify src/index.js -o dist/bundle.js & serve",
+    "test": "eslint src/*.js src/components/*.js src/components/**/*.js"
   },
   "repository": {
     "type": "git",

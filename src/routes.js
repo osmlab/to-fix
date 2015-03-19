@@ -12,16 +12,16 @@ var RouteHandler = Router.RouteHandler;
 var DefaultRoute = Router.DefaultRoute;
 var Redirect = Router.Redirect;
 
-var Header = require('./components/shared/header.jsx');
-var Sidebar = require('./components/shared/sidebar.jsx');
+var Header = require('./components/shared/header');
+var Sidebar = require('./components/shared/sidebar');
 
-var Task = require('./components/task.jsx');
-var Activity = require('./components/activity.jsx');
-var Stats = require('./components/stats.jsx');
+var Task = require('./components/task');
+var Activity = require('./components/activity');
+var Stats = require('./components/stats');
 
-var Upload = require('./components/shared/modals/upload.jsx');
-var Settings = require('./components/shared/modals/settings.jsx');
-var ErrorDialog = require('./components/shared/error.jsx');
+var Upload = require('./components/shared/modals/upload');
+var Settings = require('./components/shared/modals/settings');
+var ErrorDialog = require('./components/shared/error');
 var actions = require('./actions/actions');
 
 var tasks = require('./data/tasks.json').tasks;

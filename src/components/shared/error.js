@@ -17,7 +17,8 @@ module.exports = React.createClass({
 
   componentDidUpdate: function() {
     var _this = this;
-    window.setTimeout(function() {
+    if (this.timedDismiss) window.clearTimeout(this.timedDismiss);
+    this.timedDismiss = window.setTimeout(function() {
       _this.dismiss();
     }, 3000);
   },
@@ -44,7 +45,7 @@ module.exports = React.createClass({
         <div className='fill-orange round col3 quiet dialog'>
           <button onClick={this.dismiss} className='icon fr close button quiet'></button>
           <div className='pad1'>
-            <strong>{this.state.error}</strong>
+            <strong className='icon alert'>{this.state.error}</strong>
           </div>
         </div>
       </div>
