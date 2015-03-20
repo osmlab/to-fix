@@ -15,7 +15,7 @@ var config = require('../config');
 var qs = require('querystring');
 var xhr = require('xhr');
 var EditBar = require('./workspace/editbar');
-var MapStore = require('../stores/map');
+var MapStore = require('../stores/map_store');
 var BingLayer = require('../ext/bing.js');
 
 L.mapbox.accessToken = config.accessToken;

@@ -12,7 +12,7 @@ var auth = require('./mixins/auth');
 var Loader = require('./components/shared/loader');
 var Raven = require('raven-js');
 
-var userStore = require('./stores/user.js');
+var userStore = require('./stores/user_store.js');
 
 Raven.config(config.raven, {
   whitelistUrls: ['osmlab.github.io/to-fix/']
