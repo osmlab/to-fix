@@ -5,7 +5,7 @@ var Reflux = require('reflux');
 var Router = require('react-router');
 var Link = Router.Link;
 
-var appStore = require('../../stores/application');
+var appStore = require('../../stores/application_store');
 var actions = require('../../actions/actions');
 
 module.exports = React.createClass({

@@ -3,7 +3,7 @@
 var React = require('react');
 var Reflux = require('reflux');
 
-var userStore = require('../../stores/user');
+var userStore = require('../../stores/user_store');
 var actions = require('../../actions/actions');
 
 var Settings = require('./modals/settings');
