@@ -5,7 +5,7 @@ var Reflux = require('reflux');
 var Router = require('react-router');
 var taskObj = require('../../mixins/task-item');
 var actions = require('../../actions/actions');
-var UserStore = require('../../stores/user');
+var UserStore = require('../../stores/user_store');
 var Keys = require('react-keybinding');
 
 module.exports = React.createClass({
