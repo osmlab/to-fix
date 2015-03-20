@@ -29,7 +29,7 @@ module.exports = React.createClass({
   },
 
   edit: function() {
-    actions.taskEdit();
+    actions.taskEdit(this.getParams().task);
   },
 
   skip: function() {
