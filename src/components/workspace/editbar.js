@@ -3,17 +3,17 @@
 var React = require('react');
 var Reflux = require('reflux');
 var Router = require('react-router');
-var taskObj = require('../../mixins/task-item');
 var actions = require('../../actions/actions');
 var UserStore = require('../../stores/user');
 var Keys = require('react-keybinding');
+var taskObj = require('../../mixins/taskobj');
 
 module.exports = React.createClass({
   mixins: [
     Router.State,
     Reflux.connect(UserStore, 'user'),
-    taskObj,
-    Keys
+    Keys,
+    taskObj
   ],
 
   keybindings: {

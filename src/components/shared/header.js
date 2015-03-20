@@ -27,7 +27,7 @@ module.exports = React.createClass({
 
     return (
       /* jshint ignore:start */
-      <header className='fill-light keyline-bottom row-60 col12 clearfix'>
+      <header className='fill-light keyline-bottom row-60 col12 clearfix mobile-cols'>
         <nav className='col3'>
           <a href='#' onClick={this.toggle} className={toggleClass}>
             <span className='icon big menu'></span>
@@ -37,7 +37,7 @@ module.exports = React.createClass({
           </a>
         </nav>
         <div className='col9 text-right pad1'>
-          <nav className='js-mode-controls col12 text-right space pad0y'>
+          <nav className='col12 space pad0y'>
             <Link
               className='icon pencil animate short button'
               params={{ task: currentTask }}
@@ -49,12 +49,6 @@ module.exports = React.createClass({
               params={{ task: currentTask }}
               to='activity'>
               Activity
-            </Link>
-            <Link
-              className='icon graph animate short button'
-              params={{ task: currentTask }}
-              to='stats'>
-              Statistic
             </Link>
           </nav>
         </div>

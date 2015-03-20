@@ -17,7 +17,6 @@ var Sidebar = require('./components/shared/sidebar');
 
 var Task = require('./components/task');
 var Activity = require('./components/activity');
-var Stats = require('./components/stats');
 
 var Upload = require('./components/shared/modals/upload');
 var Settings = require('./components/shared/modals/settings');
@@ -66,9 +65,9 @@ var App = React.createClass({
       <div>
         <Header />
         <Sidebar />
-        <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate'>
+        <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
           <RouteHandler />
-          <ErrorDialog />;
+          <ErrorDialog />
         </div>
         {settingsModal}
         {uploadModal}
@@ -83,7 +82,6 @@ module.exports = (
   <Route path='/' handler={App}>
     <Route name='task' path='/task/:task' handler={Task} />
     <Route name='activity' path='/activity/:task' handler={Activity} />
-    <Route name='stats' path='/statistics/:task' handler={Stats} />
     <DefaultRoute handler={Task} />
     <Redirect from='/' to={firstTask} />
   </Route>
