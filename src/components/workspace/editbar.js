@@ -35,7 +35,7 @@ module.exports = React.createClass({
   skip: function() {
     var task = this.getParams().task;
     actions.taskData(task);
-    actions.skipItem(task);
+    actions.taskSkip(task);
   },
 
   fixed: function() {

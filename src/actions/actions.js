@@ -30,7 +30,7 @@ var actions = Reflux.createActions({
   'taskDone': {},
 
   // common buttons
-  'skipItem': {}
+  'taskSkip': {}
 });
 
 module.exports = actions;
