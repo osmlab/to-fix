@@ -24,6 +24,7 @@ module.exports = Reflux.createStore({
     this.listenTo(actions.taskData, this.taskData);
     this.listenTo(actions.taskDone, this.taskDone);
     this.listenTo(actions.baseLayerChange, this.baseLayerChange);
+    this.listenTo(actions.skipItem, this.skipItem);
   },
 
   getInitialState: function() {
@@ -108,6 +109,18 @@ module.exports = Reflux.createStore({
 
   baseLayerChange: function(name) {
     store.set('baseLayer', name);
+  },
+
+  skipItem: function(task) {
+    postToTaskServer('track/' + task, {
+      attributes: {
+        user: store.get('username'),
+        action: 'skipped',
+        key: this.data.key
+      }
+    }, function(err, res) {
+      if (err) console.log(err);
+    });
   }
 
 });
