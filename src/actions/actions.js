@@ -27,7 +27,10 @@ var actions = Reflux.createActions({
   // Manages to-fix tasks
   'taskEdit': {},
   'taskData': {},
-  'taskDone': {}
+  'taskDone': {},
+
+  // common buttons
+  'taskSkip': {}
 });
 
 module.exports = actions;
