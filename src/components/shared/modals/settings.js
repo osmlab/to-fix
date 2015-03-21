@@ -39,7 +39,7 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <div id='modal' className='animate modal modal-content active'>
-        <div className='col4 modal-body fill-navy contain'>
+        <div className='col4 modal-body fill-purple contain'>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
             <h2 className='dark'>Settings</h2>
@@ -56,7 +56,7 @@ module.exports = React.createClass({
           </fieldset>
 
           <div className='pad2x space-bottom2 dark'>
-            Shortcut keys: <span className='quiet'><code className='fill-darken3'>e</code> Edit <code className='fill-darken3'>s</code> Skip <code className='fill-darken3'>f</code> Fixed</span>
+            Shortcut keys: <span className='quiet'><code className='fill-darken1'>e</code> Edit <code className='fill-darken1'>s</code> Skip <code className='fill-darken1'>f</code> Fixed</span>
           </div>
 
           <div className='pad2x pad1y fill-light round-bottom text-right'>

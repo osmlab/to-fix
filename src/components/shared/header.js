@@ -28,7 +28,7 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <header className='fill-light keyline-bottom row-60 col12 clearfix mobile-cols'>
-        <nav className='col3'>
+        <nav className='col6'>
           <a href='#' onClick={this.toggle} className={toggleClass}>
             <span className='icon big menu'></span>
           </a>
@@ -36,7 +36,7 @@ module.exports = React.createClass({
             <h1 className='inline fancy title'>to-fix</h1>
           </a>
         </nav>
-        <div className='col9 text-right pad1'>
+        <div className='col6 text-right pad1'>
           <nav className='col12 space pad0y'>
             <Link
               className='icon pencil animate short button'

@@ -9,7 +9,6 @@ var Router = require('react-router');
 var Routes = require('./routes');
 var config = require('./config');
 var auth = require('./mixins/auth');
-var Loader = require('./components/shared/loader');
 var Raven = require('raven-js');
 
 var userStore = require('./stores/user_store.js');
@@ -56,9 +55,7 @@ if (window.location.search && !auth.authenticated()) {
 } else {
   router.run(function(Handler, state) {
     /* jshint ignore:start */
-    React.render(<Loader loading={true}/>, loader);
     doAsync(state.routes, state.params).then(function() {
-      React.render(<Loader loading={false}/>, loader);
       React.render(<Handler />, el);
     }, function(err) {
       throw err;

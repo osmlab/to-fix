@@ -48,7 +48,7 @@ module.exports = React.createClass({
       this.state.map.mapData.forEach(function(xml) {
         var layer = new L.OSM.DataLayer(xml)
           .setStyle({
-            color: '#FF00B7',
+            color: '#866CB7',
             opacity: 1,
             weight: 4
           })

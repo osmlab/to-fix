@@ -27,6 +27,10 @@ button,
   line-height:18px;
   }
 h1, h2, h3 { font-weight:500; }
+h4, h5, h6 {
+  font-size:15px;
+  line-height:28px;
+  }
 h2 { padding-top:0; padding-bottom:0; }
 .editbar .tabs > * {
   border-width:0 0 0 1px;
@@ -102,6 +106,25 @@ h2 { padding-top:0; padding-bottom:0; }
   bottom:0;
   }
 
+/* Colors
+------------------------- */
+button,
+.button,
+[type=button],
+[type=submit] {
+  background-color:#6E65B3;
+  }
+button:hover,
+.button:hover,
+[type=button]:hover,
+[type=submit]:hover {
+  background-color:#534c87;
+  }
+
+.progress,
+.fill-purple { background-color:#6E65B3; }
+.area { fill:#6E65B3; }
+
 /* Components
 ------------------------- */
 .fancy.title {
@@ -144,15 +167,15 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
 
 .progress-bar {
   border-radius:50px;
-  height:15px;
+  height:10px;
   }
 .progress {
   border-radius:50px;
   width:0;
-  height:15px;
-  top:8px;
-  left:8px;
-  right:8px;
+  height:10px;
+  top:0;
+  left:0;
+  right:0;
   min-width:1%;
   max-width:100%;
   }
@@ -180,9 +203,11 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
 ------------------------- */
 svg {
   font-size:10px;
+  font-weight:bold;
   }
-.area {
-  fill:#f9886c;
+text {
+  font-family:Consolas, monospace;
+  fill:rgba(255,255,255,0.5);
   }
 .axis path,
 .axis line {

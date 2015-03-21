@@ -28,7 +28,7 @@ module.exports = React.createClass({
   },
 
   triggerFileInput: function() {
-    this.refs.fileInput.getDOMNode().click(); 
+    this.refs.fileInput.getDOMNode().click();
   },
 
   uploadData: function(e) {
@@ -51,7 +51,7 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <div id='modal' className='animate modal modal-content active'>
-        <div className='col4 modal-body fill-navy contain'>
+        <div className='col4 modal-body fill-purple contain'>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
             <h2 className='dark'>Upload</h2>
@@ -72,7 +72,7 @@ module.exports = React.createClass({
             </fieldset>
 
             <div className='pad2x pad1y fill-light round-bottom col12 clearfix'>
-              <input className='col6 margin3' type='submit' value='Upload' />
+              <input className='col6 margin3' type='submit' value='Upload file' />
             </div>
           </form>
         </div>

@@ -40,10 +40,10 @@ module.exports = React.createClass({
       <div className={sidebarClass}>
         <div className='scroll-styled pad2y'>
           <LogIn />
-          <span className='dark block pad1x space-bottom1'>Tasks</span>
+          <h4 className='dark block pad1x space-bottom1'>Tasks</h4>
           <nav ref='taskList' className='space-bottom2'>{tasks}</nav>
           <div className='pad1x'>
-            <button onClick={actions.openUpload} className='button icon plus quiet short'>New task</button>
+            <button onClick={actions.openUpload} className='button icon plus quiet short small'>New task</button>
           </div>
         </div>
       </div>
