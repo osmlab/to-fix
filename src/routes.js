@@ -1,11 +1,9 @@
 'use strict';
 
 var React = require('react');
-var Reflux = require('reflux');
 var Router = require('react-router');
 var NotFoundRoute = Router.NotFoundRoute;
 var Navigation = Router.Navigation;
-var State = Router.State;
 var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
@@ -14,14 +12,10 @@ var Redirect = Router.Redirect;
 
 var Header = require('./components/shared/header');
 var Sidebar = require('./components/shared/sidebar');
-
 var Task = require('./components/task');
 var Activity = require('./components/activity');
-
-var Upload = require('./components/shared/modals/upload');
-var Settings = require('./components/shared/modals/settings');
+var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
-var actions = require('./actions/actions');
 
 var tasks = require('./data/tasks.json').tasks;
 
@@ -30,36 +24,7 @@ var tasks = require('./data/tasks.json').tasks;
 var firstTask = '/task/' + tasks[0].id;
 
 var App = React.createClass({
-  mixins: [
-    State,
-    Reflux.listenTo(actions.openSettings, 'openSettings'),
-    Reflux.listenTo(actions.openUpload, 'openUpload')
-  ],
-
-  getInitialState: function() {
-    return {
-      settingsModal: null,
-      UploadModal: null
-    };
-  },
-
-  openSettings: function() { this.setState({ settingsModal: true }); },
-  openUpload: function() { this.setState({ uploadModal: true }); },
-
-  closeModal: function() {
-    this.setState({
-      settingsModal: null,
-      uploadModal: null
-    });
-  },
-
   render: function () {
-    var settingsModal = (this.state.settingsModal) ?
-      (<Settings onClose={this.closeModal}/>) : '';
-
-    var uploadModal = (this.state.uploadModal) ?
-      (<Upload onClose={this.closeModal}/>) : '';
-
     return (
       /* jshint ignore:start */
       <div>
@@ -69,8 +34,7 @@ var App = React.createClass({
           <RouteHandler />
           <ErrorDialog />
         </div>
-        {settingsModal}
-        {uploadModal}
+        <Modal />
       </div>
       /* jshint ignore:end */
     );

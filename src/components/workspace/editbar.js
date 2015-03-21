@@ -29,11 +29,13 @@ module.exports = React.createClass({
   },
 
   edit: function() {
-    actions.taskEdit();
+    actions.taskEdit(this.getParams().task);
   },
 
   skip: function() {
-    actions.taskData(this.getParams().task);
+    var task = this.getParams().task;
+    actions.taskData(task);
+    actions.taskSkip(task);
   },
 
   fixed: function() {
