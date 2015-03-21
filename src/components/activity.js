@@ -12,7 +12,6 @@ module.exports = React.createClass({
   mixins: [
     Reflux.connect(ActivityStore, 'activity'),
     Reflux.listenTo(actions.sidebarToggled, 'resize'),
-    Reflux.listenTo(actions.graphInitialized, 'graphInitialized'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
     Router.State,
     taskObj
