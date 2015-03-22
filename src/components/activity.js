@@ -5,17 +5,22 @@ var Reflux = require('reflux');
 var Router = require('react-router');
 var actions = require('../actions/actions');
 var taskObj = require('../mixins/taskobj');
-var d3Graph = require('../util/d3Graph');
 var ActivityStore = require('../stores/activity_store');
+var Graph = require('./workspace/graph');
 
 module.exports = React.createClass({
   mixins: [
     Reflux.connect(ActivityStore, 'activity'),
-    Reflux.listenTo(actions.sidebarToggled, 'resize'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
     Router.State,
     taskObj
   ],
+
+  statics: {
+    fetchData: function(params) {
+      actions.taskStats(params.task);
+    }
+  },
 
   getInitialState: function() {
     return {
@@ -24,18 +29,6 @@ module.exports = React.createClass({
         'total': 5096,
         'available': 3646
       }
-    };
-  },
-
-  statics: {
-    fetchData: function(params) {
-      actions.taskStats(params.task);
-    }
-  },
-
-  getGraphState: function() {
-    return {
-      data: this.state.activity
     };
   },
 
@@ -48,29 +41,8 @@ module.exports = React.createClass({
     }
   },
 
-  componentDidMount: function() {
-    var el = this.refs.brushgraph.getDOMNode();
-    d3Graph.create(el, this.getGraphState());
-  },
-
-  componentDidUpdate: function() {
-    d3Graph.update(this.refs.brushgraph.getDOMNode(), this.getGraphState());
-  },
-
-  componentWillUnmount: function() {
-    d3Graph.destroy(this.refs.brushgraph.getDOMNode());
-  },
-
-  resize: function() {
-    var _this = this;
-    window.setTimeout(function() {
-      d3Graph.resize(_this.refs.brushgraph.getDOMNode());
-    }, 300);
-  },
-
   render: function() {
     var taskTitle = taskObj(this.getParams().task).title;
-
     var available = this.state.totals.available;
     var total = this.state.totals.total;
     var completed = total - available;
@@ -103,9 +75,8 @@ module.exports = React.createClass({
             </div>
           </div>
         </div>
-        <div className='fill-darken1 pad2 round col12'>
-          <div ref='brushgraph'></div>
-        </div>
+        {this.state.activity ? <Graph
+          data={this.state.activity} /> : ''}
       </div>
       /* jshint ignore:end */
     );

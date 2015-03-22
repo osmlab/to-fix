@@ -3,9 +3,8 @@ var actions = require('../actions/actions');
 
 module.exports = {
 
-  create: function(el, state) {
+  create: function(el) {
     el = d3.select(el);
-    var data = state.data;
     var svg = el.append('svg')
       .attr('width', this._getContainerWidth(el))
       .attr('height', this._getContainerHeight());
@@ -80,7 +79,9 @@ module.exports = {
       .attr('y', -6)
       .attr('height', this._getHeight() + 7);
 
-    console.log(brush.extent());
+    var from = this._formatDate(data[0].date);
+    var to = this._formatDate(data[data.length - 1].date);
+    actions.graphUpdated(from, to);
   },
 
   destroy: function(el) {},
