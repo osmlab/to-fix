@@ -9,6 +9,7 @@ var actions = Reflux.createActions({
 
   // Map state
   'baseLayerChange': {},
+  'geolocated': {},
 
   // Application settings
   'sidebarToggled': {},

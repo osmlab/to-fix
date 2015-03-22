@@ -19,6 +19,7 @@ var MapStore = require('../stores/map_store');
 var BingLayer = require('../ext/bing.js');
 
 L.mapbox.accessToken = config.accessToken;
+var geocoder = L.mapbox.geocoder('mapbox.places');
 
 module.exports = React.createClass({
   mixins: [
@@ -54,7 +55,8 @@ module.exports = React.createClass({
           })
           .addTo(taskLayer);
         map.fitBounds(layer.getBounds(), { reset: true });
-      });
+        this.geolocate(map.getCenter());
+      }.bind(this));
     }
   },
 
@@ -144,6 +146,19 @@ module.exports = React.createClass({
     // Set editor state as complete and trigger the done action
     this.setState({ iDEdit: false });
     actions.taskData(this.getParams().task);
+  },
+
+  geolocate: function(center) {
+    geocoder.reverseQuery([center.lng, center.lat], function(err, res) {
+      if (res && res.features && res.features[0] && res.features[0].context) {
+        var place = res.features[0].context.reduce(function(memo, context) {
+          var id = context.id.split('.')[0];
+          if (id === 'region' || id === 'country') memo.push(context.text);
+          return memo;
+        }, []);
+        actions.geolocated(place.join(', '));
+      }
+    });
   },
 
   render: function() {

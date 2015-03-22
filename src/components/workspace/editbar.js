@@ -12,6 +12,7 @@ module.exports = React.createClass({
   mixins: [
     Router.State,
     Reflux.connect(UserStore, 'user'),
+    Reflux.listenTo(actions.geolocated, 'geolocate'),
     taskObj,
     Keys
   ],
@@ -42,6 +43,12 @@ module.exports = React.createClass({
     actions.taskDone(this.getParams().task);
   },
 
+  geolocate: function(placename) {
+    this.setState({
+      placename: placename
+    });
+  },
+
   render: function() {
     var taskTitle = taskObj(this.getParams().task).title;
     var taskActions = (
@@ -69,7 +76,9 @@ module.exports = React.createClass({
       <div className='editbar pin-bottomleft col12 pad4 z1'>
         <div className='round col6 margin3'>
           {taskActions}
-          <div className='fill-lighten2 quiet round-bottom col12 pad2x pad1y center strong inline'>{taskTitle}</div>
+          <div className='fill-lighten3 round-bottom col12 pad2x pad1y center strong inline truncate'>
+            {taskTitle} {this.state.placename ? <span className='quiet icon marker'>{this.state.placename}</span> : ''}
+          </div>
         </div>
       </div>
       /* jshint ignore:end */
