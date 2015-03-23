@@ -13,7 +13,7 @@ var Redirect = Router.Redirect;
 var Header = require('./components/shared/header');
 var Sidebar = require('./components/shared/sidebar');
 var Task = require('./components/task');
-var Activity = require('./components/activity');
+var Stats = require('./components/stats');
 var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
 
@@ -45,7 +45,7 @@ module.exports = (
   /* jshint ignore:start */
   <Route path='/' handler={App}>
     <Route name='task' path='/task/:task' handler={Task} />
-    <Route name='activity' path='/activity/:task' handler={Activity} />
+    <Route name='stats' path='/stats/:task' handler={Stats} />
     <DefaultRoute handler={Task} />
     <Redirect from='/' to={firstTask} />
   </Route>
