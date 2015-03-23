@@ -76,7 +76,7 @@ module.exports = React.createClass({
       });
     } else {
       /* jshint ignore:start */
-      row = (<strong className='quiet'>No activity data found.</strong>);
+      row = (<strong className='quiet'>No recent activity found.</strong>);
       /* jshint ignore:end */
     }
 
