@@ -25,8 +25,7 @@ module.exports = React.createClass({
 
   statics: {
     fetchData: function(params) {
-      var period = (params.period) ? params.period : 'week';
-      actions.taskActivity(params.task, period);
+      actions.taskActivity(params.task);
     }
   },
 

@@ -1,11 +1,11 @@
 'use strict';
 
 var Reflux = require('reflux');
-var xhr = require('xhr');
+var d3 = require('d3');
+
 var actions = require('../actions/actions');
 var emitError = require('../mixins/error');
 var taskServer = require('../mixins/taskserver');
-var periodFilter = require('../data/period_filtering')
 
 module.exports = Reflux.createStore({
   activity: [],
@@ -18,10 +18,12 @@ module.exports = Reflux.createStore({
     return this.activity;
   },
 
-  taskActivity: function(task, period) {
-    // Pull from/to dates based on period passed.
-    var dates = periodFilter[period];
-    dates = '/from:' + dates[0] + '/to:' + dates[1];
+  taskActivity: function(task) {
+    var dateFormat = d3.time.format('%Y-%m-%d');
+    var from = dateFormat(d3.time.day.offset(new Date(), -7));
+    var to = dateFormat(new Date());
+    var dates = '/from:' + from + '/to:' + to;
+
     taskServer.get('track/' + task + dates, function(err, res) {
       if (err) return emitError(err);
       this.activity = res.data.reverse();
