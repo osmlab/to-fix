@@ -13,5 +13,15 @@ module.exports = {
       if (err) return cb(err);
       cb(null, res.body);
     });
+  },
+
+  get: function(path, cb) {
+    xhr({
+      uri: config.taskServer + path,
+      method: 'GET',
+    }, function(err, res) {
+      if (err) return cb(err);
+      cb(null, JSON.parse(res.body));
+    });
   }
 };

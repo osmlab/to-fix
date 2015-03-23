@@ -92,6 +92,8 @@ h2 { padding-top:0; padding-bottom:0; }
   background:rgba(0,0,0,0.4);
   }
 
+.uppercase { text-transform:uppercase; }
+
 /* mapbox.css Overrides
 ------------------------- */
 .mapbox-improve-map { display: none; }
@@ -179,6 +181,11 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   min-width:1%;
   max-width:100%;
   }
+
+.rows > *             { margin-bottom:1px; }
+.rows > *:first-child { border-radius:3px 3px 0 0; }
+
+.editor-key { width:80px; text-align:center; }
 
 /* iD container
  * elements while editing

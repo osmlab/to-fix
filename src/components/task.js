@@ -153,7 +153,7 @@ module.exports = React.createClass({
       if (res && res.features && res.features[0] && res.features[0].context) {
         var place = res.features[0].context.reduce(function(memo, context) {
           var id = context.id.split('.')[0];
-          if (id === 'region' || id === 'country') memo.push(context.text);
+          if (id === 'place' || id === 'region' || id === 'country') memo.push(context.text);
           return memo;
         }, []);
         actions.geolocated(place.join(', '));
