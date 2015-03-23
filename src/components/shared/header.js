@@ -45,6 +45,12 @@ module.exports = React.createClass({
               Task
             </Link>
             <Link
+              className='icon bolt animate short button'
+              params={{ task: currentTask }}
+              to='activity'>
+              Activity
+            </Link>
+            <Link
               className='icon graph animate short button'
               params={{ task: currentTask }}
               to='stats'>
