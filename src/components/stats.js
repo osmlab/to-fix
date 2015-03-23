@@ -5,12 +5,12 @@ var Reflux = require('reflux');
 var Router = require('react-router');
 var actions = require('../actions/actions');
 var taskObj = require('../mixins/taskobj');
-var ActivityStore = require('../stores/activity_store');
+var StatsStore = require('../stores/stats_store');
 var Graph = require('./workspace/graph');
 
 module.exports = React.createClass({
   mixins: [
-    Reflux.connect(ActivityStore, 'activity'),
+    Reflux.connect(StatsStore, 'stats'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
     Router.State,
     taskObj
@@ -75,8 +75,8 @@ module.exports = React.createClass({
             </div>
           </div>
         </div>
-        {this.state.activity ? <Graph
-          data={this.state.activity} /> : ''}
+        {this.state.stats ? <Graph
+          data={this.state.stats} /> : ''}
       </div>
       /* jshint ignore:end */
     );

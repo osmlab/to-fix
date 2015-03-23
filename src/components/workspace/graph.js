@@ -4,7 +4,6 @@ var React = require('react');
 var Reflux = require('reflux');
 var actions = require('../../actions/actions');
 var d3Graph = require('../../util/d3Graph');
-var ActivityStore = require('../../stores/activity_store');
 
 module.exports = React.createClass({
   mixins: [
