@@ -22,6 +22,7 @@ module.exports = {
   },
 
   update: function(el, state) {
+    if (!state) return;
     el = d3.select(el);
     var g = el.selectAll('.d3-area');
 

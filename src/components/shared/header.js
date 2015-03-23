@@ -39,19 +39,19 @@ module.exports = React.createClass({
         <div className='col6 text-right pad1'>
           <nav className='col12 space pad0y'>
             <Link
-              className='icon pencil animate short button'
+              className='icon pencil short button'
               params={{ task: currentTask }}
               to='task'>
               Task
             </Link>
             <Link
-              className='icon bolt animate short button'
+              className='icon bolt short button'
               params={{ task: currentTask }}
               to='activity'>
               Activity
             </Link>
             <Link
-              className='icon graph animate short button'
+              className='icon graph short button'
               params={{ task: currentTask }}
               to='stats'>
               Statistics
