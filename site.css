@@ -138,7 +138,7 @@ header .button.active:hover,
   }
 header .fancy.title {
   line-height:60px;
-  color:rgba(0,0,0,0.5);
+  color:rgba(0,0,0,0.75);
   }
 
 header .button {

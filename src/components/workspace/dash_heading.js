@@ -26,13 +26,25 @@ module.exports = React.createClass({
     };
   },
 
-  graphUpdated: function(from, to) {
+  graphUpdated: function(dates, query) {
     // Revise the date title
-    if (from === to) {
-      this.setState({ extent: [to] });
+    if (dates[0] === dates[1]) {
+      this.setState({ extent: [dates[1]] });
     } else {
-      this.setState({ extent: [from, to] });
+      this.setState({ extent: [dates[0], dates[1]] });
     }
+
+    // Add query params to the URL
+    if (!query) return;
+    var router = this.context.router;
+    var params = router.getCurrentParams();
+
+    this.setState({
+      permalink: router.makeHref('stats', {task: params.task}, {
+        from: query[0],
+        to: query[1]
+      })
+    });
   },
 
   render: function() {
@@ -44,6 +56,7 @@ module.exports = React.createClass({
       width: (completed / total) * 100 + '%'
     };
 
+    var permalink = '';
     var extent = this.state.extent;
     extent = (extent) ?
       (extent.length > 1) ?
@@ -51,12 +64,25 @@ module.exports = React.createClass({
         extent[0]
       : '';
 
+    if (this.state.permalink) {
+      permalink = (
+      /* jshint ignore:start */
+        <span className='fill-darken1 dot pad0 fl'>
+          <a href={this.state.permalink} className='icon link' title='Link to these dates'></a>
+        </span>
+      /* jshint ignore:end */
+      );
+    }
+
     return (
       /* jshint ignore:start */
       <div className='space-bottom1 col12 clearfix'>
         <div className='col8'>
           <h4>{taskTitle}</h4>
-          <h2>{extent}</h2>
+          <h2 className='space col12 clearfix'>
+            {permalink}
+            {extent}
+          </h2>
         </div>
         <div className='col4'>
           <h4 className='block space-bottom0'>

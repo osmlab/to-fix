@@ -57,16 +57,20 @@ module.exports = {
     brush.on('brushend', function() {
       tooltip.classed('hidden', true);
       var extent = brush.extent();
-      var from = this._formatDate(extent[0]);
-      var to = this._formatDate(extent[1]);
-      actions.graphUpdated(from, to);
+      var from = this._dateFormat(extent[0]);
+      var to = this._dateFormat(extent[1]);
+      var query = [
+        this._queryDateFormat(extent[0]),
+        this._queryDateFormat(extent[1])
+      ];
+      actions.graphUpdated([from, to], query);
     }.bind(this));
 
     brush.on('brush', function() {
       tooltip.classed('hidden', false);
       var extent = brush.extent();
-      var from = this._formatDate(extent[0]);
-      var to = this._formatDate(extent[1]);
+      var from = this._dateFormat(extent[0]);
+      var to = this._dateFormat(extent[1]);
 
       tooltip
         .style('left', (x(extent[1]) + 85) + 'px')
@@ -103,9 +107,9 @@ module.exports = {
       .attr('y', -6)
       .attr('height', this._getHeight() + 7);
 
-    var from = this._formatDate(data[0].date);
-    var to = this._formatDate(data[data.length - 1].date);
-    actions.graphUpdated(from, to);
+    var from = this._dateFormat(data[0].date);
+    var to = this._dateFormat(data[data.length - 1].date);
+    actions.graphUpdated([from, to]);
   },
 
   destroy: function(el) {},
@@ -129,8 +133,12 @@ module.exports = {
     return this._getHeight() + this._margin.top + this._margin.bottom;
   },
 
-  _formatDate: function(date) {
+  _dateFormat: function(date) {
     return d3.time.format.utc('%b %e, %Y')(date);
+  },
+
+  _queryDateFormat: function(date) {
+    return d3.time.format.utc('%Y-%m-%d')(date);
   }
 
 };
