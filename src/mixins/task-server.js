@@ -13,5 +13,15 @@ module.exports = {
       if (err) return cb(err);
       cb(null, res.body);
     });
+  },
+  postForm: function(path, formData, cb) {
+    xhr({
+      uri: config.taskServer + path,
+      body: formData,
+      method: 'POST',
+    }, function(err, res) {
+      if (err) return cb(err);
+      cb(null, res.body);
+    });
   }
 };
