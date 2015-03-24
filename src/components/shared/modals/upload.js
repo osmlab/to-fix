@@ -28,16 +28,18 @@ module.exports = React.createClass({
   },
 
   triggerFileInput: function() {
-    this.refs.fileInput.getDOMNode().click(); 
+    this.refs.fileInput.getDOMNode().click();
   },
 
   uploadData: function(e) {
     e.preventDefault();
     // TODO sanitize/validation
     var formData = new window.FormData();
-    var file = this.refs.fileInput.getDOMNode().files[0];
+    var file = this.refs.fileInput.getDOMNode();
     var name = this.refs.taskname.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
+    file = file.files[0];
+      // not sure why this doesn't work when assigned directly to file the first time
 
     formData.append('file', file);
     formData.append('name', name);
