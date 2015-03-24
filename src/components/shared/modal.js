@@ -3,7 +3,6 @@
 var React = require('react');
 var Reflux = require('reflux');
 var Router = require('react-router');
-var State = Router.State;
 var actions = require('../../actions/actions');
 
 // Modals
@@ -12,7 +11,6 @@ var Settings = require('./modals/settings');
 
 module.exports = React.createClass({
   mixins: [
-    State,
     Reflux.listenTo(actions.openSettings, 'openSettings'),
     Reflux.listenTo(actions.openUpload, 'openUpload')
   ],

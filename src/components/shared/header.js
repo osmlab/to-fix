@@ -9,8 +9,11 @@ var appStore = require('../../stores/application_store');
 var actions = require('../../actions/actions');
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
-    Router.State,
     Reflux.connect(appStore, 'appSettings')
   ],
 
@@ -23,7 +26,7 @@ module.exports = React.createClass({
     var appSettings = this.state.appSettings;
     var toggleClass = 'sidebar-toggle quiet block fl keyline-right animate pad1 row-60';
     if (appSettings.sidebar) toggleClass += ' active';
-    var currentTask = this.getParams().task;
+    var currentTask = this.context.router.getCurrentParams().task;
 
     return (
       /* jshint ignore:start */

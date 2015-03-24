@@ -11,8 +11,7 @@ var Header = require('./workspace/dash_heading');
 
 module.exports = React.createClass({
   mixins: [
-    Reflux.connect(StatsStore, 'stats'),
-    Router.State
+    Reflux.connect(StatsStore, 'stats')
   ],
 
   statics: {

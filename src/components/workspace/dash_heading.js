@@ -8,9 +8,12 @@ var actions = require('../../actions/actions');
 var taskObj = require('../../mixins/taskobj');
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
-    Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
-    Router.State
+    Reflux.listenTo(actions.graphUpdated, 'graphUpdated')
   ],
 
   getInitialState: function() {
@@ -33,7 +36,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var taskTitle = taskObj(this.getParams().task).title;
+    var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
     var available = this.state.totals.available;
     var total = this.state.totals.total;
     var completed = total - available;

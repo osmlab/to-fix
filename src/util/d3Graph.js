@@ -12,6 +12,11 @@ module.exports = {
     svg.append('g')
       .attr('class', 'd3-area')
       .attr('transform', 'translate(' + this._margin.left + ',' + this._margin.top + ')');
+
+    // Displays date when brushing
+    el.append('strong')
+      .style('position', 'absolute')
+      .attr('class', 'tooltip fill-darken3 hidden round pad1x pad0y small strong z10');
   },
 
   resize: function(el) {
@@ -22,12 +27,14 @@ module.exports = {
   },
 
   update: function(el, state) {
-    if (!state) return;
+    if (!state.data.length) return;
     el = d3.select(el);
     var g = el.selectAll('.d3-area');
 
+    g.html(''); // TODO This is dirty
     var _this = this;
     var parseDate = d3.time.format('%b %Y').parse;
+    var tooltip = el.select('.tooltip');
 
     // Normalize the data that came in
     var data = state.data.map(function(d) {
@@ -46,8 +53,24 @@ module.exports = {
       .orient('left');
 
     var brush = d3.svg.brush().x(x);
+
     brush.on('brushend', function() {
-      this._brushed(brush);
+      tooltip.classed('hidden', true);
+      var extent = brush.extent();
+      var from = this._formatDate(extent[0]);
+      var to = this._formatDate(extent[1]);
+      actions.graphUpdated(from, to);
+    }.bind(this));
+
+    brush.on('brush', function() {
+      tooltip.classed('hidden', false);
+      var extent = brush.extent();
+      var from = this._formatDate(extent[0]);
+      var to = this._formatDate(extent[1]);
+
+      tooltip
+        .style('left', (x(extent[1]) + 85) + 'px')
+        .text(from + ' - ' + to);
     }.bind(this));
 
     var area = d3.svg.area()
@@ -104,13 +127,6 @@ module.exports = {
 
   _getContainerHeight: function() {
     return this._getHeight() + this._margin.top + this._margin.bottom;
-  },
-
-  _brushed: function(brush) {
-    var extent = brush.extent();
-    var from = this._formatDate(extent[0]);
-    var to = this._formatDate(extent[1]);
-    actions.graphUpdated(from, to);
   },
 
   _formatDate: function(date) {

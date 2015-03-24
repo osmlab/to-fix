@@ -10,11 +10,13 @@ var taskObj = require('../mixins/taskobj');
 var ActivityStore = require('../stores/activity_store');
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
     Reflux.connect(ActivityStore, 'activity'),
-    Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded'),
-    Router.State,
-    taskObj
+    Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded')
   ],
 
   getInitialState: function() {
@@ -79,7 +81,7 @@ module.exports = React.createClass({
       /* jshint ignore:end */
     }
 
-    var taskTitle = taskObj(this.getParams().task).title;
+    var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
 
     // Load more button
     var loadmore = '';
