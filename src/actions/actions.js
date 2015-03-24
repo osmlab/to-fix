@@ -29,6 +29,8 @@ var actions = Reflux.createActions({
   'taskEdit': {},
   'taskData': {},
   'taskDone': {},
+  'taskActivity': {},
+  'taskActivityLoaded': {},
 
   // common buttons
   'taskSkip': {}

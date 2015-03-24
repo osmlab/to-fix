@@ -6,6 +6,7 @@ body {
   }
 h1, h2, h3, h4, h5, h6,
 strong,
+svg,
 button,
 .strong,
 .tabs a,
@@ -26,6 +27,10 @@ button,
   line-height:18px;
   }
 h1, h2, h3 { font-weight:500; }
+h4, h5, h6 {
+  font-size:15px;
+  line-height:28px;
+  }
 h2 { padding-top:0; padding-bottom:0; }
 .editbar .tabs > * {
   border-width:0 0 0 1px;
@@ -87,6 +92,8 @@ h2 { padding-top:0; padding-bottom:0; }
   background:rgba(0,0,0,0.4);
   }
 
+.uppercase { text-transform:uppercase; }
+
 /* mapbox.css Overrides
 ------------------------- */
 .mapbox-improve-map { display: none; }
@@ -100,6 +107,25 @@ h2 { padding-top:0; padding-bottom:0; }
   height:100%;
   bottom:0;
   }
+
+/* Colors
+------------------------- */
+button,
+.button,
+[type=button],
+[type=submit] {
+  background-color:#6E65B3;
+  }
+button:hover,
+.button:hover,
+[type=button]:hover,
+[type=submit]:hover {
+  background-color:#534c87;
+  }
+
+.progress,
+.fill-purple { background-color:#6E65B3; }
+.area { fill:#6E65B3; }
 
 /* Components
 ------------------------- */
@@ -141,6 +167,26 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
   margin-right:10px;
   }
 
+.progress-bar {
+  border-radius:50px;
+  height:10px;
+  }
+.progress {
+  border-radius:50px;
+  width:0;
+  height:10px;
+  top:0;
+  left:0;
+  right:0;
+  min-width:1%;
+  max-width:100%;
+  }
+
+.rows > *             { margin-bottom:1px; }
+.rows > *:first-child { border-radius:3px 3px 0 0; }
+
+.editor-key { width:80px; text-align:center; }
+
 /* iD container
  * elements while editing
 ------------------------- */
@@ -159,6 +205,29 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
     color:#fff;
     font-weight:bold;
     }
+
+/* D3 Dashboards
+------------------------- */
+svg {
+  font-size:10px;
+  font-weight:bold;
+  }
+text {
+  font-family:Consolas, monospace;
+  fill:rgba(255,255,255,0.5);
+  }
+.axis path,
+.axis line {
+  fill:none;
+  stroke:transparent;
+  shape-rendering:crispEdges;
+  }
+.brush .extent {
+  stroke:#fff;
+  stroke-dasharray:4px 2px;
+  fill-opacity:0.10;
+  shape-rendering:crispEdges;
+  }
 
 /* Small Screen Layout
 ------------------------- */

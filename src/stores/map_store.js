@@ -5,9 +5,9 @@ var actions = require('../actions/actions');
 var store = require('store');
 var xhr = require('xhr');
 
-var taskObj = require('../mixins/task-item');
+var taskObj = require('../mixins/taskobj');
 var emitError = require('../mixins/error');
-var postToTaskServer = require('../mixins/task-server').post;
+var postToTaskServer = require('../mixins/taskserver').post;
 
 var config = require('../config');
 
