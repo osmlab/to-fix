@@ -108,10 +108,10 @@ module.exports = React.createClass({
     var state = this.state.map;
     var center = this.map.getCenter();
     var zoom = this.map.getZoom();
-    var bottom = bounds._southWest.lat - 0.001;
-    var left = bounds._southWest.lng - 0.001;
-    var top = bounds._northEast.lat + 0.001;
-    var right = bounds._northEast.lng + 0.001;
+    var bottom = bounds._southWest.lat - 0.0005;
+    var left = bounds._southWest.lng - 0.0005;
+    var top = bounds._northEast.lat + 0.0005;
+    var right = bounds._northEast.lng + 0.0005;
     var iDEditPath = config.iD + 'map=' + zoom + '/' + center.lng + '/' + center.lat;
 
     if (store.get('editor') && store.get('editor') === 'josm') {
