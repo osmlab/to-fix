@@ -3,6 +3,7 @@
 var React = require('react');
 var Reflux = require('reflux');
 
+var config = require('../../config');
 var userStore = require('../../stores/user_store');
 var actions = require('../../actions/actions');
 
@@ -17,19 +18,19 @@ module.exports = React.createClass({
     var logState;
     var user = this.state.user;
     var modal = document.getElementById('modal');
-    var profile = 'http://www.openstreetmap.org/user/' + user.username;
+    var profile = config.userProfileURL + user.username;
 
     if (user.auth) {
       logState = (
         /* jshint ignore:start */
-        <div className='col12 clearfix mobile-cols'>
-          <a className='block truncate strong small col6 pad1x pad0y dark' target='_blank' href={profile} title='Profile on OpenStreetMap'>
-            <img className='dot avatar' src={user.avatar} />
-            {user.username}
-          </a>
-          <div className='col6 pad1x text-right'>
-            <button onClick={actions.openSettings} className='icon sprocket button quiet small animate'>Settings</button>
+        <div className='pad1x col12 truncate clearfix'>
+          <div className='pad0y inline'>
+            <a className='strong small dark' target='_blank' href={profile} title='Profile on OpenStreetMap'>
+              <img className='dot avatar' src={user.avatar} />
+              {user.username}
+            </a>
           </div>
+          <button onClick={actions.openSettings} className='icon sprocket button quiet small animate fr'>Settings</button>
         </div>
         /* jshint ignore:end */
       );

@@ -16,11 +16,10 @@ module.exports = React.createClass({
   },
 
   componentDidUpdate: function() {
-    var _this = this;
     if (this.timedDismiss) window.clearTimeout(this.timedDismiss);
     this.timedDismiss = window.setTimeout(function() {
-      _this.dismiss();
-    }, 3000);
+      this.dismiss();
+    }.bind(this), 3000);
   },
 
   dismiss: function() {

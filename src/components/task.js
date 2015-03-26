@@ -7,7 +7,6 @@ var omnivore = require('leaflet-omnivore');
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
 
 var store = require('store');
 var actions = require('../actions/actions');
@@ -22,10 +21,13 @@ L.mapbox.accessToken = config.accessToken;
 var geocoder = L.mapbox.geocoder('mapbox.places');
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
     Reflux.connect(MapStore, 'map'),
-    Reflux.listenTo(actions.taskEdit, 'taskEdit'),
-    Router.State
+    Reflux.listenTo(actions.taskEdit, 'taskEdit')
   ],
 
   statics: {
@@ -49,7 +51,7 @@ module.exports = React.createClass({
       this.state.map.mapData.forEach(function(xml) {
         var layer = new L.OSM.DataLayer(xml)
           .setStyle({
-            color: '#FF00B7',
+            color: '#866CB7',
             opacity: 1,
             weight: 4
           })
@@ -155,7 +157,7 @@ module.exports = React.createClass({
   iDEditDone: function() {
     // Set editor state as complete and trigger the done action
     this.setState({ iDEdit: false });
-    actions.taskData(this.getParams().task);
+    actions.taskData(this.context.router.getCurrentParams().task);
   },
 
   geolocate: function(center) {

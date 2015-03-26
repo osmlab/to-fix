@@ -2,18 +2,21 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
 var d3 = require('d3');
 
+var config = require('../config');
 var actions = require('../actions/actions');
 var taskObj = require('../mixins/taskobj');
 var ActivityStore = require('../stores/activity_store');
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
     Reflux.connect(ActivityStore, 'activity'),
-    Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded'),
-    Router.State
+    Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded')
   ],
 
   getInitialState: function() {
@@ -47,7 +50,7 @@ module.exports = React.createClass({
       row = this.state.activity.slice(0, this.state.loadCount).map(function(action, i) {
         if (!action.attributes.user) return;
         var permalink = 'key-' + action.attributes.key;
-        var profile ='https://www.openstreetmap.org/user/' + action.attributes.user;
+        var profile = config.userProfileURL + action.attributes.user;
         var editor = (action.attributes.editor) ? action.attributes.editor : '';
         var actionDay = dateDisplay(new Date(action.unixtime * 1000));
         var actionTime = timeDisplay(new Date(action.unixtime * 1000));
@@ -78,7 +81,7 @@ module.exports = React.createClass({
       /* jshint ignore:end */
     }
 
-    var taskTitle = taskObj(this.getParams().task).title;
+    var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
 
     // Load more button
     var loadmore = '';

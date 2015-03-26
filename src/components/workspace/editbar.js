@@ -2,15 +2,17 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
-var taskObj = require('../../mixins/taskobj');
 var actions = require('../../actions/actions');
 var UserStore = require('../../stores/user_store');
 var Keys = require('react-keybinding');
+var taskObj = require('../../mixins/taskobj');
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
-    Router.State,
     Reflux.connect(UserStore, 'user'),
     Reflux.listenTo(actions.geolocated, 'geolocate'),
     Keys
@@ -29,17 +31,17 @@ module.exports = React.createClass({
   },
 
   edit: function() {
-    actions.taskEdit(this.getParams().task);
+    actions.taskEdit(this.context.router.getCurrentParams().task);
   },
 
   skip: function() {
-    var task = this.getParams().task;
+    var task = this.context.router.getCurrentParams().task;
     actions.taskData(task);
     actions.taskSkip(task);
   },
 
   fixed: function() {
-    actions.taskDone(this.getParams().task);
+    actions.taskDone(this.context.router.getCurrentParams().task);
   },
 
   geolocate: function(placename) {
@@ -49,7 +51,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var taskTitle = taskObj(this.getParams().task).title;
+    var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
     var taskActions = (
       /* jshint ignore:start */
       <nav className='tabs col12 clearfix'>

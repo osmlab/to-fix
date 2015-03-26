@@ -74,7 +74,7 @@ module.exports = React.createClass({
             </fieldset>
 
             <div className='pad2x pad1y fill-light round-bottom col12 clearfix'>
-              <input className='col6 margin3' type='submit' value='Upload' />
+              <input className='col6 margin3' type='submit' value='Upload file' />
             </div>
           </form>
         </div>

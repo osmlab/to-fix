@@ -25,12 +25,20 @@ var actions = Reflux.createActions({
   // Dialogs
   'errorDialog': {},
 
-  // Manages to-fix tasks
+  // Dashboard
+  'graphUpdated': {},
+
+  // to-fix task data
   'taskEdit': {},
   'taskData': {},
+  'taskStats': {},
   'taskDone': {},
   'taskActivity': {},
   'taskActivityLoaded': {},
+  'taskTotals': {},
+
+  'statSummaries': {},
+  'updatePermalink': {},
 
   // common buttons
   'taskSkip': {}
