@@ -13,8 +13,7 @@ module.exports = React.createClass({
   mixins: [
     Reflux.connect(ActivityStore, 'activity'),
     Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded'),
-    Router.State,
-    taskObj
+    Router.State
   ],
 
   getInitialState: function() {

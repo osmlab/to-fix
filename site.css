@@ -124,8 +124,10 @@ button:hover,
   }
 
 .progress,
+header .button.active,
+header .button.active:hover,
 .fill-purple { background-color:#6E65B3; }
-.area { fill:#6E65B3; }
+.area { fill:rgba(110, 101, 179, 0.75); }
 
 /* Components
 ------------------------- */
@@ -136,14 +138,28 @@ button:hover,
   }
 header .fancy.title {
   line-height:60px;
+  color:rgba(0,0,0,0.75);
+  }
+
+header .button {
+  background-color:transparent;
   color:rgba(0,0,0,0.5);
   }
-header .button         { background-color:transparent; color:rgba(0,0,0,0.5); }
-header .button:hover   { background-color:rgba(0,0,0,0.10); color:rgba(0,0,0,0.75); }
-header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
+  header .button:hover {
+    background-color:rgba(0,0,0,0.05);
+    color:rgba(0,0,0,0.75);
+    }
+  header .button.active {
+    color:#fff;
+    }
 
 .sidebar-toggle:hover,
-.sidebar-toggle.active { background-color:rgba(0,0,0,0.10); }
+.sidebar-toggle.active {
+  background-color:rgba(0,0,0,0.05);
+  }
+.sidebar-toggle.active {
+  border-color:rgba(0,0,0,0.25);
+  }
 
 .sidebar nav a:hover {
   background-color:rgba(0,0,0,0.20);
@@ -186,6 +202,12 @@ header .button.active  { background-color:rgba(0,0,0,0.5); color:#fff; }
 .rows > *:first-child { border-radius:3px 3px 0 0; }
 
 .editor-key { width:80px; text-align:center; }
+
+.contributions > div {
+  border-bottom:1px solid rgba(0,0,0,0.25);
+  }
+  .contributions > div:first-child { border-width:2px;  }
+  .contributions > div:last-child { border-bottom:none; }
 
 /* iD container
  * elements while editing

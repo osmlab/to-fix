@@ -53,7 +53,7 @@ module.exports = React.createClass({
     return (
       /* jshint ignore:start */
       <div id='modal' className='animate modal modal-content active'>
-        <div className='col4 modal-body fill-navy contain'>
+        <div className='col4 modal-body fill-purple contain'>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
             <h2 className='dark'>Upload</h2>

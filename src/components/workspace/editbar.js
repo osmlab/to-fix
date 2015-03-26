@@ -13,7 +13,6 @@ module.exports = React.createClass({
     Router.State,
     Reflux.connect(UserStore, 'user'),
     Reflux.listenTo(actions.geolocated, 'geolocate'),
-    taskObj,
     Keys
   ],
 
