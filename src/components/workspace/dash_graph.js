@@ -2,11 +2,16 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+
 var actions = require('../../actions/actions');
 var d3Graph = require('../../util/d3Graph');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   mixins: [
     Reflux.listenTo(actions.sidebarToggled, 'resize'),
     PureRenderMixin
@@ -23,7 +28,8 @@ module.exports = React.createClass({
   },
 
   componentDidUpdate: function() {
-    d3Graph.update(this.refs.brushgraph.getDOMNode(), this.getGraphState());
+    var params = this.context.router.getCurrentQuery();
+    d3Graph.update(this.refs.brushgraph.getDOMNode(), this.getGraphState(), params);
   },
 
   componentWillUnmount: function() {

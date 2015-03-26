@@ -7,7 +7,6 @@ var omnivore = require('leaflet-omnivore');
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
 
 var store = require('store');
 var actions = require('../actions/actions');

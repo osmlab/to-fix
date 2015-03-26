@@ -4,6 +4,7 @@ var React = require('react');
 var Reflux = require('reflux');
 var Router = require('react-router');
 var Link = Router.Link;
+
 var appStore = require('../../stores/application_store');
 var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login');

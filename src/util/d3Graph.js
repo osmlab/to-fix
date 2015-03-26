@@ -32,7 +32,8 @@ module.exports = {
       .attr('transform', 'translate(-40,0)');
   },
 
-  update: function(el, state) {
+  update: function(el, state, params) {
+    params = (!this._empty(params)) ? params : false;
     el = d3.select(el);
     var g = el.selectAll('.d3-area');
     g.html(''); // TODO This is dirty
@@ -106,20 +107,36 @@ module.exports = {
       .attr('transform', 'translate(0,' + this._getHeight() + ')')
       .call(xAxis);
 
-    g.append('g')
+    var from, to, query;
+    if (params) {
+      var parse = d3.time.format.utc('%Y-%m-%d').parse;
+      // Set extents to brush based on params +
+      // Trigger graphUpdated with params passed by
+      // the query URL
+      brush.extent([parse(params.from), parse(params.to)]);
+      from = this._dateFormat(parse(params.from));
+      to = this._dateFormat(parse(params.to));
+      query = [params.from, params.to];
+    } else {
+      from = this._dateFormat(data[0].date);
+      to = this._dateFormat(data[data.length - 1].date);
+      query = [
+        this._queryDateFormat(data[0].date),
+        this._queryDateFormat(data[data.length - 1].date)
+      ];
+    }
+
+    var gBrush = g.append('g')
       .attr('class', 'x brush')
-      .call(brush)
-    .selectAll('rect')
+      .call(brush);
+
+    gBrush.selectAll('rect')
       .attr('y', -6)
       .attr('height', this._getHeight() + 7);
 
-    var from = this._dateFormat(data[0].date);
-    var to = this._dateFormat(data[data.length - 1].date);
-    var query = [
-      this._queryDateFormat(data[0].date),
-      this._queryDateFormat(data[data.length - 1].date)
-    ];
-
+    // If params are set, trigger the brush to draw
+    // initial extents on the graph.
+    if (params) gBrush.call(brush.event);
     actions.graphUpdated([from, to], query);
   },
 
@@ -150,6 +167,13 @@ module.exports = {
 
   _queryDateFormat: function(date) {
     return d3.time.format.utc('%Y-%m-%d')(date);
+  },
+
+  _empty: function(obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) return false;
+    }
+    return true;
   }
 
 };

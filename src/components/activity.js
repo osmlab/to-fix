@@ -2,7 +2,6 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
 var d3 = require('d3');
 
 var config = require('../config');

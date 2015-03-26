@@ -2,7 +2,6 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
 var actions = require('../../actions/actions');
 var UserStore = require('../../stores/user_store');
 var Keys = require('react-keybinding');

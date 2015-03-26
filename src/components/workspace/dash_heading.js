@@ -2,7 +2,6 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
 
 var actions = require('../../actions/actions');
 var taskObj = require('../../mixins/taskobj');
