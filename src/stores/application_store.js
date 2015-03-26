@@ -3,7 +3,7 @@
 var Reflux = require('reflux');
 var store = require('store');
 var actions = require('../actions/actions');
-var postToTaskServer = require('../mixins/taskserver').post;
+var postToTaskServer = require('../mixins/taskserver').postForm;
 
 module.exports = Reflux.createStore({
 

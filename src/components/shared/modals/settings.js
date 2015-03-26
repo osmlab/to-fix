@@ -51,12 +51,13 @@ module.exports = React.createClass({
               <input onChange={this.setEditor} type='radio' name='editorpref' id='ideditor' checked={editor === 'ideditor' && 'checked'} />
               <label htmlFor='ideditor' className='col6 button quiet icon check'>iD editor</label>
               <input onChange={this.setEditor} type='radio' name='editorpref' id='josm' checked={editor === 'josm' && 'checked'} />
-              <label htmlFor='josm' className='col6 button quiet icon check'>JSOM editor</label>
+              <label htmlFor='josm' className='col6 button quiet icon check'>JOSM editor *</label>
             </div>
           </fieldset>
 
           <div className='pad2x space-bottom2 dark'>
             Shortcut keys: <span className='quiet'><code className='fill-darken1'>e</code> Edit <code className='fill-darken1'>s</code> Skip <code className='fill-darken1'>f</code> Fixed</span>
+            <small className='quiet'>*JOSM requires <a target='_blank' href='http://josm.openstreetmap.de/wiki/Help/Preferences/RemoteControl/'>remote control</a> to be set in preferences.</small>
           </div>
 
           <div className='pad2x pad1y fill-light round-bottom text-right'>
