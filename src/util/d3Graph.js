@@ -22,8 +22,9 @@ module.exports = {
   resize: function(el) {
     el = d3.select(el);
     el.select('svg')
-      .attr('width', this._getContainerWidth(el))
-      .attr('height', this._getContainerHeight());
+      .attr('width', this._getContainerWidth(el));
+
+    this.x.range([0, this._getWidth(el)]);
   },
 
   noData: function(el) {
@@ -50,16 +51,16 @@ module.exports = {
       return d;
     });
 
-    var x = d3.time.scale().range([0, this._getWidth(el)]);
-    var y = d3.scale.linear().range([this._getHeight(), 0]);
+    this.x = d3.time.scale().range([0, this._getWidth(el)]);
+    this.y = d3.scale.linear().range([this._getHeight(), 0]);
 
-    var xAxis = d3.svg.axis().scale(x).orient('bottom');
+    var xAxis = d3.svg.axis().scale(this.x).orient('bottom');
     var yAxis = d3.svg.axis()
       .ticks(5)
-      .scale(y)
+      .scale(this.y)
       .orient('left');
 
-    var brush = d3.svg.brush().x(x);
+    var brush = d3.svg.brush().x(this.x);
 
     brush.on('brushend', function() {
       tooltip.classed('hidden', true);
@@ -80,23 +81,23 @@ module.exports = {
       var to = this._dateFormat(extent[1]);
 
       tooltip
-        .style('left', (x(extent[1]) + 85) + 'px')
+        .style('left', (this.x(extent[1]) + 85) + 'px')
         .text(from + ' - ' + to);
     }.bind(this));
 
-    var area = d3.svg.area()
+    this.area = d3.svg.area()
         .interpolate('monotone')
-        .x(function(d) { return x(d.date); })
+        .x(function(d) { return this.x(d.date); }.bind(this))
         .y0(this._getHeight())
-        .y1(function(d) { return y(d.value); });
+        .y1(function(d) { return this.y(d.value); }.bind(this));
 
-    x.domain(d3.extent(data.map(function(d) { return d.date; })));
-    y.domain([0, d3.max(data.map(function(d) { return d.value; }))]);
+    this.x.domain(d3.extent(data.map(function(d) { return d.date; })));
+    this.y.domain([0, d3.max(data.map(function(d) { return d.value; }))]);
 
     var path = g.append('path')
       .datum(data)
       .attr('class', 'area')
-      .attr('d', area);
+      .attr('d', this.area);
 
     g.append('g')
       .attr('class', 'y axis')
