@@ -38,6 +38,7 @@ var actions = Reflux.createActions({
   'taskTotals': {},
 
   'statSummaries': {},
+  'updatePermalink': {},
 
   // common buttons
   'taskSkip': {}

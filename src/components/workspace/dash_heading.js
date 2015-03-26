@@ -6,6 +6,7 @@ var Reflux = require('reflux');
 var actions = require('../../actions/actions');
 var taskObj = require('../../mixins/taskobj');
 var StatsStore = require('../../stores/stats_store');
+var update = require('react/addons').addons.update;
 
 module.exports = React.createClass({
   contextTypes: {
@@ -14,12 +15,15 @@ module.exports = React.createClass({
 
   mixins: [
     Reflux.connect(StatsStore, 'stats'),
-    Reflux.listenTo(actions.graphUpdated, 'graphUpdated')
+    Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
+    Reflux.listenTo(actions.updatePermalink, 'updatePermalink')
   ],
 
   getInitialState: function() {
     return {
-      extent: null
+      extent: null,
+      permalink: null,
+      query: {}
     };
   },
 
@@ -31,15 +35,20 @@ module.exports = React.createClass({
       this.setState({ extent: [dates[0], dates[1]] });
     }
 
+    this.updatePermalink({
+      from: query[0],
+      to: query[1]
+    });
+  },
+
+  updatePermalink: function(obj) {
     // Add query params to the URL
     var router = this.context.router;
     var params = router.getCurrentParams();
-
+    var query = update(this.state.query, {$merge: obj});
     this.setState({
-      permalink: router.makeHref('stats', {task: params.task}, {
-        from: query[0],
-        to: query[1]
-      })
+      query: query,
+      permalink: router.makeHref('stats', {task: params.task}, query)
     });
   },
 

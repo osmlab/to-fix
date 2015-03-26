@@ -32,17 +32,14 @@ module.exports = React.createClass({
   },
 
   render: function () {
-    var settingsModal = (this.state.settingsModal) ?
-      (<Settings onClose={this.closeModal}/>) : '';
-
-    var uploadModal = (this.state.uploadModal) ?
-      (<Upload onClose={this.closeModal}/>) : '';
-
     return (
       /* jshint ignore:start */
       <div>
-        {settingsModal}
-        {uploadModal}
+        {(this.state.settingsModal) ?
+          (<Settings onClose={this.closeModal}/>) : ''}
+
+        {(this.state.uploadModal) ?
+          (<Upload onClose={this.closeModal}/>) : ''}
       </div>
       /* jshint ignore:end */
     );

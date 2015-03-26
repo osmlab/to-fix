@@ -46,7 +46,7 @@ module.exports = Reflux.createStore({
     taskServer.get('count/' + task, function(err, res) {
       if (err) return emitError(err);
 
-      taskServer.get('count_history/' + task + '/fix/day', function(err, r) {
+      taskServer.get('count_history/' + task + '/day', function(err, r) {
         if (err) return emitError(err);
         this.stats.data = r.data.sort(function(a, b) {
           // Sort earliest to latest.

@@ -127,7 +127,7 @@ button:hover,
 header .button.active,
 header .button.active:hover,
 .fill-purple { background-color:#6E65B3; }
-.area { fill:rgba(110, 101, 179, 0.75); }
+.area { fill:rgb(110, 101, 179); }
 
 /* Components
 ------------------------- */

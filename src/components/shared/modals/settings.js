@@ -30,7 +30,6 @@ module.exports = React.createClass({
   setEditor: function(e) {
     var editor = e.target.getAttribute('id');
     actions.editorPreference(editor);
-    this.props.onClose(e);
   },
 
   render: function() {
@@ -47,12 +46,12 @@ module.exports = React.createClass({
 
           <fieldset className='pad2x space-bottom2 dark'>
             <label className='quiet block space-bottom0'>Default editor</label>
-            <div className='radio-pill pill clearfix col12'>
-              <input onChange={this.setEditor} type='radio' name='editorpref' id='ideditor' checked={editor === 'ideditor' && 'checked'} />
+            <form onChange={this.setEditor} className='radio-pill pill clearfix col12'>
+              <input type='radio' name='editorpref' id='ideditor' defaultChecked={editor === 'ideditor'} />
               <label htmlFor='ideditor' className='col6 button quiet icon check'>iD editor</label>
-              <input onChange={this.setEditor} type='radio' name='editorpref' id='josm' checked={editor === 'josm' && 'checked'} />
-              <label htmlFor='josm' className='col6 button quiet icon check'>JOSM editor *</label>
-            </div>
+              <input type='radio' name='editorpref' id='josm' defaultChecked={editor === 'josm'} />
+              <label htmlFor='josm' className='col6 button quiet icon check'>JOSM editor*</label>
+            </form>
           </fieldset>
 
           <div className='pad2x space-bottom2 dark'>

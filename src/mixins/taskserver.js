@@ -4,6 +4,7 @@ var xhr = require('xhr');
 var config = require('../config');
 
 module.exports = {
+
   post: function(path, data, cb) {
     xhr({
       uri: config.taskServer + path,
@@ -14,6 +15,7 @@ module.exports = {
       cb(null, res.body);
     });
   },
+
   postForm: function(path, formData, cb) {
     xhr({
       uri: config.taskServer + path,
@@ -24,6 +26,7 @@ module.exports = {
       cb(null, res.body);
     });
   },
+
   get: function(path, cb) {
     xhr({
       uri: config.taskServer + path,

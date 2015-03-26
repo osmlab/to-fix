@@ -36,9 +36,11 @@ module.exports = {
   update: function(el, state, params) {
     params = (!this._empty(params)) ? params : false;
     el = d3.select(el);
-    var g = el.selectAll('.d3-area');
-    g.html(''); // TODO This is dirty
 
+    var g = el.selectAll('.d3-area');
+
+    // TODO This is dirty
+    g.html('');
     if (!state.data.length) return this.noData(g);
 
     var _this = this;
@@ -47,7 +49,6 @@ module.exports = {
     // Normalize the data that came in
     var data = state.data.map(function(d) {
       d.date = new Date(d.start * 1000);
-      d.value = +d.count;
       return d;
     });
 
@@ -81,11 +82,12 @@ module.exports = {
       var to = this._dateFormat(extent[1]);
 
       tooltip
-        .style('left', (this.x(extent[1]) + 85) + 'px')
+        .style('left', (this.x(extent[1]) + 75) + 'px')
+        .style('top', '20px')
         .text(from + ' - ' + to);
     }.bind(this));
 
-    this.area = d3.svg.area()
+    var area = d3.svg.area()
         .interpolate('monotone')
         .x(function(d) { return this.x(d.date); }.bind(this))
         .y0(this._getHeight())
@@ -94,26 +96,39 @@ module.exports = {
     this.x.domain(d3.extent(data.map(function(d) { return d.date; })));
     this.y.domain([0, d3.max(data.map(function(d) { return d.value; }))]);
 
-    var path = g.append('path')
-      .datum(data)
-      .attr('class', 'area')
-      .attr('d', this.area);
+    // Build out the SVG elements for our graph.
+    var path = g.selectAll('path')
+      .data([data]);
 
-    g.append('g')
+    path.enter().append('path')
+      .attr('class', 'area')
+      .attr('d', area);
+
+    var graphComponents = g.selectAll('g')
+      .data([data]);
+
+    graphComponents.enter().append('g')
       .attr('class', 'y axis')
       .call(yAxis);
 
-    g.append('g')
+    graphComponents.enter().append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + this._getHeight() + ')')
       .call(xAxis);
 
-    var from, to, query;
-    if (params) {
+    var from, to, query = [
+      this._queryDateFormat(data[0].date),
+      this._queryDateFormat(data[data.length - 1].date)
+    ];
+
+    // Set extents to brush based on params +
+    // Trigger graphUpdated with params passed by
+    // the query URL. Don't set the graph if params
+    // do not exist or the param extents match the data extents.
+    if (params &&
+        params.from !== query[0] &&
+        params.to !== query[1]) {
       var parse = d3.time.format.utc('%Y-%m-%d').parse;
-      // Set extents to brush based on params +
-      // Trigger graphUpdated with params passed by
-      // the query URL
       brush.extent([parse(params.from), parse(params.to)]);
       from = this._dateFormat(parse(params.from));
       to = this._dateFormat(parse(params.to));
@@ -121,19 +136,19 @@ module.exports = {
     } else {
       from = this._dateFormat(data[0].date);
       to = this._dateFormat(data[data.length - 1].date);
-      query = [
-        this._queryDateFormat(data[0].date),
-        this._queryDateFormat(data[data.length - 1].date)
-      ];
     }
 
-    var gBrush = g.append('g')
+    var gBrush = graphComponents.enter().append('g')
       .attr('class', 'x brush')
       .call(brush);
 
     gBrush.selectAll('rect')
       .attr('y', -6)
       .attr('height', this._getHeight() + 7);
+
+    // Remove old elements as needed.
+    path.exit().remove();
+    graphComponents.exit().remove();
 
     // If params are set, trigger the brush to draw
     // initial extents on the graph.
@@ -144,7 +159,7 @@ module.exports = {
   destroy: function(el) {},
 
   // Dimensions
-  _margin: { top: 10, right: 10, bottom: 20, left: 40 },
+  _margin: { top: 10, right: 0, bottom: 20, left: 40 },
 
   _getHeight: function() {
     return 100 - (this._margin.top - this._margin.bottom);
