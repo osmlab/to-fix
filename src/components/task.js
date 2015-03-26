@@ -108,13 +108,23 @@ module.exports = React.createClass({
     var state = this.state.map;
     var center = this.map.getCenter();
     var zoom = this.map.getZoom();
-    var bottom = bounds._southWest.lat - 0.0005;
-    var left = bounds._southWest.lng - 0.0005;
-    var top = bounds._northEast.lat + 0.0005;
-    var right = bounds._northEast.lng + 0.0005;
     var iDEditPath = config.iD + 'map=' + zoom + '/' + center.lng + '/' + center.lat;
 
     if (store.get('editor') && store.get('editor') === 'josm') {
+      // JOSM query string settings. Documentation:
+      // http://josm.openstreetmap.de/wiki/Help/Preferences/RemoteControl
+      var bottom = bounds._southWest.lat - 0.0005;
+      var left = bounds._southWest.lng - 0.0005;
+      var top = bounds._northEast.lat + 0.0005;
+      var right = bounds._northEast.lng + 0.0005;
+      var select = [];
+
+      // Build out selection list for JOSM
+      for (var key in state.value) {
+        if (key === 'way_id') select.push('way' + state.value[key]);
+        if (key === 'node_id') select.push('node' + state.value[key]);
+      }
+
       // Try JOSM first
       xhr({
         uri: config.josm + qs.stringify({
@@ -122,7 +132,7 @@ module.exports = React.createClass({
           right: right,
           top: top,
           bottom: bottom,
-          select: state.value + state.key
+          select: select.join(',')
         })
       }, function(err, res) {
         // Fallback to iD

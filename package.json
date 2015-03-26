@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "dependencies": {
     "d3": "^3.5.5",
-    "leaflet-omnivore": "~0.2.0",
+    "leaflet-omnivore": "0.3.2",
     "leaflet-osm": "^0.1.0",
     "mapbox.js": "^2.1.5",
     "osm-auth": "^0.2.6",
