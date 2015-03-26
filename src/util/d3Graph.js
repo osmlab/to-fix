@@ -26,20 +26,26 @@ module.exports = {
       .attr('height', this._getContainerHeight());
   },
 
+  noData: function(el) {
+    el.append('text')
+      .text('No data found.')
+      .attr('transform', 'translate(-40,0)');
+  },
+
   update: function(el, state) {
-    if (!state.data.length) return;
     el = d3.select(el);
     var g = el.selectAll('.d3-area');
-
     g.html(''); // TODO This is dirty
+
+    if (!state.data.length) return this.noData(g);
+
     var _this = this;
-    var parseDate = d3.time.format('%b %Y').parse;
     var tooltip = el.select('.tooltip');
 
     // Normalize the data that came in
     var data = state.data.map(function(d) {
-      d.date = parseDate(d.date);
-      d.value = +d.value;
+      d.date = new Date(d.start * 1000);
+      d.value = +d.count;
       return d;
     });
 
@@ -109,7 +115,12 @@ module.exports = {
 
     var from = this._dateFormat(data[0].date);
     var to = this._dateFormat(data[data.length - 1].date);
-    actions.graphUpdated([from, to]);
+    var query = [
+      this._queryDateFormat(data[0].date),
+      this._queryDateFormat(data[data.length - 1].date)
+    ];
+
+    actions.graphUpdated([from, to], query);
   },
 
   destroy: function(el) {},

@@ -9,3 +9,4 @@ module.exports.taskServer = 'http://54.147.184.23:8000/';
 module.exports.osmApi = 'https://www.openstreetmap.org/api/0.6/';
 module.exports.josm = 'http://localhost:8111/load_and_zoom?';
 module.exports.iD = 'http://openstreetmap.us/iD/release/#';
+module.exports.userProfileURL = 'https://www.openstreetmap.org/user/';

@@ -8,6 +8,7 @@ var actions = require('../actions/actions');
 var StatsStore = require('../stores/stats_store');
 var Graph = require('./workspace/dash_graph');
 var Header = require('./workspace/dash_heading');
+var Table = require('./workspace/dash_summary');
 
 module.exports = React.createClass({
   mixins: [
@@ -23,10 +24,12 @@ module.exports = React.createClass({
   render: function() {
     return (
       /* jshint ignore:start */
-      <div className='col10 pad2 dark'>
-        {this.state.stats ? <Header /> : ''}
-        {this.state.stats ? <Graph
-          data={this.state.stats} /> : ''}
+      <div className='col12 clearfix scroll-styled'>
+        <div className='col10 pad2 dark'>
+          <Header/>
+          <Graph data={this.state.stats.data} />
+          <Table />
+        </div>
       </div>
       /* jshint ignore:end */
     );

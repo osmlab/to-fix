@@ -3,6 +3,7 @@
 var React = require('react');
 var Reflux = require('reflux');
 
+var config = require('../../config');
 var userStore = require('../../stores/user_store');
 var actions = require('../../actions/actions');
 
@@ -17,7 +18,7 @@ module.exports = React.createClass({
     var logState;
     var user = this.state.user;
     var modal = document.getElementById('modal');
-    var profile = 'http://www.openstreetmap.org/user/' + user.username;
+    var profile = config.userProfileURL + user.username;
 
     if (user.auth) {
       logState = (

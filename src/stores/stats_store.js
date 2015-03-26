@@ -1,31 +1,61 @@
 'use strict';
 
 var Reflux = require('reflux');
-var xhr = require('xhr');
+var d3 = require('d3');
+
 var actions = require('../actions/actions');
+var taskServer = require('../mixins/taskserver');
 var emitError = require('../mixins/error');
 var config = require('../config');
 
+// When the task server began recording.
+var HISTORICAL_START = '2015-03-20';
+
 module.exports = Reflux.createStore({
-  stats: [],
+  stats: {},
 
   init: function() {
     this.listenTo(actions.taskStats, this.taskStats);
+    this.listenTo(actions.taskTotals, this.taskTotals);
+    this.listenTo(actions.statSummaries, this.statSummaries);
   },
 
   getInitialState: function() {
     return this.stats;
   },
 
-  taskStats: function(task) {
-    var _this = this;
+  statSummaries: function(task, extent) {
+    taskServer.get('track_stats/' + task + '/from:' + extent[0] + '/to:' + extent[1], function(err, res) {
+      if (err) emitError(err);
+      this.stats.summaries = res.stats.map(function(stat) {
+        stat.total = 0;
+        if (stat.edit) stat.total += stat.edit;
+        if (stat.fix) stat.total += stat.fix;
+        if (stat.skip) stat.total += stat.skip;
+        return stat;
+      }).sort(function(a, b) {
+        return b.total - a.total;
+      });
 
-    xhr({
-      uri: 'http://localhost:3000/src/data/testdata.json'
-    }, function(err, res) {
+      this.trigger(this.stats);
+    }.bind(this));
+  },
+
+  taskStats: function(task) {
+    // Get the total number count of task items
+    taskServer.get('count/' + task, function(err, res) {
       if (err) return emitError(err);
-      _this.stats = JSON.parse(res.body);
-      _this.trigger(_this.stats);
-    });
+
+      taskServer.get('count_history/' + task + '/fix/day', function(err, r) {
+        if (err) return emitError(err);
+        this.stats.data = r.data.sort(function(a, b) {
+          // Sort earliest to latest.
+          return a.start - b.start;
+        });
+
+        this.stats.totals = res;
+        this.trigger(this.stats);
+      }.bind(this));
+    }.bind(this));
   }
 });

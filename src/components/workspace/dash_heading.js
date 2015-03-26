@@ -6,6 +6,7 @@ var Router = require('react-router');
 
 var actions = require('../../actions/actions');
 var taskObj = require('../../mixins/taskobj');
+var StatsStore = require('../../stores/stats_store');
 
 module.exports = React.createClass({
   contextTypes: {
@@ -13,16 +14,13 @@ module.exports = React.createClass({
   },
 
   mixins: [
+    Reflux.connect(StatsStore, 'stats'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated')
   ],
 
   getInitialState: function() {
     return {
-      extent: null,
-      totals: {
-        'total': 5096,
-        'available': 3646
-      }
+      extent: null
     };
   },
 
@@ -35,7 +33,6 @@ module.exports = React.createClass({
     }
 
     // Add query params to the URL
-    if (!query) return;
     var router = this.context.router;
     var params = router.getCurrentParams();
 
@@ -49,12 +46,29 @@ module.exports = React.createClass({
 
   render: function() {
     var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
-    var available = this.state.totals.available;
-    var total = this.state.totals.total;
-    var completed = total - available;
-    var progressStyle = {
-      width: (completed / total) * 100 + '%'
-    };
+    var totalSummary = '';
+    if (this.state.stats.totals) {
+      var available = this.state.stats.totals.available;
+      var total = this.state.stats.totals.total;
+      var completed = total - available;
+      var progressStyle = {
+        width: (completed / total) * 100 + '%'
+      };
+
+      totalSummary = (
+        /* jshint ignore:start */
+        <div className='col4'>
+          <h4 className='block space-bottom0'>
+            <strong>{d3.format(',')(completed)}</strong> complete
+            <span className='quiet'> of {d3.format(',')(total)}</span>
+          </h4>
+          <div className='progress-bar clip contain fill-darken1 col12'>
+            <div ref='progress' style={progressStyle} className='progress fill-darkgreen pin-left block col12'></div>
+          </div>
+        </div>
+        /* jshint ignore:end */
+      );
+    }
 
     var permalink = '';
     var extent = this.state.extent;
@@ -84,15 +98,7 @@ module.exports = React.createClass({
             {extent}
           </h2>
         </div>
-        <div className='col4'>
-          <h4 className='block space-bottom0'>
-            <strong>{d3.format(',')(completed)}</strong> complete
-            <span className='quiet'> of {d3.format(',')(total)}</span>
-          </h4>
-          <div className='progress-bar clip contain fill-darken1 col12'>
-            <div ref='progress' style={progressStyle} className='progress fill-darkgreen pin-left block col12'></div>
-          </div>
-        </div>
+        {totalSummary}
       </div>
       /* jshint ignore:end */
     );

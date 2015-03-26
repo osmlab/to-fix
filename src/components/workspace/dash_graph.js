@@ -4,10 +4,12 @@ var React = require('react');
 var Reflux = require('reflux');
 var actions = require('../../actions/actions');
 var d3Graph = require('../../util/d3Graph');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
   mixins: [
-    Reflux.listenTo(actions.sidebarToggled, 'resize')
+    Reflux.listenTo(actions.sidebarToggled, 'resize'),
+    PureRenderMixin
   ],
 
   getGraphState: function() {
@@ -37,7 +39,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       /* jshint ignore:start */
-      <div className='fill-darken1 pad2 round col12'>
+      <div className='fill-darken1 pad2 round col12 space-bottom2'>
         <div ref='brushgraph'></div>
       </div>
       /* jshint ignore:end */

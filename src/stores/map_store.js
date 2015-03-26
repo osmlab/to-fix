@@ -33,14 +33,13 @@ module.exports = Reflux.createStore({
   },
 
   taskDone: function(task) {
-    var _this = this;
     postToTaskServer('fixed/' + task, {
       user: store.get('username'),
       key: this.data.key
     }, function(err, res) {
       if (err) return emitError(err);
-        _this.taskData(task);
-    });
+        this.taskData(task);
+    }.bind(this));
   },
 
   taskData: function(task) {
