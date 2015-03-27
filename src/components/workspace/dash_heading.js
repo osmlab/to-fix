@@ -3,7 +3,6 @@
 var React = require('react');
 var Reflux = require('reflux');
 
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var actions = require('../../actions/actions');
 var taskObj = require('../../mixins/taskobj');
 var StatsStore = require('../../stores/stats_store');
@@ -17,8 +16,7 @@ module.exports = React.createClass({
   mixins: [
     Reflux.connect(StatsStore, 'stats'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
-    Reflux.listenTo(actions.updatePermalink, 'updatePermalink'),
-    PureRenderMixin
+    Reflux.listenTo(actions.updatePermalink, 'updatePermalink')
   ],
 
   getInitialState: function() {
