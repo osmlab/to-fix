@@ -4,6 +4,7 @@ var React = require('react');
 var Reflux = require('reflux');
 var d3 = require('d3');
 
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var StatsStore = require('../../stores/stats_store');
 var actions = require('../../actions/actions');
 var config = require('../../config');
@@ -15,7 +16,8 @@ module.exports = React.createClass({
 
   mixins: [
     Reflux.connect(StatsStore, 'stats'),
-    Reflux.listenTo(actions.graphUpdated, 'graphUpdated')
+    Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
+    PureRenderMixin
   ],
 
   graphUpdated: function(dates, query) {
