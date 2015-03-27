@@ -31,10 +31,10 @@ module.exports = React.createClass({
     if (summaries && summaries.length) {
       contributions = this.state.stats.summaries.map(function(sum, i) {
           var profile = config.userProfileURL + sum.user;
-          var edit = (sum.edit) ? numFormat(sum.edit) : '';
-          var fix = (sum.fix) ? numFormat(sum.fix) : '';
-          var skip = (sum.skip) ? numFormat(sum.skip) : '';
-          var total = (sum.total) ? numFormat(sum.total) : '';
+          var edit = (sum.edit) ? numFormat(sum.edit) : 0;
+          var fix = (sum.fix) ? numFormat(sum.fix) : 0;
+          var skip = (sum.skip) ? numFormat(sum.skip) : 0;
+          var total = (sum.total) ? numFormat(sum.total) : 0;
 
           return (
             /* jshint ignore:start */
