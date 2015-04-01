@@ -49,13 +49,7 @@ module.exports = React.createClass({
 
     if (this.state.map.mapData) {
       this.state.map.mapData.forEach(function(xml) {
-        var layer = new L.OSM.DataLayer(xml)
-          .setStyle({
-            color: '#866CB7',
-            opacity: 1,
-            weight: 4
-          })
-          .addTo(taskLayer);
+        var layer = new L.OSM.DataLayer(xml).addTo(taskLayer);
         map.fitBounds(layer.getBounds(), { reset: true });
         this.geolocate(map.getCenter());
       }.bind(this));
@@ -180,7 +174,7 @@ module.exports = React.createClass({
       /* jshint ignore:start */
       <div>
         <iframe src={this.state.iDSrcAttribute} frameBorder='0' className='ideditor'></iframe>
-        <button onClick={this.iDEditDone} className='ideditor-done z10000 fill-orange button rcon next round animate pad1y pad2x strong'>Next task</button>
+        <button onClick={this.iDEditDone} className='ideditor-done z10000 button rcon next round animate pad1y pad2x strong'>Next task</button>
       </div>
       /* jshint ignore:end */
       );

@@ -23,14 +23,14 @@ module.exports = React.createClass({
     if (user.auth) {
       logState = (
         /* jshint ignore:start */
-        <div className='pad1x col12 truncate clearfix'>
-          <div className='pad0y inline'>
+        <div className='pad1x col12 truncate clearfix mobile-cols'>
+          <div className='pad0y col6'>
             <a className='strong small dark' target='_blank' href={profile} title='Profile on OpenStreetMap'>
               <img className='dot avatar' src={user.avatar} />
               {user.username}
             </a>
           </div>
-          <button onClick={actions.openSettings} className='icon sprocket button quiet small animate fr'>Settings</button>
+          <button onClick={actions.openSettings} className='col6 icon sprocket button quiet small animate'>Settings</button>
         </div>
         /* jshint ignore:end */
       );
