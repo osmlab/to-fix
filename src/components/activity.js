@@ -52,8 +52,8 @@ module.exports = React.createClass({
         var permalink = 'key-' + action.attributes.key;
         var profile = config.userProfileURL + action.attributes.user;
         var editor = (action.attributes.editor) ? action.attributes.editor : '';
-        var actionDay = dateDisplay(new Date(action.unixtime * 1000));
-        var actionTime = timeDisplay(new Date(action.unixtime * 1000));
+        var actionDay = dateDisplay(new Date(action.time * 1000));
+        var actionTime = timeDisplay(new Date(action.time * 1000));
 
         return (
           /* jshint ignore:start */
