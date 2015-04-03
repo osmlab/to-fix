@@ -47,13 +47,18 @@ module.exports = React.createClass({
       });
     }
 
-    if (this.state.map.mapData) {
+    if (this.state.map.mapData.length) {
       this.state.map.mapData.forEach(function(xml) {
         var layer = new L.OSM.DataLayer(xml).addTo(taskLayer);
         map.fitBounds(layer.getBounds(), { reset: true });
         this.geolocate(map.getCenter());
       }.bind(this));
+    } else if (this.context.router.getCurrentParams().task == 'tigerdelta') {
+      var layer = omnivore.wkt.parse(this.state.map.value.st_astext).addTo(taskLayer);
+      map.fitBounds(layer.getBounds(), { reset: true });
+      this.geolocate(map.getCenter());
     }
+
   },
 
   componentDidMount: function() {

@@ -47,5 +47,9 @@
     "id": "mispelledtags",
     "title": "Misspelled tags",
     "source": "keepright"
+  }, {
+    "id": "tigerdelta",
+    "title": "Tiger delta",
+    "source": "tigerdelta"
   }]
 }

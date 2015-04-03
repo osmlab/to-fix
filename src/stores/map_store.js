@@ -72,6 +72,9 @@ module.exports = Reflux.createStore({
             _this.trigger(_this.data);
           });
         break;
+        case 'tigerdelta':
+          _this.trigger(_this.data);
+        break;
       }
     });
   },
