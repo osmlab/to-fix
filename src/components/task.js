@@ -113,12 +113,13 @@ module.exports = React.createClass({
       var left = bounds._southWest.lng - 0.0005;
       var top = bounds._northEast.lat + 0.0005;
       var right = bounds._northEast.lng + 0.0005;
-      var select = [];
 
-      // Build out selection list for JOSM
-      for (var key in state.value) {
-        if (key === 'way_id') select.push('way' + state.value[key]);
-        if (key === 'node_id') select.push('node' + state.value[key]);
+      // Select an item in JOSM
+      var select;
+      if (state.value.node_id) {
+        select = 'node' + state.value.node_id;
+      } else if (state.value.node_id) {
+        select = 'way' + state.value.way_id;
       }
 
       // Try JOSM first
@@ -128,7 +129,7 @@ module.exports = React.createClass({
           right: right,
           top: top,
           bottom: bottom,
-          select: select.join(',')
+          select: select
         })
       }, function(err, res) {
         // Fallback to iD
