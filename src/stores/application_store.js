@@ -27,7 +27,7 @@ module.exports = Reflux.createStore({
 
   uploadTasks: function(data) {
     postToTaskServer('csv', data, function(err, res) {
-      if (err) return console.error(err);
+      if (err || res.statusCode != 200) return console.error(err || { status: res.statusCode });
       window.location.hash = 'task/' + res.internalName;
     });
   },
