@@ -77,6 +77,8 @@ module.exports = React.createClass({
               <input className='col6 margin3' type='submit' value='Upload file' />
             </div>
           </form>
+
+          <p><small><a href="https://raw.githubusercontent.com/osmlab/to-fix-backend/master/sample.csv" download="download">Sample CSV</a></small></p>
         </div>
       </div>
       /* jshint ignore:end */
