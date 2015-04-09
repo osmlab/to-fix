@@ -71,6 +71,7 @@ module.exports = React.createClass({
             <fieldset className='pad2x'>
               <input type='file' className='hidden' ref='fileInput' name='uploadfile' />
               <button onClick={this.triggerFileInput} className='button pad2x  quiet'>Choose CSV</button>
+              <small class="fr pad1y"><a href="https://raw.githubusercontent.com/osmlab/to-fix-backend/master/sample.csv" download="download">Get example</a></small>
             </fieldset>
 
             <div className='pad2x pad1y fill-light round-bottom col12 clearfix'>
@@ -78,7 +79,6 @@ module.exports = React.createClass({
             </div>
           </form>
 
-          <p><small><a href="https://raw.githubusercontent.com/osmlab/to-fix-backend/master/sample.csv" download="download">Sample CSV</a></small></p>
         </div>
       </div>
       /* jshint ignore:end */
