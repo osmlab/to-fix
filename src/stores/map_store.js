@@ -73,6 +73,7 @@ module.exports = Reflux.createStore({
           });
         break;
         case 'tigerdelta':
+        case 'disconnectednepal':
           _this.trigger(_this.data);
         break;
         case 'nycbuildings':
