@@ -63,5 +63,9 @@
     "id": "disconnectednepal",
     "title": "Disconnected Nepal",
     "source": "disconnectednepal"
+  }, {
+    "id": "rk",
+    "title": "krakatoa",
+    "source": "krakatoa"
   }]
 }

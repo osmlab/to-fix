@@ -62,6 +62,10 @@ module.exports = React.createClass({
       var layer = omnivore.wkt.parse(this.state.map.value.geometry).addTo(taskLayer);
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
+    } else if (task == 'rk') {
+      var layer = omnivore.wkt.parse(this.state.map.value.geom).addTo(taskLayer);
+      map.fitBounds(layer.getBounds(), { reset: true });
+      this.geolocate(map.getCenter());
     }
   },
 
