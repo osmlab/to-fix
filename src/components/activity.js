@@ -91,7 +91,7 @@ module.exports = React.createClass({
       if (this.state.loadCount >= this.state.activity.length) {
         loadmore = (<button className='col12 quiet disabled round-bottom'>Activity loaded</button>);
       } else {
-        loadmore = (<button onClick={this.loadMore} className='col12 round-bottom'>Load more</button>);
+        loadmore = (<button onClick={this.loadMore} className='col12 button round-bottom'>Load more</button>);
       }
       /* jshint ignore:end */
     }

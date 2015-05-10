@@ -31,6 +31,11 @@ module.exports = React.createClass({
     this.refs.fileInput.getDOMNode().click();
   },
 
+  stopProp: function(e) {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  },
+
   uploadData: function(e) {
     e.preventDefault();
     // TODO sanitize/validation
@@ -52,8 +57,8 @@ module.exports = React.createClass({
 
     return (
       /* jshint ignore:start */
-      <div id='modal' className='animate modal modal-content active'>
-        <div className='col4 modal-body fill-purple contain'>
+      <div id='modal' className='animate modal modal-content active' onClick={this.onCancel}>
+        <div className='col4 modal-body fill-purple contain' onClick={this.stopProp}>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
             <h2 className='dark'>Upload</h2>
@@ -74,7 +79,7 @@ module.exports = React.createClass({
             </fieldset>
 
             <div className='pad2x pad1y fill-light round-bottom col12 clearfix'>
-              <input className='col6 margin3' type='submit' value='Upload file' />
+              <input className='col6 margin3 button' type='submit' value='Upload file' />
             </div>
           </form>
         </div>

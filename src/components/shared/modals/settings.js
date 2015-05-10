@@ -32,13 +32,18 @@ module.exports = React.createClass({
     actions.editorPreference(editor);
   },
 
+  stopProp: function(e) {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  },
+
   render: function() {
     var editor = (store.get('editor')) ? store.get('editor') : 'ideditor';
 
     return (
       /* jshint ignore:start */
-      <div id='modal' className='animate modal modal-content active'>
-        <div className='col4 modal-body fill-purple contain'>
+      <div id='modal' className='animate modal modal-content active' onClick={this.onCancel}>
+        <div className='col4 modal-body fill-purple contain' onClick={this.stopProp}>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
             <h2 className='dark'>Settings</h2>
