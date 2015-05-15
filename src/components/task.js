@@ -64,6 +64,10 @@ module.exports = React.createClass({
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
     } else if (task == 'rk') {
+      // rk traces
+      var rkTraces = L.mapbox.tileLayer('matt.8fafe5ff');
+      rkTraces.addTo(map).bringToFront();
+
       var geom = wellknown.parse(this.state.map.value.geom);
 
       var circleOptions = {
