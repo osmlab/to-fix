@@ -22,7 +22,7 @@ module.exports = {
       body: formData,
       method: 'POST',
     }, function(err, res) {
-      if (err || res.statusCode === 400) return cb(err || res.body.message);
+      if (err || res.statusCode === 400) return cb(err || res);
       cb(null, res.body);
     });
   },
