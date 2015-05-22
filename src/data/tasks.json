@@ -59,9 +59,5 @@
     "id": "usabuildingoverlaps",
     "title": "USA overlapping buildings",
     "source": "nycbuildings"
-  }, {
-    "id": "disconnectednepal",
-    "title": "Disconnected Nepal",
-    "source": "disconnectednepal"
   }]
 }

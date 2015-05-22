@@ -59,10 +59,6 @@ module.exports = React.createClass({
       var layer = omnivore.wkt.parse(this.state.map.value.st_astext).addTo(taskLayer);
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
-    } else if (task == 'disconnectednepal') {
-      var layer = omnivore.wkt.parse(this.state.map.value.geometry).addTo(taskLayer);
-      map.fitBounds(layer.getBounds(), { reset: true });
-      this.geolocate(map.getCenter());
     } else if (task == 'rk') {
       // rk traces
       var rkTraces = L.mapbox.tileLayer('matt.8fafe5ff');
