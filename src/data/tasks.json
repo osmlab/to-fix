@@ -59,5 +59,9 @@
     "id": "usabuildingoverlaps",
     "title": "USA overlapping buildings",
     "source": "nycbuildings"
+  }, {
+    "id": "rk",
+    "title": "krakatoa",
+    "source": "krakatoa"
   }]
 }
