@@ -27,6 +27,9 @@ module.exports = React.createClass({
     },
     'f': function() {
       this.fixed();
+    },
+    'n': function() {
+      this.noterror();
     }
   },
 
