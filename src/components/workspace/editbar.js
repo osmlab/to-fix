@@ -34,6 +34,12 @@ module.exports = React.createClass({
     actions.taskEdit(this.context.router.getCurrentParams().task);
   },
 
+  noerror: function() {
+    var task = this.context.router.getCurrentParams().task;
+    actions.taskNoError(task);
+    actions.taskData(task);
+  },
+
   skip: function() {
     var task = this.context.router.getCurrentParams().task;
     actions.taskData(task);
@@ -64,9 +70,10 @@ module.exports = React.createClass({
       taskActions = (
         /* jshint ignore:start */
         <nav className='tabs col12 clearfix mobile-cols'>
-          <button onClick={this.edit} className='col4 button animate unround'>Edit</button>
-          <button onClick={this.skip} className='col4 button animate'>Skip</button>
-          <button onClick={this.fixed} className='col4 button animate'>Fixed</button>
+          <button onClick={this.edit} className='col3 button animate unround'>Edit</button>
+          <button onClick={this.noerror} className='col3 button animate'>No Error</button>
+          <button onClick={this.skip} className='col3 button animate'>Skip</button>
+          <button onClick={this.fixed} className='col3 button animate'>Fixed</button>
         </nav>
         /* jshint ignore:end */
       );

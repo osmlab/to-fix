@@ -41,7 +41,8 @@ var actions = Reflux.createActions({
   'updatePermalink': {},
 
   // common buttons
-  'taskSkip': {}
+  'taskSkip': {},
+  'taskNoError': {}
 });
 
 module.exports = actions;
