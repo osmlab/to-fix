@@ -26,6 +26,7 @@ module.exports = Reflux.createStore({
     this.listenTo(actions.baseLayerChange, this.baseLayerChange);
     this.listenTo(actions.taskSkip, this.taskSkip);
     this.listenTo(actions.taskEdit, this.taskEdit);
+    this.listenTo(actions.taskNotError, this.taskNotError);    
   },
 
   getInitialState: function() {
@@ -164,6 +165,14 @@ module.exports = Reflux.createStore({
       action: 'edit',
       key: this.data.key,
       editor: store.get('editor')
+    });
+  },
+
+  taskNotError: function(task) {
+    track(task, {
+      user: store.get('username'),
+      action: 'noterror',
+      key: this.data.key
     });
   }
 
