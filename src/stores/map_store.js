@@ -167,15 +167,16 @@ module.exports = Reflux.createStore({
       editor: store.get('editor')
     });
   },
-
+   
   taskNotError: function(task) {
-    track(task, {
+    postToTaskServer('noterror/' + task, {
       user: store.get('username'),
-      action: 'noterror',
       key: this.data.key
-    });
+    }, function(err, res) {
+      if (err) return emitError(err);
+        this.taskData(task);
+    }.bind(this));
   }
-
 });
 
 function track(task, attributes) {
