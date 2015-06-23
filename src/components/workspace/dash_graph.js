@@ -31,6 +31,7 @@ module.exports = React.createClass({
       if (d.edit && (filter === 'all' || filter === 'edited')) d.value += d.edit;
       if (d.fix && (filter === 'all' || filter === 'fixed')) d.value += d.fix;
       if (d.skip && (filter === 'all' || filter === 'skipped')) d.value += d.skip;
+      if (d.noterror && (filter === 'all' || filter === 'noterror')) d.value += d.noterror;
       return d;
     });
 
@@ -79,6 +80,8 @@ module.exports = React.createClass({
             <label htmlFor='fixed'>Fixed</label>
             <input id='skipped' type='radio' name='filter' value='skipped' defaultChecked={this.state.filter === 'skipped'} />
             <label htmlFor='skipped'>Skipped</label>
+            <input id='noterror' type='radio' name='filter' value='noterror' defaultChecked={this.state.filter === 'noterror'} />
+            <label htmlFor='noterror'>Not error</label>
           </form>
         </div>
 
