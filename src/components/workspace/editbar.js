@@ -38,9 +38,7 @@ module.exports = React.createClass({
   },
 
   noterror: function() {
-    var task = this.context.router.getCurrentParams().task;
-    actions.taskNotError(task);
-    actions.taskData(task);
+      actions.taskNotError(this.context.router.getCurrentParams().task);
   },
 
   skip: function() {
