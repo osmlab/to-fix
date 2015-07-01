@@ -34,17 +34,19 @@ module.exports = React.createClass({
           var edit = (sum.edit) ? numFormat(sum.edit) : 0;
           var fix = (sum.fix) ? numFormat(sum.fix) : 0;
           var skip = (sum.skip) ? numFormat(sum.skip) : 0;
+          var noterror = (sum.noterror) ? numFormat(sum.noterror) : 0;
           var total = (sum.total) ? numFormat(sum.total) : 0;
 
           return (
             /* jshint ignore:start */
             <div key={i} className='col12 clearfix'>
-              <span className='col8'>
+              <span className='col7'>
                 <a href={profile} target='_blank' className='inline strong pad0y'>{sum.user}</a>
               </span>
               <span className='col1 pad0y text-right'>{edit}</span>
               <span className='col1 pad0y text-right'>{fix}</span>
               <span className='col1 pad0y text-right'>{skip}</span>
+              <span className='col1 pad0y text-right'>{noterror}</span>
               <span className='col1 pad0y text-right'>{total}</span>
             </div>
             /* jshint ignore:end */
@@ -62,10 +64,11 @@ module.exports = React.createClass({
       /* jshint ignore:start */
       <div className='contributions'>
         <div className='col12 clearfix'>
-          <h4 className='col8'>Contributors</h4>
+          <h4 className='col7'>Contributors</h4>
           <h4 className='col1 pad0y text-right'>Edited</h4>
           <h4 className='col1 pad0y text-right'>Fixed</h4>
           <h4 className='col1 pad0y text-right'>Skipped</h4>
+          <h4 className='col1 pad0y text-right'>Not error</h4>
           <h4 className='col1 pad0y text-right'>Total</h4>
         </div>
         {contributions}

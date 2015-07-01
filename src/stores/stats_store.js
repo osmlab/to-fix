@@ -32,6 +32,7 @@ module.exports = Reflux.createStore({
         if (stat.edit) stat.total += stat.edit;
         if (stat.fix) stat.total += stat.fix;
         if (stat.skip) stat.total += stat.skip;
+        if (stat.noterror) stat.total += stat.noterror;
         return stat;
       }).sort(function(a, b) {
         return b.total - a.total;

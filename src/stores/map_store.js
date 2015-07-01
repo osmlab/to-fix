@@ -42,14 +42,22 @@ module.exports = Reflux.createStore({
         this.taskData(task);
     }.bind(this));
   },
+   
+  taskNotError: function(task) {
+    postToTaskServer('noterror/' + task, {
+      user: store.get('username'),
+      key: this.data.key
+    }, function(err, res) {
+      if (err) return emitError(err);
+        this.taskData(task);
+    }.bind(this));
+  },
 
   taskData: function(task) {
     task = taskObj(task);
     var _this = this;
-
     // Clear out what mapData there is
     this.data.mapData = [];
-
     postToTaskServer('task/' + task.id, {
       user: store.get('username')
     }, function(err, res) {
@@ -156,7 +164,7 @@ module.exports = Reflux.createStore({
       user: store.get('username'),
       action: 'skip',
       key: this.data.key
-    });
+    });    
   },
 
   taskEdit: function(task) {
@@ -166,16 +174,7 @@ module.exports = Reflux.createStore({
       key: this.data.key,
       editor: store.get('editor')
     });
-  },
-
-  taskNotError: function(task) {
-    track(task, {
-      user: store.get('username'),
-      action: 'noterror',
-      key: this.data.key
-    });
   }
-
 });
 
 function track(task, attributes) {
