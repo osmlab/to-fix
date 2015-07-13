@@ -42,7 +42,13 @@ var actions = Reflux.createActions({
 
   // common buttons
   'taskSkip': {},
-  'taskNotError': {}
+  'taskNotError': {},
+
+//admin
+  'getTasks':{},
+  'addTask': {},
+  'updateTask': {}
+
 });
 
 module.exports = actions;

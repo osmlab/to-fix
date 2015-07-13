@@ -59,6 +59,12 @@ module.exports = React.createClass({
               to='stats'>
               Statistics
             </Link>
+            <Link
+              className='icon plus short button'
+              params={{ task: currentTask }}
+              to='admin'>
+              Admin
+            </Link>
           </nav>
         </div>
       </header>
