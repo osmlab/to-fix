@@ -6,7 +6,7 @@ var Router = require('react-router');
 var Link = Router.Link;
 
 var appStore = require('../../stores/application_store');
-var taskItems = require('../../data/tasks.json').tasks;
+//var taskItems = require('../../data/tasks.json').tasks;
 var LogIn = require('./login');
 var actions = require('../../actions/actions');
 
@@ -25,7 +25,7 @@ module.exports = React.createClass({
     var sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
     if (appSettings.sidebar) sidebarClass += ' active';
 
-    var tasks = taskItems.map(function(task, i) {
+    var tasks = this.props.taskItems.map(function(task, i) {
       return (
         /* jshint ignore:start */
         <Link

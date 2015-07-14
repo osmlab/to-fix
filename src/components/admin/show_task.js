@@ -24,7 +24,6 @@ module.exports = React.createClass({
 
       var dateDisplay = d3.time.format('%B %-d');
       var timeDisplay = d3.time.format('%-I:%-M%p');
-      console.log(typeof task.task.updated)
       var actionDay = dateDisplay(new Date(task.task.updated * 1000));
       var actionTime = timeDisplay(new Date(task.task.updated * 1000));
 
