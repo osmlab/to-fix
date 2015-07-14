@@ -17,7 +17,6 @@ var Stats = require('./components/stats');
 var Activity = require('./components/activity');
 var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
-var Admin = require('./components/admin');
 
 var tasks = require('./data/tasks.json').tasks;
 
@@ -49,7 +48,6 @@ module.exports = (
     <Route name='task' path='/task/:task' handler={Task} />
     <Route name='activity' path='/activity/:task' handler={Activity} />
     <Route name='stats' path='/stats/:task' handler={Stats} />
-    <Route name='admin' path='/admin/:task' handler={Admin} />
     <DefaultRoute handler={Task} />
     <Redirect from='/' to={firstTask} />
   </Route>

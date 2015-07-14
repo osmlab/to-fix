@@ -2,6 +2,8 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+var Router = require('react-router');
+var Link = Router.Link;
 
 var actions = require('../actions/actions');
 var Admin_store = require('../stores/admin_store');
@@ -34,6 +36,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
+    var url_add = '/admin/add';
     return (
         <div className='col12 clearfix scroll-styled'>
           <div className='col6 pad2 dark'>
@@ -43,7 +46,7 @@ module.exports = React.createClass({
             <div className='col6 pad2 dark'>
             <div className='pill'>
               <a  onClick={this.openShow_task} className='button pad2x quiet'>Edit this task</a>
-              <a onClick={this.openAdd_task} className='button pad2x quiet'>Add a task</a>
+              <Link onClick={this.openAdd_task} className='button pad2x quiet' to={url_add}>Add a task</Link>
             </div>
           </div>
         </div>  

@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+var d3 = require('d3');
 
 var actions = require('../../actions/actions');
 var Admin_store = require('../../stores/admin_store');
@@ -18,7 +19,17 @@ module.exports = React.createClass({
   render: function() {
     var task = this.state.task;
     var info = '';
+
     if(typeof task.task !== 'undefined'){
+
+      var dateDisplay = d3.time.format('%B %-d');
+      var timeDisplay = d3.time.format('%-I:%-M%p');
+      console.log(typeof task.task.updated)
+      var actionDay = dateDisplay(new Date(task.task.updated * 1000));
+      var actionTime = timeDisplay(new Date(task.task.updated * 1000));
+
+      var status = '';
+      (!task.task.status) ? status = 'Completed': status = 'Still are a items to work';
       var info = ( <div>
                   <div className='rows'>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -66,15 +77,15 @@ module.exports = React.createClass({
                         <span className='capitalize'>Updated</span>
                       </div>
                       <div className='pad1 fl space'>
-                        {task.task.updated}
+                      {actionDay}<span className='quiet'> {actionTime} </span>                      
                       </div>
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
                       <div className='fl strong pad1 fill-darken1 editor-key'>
                         <span className='capitalize'>Status</span>
                       </div>
-                      <div className='pad1 fl space'>
-                        {task.task.status}
+                      <div className='pad1 fl space'>                                   
+                      {status}
                       </div>
                     </div>
                   </div>
