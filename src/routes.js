@@ -9,7 +9,9 @@ var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 var DefaultRoute = Router.DefaultRoute;
 var Redirect = Router.Redirect;
+var Reflux = require('reflux');
 
+var TasksStore = require('./stores/tasks_store');
 var Header = require('./components/shared/header');
 var Sidebar = require('./components/shared/sidebar');
 var Task = require('./components/task');
@@ -18,41 +20,46 @@ var Activity = require('./components/activity');
 var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
 var Admin = require('./components/admin');
-var  taskserver = require('./mixins/taskserver');
+
 
 //var tasks = require('./data/tasks.json').tasks;
 
 // As there isn't a proper initial path for
 // to-fix, redirect '/' to the first task in the sidebar
-var firstTask = '';
-
-function getTasks() {
-  return {
-    tasks: taskserver.get('tasks', function(err, res) {
-      firstTask = '/task/' + res.tasks[0].id;
-      return res.tasks;
-    })
-  }
-}
+var firstTask = '/task/unconnected_major';
 
 var App = React.createClass({
+  mixins: [
+    Reflux.listenTo(TasksStore, 'onTaksLoad')
+  ],
   getInitialState: function() {
-      return getTasks();
+    return {
+      tasks: TasksStore.loadTasks(),
+      loading: true
+    };
+  },
+  onTaksLoad(tasks){
+    this.setState({
+      tasks: tasks,
+      loading: false
+    });
   },
   render: function () {
-    console.log(this.state)
+    var tasks= this.state.tasks;
+    var loading = (this.state.loading) ? 'loading' : '';
+
     return (
-      /* jshint ignore:start */
-      <div>
-        <Header />
-        <Sidebar taskItems={this.state.tasks} />
-        <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
-          <RouteHandler />
-          <ErrorDialog />
-        </div>
-        <Modal />
+      <div className={loading}>
+        {tasks && <div>
+          <Header />
+          <Sidebar taskItems={this.state.tasks} />
+          <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
+            <RouteHandler />
+            <ErrorDialog />
+          </div>
+          <Modal />
+        </div>}
       </div>
-      /* jshint ignore:end */
     );
   }
 });

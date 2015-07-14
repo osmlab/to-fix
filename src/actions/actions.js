@@ -47,7 +47,9 @@ var actions = Reflux.createActions({
 //admin
   'getTasks':{},
   'addTask': {},
-  'updateTask': {}
+  'updateTask': {},
+
+  'loadTasks':{}
 
 });
 
