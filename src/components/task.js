@@ -56,7 +56,7 @@ module.exports = React.createClass({
         this.geolocate(map.getCenter());
       }.bind(this));
     } else if (task == 'tigerdelta') {
-      var layer = omnivore.wkt.parse(this.state.map.value.st_astext).addTo(taskLayer);
+      var layer = omnivore.wkt.parse(this.state.map.value.geom).addTo(taskLayer);
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
     } else if (task == 'rk') {
