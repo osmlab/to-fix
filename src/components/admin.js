@@ -19,7 +19,7 @@ module.exports = React.createClass({
   },
   statics: {
     fetchData: function(params) {
-      actions.getTasks(params.task);
+      actions.getTask(params.task);
     }
   },
   openShow_task: function() {

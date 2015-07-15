@@ -45,7 +45,7 @@ var actions = Reflux.createActions({
   'taskNotError': {},
 
 //admin
-  'getTasks':{},
+  'getTask':{},
   'addTask': {},
   'updateTask': {},
 

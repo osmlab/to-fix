@@ -15,8 +15,8 @@ module.exports = Reflux.createStore({
 	},
 	loadTasks() {
 		var self = this;
-		tasks: taskServer.get('tasks', function(err, res) {
-			console.log(res.tasks)
+		var status = false; //false for tasks imcomplete tasks
+		tasks: taskServer.get('tasks/' + status, function(err, res) {
 			self.tasks = res.tasks
 			self.trigger(self.tasks);
 		});

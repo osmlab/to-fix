@@ -84,12 +84,12 @@ var AddForm = React.createClass({
   render: function() {
     var form = (<form className='dark' onSubmit={this.uploadData}>
               <fieldset className='pad2x'>
-                <label>Id Task</label>
-                <input className='col12 block clean' ref='taskid' type='text' name='id' placeholder='Id will generate' />
-              </fieldset>
-              <fieldset className='pad2x'>
                 <label>Task name</label>
                 <input className='col12 block clean' ref='taskname' type='text' name='name' placeholder='Task name' />
+              </fieldset>
+              <fieldset className='pad2x'>
+                <label>Id Task</label>
+                <input className='col12 block clean' ref='taskid' type='text' name='id' placeholder='Id will generate' />
               </fieldset>
               <fieldset className='pad2x'>
                 <label>source</label>

@@ -10,6 +10,7 @@ var RouteHandler = Router.RouteHandler;
 var DefaultRoute = Router.DefaultRoute;
 var Redirect = Router.Redirect;
 var Reflux = require('reflux');
+var store = require('store');
 
 var TasksStore = require('./stores/tasks_store');
 var Header = require('./components/shared/header');
@@ -21,12 +22,11 @@ var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
 var Admin = require('./components/admin');
 
-
-//var tasks = require('./data/tasks.json').tasks;
+var taskobj = require('./mixins/taskobj');
 
 // As there isn't a proper initial path for
-// to-fix, redirect '/' to the first task in the sidebar
-var firstTask = '/task/unconnected_major';
+
+var firstTask = '/task/highwayfootpath';// to-fix, redirect '/' for now to /task/highwayfootpath
 
 var App = React.createClass({
   mixins: [
@@ -39,6 +39,7 @@ var App = React.createClass({
     };
   },
   onTaksLoad(tasks){
+    store.set('tasks',tasks);
     this.setState({
       tasks: tasks,
       loading: false
