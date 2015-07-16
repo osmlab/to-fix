@@ -28,7 +28,7 @@ module.exports = React.createClass({
       var actionTime = timeDisplay(new Date(task.task.updated * 1000));
 
       var status = '';
-      (!task.task.status) ? status = 'Completed': status = 'Still are a items to work';
+      (task.task.status) ? status = 'Completed': status = 'Still are items to work';
       var info = ( <div>
                   <div className='rows'>
                     <div className='clearfix fill-darken1 dark mobile-cols'>

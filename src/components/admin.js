@@ -2,8 +2,6 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var Router = require('react-router');
-var Link = Router.Link;
 
 var actions = require('../actions/actions');
 var Admin_store = require('../stores/admin_store');
@@ -45,8 +43,8 @@ module.exports = React.createClass({
           </div>
             <div className='col6 pad2 dark'>
             <div className='pill'>
-              <a  onClick={this.openShow_task} className='button pad2x quiet'>Edit this task</a>
-              <Link onClick={this.openAdd_task} className='button pad2x quiet' to={url_add}>Add a task</Link>
+              <a onClick={this.openShow_task} className='button pad2x quiet'>Show detail</a>
+              <a onClick={this.openAdd_task} className='button pad2x quiet' to={url_add}>Add a task</a>
             </div>
           </div>
         </div>  

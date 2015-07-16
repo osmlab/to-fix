@@ -21,7 +21,6 @@ var Activity = require('./components/activity');
 var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
 var Admin = require('./components/admin');
-
 var taskobj = require('./mixins/taskobj');
 
 // As there isn't a proper initial path for
@@ -77,6 +76,3 @@ module.exports = (
   </Route>
   /* jshint ignore:end */
 );
-
-
- 
