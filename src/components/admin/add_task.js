@@ -1,6 +1,7 @@
 var React = require('react');
-var admin_store = require('../../stores/admin_store');
 var $ = require('jquery');
+
+var admin_store = require('../../stores/admin_store');
 var actions = require('../../actions/actions');
 var config = require('../../config');
 
@@ -11,8 +12,7 @@ var AddForm = React.createClass({
         status: false,
         taskname: null
       },
-      selected:false,
-      csvlines:[]
+      selected:false
     };
   },
   triggerFileInput: function() {
@@ -23,7 +23,6 @@ var AddForm = React.createClass({
     var self = this;
     // TODO sanitize/validation
     var formData = new window.FormData();
-    var id = this.refs.taskid.getDOMNode().value.trim();
     var name = this.refs.taskname.getDOMNode().value.trim();
     var source = this.refs.tasksource.getDOMNode().value.trim();
     var owner = this.refs.taskowner.getDOMNode().value.trim();
@@ -33,7 +32,6 @@ var AddForm = React.createClass({
     file = file.files[0];
     var random = this.refs.random.getDOMNode().checked;
 
-    formData.append('id', id);
     formData.append('name', name);
     formData.append('source', source);
     formData.append('owner', owner);
@@ -41,7 +39,7 @@ var AddForm = React.createClass({
     formData.append('password', password);
     formData.append('file', file);
     formData.append('random', random);
-
+    formData.append('newtask', true);
     $.ajax({
       url: config.taskServer + 'csv',
       data: formData,
@@ -64,33 +62,13 @@ var AddForm = React.createClass({
       }
     });
   },
-  handleFiles: function() {
-        var reader = new FileReader();
-        reader.onload = this.loadHandler;
-        reader.onerror = this.errorHandler;
-        reader.readAsText(this.refs.fileInput.getDOMNode().files[0]);
-    },
-    loadHandler: function(event) {
-        var csv = event.target.result;
-        console.log(csv.split("\n")[0]);
-        var lines = [];
-        lines.push(csv.split("\n")[0].split(","));
-        lines.push(csv.split("\n")[1].split(","));
-        this.setState({csvlines:lines});
-    },
-    errorHandler: function(event) {
-        if (evt.target.error.name == "NotReadableError") {
-           this.setState({csvheaders:"Canno't read file !"});
-        }
-    },
 
   cleanup: function() {
     var self = this;
     setTimeout(function() {
       self.setState({
         startupload: false,
-        status: false,
-        csvlines:[]
+        status: false
       });
     }, 3000);
   },
@@ -103,28 +81,10 @@ var AddForm = React.createClass({
     });
   },
   render: function() {
-    var csvtable = '';
-    if (this.state.csvlines.length > 0) {
-      var table = this.state.csvlines.map(function(row, i) {
-        var table_row = row.map(function(item, j) {
-          return (<th> {item} </th>);
-        });
-        if (i === 0) {
-          return (<thead><tr>{table_row}</tr></thead>);
-        } else {
-          return (<tbody><tr>{table_row}</tr></tbody>);
-        }
-      });
-      csvtable = (<table className="prose">{table}</table>);
-    }
     var form = (<form className='dark' onSubmit={this.uploadData}>
               <fieldset className='pad2x'>
                 <label>Task name</label>
                 <input className='col12 block clean' ref='taskname' type='text' name='name' placeholder='Task name' />
-              </fieldset>
-              <fieldset className='pad2x'>
-                <label>Id Task</label>
-                <input className='col12 block clean' ref='taskid' type='text' name='id' placeholder='Id will generate' />
               </fieldset>
               <fieldset className='pad2x'>
                 <label>source</label>
@@ -143,12 +103,9 @@ var AddForm = React.createClass({
                 <input className='col12 block clean' ref='password' type='password' name='uploadPassword' placeholder='Password' />
               </fieldset>
               <fieldset className='pad2x'>
-                <input type='file' className='hidden'  ref='fileInput' name='uploadfile' onChange={this.handleFiles} accept=".csv"/>
+                <input type='file' className='hidden'  ref='fileInput' name='uploadfile' accept=".csv"/>
                 <a onClick={this.triggerFileInput} className='button pad2x  quiet'>Choose CSV</a>
-              </fieldset>
-               <fieldset className='pad2x'>
-                 {csvtable}
-               </fieldset>  
+              </fieldset> 
               <div className='pad2 checkbox-pill'>
                 <input type='checkbox' id='random' ref='random'  checked={this.state.selected}/>
                 <a onClick={this.triggerRandom} for='random' className='button icon check quiet'>Do not load randomize the data</a>      
@@ -157,7 +114,6 @@ var AddForm = React.createClass({
                 <input className='col6 margin3 button' type='submit' value='Create Task' />
               </div>
             </form>);
-
     return (
           <div>
           <div>{(this.state.startupload) ? 

@@ -20,15 +20,15 @@ module.exports = React.createClass({
     var task = this.state.task;
     var info = '';
 
-    if(typeof task.task !== 'undefined'){
+    if(typeof task !== 'undefined'){
 
       var dateDisplay = d3.time.format('%B %-d');
       var timeDisplay = d3.time.format('%-I:%-M%p');
-      var actionDay = dateDisplay(new Date(task.task.updated * 1000));
-      var actionTime = timeDisplay(new Date(task.task.updated * 1000));
+      var actionDay = dateDisplay(new Date(task.updated * 1000));
+      var actionTime = timeDisplay(new Date(task.updated * 1000));
 
       var status = '';
-      (task.task.status) ? status = 'Completed': status = 'Still are items to work';
+      (task.status) ? status = 'Completed': status = 'Still are items to work';
       var info = ( <div>
                   <div className='rows'>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -36,7 +36,7 @@ module.exports = React.createClass({
                         <span className='capitalize'>Title</span>
                       </div>
                       <div className='pad1 fl space'>
-                        {task.task.title}
+                        {task.title}
                       </div>
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -44,7 +44,7 @@ module.exports = React.createClass({
                         <span className='capitalize'>Id Task</span>
                       </div>
                       <div className='pad1 fl space'>
-                        {task.task.id}
+                        {task.id}
                       </div>
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -52,7 +52,7 @@ module.exports = React.createClass({
                         <span className='capitalize'>Source</span>
                       </div>
                       <div className='pad1 fl space'>
-                        {task.task.source}
+                        {task.source}
                       </div>
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -60,7 +60,7 @@ module.exports = React.createClass({
                         <span className='capitalize'>Owner</span>
                       </div>
                       <div className='pad1 fl space'>
-                        {task.task.owner}
+                        {task.owner}
                       </div>
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -68,7 +68,7 @@ module.exports = React.createClass({
                         <span className='capitalize'>Description</span>
                       </div>
                       <div className='pad1 fl space'>
-                        {task.task.description}
+                        {task.description}
                       </div>
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
