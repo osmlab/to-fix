@@ -30,7 +30,7 @@ var AddForm = React.createClass({
     var password = this.refs.password.getDOMNode().value.trim();
     var file = this.refs.fileInput.getDOMNode();
     file = file.files[0];
-    var random = this.refs.random.getDOMNode().checked;
+    var preserve = this.refs.random.getDOMNode().checked;
 
     formData.append('name', name);
     formData.append('source', source);
@@ -38,7 +38,7 @@ var AddForm = React.createClass({
     formData.append('description', description);
     formData.append('password', password);
     formData.append('file', file);
-    formData.append('random', random);
+    formData.append('preserve', preserve);
     formData.append('newtask', true);
     $.ajax({
       url: config.taskServer + 'csv',

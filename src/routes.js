@@ -25,7 +25,7 @@ var taskobj = require('./mixins/taskobj');
 
 // As there isn't a proper initial path for
 
-var firstTask = '/task/highwayfootpath';// to-fix, redirect '/' for now to /task/highwayfootpath
+var firstTask = '/task/highwayfootpathxxx';// to-fix, redirect '/' for now to /task/highwayfootpath
 
 var App = React.createClass({
   mixins: [

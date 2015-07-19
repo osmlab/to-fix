@@ -25,17 +25,35 @@ module.exports = React.createClass({
     if (appSettings.sidebar) sidebarClass += ' active';
 
     var tasks = this.props.taskItems.map(function(task, i) {
-      return (
-        /* jshint ignore:start */
-        <Link
-          to={topLevel}
-          key={i}
-          className='block strong dark pad1x pad0y truncate'
-          params={{task: task.id}}>
-          {task.title}
-        </Link>
-        /* jshint ignore:end */
-      );
+      if(!task.status){
+        return (
+          /* jshint ignore:start */
+          <Link
+            to={topLevel}
+            key={i}
+            className='block strong dark pad1x pad0y truncate'
+            params={{task: task.id}}>
+            {task.title}
+          </Link>
+          /* jshint ignore:end */
+        );
+      }
+    });
+
+    var completed_tasks = this.props.taskItems.map(function(task, i) {
+      if(task.status){
+        return (
+          /* jshint ignore:start */
+          <Link
+            to={topLevel}
+            key={i}
+            className='block strong dark pad1x pad0y truncate'
+            params={{task: task.id}}>
+            {task.title}
+          </Link>
+          /* jshint ignore:end */
+        );       
+      }
     });
 
     return (
@@ -45,6 +63,8 @@ module.exports = React.createClass({
           <LogIn />
           <h4 className='dark block pad1x space-bottom1'>Tasks</h4>
           <nav ref='taskList' className='space-bottom2'>{tasks}</nav>
+          <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>
+          <nav ref='taskList' className='space-bottom2'>{completed_tasks}</nav>
           <div className='pad1x'>
             <button onClick={actions.openUpload} className='button icon plus quiet small short'>New task</button>
           </div>
