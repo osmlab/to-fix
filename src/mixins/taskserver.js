@@ -35,5 +35,15 @@ module.exports = {
       if (err) return cb(err);
       cb(null, JSON.parse(res.body));
     });
-  }
+  },
+
+  uploadcsv: function(path, formData, cb) {
+    xhr({
+      uri: config.taskServer + path,
+      body: formData,
+      method: 'POST',
+    }, function(err, res) {
+      cb(err, res);
+    });
+  },
 };

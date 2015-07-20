@@ -1,5 +1,5 @@
 var React = require('react');
-var $ = require('jquery');
+var xhr = require('xhr');
 
 var admin_store = require('../../stores/admin_store');
 var actions = require('../../actions/actions');
@@ -10,9 +10,9 @@ var AddForm = React.createClass({
     return {
       confirm: {
         status: false,
-        taskname: null
+        taskid: null
       },
-      selected:false
+      selected: false
     };
   },
   triggerFileInput: function() {
@@ -40,23 +40,27 @@ var AddForm = React.createClass({
     formData.append('file', file);
     formData.append('preserve', preserve);
     formData.append('newtask', true);
-    $.ajax({
-      url: config.taskServer + 'csv',
-      data: formData,
-      processData: false,
-      contentType: false,
-      type: 'POST',
-      success: function(data) {
-        self.setState({
-          startupload: true,
-          status: true
-        });
-        self.cleanup();
-      },
-      error: function(xhr, status, err) {
+    //actions.uploadTasks(formData);
+
+    xhr({
+      uri: config.taskServer + 'csv',
+      body: formData,
+      method: 'POST',
+    }, function(err, res) {
+      console.log(err)
+      console.log(res)
+      if (err || res.statusCode === 400) {
         self.setState({
           startupload: true,
           status: false
+        });
+        self.cleanup();
+      } else {
+        var resut = JSON.parse(res.body)
+        self.setState({
+          startupload: true,
+          status: true,
+          taskid: resut.taskid
         });
         self.cleanup();
       }
@@ -65,6 +69,10 @@ var AddForm = React.createClass({
 
   cleanup: function() {
     var self = this;
+    if (this.state.taskid !== null && typeof this.state.taskid !== "undefined") {
+      window.location.href = '#/task/' + this.state.taskid;
+      window.location.reload();
+    }
     setTimeout(function() {
       self.setState({
         startupload: false,
@@ -117,7 +125,7 @@ var AddForm = React.createClass({
     return (
           <div>
           <div>{(this.state.startupload) ? 
-              ((this.state.status) ? (<h2 className='dark'>Successful upload, start to fix ...</h2>) : (<h2 className='dark'>Something went wrong on upload, try to agains</h2>)) : form}
+              ((this.state.status) ? (<h2 className='dark'>Successful upload, start to fix ...</h2>) : (<h2 className='dark'>Something went wrong on upload, try to again</h2>)) : form}
             </div>
           </div>
     );

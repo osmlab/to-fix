@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var $ = require('jquery');
+var xhr = require('xhr');
 
 var actions = require('../../actions/actions');
 var Admin_store = require('../../stores/admin_store');
@@ -23,7 +23,7 @@ module.exports = React.createClass({
     return {
       confirm: {
         status: false,
-        taskname: null
+        taskid: null
       },
       selected:false
     };
@@ -54,25 +54,25 @@ module.exports = React.createClass({
     formData.append('password', password);
     formData.append('file', file);
     formData.append('random', random);
-    formData.append('newtask', false);
+    formData.append('newtask', false);// newtask =true
 
-    $.ajax({
-      url: config.taskServer + 'csv',
-      data: formData,
-      processData: false,
-      contentType: false,
-      type: 'POST',
-      success: function(data) {
-        self.setState({
-          startupload: true,
-          status: true
-        });
-        self.cleanup();
-      },
-      error: function(xhr, status, err) {
+    xhr({
+      uri: config.taskServer + 'csv',
+      body: formData,
+      method: 'POST',
+    }, function(err, res) {
+      if (err || res.statusCode === 400) {
         self.setState({
           startupload: true,
           status: false
+        });
+        self.cleanup();
+      } else {
+        var resut = JSON.parse(res.body)
+        self.setState({
+          startupload: true,
+          status: true,
+          taskid: resut.taskid
         });
         self.cleanup();
       }
@@ -81,6 +81,10 @@ module.exports = React.createClass({
 
   cleanup: function() {
     var self = this;
+    if (this.state.taskid !== null && typeof this.state.taskid !== "undefined") {
+      window.location.href = '#/task/' + this.state.taskid;
+      window.location.reload();
+    }
     setTimeout(function() {
       self.setState({
         startupload: false,

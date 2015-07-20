@@ -26,7 +26,6 @@ module.exports = React.createClass({
       var timeDisplay = d3.time.format('%-I:%-M%p');
       var actionDay = dateDisplay(new Date(task.updated * 1000));
       var actionTime = timeDisplay(new Date(task.updated * 1000));
-
       var status = '';
       (task.status) ? status = 'Completed': status = 'Still are items to work';
       var info = ( <div>
@@ -99,5 +98,4 @@ module.exports = React.createClass({
     );
 
   }
-
 });

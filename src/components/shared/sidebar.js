@@ -65,12 +65,13 @@ module.exports = React.createClass({
           <nav ref='taskList' className='space-bottom2'>{tasks}</nav>
           <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>
           <nav ref='taskList' className='space-bottom2'>{completed_tasks}</nav>
-          <div className='pad1x'>
-            <button onClick={actions.openUpload} className='button icon plus quiet small short'>New task</button>
-          </div>
         </div>
       </div>
       /* jshint ignore:end */
     );
   }
 });
+
+          // <div className='pad1x'>
+          //   <button onClick={actions.openUpload} className='button icon plus quiet small short'>New task</button>
+          // </div>
