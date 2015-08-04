@@ -3,7 +3,6 @@
 var React = require('react');
 var Keys = require('react-keybinding');
 var store = require('store');
-var $ = require('jquery');
 var actions = require('../../../actions/actions');
 var config = require('../../../config');
 
@@ -54,29 +53,8 @@ module.exports = React.createClass({
     formData.append('file', file);
     formData.append('name', name);
     formData.append('password', password);
-    //actions.uploadTasks(formData);
-    $.ajax({
-      url: config.taskServer + 'csv',
-      data: formData,
-      processData: false,
-      contentType: false,
-      type: 'POST',
-      success: function(data) {
-        self.setState({
-          startupload: true,
-          status: true
-        });
-        self.cleanup();
-      },
-      error: function(xhr, status, err) {
-        self.setState({
-          startupload: true,
-          status: false
-        });
-        self.cleanup();
-      }
-    });
-    },
+    actions.uploadTasks(formData);
+  },
   cleanup: function() {
     var self = this;
     setTimeout(function() {

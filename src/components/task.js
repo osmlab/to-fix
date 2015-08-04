@@ -55,11 +55,11 @@ module.exports = React.createClass({
         map.fitBounds(layer.getBounds(), { reset: true });
         this.geolocate(map.getCenter());
       }.bind(this));
-    } else if (task == 'tigerdelta') {
-      var layer = omnivore.wkt.parse(this.state.map.value.st_astext).addTo(taskLayer);
+    } else if (task == 'tigerdelta' || task.substring(task.length-3,0) == 'tigerdelta') {
+      var layer = omnivore.wkt.parse(this.state.map.value.geom).addTo(taskLayer);
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
-    } else if (task == 'rk') {
+    } else if (task == 'rk' || task.substring(task.length-3,0) == 'rk') {
       // rk traces
       var rkTraces = L.mapbox.tileLayer('matt.8fafe5ff');
       rkTraces.addTo(map).bringToFront();
