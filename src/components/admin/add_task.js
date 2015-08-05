@@ -3,8 +3,6 @@
 var React = require('react');
 var xhr = require('xhr');
 
-//var admin_store = require('../../stores/admin_store');
-//var actions = require('../../actions/actions');
 var config = require('../../config');
 
 var AddForm = React.createClass({

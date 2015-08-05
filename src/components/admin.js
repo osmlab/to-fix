@@ -1,10 +1,8 @@
 'use strict';
 
 var React = require('react');
-//var Reflux = require('reflux');
 
 var actions = require('../actions/actions');
-//var Admin_store = require('../stores/admin_store');
 var Addtask = require('./admin/add_task');
 var Showtask = require('./admin/show_task');
 var Edittask = require('./admin/edit_task');
