@@ -21,7 +21,7 @@ var Activity = require('./components/activity');
 var Modal = require('./components/shared/modal');
 var ErrorDialog = require('./components/shared/error');
 var Admin = require('./components/admin');
-var taskobj = require('./mixins/taskobj');
+//var taskobj = require('./mixins/taskobj');
 
 // As there isn't a proper initial path for
 
@@ -37,15 +37,15 @@ var App = React.createClass({
       loading: true
     };
   },
-  onTaksLoad: function(tasks){
-    store.set('tasks',tasks);
+  onTaksLoad: function(tasks) {
+    store.set('tasks', tasks);
     this.setState({
       tasks: tasks,
       loading: false
     });
   },
   render: function () {
-    var tasks= this.state.tasks;
+    var tasks = this.state.tasks;
     var loading = (this.state.loading) ? 'loading' : '';
 
     return (

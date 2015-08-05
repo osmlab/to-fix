@@ -1,8 +1,10 @@
+'use strict';
+
 var React = require('react');
 var xhr = require('xhr');
 
-var admin_store = require('../../stores/admin_store');
-var actions = require('../../actions/actions');
+//var admin_store = require('../../stores/admin_store');
+//var actions = require('../../actions/actions');
 var config = require('../../config');
 
 var AddForm = React.createClass({
@@ -45,10 +47,8 @@ var AddForm = React.createClass({
     xhr({
       uri: config.taskServer + 'csv',
       body: formData,
-      method: 'POST',
+      method: 'POST'
     }, function(err, res) {
-      console.log(err)
-      console.log(res)
       if (err || res.statusCode === 400) {
         self.setState({
           startupload: true,
@@ -56,7 +56,7 @@ var AddForm = React.createClass({
         });
         self.cleanup();
       } else {
-        var resut = JSON.parse(res.body)
+        var resut = JSON.parse(res.body);
         self.setState({
           startupload: true,
           status: true,
@@ -111,12 +111,12 @@ var AddForm = React.createClass({
                 <input className='col12 block clean' ref='password' type='password' name='uploadPassword' placeholder='Password' />
               </fieldset>
               <fieldset className='pad2x'>
-                <input type='file' className='hidden'  ref='fileInput' name='uploadfile' accept=".csv"/>
-                <a onClick={this.triggerFileInput} className='button pad2x  quiet'>Choose CSV</a>
-              </fieldset> 
+                <input type='file' className='hidden' ref='fileInput' name='uploadfile' accept=".csv"/>
+                <a onClick={this.triggerFileInput} className='button pad2x quiet'>Choose CSV</a>
+              </fieldset>
               <div className='pad2 checkbox-pill'>
-                <input type='checkbox' id='random' ref='random'  checked={this.state.selected}/>
-                <a onClick={this.triggerRandom} for='random' className='button icon check quiet'>Do not load randomize the data</a>      
+                <input type='checkbox' id='random' ref='random' checked={this.state.selected}/>
+                <a onClick={this.triggerRandom} for='random' className='button icon check quiet'>Do not load randomize the data</a>
               </div>
               <div className='pad2x pad1y  round-bottom col12 clearfix'>
                 <input className='col6 margin3 button' type='submit' value='Create Task' />
@@ -124,7 +124,7 @@ var AddForm = React.createClass({
             </form>);
     return (
           <div>
-          <div>{(this.state.startupload) ? 
+          <div>{(this.state.startupload) ?
               ((this.state.status) ? (<h2 className='dark'>Successful upload, start to fix ...</h2>) : (<h2 className='dark'>Something went wrong on upload, try to again</h2>)) : form}
             </div>
           </div>

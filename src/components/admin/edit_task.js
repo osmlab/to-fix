@@ -25,13 +25,13 @@ module.exports = React.createClass({
         status: false,
         taskid: null
       },
-      selected:false
+      selected: false
     };
   },
 
   triggerFileInput: function() {
     this.refs.fileInput.getDOMNode().click();
-  }, 
+  },
 
   uploadData: function(e) {
     e.preventDefault();
@@ -59,7 +59,7 @@ module.exports = React.createClass({
     xhr({
       uri: config.taskServer + 'csv',
       body: formData,
-      method: 'POST',
+      method: 'POST'
     }, function(err, res) {
       if (err || res.statusCode === 400) {
         self.setState({
@@ -68,7 +68,7 @@ module.exports = React.createClass({
         });
         self.cleanup();
       } else {
-        var resut = JSON.parse(res.body)
+        var resut = JSON.parse(res.body);
         self.setState({
           startupload: true,
           status: true,
@@ -92,7 +92,7 @@ module.exports = React.createClass({
       });
     }, 3000);
   },
-  
+
   triggerRandom: function() {
     this.refs.random.getDOMNode().checked ? this.setState({
       selected: false
@@ -104,10 +104,9 @@ module.exports = React.createClass({
   render: function() {
     var task = this.state.task;
     var form = '';
-    if(typeof task !== 'undefined'){
-      var status = '';
-      if(task.status){
-        var form = (
+    if(typeof task !== 'undefined') {
+      if(task.status) {
+        form = (
                 <form className='dark' onSubmit={this.uploadData}>
                   <fieldset className='pad2x'>
                     <label>Task name</label>
@@ -123,18 +122,18 @@ module.exports = React.createClass({
                   </fieldset>
                   <fieldset className='pad2x'>
                     <label>Description</label>
-                    <textarea className='col12 block clean resize' ref='taskdescription' type='text'  name='description' defaultValue={this.state.task.description} ></textarea>
+                    <textarea className='col12 block clean resize' ref='taskdescription' type='text' name='description' defaultValue={this.state.task.description} ></textarea>
                   </fieldset>
                   <fieldset className='pad2x'>
                     <label>Password</label>
                     <input className='col12 block clean' ref='password' type='password' name='uploadPassword' placeholder='Password' />
                   </fieldset>
                   <fieldset className='pad2x'>
-                    <input type='file' className='hidden'  ref='fileInput' name='uploadfile' accept=".csv"/>
-                    <a onClick={this.triggerFileInput} className='button pad2x  quiet'>Choose CSV</a>
+                    <input type='file' className='hidden' ref='fileInput' name='uploadfile' accept=".csv"/>
+                    <a onClick={this.triggerFileInput} className='button pad2x quiet'>Choose CSV</a>
                   </fieldset>
                   <div className='pad2 checkbox-pill'>
-                    <input type='checkbox' id='random' ref='random'  checked={this.state.selected}/>
+                    <input type='checkbox' id='random' ref='random' checked={this.state.selected}/>
                     <a onClick={this.triggerRandom} for='random' className='button icon check quiet'>Do not load randomize the data</a>
                   </div>
                   <div className='pad2x pad1y  round-bottom col12 clearfix'>
@@ -142,8 +141,8 @@ module.exports = React.createClass({
                   </div>
                 </form>
         );
-      }else{
-        form = (<h2>Can not update before finish this task...</h2>)
+      }else {
+        form = (<h2>Can not update before finish this task...</h2>);
       }
     }
     return (

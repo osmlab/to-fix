@@ -1,10 +1,10 @@
 'use strict';
 
 var React = require('react');
-var Reflux = require('reflux');
+//var Reflux = require('reflux');
 
 var actions = require('../actions/actions');
-var Admin_store = require('../stores/admin_store');
+//var Admin_store = require('../stores/admin_store');
 var Addtask = require('./admin/add_task');
 var Showtask = require('./admin/show_task');
 var Edittask = require('./admin/edit_task');
@@ -36,16 +36,14 @@ module.exports = React.createClass({
       edit_task_window: false
     });
   },
-  openEdith_task:function() {
+  openEdit_task: function() {
     this.setState({
       show_task_window: false,
       add_task_window: false,
       edit_task_window: true
     });
   },
-
   render: function() {
-
     return (
         <div className='col12 clearfix scroll-styled'>
           <div className='col6 pad2 dark'>
@@ -55,13 +53,12 @@ module.exports = React.createClass({
           </div>
             <div className='col6 pad2 dark'>
             <div className='pill'>
-              <a onClick={this.openShow_task} className='button pad2x quiet'>Show detail</a>              
-              <a onClick={this.openEdith_task} className='button pad2x quiet'>Edit this task</a>
+              <a onClick={this.openShow_task} className='button pad2x quiet'>Show detail</a>
+              <a onClick={this.openEdit_task} className='button pad2x quiet'>Edit this task</a>
               <a onClick={this.openAdd_task} className='button pad2x quiet'>Add a task</a>
             </div>
           </div>
-        </div>  
+        </div>
     );
-
   }
 });
