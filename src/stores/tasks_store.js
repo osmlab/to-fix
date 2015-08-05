@@ -7,13 +7,13 @@ var taskServer = require('../mixins/taskserver');
 
 module.exports = Reflux.createStore({
 	tasks: {},
-	init() {
+	init: function() {
 		this.listenTo(actions.loadTasks, this.loadTasks);
 	},
-	getInitialState() {
+	getInitialState: function() {
 		return this.tasks;
 	},
-	loadTasks() {
+	loadTasks: function() {
 		var self = this;
 		//var status = false; //false for tasks imcomplete tasks
 		tasks: taskServer.get('tasks', function(err, res) {

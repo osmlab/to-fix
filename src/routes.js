@@ -37,7 +37,7 @@ var App = React.createClass({
       loading: true
     };
   },
-  onTaksLoad(tasks){
+  onTaksLoad: function(tasks){
     store.set('tasks',tasks);
     this.setState({
       tasks: tasks,
