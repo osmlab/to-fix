@@ -65,7 +65,7 @@ h2 { padding-top:0; padding-bottom:0; }
   background-color:rgba(0,0,0,0.25);
   z-index:100;
   }
-
+.loading:after { position:fixed; }
 /* Base candidates
 ------------------------- */
 .row-60     { height:60px; }

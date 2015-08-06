@@ -9,6 +9,7 @@
     "leaflet-osm": "^0.1.0",
     "mapbox.js": "2.1.9",
     "osm-auth": "^0.2.8",
+    "random-strings": "0.0.1",
     "raven-js": "^1.1.17",
     "react": "^0.13.1",
     "react-keybinding": "^1.1.1",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "eslint": "^0.16.2",
+    "eslint-plugin-react": "^3.2.0",
     "hintify": "^0.1.0",
     "reactify": "^1.1.0",
     "serve": "^1.4.0",

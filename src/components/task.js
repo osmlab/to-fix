@@ -55,7 +55,7 @@ module.exports = React.createClass({
         map.fitBounds(layer.getBounds(), { reset: true });
         this.geolocate(map.getCenter());
       }.bind(this));
-    } else if (task == 'tigerdelta') {
+    } else if (task == 'tigerdelta') { //We need to improve here it work just for task with id = tigerdelta, but not for other task that has the same source
       var layer = omnivore.wkt.parse(this.state.map.value.geom).addTo(taskLayer);
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());

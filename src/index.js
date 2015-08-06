@@ -2,7 +2,7 @@
 
 window.React = require('react');
 
-var Reflux = require('reflux');
+//var Reflux = require('reflux');
 var qs = require('querystring');
 
 var Router = require('react-router');

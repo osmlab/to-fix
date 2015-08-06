@@ -1,4 +1,6 @@
-{
+{  "plugins": [
+        "react"
+    ],
   "rules": {
     "space-after-function-name": 2,
     "space-before-blocks": 2,
