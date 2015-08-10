@@ -25,7 +25,6 @@ var AddForm = React.createClass({
     var formData = new window.FormData();
     var name = this.refs.taskname.getDOMNode().value.trim();
     var source = this.refs.tasksource.getDOMNode().value.trim();
-    var owner = this.refs.taskowner.getDOMNode().value.trim();
     var description = this.refs.taskdescription.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
     var file = this.refs.fileInput.getDOMNode();
@@ -34,7 +33,7 @@ var AddForm = React.createClass({
 
     formData.append('name', name);
     formData.append('source', source);
-    formData.append('owner', owner);
+    formData.append('owner', "none"); //none for now , will remove for next version in server.
     formData.append('description', description);
     formData.append('password', password);
     formData.append('file', file);
@@ -95,10 +94,6 @@ var AddForm = React.createClass({
               <fieldset className='pad2x'>
                 <label>source</label>
                 <input className='col12 block clean' ref='tasksource' type='text' name='source' placeholder='Task Source' />
-              </fieldset>
-              <fieldset className='pad2x'>
-                <label>Owner</label>
-                <input className='col12 block clean' ref='taskowner' type='text' name='owner' placeholder='Task owner' />
               </fieldset>
               <fieldset className='pad2x'>
                 <label>Description</label>

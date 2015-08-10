@@ -39,7 +39,6 @@ module.exports = React.createClass({
     // TODO sanitize/validation
     var formData = new window.FormData();
     var source = this.refs.tasksource.getDOMNode().value.trim();
-    var owner = this.refs.taskowner.getDOMNode().value.trim();
     var description = this.refs.taskdescription.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
     var file = this.refs.fileInput.getDOMNode();
@@ -49,7 +48,7 @@ module.exports = React.createClass({
     formData.append('id', this.state.task.id);
     formData.append('name', this.state.task.title);
     formData.append('source', source);
-    formData.append('owner', owner);
+    formData.append('owner', "node");//nome for now,will remove for next version on server
     formData.append('description', description);
     formData.append('password', password);
     formData.append('file', file);
@@ -115,10 +114,6 @@ module.exports = React.createClass({
                   <fieldset className='pad2x'>
                     <label>source</label>
                     <input className='col12 block clean' ref='tasksource' type='text' name='source' defaultValue={this.state.task.source} />
-                  </fieldset>
-                  <fieldset className='pad2x'>
-                    <label>Owner</label>
-                    <input className='col12 block clean' ref='taskowner' type='text' name='owner' defaultValue={this.state.task.owner} />
                   </fieldset>
                   <fieldset className='pad2x'>
                     <label>Description</label>

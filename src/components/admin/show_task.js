@@ -54,14 +54,6 @@ module.exports = React.createClass({
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
                       <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Owner</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                        {task.owner}
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
                         <span className='capitalize'>Description</span>
                       </div>
                       <div className='pad1 fl space'>
