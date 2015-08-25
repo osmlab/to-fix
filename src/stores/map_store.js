@@ -82,6 +82,8 @@ module.exports = Reflux.createStore({
           });
         break;
         case 'tigerdelta':
+        case 'strava':
+          _this.trigger(_this.data);
         case 'krakatoa':
           _this.trigger(_this.data);
         break;

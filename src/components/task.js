@@ -92,6 +92,30 @@ module.exports = React.createClass({
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
     }
+    else if (task == 'strava') {
+      var stravaCycling = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color3/{z}/{x}/{y}.png');
+      var stravaWalking = L.tileLayer('http://globalheat.strava.com/tiles/walking/color5/{z}/{x}/{y}.png')
+      stravaCycling.addTo(map).bringToFront();
+      stravaWalking.addTo(map).bringToFront();
+
+      var geom = wellknown.parse(this.state.map.value.geom);
+      var circleOptions = {
+        stroke: false,
+        color: '#fff',
+        opacity: 0.1,
+        fillColor: '#03f',
+        fillOpacity: 0.5,
+        fill: true,
+        weight: 0,
+        radius: 5
+      };
+
+      // make a point from the geom.
+      var point = L.latLng(geom.coordinates[1], geom.coordinates[0]);
+      L.circleMarker(point, circleOptions).addTo(taskLayer);
+      map.setView(point, 17);
+      this.geolocate(map.getCenter());
+    }
   },
 
   componentDidMount: function() {
