@@ -93,8 +93,12 @@ module.exports = React.createClass({
       this.geolocate(map.getCenter());
     }
     else if (task == 'strava') {
-      var stravaCycling = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color3/{z}/{x}/{y}.png');
-      var stravaWalking = L.tileLayer('http://globalheat.strava.com/tiles/walking/color5/{z}/{x}/{y}.png')
+      var stravaCycling = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color3/{z}/{x}/{y}.png', {
+        maxNativeZoom: 17
+      });
+      var stravaWalking = L.tileLayer('http://globalheat.strava.com/tiles/walking/color5/{z}/{x}/{y}.png', {
+        maxNativeZoom: 17
+      });
       stravaCycling.addTo(map).bringToFront();
       stravaWalking.addTo(map).bringToFront();
 
