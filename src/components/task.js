@@ -49,18 +49,25 @@ module.exports = React.createClass({
     }
 
     var task = this.context.router.getCurrentParams().task;
+
     if (this.state.map.mapData.length) {
+
       this.state.map.mapData.forEach(function(xml) {
         var layer = new L.OSM.DataLayer(xml).addTo(taskLayer);
         map.fitBounds(layer.getBounds(), { reset: true });
         this.geolocate(map.getCenter());
       }.bind(this));
-    } else if (task == 'tigerdelta') { //We need to improve here it work just for task with id = tigerdelta, but not for other task that has the same source
+
+    } else if ((task == 'tigerdelta') || (task == 'smallcomponents')) { //We need to improve here it work just for task with id = tigerdelta, but not for other task that has the same source
+
+      L.tileLayer('http://tools.geofabrik.de/osmi/tiles/routing_i/{z}/{x}/{y}.png').addTo(map).bringToFront();
+
       var layer = omnivore.wkt.parse(this.state.map.value.geom).addTo(taskLayer);
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
+
     } else if (task == 'rk') {
-      // rk traces
+
       var rkTraces = L.mapbox.tileLayer('matt.8fafe5ff');
       rkTraces.addTo(map).bringToFront();
 
@@ -91,8 +98,9 @@ module.exports = React.createClass({
         // create the layer but don't actually use it, only for getBounds
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
-    }
-    else if (task == 'strava') {
+
+    } else if (task == 'strava') {
+
       var stravaCycling = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color3/{z}/{x}/{y}.png', {
         maxNativeZoom: 17
       });
@@ -119,6 +127,7 @@ module.exports = React.createClass({
       L.circleMarker(point, circleOptions).addTo(taskLayer);
       map.setView(point, 17);
       this.geolocate(map.getCenter());
+
     }
   },
 

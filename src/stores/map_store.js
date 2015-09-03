@@ -81,12 +81,6 @@ module.exports = Reflux.createStore({
             _this.trigger(_this.data);
           });
         break;
-        case 'tigerdelta':
-        case 'strava':
-          _this.trigger(_this.data);
-        case 'krakatoa':
-          _this.trigger(_this.data);
-        break;
         case 'nycbuildings':
           _this.fetchBuildingWays(function(err, res) {
             if (err) {
@@ -96,6 +90,8 @@ module.exports = Reflux.createStore({
             _this.trigger(_this.data);
           });
         break;
+        default:
+          _this.trigger(_this.data);
       }
     });
   },
