@@ -33,7 +33,6 @@ var AddForm = React.createClass({
 
     formData.append('name', name);
     formData.append('source', source);
-    formData.append('owner', "none"); //none for now , will remove for next version in server.
     formData.append('description', description);
     formData.append('password', password);
     formData.append('file', file);

@@ -48,7 +48,6 @@ module.exports = React.createClass({
     formData.append('id', this.state.task.id);
     formData.append('name', this.state.task.title);
     formData.append('source', source);
-    formData.append('owner', "node");//nome for now,will remove for next version on server
     formData.append('description', description);
     formData.append('password', password);
     formData.append('file', file);
