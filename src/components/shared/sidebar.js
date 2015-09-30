@@ -71,7 +71,3 @@ module.exports = React.createClass({
     );
   }
 });
-
-          // <div className='pad1x'>
-          //   <button onClick={actions.openUpload} className='button icon plus quiet small short'>New task</button>
-          // </div>
