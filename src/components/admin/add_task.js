@@ -8,9 +8,14 @@ var config = require('../../config');
 var AddForm = React.createClass({
   getInitialState: function() {
     return {
+      //taskid: this field will fill when the upload was successful
+      //loading: to show the load gif when a task in on upload progress
+      //startupload:when a task start to upload at server
       confirm: {
-        status: false,
-        taskid: null
+        taskid: null,
+        loading: false,
+        startupload: false,
+        successful_upload:false
       },
       selected: false
     };
@@ -30,7 +35,6 @@ var AddForm = React.createClass({
     var file = this.refs.fileInput.getDOMNode();
     file = file.files[0];
     var preserve = this.refs.random.getDOMNode().checked;
-
     formData.append('name', name);
     formData.append('source', source);
     formData.append('description', description);
@@ -38,8 +42,12 @@ var AddForm = React.createClass({
     formData.append('file', file);
     formData.append('preserve', preserve);
     formData.append('newtask', true);
-    //actions.uploadTasks(formData);
 
+    //start upload 
+    this.setState({
+      loading: true
+    });
+    //send the request
     xhr({
       uri: config.taskServer + 'csv',
       body: formData,
@@ -48,16 +56,33 @@ var AddForm = React.createClass({
       if (err || res.statusCode === 400) {
         self.setState({
           startupload: true,
-          status: false
+          loading: false,
+          successful_upload:false
         });
         self.cleanup();
       } else {
         var resut = JSON.parse(res.body);
-        self.setState({
-          startupload: true,
-          status: true,
-          taskid: resut.taskid
+        if(resut.taskid!== undefined){
+            self.setState({
+              startupload: true,
+              taskid: resut.taskid,
+              loading: true,
+              successful_upload:true
         });
+        }else{
+          self.setState({
+              startupload: true,
+              taskid: resut.taskid,
+              loading: true,
+              successful_upload:false
+          });
+        }
+        // self.setState({
+        //   startupload: true,
+        //   taskid: resut.taskid,
+        //   loading: true,
+        //   successful_upload:true
+        // });
         self.cleanup();
       }
     });
@@ -68,13 +93,14 @@ var AddForm = React.createClass({
     if (this.state.taskid !== null && typeof this.state.taskid !== "undefined") {
       window.location.href = '#/task/' + this.state.taskid;
       window.location.reload();
+    }else {
+      setTimeout(function() {
+        self.setState({
+          startupload: false,
+          loading:false
+        });
+      }, 2000);
     }
-    setTimeout(function() {
-      self.setState({
-        startupload: false,
-        status: false
-      });
-    }, 3000);
   },
 
   triggerRandom: function() {
@@ -85,7 +111,8 @@ var AddForm = React.createClass({
     });
   },
   render: function() {
-    var form = (<form className='dark' onSubmit={this.uploadData}>
+    var loading = (this.state.loading) ? 'dark loading' : 'dark';
+    var form = (<form className={loading} onSubmit={this.uploadData}>
               <fieldset className='pad2x'>
                 <label>Task name</label>
                 <input className='col12 block clean' ref='taskname' type='text' name='name' placeholder='Task name' />
@@ -116,8 +143,7 @@ var AddForm = React.createClass({
             </form>);
     return (
           <div>
-          <div>{(this.state.startupload) ?
-              ((this.state.status) ? (<h2 className='dark'>Successful upload, start to fix ...</h2>) : (<h2 className='dark'>Something went wrong on upload, try to again</h2>)) : form}
+          <div>{(this.state.startupload) ? ((this.state.successful_upload)?(<h2 className='dark'>Successful upload</h2>):(<h2 className='dark'>Something went wrong, try again</h2>)): form}
             </div>
           </div>
     );
