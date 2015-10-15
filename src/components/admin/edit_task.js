@@ -21,9 +21,16 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
+      //status: if a task is complete
+      //loading: to show the load gif when a task in on upload progress
+      //startupload:when a task start to upload at server
+      //successful_upload : if a task was successes upload
       confirm: {
         status: false,
-        taskid: null
+        taskid: null,
+        loading: false,
+        startupload: false,
+        successful_upload:false
       },
       selected: false
     };
@@ -53,7 +60,11 @@ module.exports = React.createClass({
     formData.append('file', file);
     formData.append('random', random);
     formData.append('newtask', false);// newtask =true
-
+    //start upload 
+    this.setState({
+      loading: true
+    });
+    //send the request
     xhr({
       uri: config.taskServer + 'csv',
       body: formData,
@@ -62,16 +73,27 @@ module.exports = React.createClass({
       if (err || res.statusCode === 400) {
         self.setState({
           startupload: true,
-          status: false
+          status: false,
+          loading: false
         });
         self.cleanup();
       } else {
         var resut = JSON.parse(res.body);
-        self.setState({
-          startupload: true,
-          status: true,
-          taskid: resut.taskid
-        });
+
+        if(resut.taskid !== undefined){
+          self.setState({
+            startupload: true,
+            status: true,
+            taskid: resut.taskid,
+            successful_upload:true
+          });
+        }else{
+          self.setState({
+            startupload: true,
+            status: true,
+            loading: false
+          });
+        }
         self.cleanup();
       }
     });
@@ -88,7 +110,7 @@ module.exports = React.createClass({
         startupload: false,
         status: false
       });
-    }, 3000);
+    }, 2000);
   },
 
   triggerRandom: function() {
@@ -101,11 +123,13 @@ module.exports = React.createClass({
 
   render: function() {
     var task = this.state.task;
-    var form = '';
+    var form = '';    
     if(typeof task !== 'undefined') {
       if(task.status) {
+        var loading = (this.state.loading) ? 'dark loading' : 'dark';
+
         form = (
-                <form className='dark' onSubmit={this.uploadData}>
+                <form className={loading} onSubmit={this.uploadData}>
                   <fieldset className='pad2x'>
                     <label>Task name</label>
                     <input className='col12 block clean' ref='taskname' type='text' name='name' disabled="disabled" value={task.title} />
@@ -136,12 +160,12 @@ module.exports = React.createClass({
                 </form>
         );
       }else {
-        form = (<h2>Can not update before finish this task...</h2>);
+        form = (<h2>Cannot update this task before complete.</h2>);
       }
     }
     return (
         /* jshint ignore:start */
-        <div>{form}</div>
+        <div>{(this.state.startupload) ? ((this.state.successful_upload)?(<h2 className='dark'>Successful upload</h2>):(<h2 className='dark'>Something went wrong, try again</h2>)): form}</div>
         /* jshint ignore:end */
     );
   }

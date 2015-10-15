@@ -77,12 +77,6 @@ var AddForm = React.createClass({
               successful_upload:false
           });
         }
-        // self.setState({
-        //   startupload: true,
-        //   taskid: resut.taskid,
-        //   loading: true,
-        //   successful_upload:true
-        // });
         self.cleanup();
       }
     });
