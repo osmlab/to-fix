@@ -128,6 +128,23 @@ module.exports = React.createClass({
       map.setView(point, 17);
       this.geolocate(map.getCenter());
 
+    } else if (task == 'unconnectedtownsindia') {
+      var geom = wellknown.parse(this.state.map.value.geom);
+      var circleOptions = {
+        stroke: false,
+        color: '#fff',
+        opacity: 0.1,
+        fillColor: '#03f',
+        fillOpacity: 0.5,
+        fill: true,
+        weight: 0,
+        radius: 8
+      };
+
+      var point = L.latLng(geom.coordinates[1], geom.coordinates[0]);
+      L.circleMarker(point, circleOptions).addTo(taskLayer);
+      map.setView(point, 15);
+      this.geolocate(map.getCenter());
     }
   },
 
