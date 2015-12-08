@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Reflux = require('reflux');
+var d3 = require('d3');
 
 var actions = require('../../actions/actions');
 var taskObj = require('../../mixins/taskobj');
