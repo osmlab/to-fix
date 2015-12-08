@@ -62,6 +62,14 @@ module.exports = React.createClass({
                     </div>
                     <div className='clearfix fill-darken1 dark mobile-cols'>
                       <div className='fl strong pad1 fill-darken1 editor-key'>
+                        <span className='capitalize'>Changeset comment</span>
+                      </div>
+                      <div className='pad1 fl space'>
+                        {task.changeset_comment}
+                      </div>
+                    </div>
+                    <div className='clearfix fill-darken1 dark mobile-cols'>
+                      <div className='fl strong pad1 fill-darken1 editor-key'>
                         <span className='capitalize'>Updated</span>
                       </div>
                       <div className='pad1 fl space'>
