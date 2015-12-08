@@ -47,6 +47,7 @@ module.exports = React.createClass({
     var formData = new window.FormData();
     var source = this.refs.tasksource.getDOMNode().value.trim();
     var description = this.refs.taskdescription.getDOMNode().value.trim();
+    var changeset_comment = this.refs.taskchangeset_comment.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
     var file = this.refs.fileInput.getDOMNode();
     file = file.files[0];
@@ -56,6 +57,7 @@ module.exports = React.createClass({
     formData.append('name', this.state.task.title);
     formData.append('source', source);
     formData.append('description', description);
+    formData.append('changeset_comment', changeset_comment);    
     formData.append('password', password);
     formData.append('file', file);
     formData.append('random', random);
@@ -141,6 +143,10 @@ module.exports = React.createClass({
                   <fieldset className='pad2x'>
                     <label>Description</label>
                     <textarea className='col12 block clean resize' ref='taskdescription' type='text' name='description' defaultValue={this.state.task.description} ></textarea>
+                  </fieldset>
+                  <fieldset className='pad2x'>
+                    <label>Shangeset comment</label>
+                    <textarea className='col12 block clean resize' ref='taskchangeset_comment' type='text' name='changeset_comment' defaultValue={this.state.task.changeset_comment} ></textarea>
                   </fieldset>
                   <fieldset className='pad2x'>
                     <label>Password</label>
