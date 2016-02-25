@@ -72,15 +72,15 @@ module.exports = Reflux.createStore({
             _this.trigger(_this.data);
           });
         break;
-        case 'unconnected':
-          _this.fetchUnconnected(function(err, res) {
-            if (err) {
-              emitError(err);
-              return _this.taskDone(task.id);
-            }
-            _this.trigger(_this.data);
-          });
-        break;
+        // case 'unconnected':
+        //   _this.fetchUnconnected(function(err, res) {
+        //     if (err) {
+        //       emitError(err);
+        //       return _this.taskDone(task.id);
+        //     }
+        //     _this.trigger(_this.data);
+        //   });
+        // break;
         case 'nycbuildings':
           _this.fetchBuildingWays(function(err, res) {
             if (err) {
