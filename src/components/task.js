@@ -193,9 +193,8 @@ module.exports = React.createClass({
       L.circleMarker(point, circleOptions).addTo(taskLayer);
       map.setView(point, 18);
       this.geolocate(map.getCenter());
-    } else if(task == 'unconnectedminor' || task == 'unconnectedmajor') {
+    } else if(task == 'unconnectedminor' || task == 'unconnectedmajor' || task == 'unconnectedpaths') {
       var geom = wellknown.parse(this.state.map.value.st_astext);
-      console.log(geom);      
       var circleOptions = {
         stroke: false,
         color: '#fff',
@@ -210,7 +209,9 @@ module.exports = React.createClass({
         L.circleMarker([geom.coordinates[1], geom.coordinates[0]], circleOptions).addTo(taskLayer);
       }
       var layer = omnivore.wkt.parse(this.state.map.value.st_astext);
-      map.fitBounds(layer.getBounds(), { reset: true });
+      map.fitBounds(layer.getBounds(), {
+        reset: true
+      });
       this.geolocate(map.getCenter());
     }
   },
