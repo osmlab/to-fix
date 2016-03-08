@@ -99,7 +99,7 @@ module.exports = React.createClass({
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
 
-    } else if (task == 'overlaphighwaysus') {
+    } else if (task == 'overlaphighwaysus' || task == 'highwayhighway') {
       
       var geom = wellknown.parse(this.state.map.value.geom);
 
