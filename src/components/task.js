@@ -99,6 +99,36 @@ module.exports = React.createClass({
       map.fitBounds(layer.getBounds(), { reset: true });
       this.geolocate(map.getCenter());
 
+    } else if (task == 'overlaphighwaysus' || task == 'highwayhighway') {
+      
+      var geom = wellknown.parse(this.state.map.value.geom);
+
+      var circleOptions = {
+        stroke: false,
+        color: '#fff',
+        opacity: 0.1,
+        fillColor: '#03f',
+        fillOpacity: 0.5,
+        fill: true,
+        weight: 0,
+        radius: 5
+      };
+
+      if (geom.type == 'MultiPoint') {
+        geom.coordinates.forEach(function(coords) {
+          L.circleMarker([coords[1], coords[0]], circleOptions).addTo(taskLayer);
+        });
+      }
+
+      if (geom.type == 'Point') {
+        L.circleMarker([geom.coordinates[1], geom.coordinates[0]], circleOptions).addTo(taskLayer);
+      }
+
+      var layer = omnivore.wkt.parse(this.state.map.value.geom);
+        // create the layer but don't actually use it, only for getBounds
+      map.fitBounds(layer.getBounds(), { reset: true });
+      this.geolocate(map.getCenter());
+
     } else if (task == 'strava') {
 
       var stravaCycling = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color3/{z}/{x}/{y}.png', {
@@ -156,12 +186,32 @@ module.exports = React.createClass({
         fillOpacity: 0.5,
         fill: true,
         weight: 0,
-        radius: 8
+        radius: 10
       };
 
       var point = L.latLng(geom.coordinates[1], geom.coordinates[0]);
       L.circleMarker(point, circleOptions).addTo(taskLayer);
       map.setView(point, 18);
+      this.geolocate(map.getCenter());
+    } else if(task == 'unconnectedminor' || task == 'unconnectedmajor' || task == 'unconnectedpaths') {
+      var geom = wellknown.parse(this.state.map.value.st_astext);
+      var circleOptions = {
+        stroke: false,
+        color: '#fff',
+        opacity: 0.1,
+        fillColor: '#03f',
+        fillOpacity: 0.5,
+        fill: true,
+        weight: 0,
+        radius: 10
+      };
+      if (geom.type == 'Point') {
+        L.circleMarker([geom.coordinates[1], geom.coordinates[0]], circleOptions).addTo(taskLayer);
+      }
+      var layer = omnivore.wkt.parse(this.state.map.value.st_astext);
+      map.fitBounds(layer.getBounds(), {
+        reset: true
+      });
       this.geolocate(map.getCenter());
     }
   },
