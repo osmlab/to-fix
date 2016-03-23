@@ -31,6 +31,7 @@ var AddForm = React.createClass({
     var name = this.refs.taskname.getDOMNode().value.trim();
     var source = this.refs.tasksource.getDOMNode().value.trim();
     var description = this.refs.taskdescription.getDOMNode().value.trim();
+    var changeset_comment = this.refs.taskchangeset_comment.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
     var file = this.refs.fileInput.getDOMNode();
     file = file.files[0];
@@ -38,6 +39,7 @@ var AddForm = React.createClass({
     formData.append('name', name);
     formData.append('source', source);
     formData.append('description', description);
+    formData.append('changeset_comment', changeset_comment);
     formData.append('password', password);
     formData.append('file', file);
     formData.append('preserve', preserve);
@@ -112,12 +114,16 @@ var AddForm = React.createClass({
                 <input className='col12 block clean' ref='taskname' type='text' name='name' placeholder='Task name' />
               </fieldset>
               <fieldset className='pad2x'>
-                <label>source</label>
+                <label>Source</label>
                 <input className='col12 block clean' ref='tasksource' type='text' name='source' placeholder='Task Source' />
               </fieldset>
               <fieldset className='pad2x'>
                 <label>Description</label>
                 <textarea className='col12 block clean resize' ref='taskdescription' type='text' name='description' placeholder='Task description' ></textarea>
+              </fieldset>
+              <fieldset className='pad2x'>
+                <label>Changeset Comment</label>
+                <textarea className='col12 block clean resize' ref='taskchangeset_comment' type='text' name='changeset_comment' placeholder='Changeset comment for this task' ></textarea>
               </fieldset>
               <fieldset className='pad2x'>
                 <label>Password</label>
