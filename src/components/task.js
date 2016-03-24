@@ -219,8 +219,9 @@ module.exports = React.createClass({
         reset: true
       });
       this.geolocate(map.getCenter());
-    } else if (objtask.source === 'osmlint-point') { //Work using the source of task
-      console.log(objtask);
+    }
+    //Work using the source of task
+    else if (objtask.source === 'osmlint-point') { 
       var geom = wellknown.parse(this.state.map.value.geom);
       var circleOptions = {
         stroke: false,
@@ -235,6 +236,35 @@ module.exports = React.createClass({
       if (geom.type == 'Point') {
         L.circleMarker([geom.coordinates[1], geom.coordinates[0]], circleOptions).addTo(taskLayer);
       }
+      var layer = omnivore.wkt.parse(this.state.map.value.geom);
+      map.fitBounds(layer.getBounds(), {
+        reset: true
+      });
+      this.geolocate(map.getCenter());
+    }
+
+    else if (objtask.source === 'osmlint-multipoint') {
+      var geom = wellknown.parse(this.state.map.value.geom);
+      var circleOptions = {
+        stroke: false,
+        color: '#fff',
+        opacity: 0.1,
+        fillColor: '#03f',
+        fillOpacity: 0.5,
+        fill: true,
+        weight: 0,
+        radius: 5
+      };
+      if (geom.type == 'Point') {
+        L.circleMarker([geom.coordinates[1], geom.coordinates[0]], circleOptions).addTo(taskLayer);
+      }
+         
+      if (geom.type == 'MultiPoint') {
+        geom.coordinates.forEach(function(coords) {
+          L.circleMarker([coords[1], coords[0]], circleOptions).addTo(taskLayer);
+        });
+      }
+
       var layer = omnivore.wkt.parse(this.state.map.value.geom);
       map.fitBounds(layer.getBounds(), {
         reset: true
