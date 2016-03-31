@@ -145,7 +145,7 @@ module.exports = React.createClass({
                     <textarea className='col12 block clean resize' ref='taskdescription' type='text' name='description' defaultValue={this.state.task.description} ></textarea>
                   </fieldset>
                   <fieldset className='pad2x'>
-                    <label>Shangeset comment</label>
+                    <label>Changeset comment</label>
                     <textarea className='col12 block clean resize' ref='taskchangeset_comment' type='text' name='changeset_comment' defaultValue={this.state.task.changeset_comment} ></textarea>
                   </fieldset>
                   <fieldset className='pad2x'>
