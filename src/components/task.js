@@ -64,7 +64,7 @@ module.exports = React.createClass({
         this.geolocate(map.getCenter());
       }.bind(this));
 
-    } else if ((task == 'tigerdelta') || (task == 'smallcomponents')) { //We need to improve here it work just for task with id = tigerdelta, but not for other task that has the same source
+    } else if (task == 'smallcomponents') {
 
       L.tileLayer('http://tools.geofabrik.de/osmi/tiles/routing_i/{z}/{x}/{y}.png').addTo(map).bringToFront();
 
@@ -221,7 +221,7 @@ module.exports = React.createClass({
       this.geolocate(map.getCenter());
     }
     //Work using the source of task
-    else if (objtask.source === 'osmlint-point') { 
+    else if (objtask.source === 'osmlint-point') {
       var geom = wellknown.parse(this.state.map.value.geom);
       var circleOptions = {
         stroke: false,
@@ -258,7 +258,7 @@ module.exports = React.createClass({
       if (geom.type == 'Point') {
         L.circleMarker([geom.coordinates[1], geom.coordinates[0]], circleOptions).addTo(taskLayer);
       }
-         
+
       if (geom.type == 'MultiPoint') {
         geom.coordinates.forEach(function(coords) {
           L.circleMarker([coords[1], coords[0]], circleOptions).addTo(taskLayer);
@@ -273,8 +273,11 @@ module.exports = React.createClass({
     }
 
     else if (objtask.source === 'osmlint-linestring') {
+      L.tileLayer('http://tools.geofabrik.de/osmi/tiles/routing_i/{z}/{x}/{y}.png').addTo(map).bringToFront();
       var layer = omnivore.wkt.parse(this.state.map.value.geom).addTo(taskLayer);
-      map.fitBounds(layer.getBounds(), { reset: true });
+      map.fitBounds(layer.getBounds(), {
+        reset: true
+      });
       this.geolocate(map.getCenter());
     }
   },
