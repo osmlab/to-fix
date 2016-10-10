@@ -4,7 +4,7 @@ require('mapbox.js');
 require('leaflet-osm');
 var L = window.L;
 
-var omnivore = require('leaflet-omnivore');
+var omnivore = require('leaflet-omnivore/leaflet-omnivore');
 var wellknown = require('wellknown');
 
 var React = require('react');
