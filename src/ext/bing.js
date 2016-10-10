@@ -1,5 +1,8 @@
 'use strict';
 
+require('mapbox.js');
+var L = window.L;
+
 module.exports = L.TileLayer.extend({
   options: {
     subdomains: [0, 1, 2, 3],
