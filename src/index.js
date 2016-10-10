@@ -1,6 +1,6 @@
 'use strict';
 
-window.React = require('react');
+var React = require('react');
 
 //var Reflux = require('reflux');
 var qs = require('querystring');
