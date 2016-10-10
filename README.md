@@ -1,6 +1,4 @@
-This branch tracks the current development of `to-fix`. Check `gh-pages` for the production branch.
-
----
+**Note**: This branch tracks the current development of `to-fix`. Check `gh-pages` for the production branch.
 
 ## to-fix
 
