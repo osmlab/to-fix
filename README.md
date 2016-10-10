@@ -1,3 +1,7 @@
+This branch tracks the current development of `to-fix`. Check `gh-pages` for the production branch.
+
+---
+
 ## to-fix
 
 A task manager for OpenStreetMap which helps coordinate users on tasks and work down items in a queue one-by-one without getting in each other’s way.
