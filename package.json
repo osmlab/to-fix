@@ -29,8 +29,9 @@
     "watchify": "^2.4.0"
   },
   "scripts": {
-    "start": "watchify -d -t reactify src/index.js -o dist/bundle.js & serve",
-    "test": "eslint src/*.js src/components/*.js src/components/**/*.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom"
   },
   "repository": {
     "type": "git",
