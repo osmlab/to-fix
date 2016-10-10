@@ -6,3 +6,5 @@ Tasks
 - [ ] Replace reflux with redux
 - [ ] Switch to the new backend api
 - [ ] Add workflow for creating projects
+
+Deployed at `[to-fix.surge.sh](https://to-fix.surge.sh)`.
