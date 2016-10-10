@@ -2,7 +2,7 @@
   "name": "TO-FIX",
   "version": "1.0.0",
   "description": "A task manager for OpenStreetMap",
-  "main": "src/index.js",
+  "private": true,
   "dependencies": {
     "d3": "^3.5.5",
     "leaflet-omnivore": "0.3.2",
