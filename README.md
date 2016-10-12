@@ -2,7 +2,7 @@ This branch tracks the current development of `to-fix`. Check `gh-pages` for the
 
 **Tasks**
 - [x] Use `react-scripts` instead of browserify
-- [ ] Replace reflux with vanilla flux [issue/157](https://github.com/osmlab/to-fix/issues/157)
+- [ ] Replace reflux with vanilla flux -- [issue/157](https://github.com/osmlab/to-fix/issues/157)
 - [ ] Replace mapbox.js with mapbox gl js
 - [ ] Switch to the new backend api
 
