@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
 
-var React = require('react');
-var Reflux = require('reflux');
-
-var actions = require('../actions/actions');
-var StatsStore = require('../stores/stats_store');
-var Graph = require('./workspace/dash_graph');
-var Header = require('./workspace/dash_heading');
-var Table = require('./workspace/dash_summary');
+import actions from '../actions/actions';
+import StatsStore from '../stores/stats_store';
+import Graph from './workspace/dash_graph';
+import Header from './workspace/dash_heading';
+import Table from './workspace/dash_summary';
 
 const Stats = React.createClass({
   mixins: [
@@ -22,7 +20,6 @@ const Stats = React.createClass({
 
   render: function() {
     return (
-      /* jshint ignore:start */
       <div className='col12 clearfix scroll-styled'>
         <div className='col10 pad2 dark'>
           <Header/>
@@ -30,7 +27,6 @@ const Stats = React.createClass({
           <Table />
         </div>
       </div>
-      /* jshint ignore:end */
     );
   }
 });
