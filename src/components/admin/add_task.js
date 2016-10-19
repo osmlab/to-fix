@@ -133,7 +133,7 @@ const AddTask = React.createClass({
               </fieldset>
               <div className='pad2 checkbox-pill'>
                 <input type='checkbox' id='random' ref='random' checked={this.state.selected}/>
-                <a onClick={this.triggerRandom} for='random' className='button icon check quiet'>Do not load randomize the data</a>
+                <a onClick={this.triggerRandom} htmlFor='random' className='button icon check quiet'>Do not load randomize the data</a>
               </div>
               <div className='pad2x pad1y  round-bottom col12 clearfix'>
                 <input className='col6 margin3 button' type='submit' value='Create Task' />
