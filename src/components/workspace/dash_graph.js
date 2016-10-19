@@ -7,17 +7,13 @@ import d3Graph from '../../util/d3Graph';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 const DashGraph = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
   mixins: [
     Reflux.listenTo(actions.sidebarToggled, 'resize'),
     PureRenderMixin
   ],
 
   getInitialState: function() {
-    var params = this.context.router.getCurrentQuery();
+    var params = this.props.location.query;
     return {
       filter: (params.filter) ? params.filter : 'all'
     };
@@ -40,16 +36,16 @@ const DashGraph = React.createClass({
   },
 
   componentDidMount: function() {
-    d3Graph.create(this.refs.brushgraph.getDOMNode());
+    d3Graph.create(this.brushGraph);
   },
 
   componentDidUpdate: function() {
-    var params = this.context.router.getCurrentQuery();
-    d3Graph.update(this.refs.brushgraph.getDOMNode(), this.getGraphState(), params);
+    var params = this.props.location.query;
+    d3Graph.update(this.brushGraph, this.getGraphState(), params);
   },
 
   componentWillUnmount: function() {
-    d3Graph.destroy(this.refs.brushgraph.getDOMNode());
+    d3Graph.destroy(this.brushGraph);
   },
 
   resize: function() {
@@ -83,7 +79,7 @@ const DashGraph = React.createClass({
           </form>
         </div>
 
-        <div ref='brushgraph'></div>
+        <div ref={node => this.brushGraph = node}></div>
       </div>
     );
   }

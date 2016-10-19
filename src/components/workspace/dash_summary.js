@@ -5,20 +5,16 @@ import d3 from 'd3';
 
 import StatsStore from '../../stores/stats_store';
 import actions from '../../actions/actions';
-import config from '../../config';
+import * as config from '../../config';
 
 const DashSummary = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
   mixins: [
     Reflux.connect(StatsStore, 'stats'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated')
   ],
 
   graphUpdated: function(dates, query) {
-    var task = this.context.router.getCurrentParams().task;
+    var task = this.props.params.task;
     actions.statSummaries(task, query);
   },
 

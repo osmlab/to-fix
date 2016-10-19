@@ -9,10 +9,6 @@ import StatsStore from '../../stores/stats_store';
 import update from 'react-addons-update';
 
 const DashHeading = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
   mixins: [
     Reflux.connect(StatsStore, 'stats'),
     Reflux.listenTo(actions.graphUpdated, 'graphUpdated'),
@@ -43,17 +39,16 @@ const DashHeading = React.createClass({
 
   updatePermalink: function(obj) {
     // Add query params to the URL
-    var router = this.context.router;
-    var params = router.getCurrentParams();
+    const { router, params } = this.props;
     var query = update(this.state.query, {$merge: obj});
     this.setState({
       query: query,
-      permalink: router.makeHref('stats', {task: params.task}, query)
+      permalink: router.createHref('stats', {task: params.task}, query)
     });
   },
 
   render: function() {
-    var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
+    var taskTitle = taskObj(this.props.params.task).title;
     var totalSummary = '';
     if (this.state.stats.totals) {
       var available = this.state.stats.totals.available;
