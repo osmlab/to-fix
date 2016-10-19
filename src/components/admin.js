@@ -7,7 +7,7 @@ var Addtask = require('./admin/add_task');
 var Showtask = require('./admin/show_task');
 var Edittask = require('./admin/edit_task');
 
-module.exports = React.createClass({
+const Admin = React.createClass({
   getInitialState: function() {
     return {
       show_task_window: true,
@@ -60,3 +60,5 @@ module.exports = React.createClass({
     );
   }
 });
+
+export default Admin;

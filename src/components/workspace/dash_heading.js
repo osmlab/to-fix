@@ -1,15 +1,14 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import { withRouter } from 'react-router';
+import d3 from 'd3';
 
-var React = require('react');
-var Reflux = require('reflux');
-var d3 = require('d3');
+import actions from '../../actions/actions';
+import taskObj from '../../mixins/taskobj';
+import StatsStore from '../../stores/stats_store';
+import update from 'react-addons-update';
 
-var actions = require('../../actions/actions');
-var taskObj = require('../../mixins/taskobj');
-var StatsStore = require('../../stores/stats_store');
-var update = require('react/addons').addons.update;
-
-module.exports = React.createClass({
+const DashHeading = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -65,7 +64,6 @@ module.exports = React.createClass({
       };
 
       totalSummary = (
-        /* jshint ignore:start */
         <div className='col4'>
           <h4 className='block space-bottom0'>
             <strong>{d3.format(',')(completed)}</strong> complete
@@ -75,7 +73,6 @@ module.exports = React.createClass({
             <div ref='progress' style={progressStyle} className='progress fill-darkgreen pin-left block col12'></div>
           </div>
         </div>
-        /* jshint ignore:end */
       );
     }
 
@@ -89,16 +86,13 @@ module.exports = React.createClass({
 
     if (this.state.permalink) {
       permalink = (
-      /* jshint ignore:start */
         <span className='fill-darken1 dot pad0 fl'>
           <a href={this.state.permalink} className='icon link' title='Link to these dates'></a>
         </span>
-      /* jshint ignore:end */
       );
     }
 
     return (
-      /* jshint ignore:start */
       <div className='space-bottom1 col12 clearfix'>
         <div className='col8'>
           <h4>{taskTitle}</h4>
@@ -109,7 +103,8 @@ module.exports = React.createClass({
         </div>
         {totalSummary}
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default withRouter(DashHeading);

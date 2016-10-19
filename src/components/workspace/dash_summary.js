@@ -1,14 +1,13 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import { withRouter } from 'react-router';
+import d3 from 'd3';
 
-var React = require('react');
-var Reflux = require('reflux');
-var d3 = require('d3');
+import StatsStore from '../../stores/stats_store';
+import actions from '../../actions/actions';
+import config from '../../config';
 
-var StatsStore = require('../../stores/stats_store');
-var actions = require('../../actions/actions');
-var config = require('../../config');
-
-module.exports = React.createClass({
+const DashSummary = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -38,7 +37,6 @@ module.exports = React.createClass({
           var total = (sum.total) ? numFormat(sum.total) : 0;
 
           return (
-            /* jshint ignore:start */
             <div key={i} className='col12 clearfix'>
               <span className='col7'>
                 <a href={profile} target='_blank' className='inline strong pad0y'>{sum.user}</a>
@@ -49,19 +47,15 @@ module.exports = React.createClass({
               <span className='col1 pad0y text-right'>{noterror}</span>
               <span className='col1 pad0y text-right'>{total}</span>
             </div>
-            /* jshint ignore:end */
           );
       });
     } else {
       contributions = (
-        /* jshint ignore:start */
         <strong className='quiet pad0y block'>No data</strong>
-        /* jshint ignore:end */
       );
     }
 
     return (
-      /* jshint ignore:start */
       <div className='contributions'>
         <div className='col12 clearfix'>
           <h4 className='col7'>Contributors</h4>
@@ -73,7 +67,8 @@ module.exports = React.createClass({
         </div>
         {contributions}
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default withRouter(DashSummary);

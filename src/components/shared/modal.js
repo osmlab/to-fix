@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
 
-var React = require('react');
-var Reflux = require('reflux');
-var actions = require('../../actions/actions');
+import actions from '../../actions/actions';
 
-// Modals
-var Settings = require('./modals/settings');
+import Settings from './modals/settings';
 
-module.exports = React.createClass({
+const Modal = React.createClass({
   mixins: [
     Reflux.listenTo(actions.openSettings, 'openSettings')
   ],
@@ -28,12 +26,12 @@ module.exports = React.createClass({
 
   render: function () {
     return (
-      /* jshint ignore:start */
       <div>
         {(this.state.settingsModal) ?
           (<Settings onClose={this.closeModal}/>) : ''}
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default Modal;

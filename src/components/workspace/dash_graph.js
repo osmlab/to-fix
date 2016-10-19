@@ -1,13 +1,12 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import { withRouter } from 'react-router';
 
-var React = require('react');
-var Reflux = require('reflux');
+import actions from '../../actions/actions';
+import d3Graph from '../../util/d3Graph';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
-var actions = require('../../actions/actions');
-var d3Graph = require('../../util/d3Graph');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
-
-module.exports = React.createClass({
+const DashGraph = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -67,7 +66,6 @@ module.exports = React.createClass({
 
   render: function() {
     return (
-      /* jshint ignore:start */
       <div className='fill-darken1 pad2 round col12 space-bottom2 contain'>
 
         <div className='pin-topright pad1'>
@@ -87,7 +85,8 @@ module.exports = React.createClass({
 
         <div ref='brushgraph'></div>
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default withRouter(DashGraph);

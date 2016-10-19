@@ -1,11 +1,9 @@
-'use strict';
+import React from 'react';
+import xhr from 'xhr';
 
-var React = require('react');
-var xhr = require('xhr');
+import config from '../../config';
 
-var config = require('../../config');
-
-var AddForm = React.createClass({
+const AddTask = React.createClass({
   getInitialState: function() {
     return {
       //taskid: this field will fill when the upload was successful
@@ -45,7 +43,7 @@ var AddForm = React.createClass({
     formData.append('preserve', preserve);
     formData.append('newtask', true);
 
-    //start upload 
+    //start upload
     this.setState({
       loading: true
     });
@@ -149,4 +147,5 @@ var AddForm = React.createClass({
     );
   }
 });
-module.exports = AddForm;
+
+export default AddTask;

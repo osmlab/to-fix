@@ -1,10 +1,9 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
 
-var React = require('react');
-var Reflux = require('reflux');
-var actions = require('../../actions/actions');
+import actions from '../../actions/actions';
 
-module.exports = React.createClass({
+const ErrorDialog = React.createClass({
   mixins: [
     Reflux.listenTo(actions.errorDialog, 'emit')
   ],
@@ -39,7 +38,6 @@ module.exports = React.createClass({
     klass += (this.state.error) ? ' active' : '';
 
     return (
-      /* jshint ignore:start */
       <div className={klass}>
         <div className='fill-orange round col3 quiet dialog'>
           <button onClick={this.dismiss} className='icon fr close button quiet'></button>
@@ -48,7 +46,8 @@ module.exports = React.createClass({
           </div>
         </div>
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default ErrorDialog;

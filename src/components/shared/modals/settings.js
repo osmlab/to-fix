@@ -1,11 +1,10 @@
-'use strict';
+import React from 'react';
+import Keys from 'react-keybinding';
+import store from 'store';
 
-var React = require('react');
-var Keys = require('react-keybinding');
-var store = require('store');
-var actions = require('../../../actions/actions');
+import actions from '../../../actions/actions';
 
-module.exports = React.createClass({
+const Settings = React.createClass({
   mixins: [Keys],
 
   propTypes: {
@@ -41,7 +40,6 @@ module.exports = React.createClass({
     var editor = (store.get('editor')) ? store.get('editor') : 'ideditor';
 
     return (
-      /* jshint ignore:start */
       <div id='modal' className='animate modal modal-content active' onClick={this.onCancel}>
         <div className='col4 modal-body fill-purple contain' onClick={this.stopProp}>
           <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
@@ -69,7 +67,8 @@ module.exports = React.createClass({
           </div>
         </div>
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default Settings;

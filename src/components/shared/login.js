@@ -1,15 +1,11 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
 
-var React = require('react');
-var Reflux = require('reflux');
+import * as config from '../../config';
+import userStore from '../../stores/user_store';
+import actions from '../../actions/actions';
 
-var config = require('../../config');
-var userStore = require('../../stores/user_store');
-var actions = require('../../actions/actions');
-
-var Settings = require('./modals/settings');
-
-module.exports = React.createClass({
+const Login = React.createClass({
   mixins: [
     Reflux.connect(userStore, 'user')
   ],
@@ -22,7 +18,6 @@ module.exports = React.createClass({
 
     if (user.auth) {
       logState = (
-        /* jshint ignore:start */
         <div className='pad1x col12 truncate clearfix mobile-cols'>
           <div className='pad0y col6'>
             <a className='strong small dark' target='_blank' href={profile} title='Profile on OpenStreetMap'>
@@ -32,27 +27,24 @@ module.exports = React.createClass({
           </div>
           <button onClick={actions.openSettings} className='col6 icon sprocket button quiet small animate'>Settings</button>
         </div>
-        /* jshint ignore:end */
       );
     } else {
       logState = (
-        /* jshint ignore:start */
         <div className='pad1x'>
           <button onClick={actions.userLogin} className='icon osm button small col12 animate'>Authorize on OSM</button>
         </div>
-        /* jshint ignore:end */
       );
     }
 
     return (
-    /* jshint ignore:start */
-    <div className='space-bottom1'>
-      <h4 className='dark block pad1x space-bottom1'>Account</h4>
-      <div id='user-stuff' className='space-bottom1 col12 clearfix mobile-cols'>
-        {logState}
+      <div className='space-bottom1'>
+        <h4 className='dark block pad1x space-bottom1'>Account</h4>
+        <div id='user-stuff' className='space-bottom1 col12 clearfix mobile-cols'>
+          {logState}
+        </div>
       </div>
-    </div>
-    /* jshint ignore:end */
     );
   }
 });
+
+export default Login;

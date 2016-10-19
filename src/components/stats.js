@@ -9,7 +9,7 @@ var Graph = require('./workspace/dash_graph');
 var Header = require('./workspace/dash_heading');
 var Table = require('./workspace/dash_summary');
 
-module.exports = React.createClass({
+const Stats = React.createClass({
   mixins: [
     Reflux.connect(StatsStore, 'stats')
   ],
@@ -34,3 +34,5 @@ module.exports = React.createClass({
     );
   }
 });
+
+export default Stats;

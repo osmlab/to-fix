@@ -1,25 +1,18 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import { Link, withRouter } from 'react-router';
 
-var React = require('react');
-var Reflux = require('reflux');
-var Router = require('react-router');
-var Link = Router.Link;
+import appStore from '../../stores/application_store';
+import LogIn from './login';
+import actions from '../../actions/actions';
 
-var appStore = require('../../stores/application_store');
-var LogIn = require('./login');
-var actions = require('../../actions/actions');
-
-module.exports = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
+const Sidebar = React.createClass({
   mixins: [
     Reflux.connect(appStore, 'appSettings')
   ],
 
   render: function() {
-    var topLevel = this.context.router.getCurrentRoutes()[1].name;
+    var topLevel = this.props.routes[1].name; // CHECK
     var appSettings = this.state.appSettings;
     var sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
     if (appSettings.sidebar) sidebarClass += ' active';
@@ -27,15 +20,12 @@ module.exports = React.createClass({
     var tasks = this.props.taskItems.map(function(task, i) {
       if(!task.status){
         return (
-          /* jshint ignore:start */
           <Link
-            to={topLevel}
+            to={`${topLevel}/${task.id}`}
             key={i}
-            className='block strong dark pad1x pad0y truncate'
-            params={{task: task.id}}>
+            className='block strong dark pad1x pad0y truncate'>
             {task.title}
           </Link>
-          /* jshint ignore:end */
         );
       }
     });
@@ -43,21 +33,17 @@ module.exports = React.createClass({
     var completed_tasks = this.props.taskItems.map(function(task, i) {
       if(task.status){
         return (
-          /* jshint ignore:start */
           <Link
-            to={topLevel}
+            to={`${topLevel}/${task.id}`}
             key={i}
-            className='block strong dark pad1x pad0y truncate'
-            params={{task: task.id}}>
+            className='block strong dark pad1x pad0y truncate'>
             {task.title}
           </Link>
-          /* jshint ignore:end */
-        );       
+        );
       }
     });
 
     return (
-      /* jshint ignore:start */
       <div className={sidebarClass}>
         <div className='scroll-styled pad2y'>
           <LogIn />
@@ -67,7 +53,8 @@ module.exports = React.createClass({
           <nav ref='taskList' className='space-bottom2'>{completed_tasks}</nav>
         </div>
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default withRouter(Sidebar);

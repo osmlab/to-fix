@@ -1,18 +1,13 @@
 'use strict';
 
-var React = require('react');
-var Reflux = require('reflux');
-var Router = require('react-router');
-var Link = Router.Link;
+import React from 'react';
+import Reflux from 'reflux';
+import { Link, withRouter } from 'react-router';
 
-var appStore = require('../../stores/application_store');
-var actions = require('../../actions/actions');
+import appStore from '../../stores/application_store';
+import actions from '../../actions/actions';
 
-module.exports = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
+const Header = React.createClass({
   mixins: [
     Reflux.connect(appStore, 'appSettings')
   ],
@@ -26,10 +21,9 @@ module.exports = React.createClass({
     var appSettings = this.state.appSettings;
     var toggleClass = 'sidebar-toggle quiet block fl keyline-right animate pad1 row-60';
     if (appSettings.sidebar) toggleClass += ' active';
-    var currentTask = this.context.router.getCurrentParams().task;
+    var currentTask = this.props.params.task || '';
 
     return (
-      /* jshint ignore:start */
       <header className='fill-light keyline-bottom row-60 col12 clearfix mobile-cols'>
         <nav className='col6 truncate'>
           <a href='#' onClick={this.toggle} className={toggleClass}>
@@ -43,32 +37,33 @@ module.exports = React.createClass({
           <nav className='col12 space pad0y'>
             <Link
               className='icon pencil short button'
-              params={{ task: currentTask }}
-              to='task'>
+              activeClassName='active'
+              to={`task/${currentTask}`}>
               Task
             </Link>
             <Link
               className='icon bolt short button'
-              params={{ task: currentTask }}
-              to='activity'>
+              activeClassName='active'
+              to={`activity/${currentTask}`}>
               Activity
             </Link>
             <Link
               className='icon graph short button'
-              params={{ task: currentTask }}
-              to='stats'>
+              activeClassName='active'
+              to={`stats/${currentTask}`}>
               Statistics
             </Link>
             <Link
               className='icon plus short button'
-              params={{ task: currentTask }}
-              to='admin'>
+              activeClassName='active'
+              to={`admin/${currentTask}`}>
               Admin
             </Link>
           </nav>
         </div>
       </header>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default withRouter(Header);

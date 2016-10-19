@@ -1,32 +1,28 @@
 'use strict';
 
-require('mapbox.js');
-require('leaflet-osm');
-var L = window.L;
+import React from 'react';
+import Reflux from 'reflux';
+import { withRouter } from 'react-router';
+import qs from 'querystring';
+import xhr from 'xhr';
+import store from 'store';
+import omnivore from 'leaflet-omnivore/leaflet-omnivore';
+import wellknown from 'wellknown';
 
-var omnivore = require('leaflet-omnivore/leaflet-omnivore');
-var wellknown = require('wellknown');
+import actions from '../actions/actions';
+import * as config from '../config';
+import EditBar from './workspace/editbar';
+import MapStore from '../stores/map_store';
+import BingLayer from '../ext/bing.js';
 
-var React = require('react');
-var Reflux = require('reflux');
-
-var store = require('store');
-var actions = require('../actions/actions');
-var config = require('../config');
-var qs = require('querystring');
-var xhr = require('xhr');
-var EditBar = require('./workspace/editbar');
-var MapStore = require('../stores/map_store');
-var BingLayer = require('../ext/bing.js');
+import 'mapbox.js';
+import 'leaflet-osm';
+const L = window.L;
 
 L.mapbox.accessToken = config.accessToken;
 var geocoder = L.mapbox.geocoder('mapbox.places');
 
-module.exports = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
+const Task = React.createClass({
   mixins: [
     Reflux.connect(MapStore, 'map'),
     Reflux.listenTo(actions.taskEdit, 'taskEdit')
@@ -49,9 +45,9 @@ module.exports = React.createClass({
       });
     }
 
+    var task = this.props.params.task;
 
-    var task = this.context.router.getCurrentParams().task;
-    //Get task objetc   
+    //Get task objetc
     var tasks = store.get('tasks');
     var objtask = tasks.filter(function(val) {
       return val.id === task;
@@ -107,7 +103,7 @@ module.exports = React.createClass({
       this.geolocate(map.getCenter());
 
     } else if (task == 'overlaphighwaysus' || task == 'highwayhighway') {
-      
+
       var geom = wellknown.parse(this.state.map.value.geom);
 
       var circleOptions = {
@@ -293,7 +289,7 @@ module.exports = React.createClass({
       })
     };
 
-    var map = L.mapbox.map(this.refs.map.getDOMNode(), 'tristen.1b4be4af', {
+    var map = L.mapbox.map(this.mapContainer, 'tristen.1b4be4af', {
       maxZoom: 18,
       keyboard: false
     });
@@ -379,7 +375,7 @@ module.exports = React.createClass({
   iDEditDone: function() {
     // Set editor state as complete and trigger the done action
     this.setState({ iDEdit: false });
-    actions.taskData(this.context.router.getCurrentParams().task);
+    actions.taskData(this.props.params.task);
   },
 
   geolocate: function(center) {
@@ -399,22 +395,20 @@ module.exports = React.createClass({
     var iDEditor = '';
     if (this.state.iDEdit) {
       iDEditor = (
-      /* jshint ignore:start */
-      <div>
-        <iframe src={this.state.iDSrcAttribute} frameBorder='0' className='ideditor'></iframe>
-        <button onClick={this.iDEditDone} className='ideditor-done z10000 button rcon next round animate pad1y pad2x strong'>Next task</button>
-      </div>
-      /* jshint ignore:end */
+        <div>
+          <iframe src={this.state.iDSrcAttribute} frameBorder='0' className='ideditor'></iframe>
+          <button onClick={this.iDEditDone} className='ideditor-done z10000 button rcon next round animate pad1y pad2x strong'>Next task</button>
+        </div>
       );
     }
 
     return (
-      /* jshint ignore:start */
-      <div ref='map' className='mode active map fill-navy-dark'>
+      <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark'>
         <EditBar />
         {iDEditor}
       </div>
-      /* jshint ignore:end */
     );
   }
 });
+
+export default withRouter(Task);

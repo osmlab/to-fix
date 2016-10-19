@@ -1,12 +1,11 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import d3 from 'd3';
 
-var React = require('react');
-var Reflux = require('reflux');
-var d3 = require('d3');
+import actions from '../../actions/actions';
+import Admin_store from '../../stores/admin_store';
 
-var actions = require('../../actions/actions');
-var Admin_store = require('../../stores/admin_store');
-module.exports = React.createClass({
+const ShowTask = React.createClass({
   mixins: [
     Reflux.connect(Admin_store, 'task')
   ],
@@ -90,10 +89,10 @@ module.exports = React.createClass({
     }
 
     return (
-        /* jshint ignore:start */
         <div>{info}</div>
-        /* jshint ignore:end */
     );
 
   }
 });
+
+export default ShowTask;

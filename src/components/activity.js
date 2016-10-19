@@ -9,7 +9,7 @@ var actions = require('../actions/actions');
 var taskObj = require('../mixins/taskobj');
 var ActivityStore = require('../stores/activity_store');
 
-module.exports = React.createClass({
+const Activity = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -113,3 +113,5 @@ module.exports = React.createClass({
     );
   }
 });
+
+export default Activity;

@@ -1,14 +1,12 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import xhr from 'xhr';
 
-var React = require('react');
-var Reflux = require('reflux');
-var xhr = require('xhr');
+import actions from '../../actions/actions';
+import Admin_store from '../../stores/admin_store';
+import config from '../../config';
 
-var actions = require('../../actions/actions');
-var Admin_store = require('../../stores/admin_store');
-var config = require('../../config');
-
-module.exports = React.createClass({
+const EditTask = React.createClass({
   mixins: [
     Reflux.connect(Admin_store, 'task')
   ],
@@ -57,12 +55,12 @@ module.exports = React.createClass({
     formData.append('name', this.state.task.title);
     formData.append('source', source);
     formData.append('description', description);
-    formData.append('changeset_comment', changeset_comment);    
+    formData.append('changeset_comment', changeset_comment);
     formData.append('password', password);
     formData.append('file', file);
     formData.append('random', random);
     formData.append('newtask', false);// newtask =true
-    //start upload 
+    //start upload
     this.setState({
       loading: true
     });
@@ -125,7 +123,7 @@ module.exports = React.createClass({
 
   render: function() {
     var task = this.state.task;
-    var form = '';    
+    var form = '';
     if(typeof task !== 'undefined') {
       if(task.status) {
         var loading = (this.state.loading) ? 'dark loading' : 'dark';
@@ -170,9 +168,9 @@ module.exports = React.createClass({
       }
     }
     return (
-        /* jshint ignore:start */
         <div>{(this.state.startupload) ? ((this.state.successful_upload)?(<h2 className='dark'>Successful upload</h2>):(<h2 className='dark'>Something went wrong, try again</h2>)): form}</div>
-        /* jshint ignore:end */
     );
   }
 });
+
+export default EditTask;
