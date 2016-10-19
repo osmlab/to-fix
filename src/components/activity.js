@@ -1,19 +1,14 @@
-'use strict';
+import React from 'react';
+import Reflux from 'reflux';
+import { withRouter } from 'react-router';
+import d3 from 'd3';
 
-var React = require('react');
-var Reflux = require('reflux');
-var d3 = require('d3');
-
-var config = require('../config');
-var actions = require('../actions/actions');
-var taskObj = require('../mixins/taskobj');
-var ActivityStore = require('../stores/activity_store');
+import * as config from '../config';
+import actions from '../actions/actions';
+import taskObj from '../mixins/taskobj';
+import ActivityStore from '../stores/activity_store';
 
 const Activity = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
   mixins: [
     Reflux.connect(ActivityStore, 'activity'),
     Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded')
@@ -56,7 +51,6 @@ const Activity = React.createClass({
         var actionTime = timeDisplay(new Date(action.time * 1000));
 
         return (
-          /* jshint ignore:start */
           <div id={permalink} key={i} className='col12 clearfix fill-darken1 dark mobile-cols'>
             <div className='fl strong pad1 fill-darken1 editor-key'>
               <span className='capitalize'>{action.attributes.action}</span>
@@ -72,32 +66,26 @@ const Activity = React.createClass({
               {actionTime}
             </div>
           </div>
-          /* jshint ignore:end */
         );
       });
     } else {
-      /* jshint ignore:start */
       row = (<strong className='quiet'>No recent activity found.</strong>);
-      /* jshint ignore:end */
     }
 
-    var taskTitle = taskObj(this.context.router.getCurrentParams().task).title;
+    var taskTitle = taskObj(this.props.params.task).title;
 
     // Load more button
     var loadmore = '';
 
     if (this.state.activity.length) {
-      /* jshint ignore:start */
       if (this.state.loadCount >= this.state.activity.length) {
         loadmore = (<button className='button col12 quiet disabled round-bottom'>Activity loaded</button>);
       } else {
         loadmore = (<button onClick={this.loadMore} className='col12 button round-bottom'>Load more</button>);
       }
-      /* jshint ignore:end */
     }
 
     return (
-      /* jshint ignore:start */
       <div className='col12 clearfix scroll-styled'>
         <div className='col10 pad2 dark'>
           <div className='space-bottom1 col12 clearfix'>
@@ -109,9 +97,8 @@ const Activity = React.createClass({
           </div>
         </div>
       </div>
-      /* jshint ignore:end */
     );
   }
 });
 
-export default Activity;
+export default withRouter(Activity);
