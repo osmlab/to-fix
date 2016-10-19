@@ -1,35 +1,23 @@
-'use strict';
+import React from 'react';
+import { Route, IndexRedirect } from 'react-router';
+import Reflux from 'reflux';
+import store from 'store';
 
-var React = require('react');
-var Router = require('react-router');
-var NotFoundRoute = Router.NotFoundRoute;
-var Navigation = Router.Navigation;
-var Link = Router.Link;
-var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
-var DefaultRoute = Router.DefaultRoute;
-var Redirect = Router.Redirect;
-var Reflux = require('reflux');
-var store = require('store');
+import TasksStore from './stores/tasks_store';
 
-var TasksStore = require('./stores/tasks_store');
-var Header = require('./components/shared/header');
-var Sidebar = require('./components/shared/sidebar');
-var Task = require('./components/task');
-var Stats = require('./components/stats');
-var Activity = require('./components/activity');
-var Modal = require('./components/shared/modal');
-var ErrorDialog = require('./components/shared/error');
-var Admin = require('./components/admin');
-//var taskobj = require('./mixins/taskobj');
+import Task from './components/task';
+import Stats from './components/stats';
+import Admin from './components/admin';
+import Activity from './components/activity';
 
-// As there isn't a proper initial path for
-
-var firstTask = '/task/tigerdelta';// to-fix, redirect start tigerdelta
+import Header from './components/shared/header';
+import Sidebar from './components/shared/sidebar';
+import Modal from './components/shared/modal';
+import ErrorDialog from './components/shared/error';
 
 var App = React.createClass({
   mixins: [
-    Reflux.listenTo(TasksStore, 'onTaksLoad')
+    Reflux.listenTo(TasksStore, 'onTaskLoad')
   ],
   getInitialState: function() {
     return {
@@ -37,7 +25,7 @@ var App = React.createClass({
       loading: true
     };
   },
-  onTaksLoad: function(tasks) {
+  onTaskLoad: function(tasks) {
     store.set('tasks', tasks);
     this.setState({
       tasks: tasks,
@@ -54,7 +42,7 @@ var App = React.createClass({
           <Header />
           <Sidebar taskItems={this.state.tasks} />
           <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
-            <RouteHandler />
+            {this.props.children}
             <ErrorDialog />
           </div>
           <Modal />
@@ -64,15 +52,14 @@ var App = React.createClass({
   }
 });
 
-module.exports = (
-  /* jshint ignore:start */
-  <Route path='/' handler={App}>
-    <Route name='task' path='/task/:task' handler={Task} />
-    <Route name='activity' path='/activity/:task' handler={Activity} />
-    <Route name='stats' path='/stats/:task' handler={Stats} />
-    <Route name='admin' path='/admin/:task' handler={Admin} />
-    <DefaultRoute handler={Task} />
-    <Redirect from='/' to={firstTask} />
+const defaultTask = '/task/tigerdelta';
+
+export default (
+  <Route path='/' component={App}>
+    <IndexRedirect to={defaultTask} />
+    <Route name='task' path='/task/:task' component={Task} />
+    <Route name='activity' path='/activity/:task' component={Activity} />
+    <Route name='stats' path='/stats/:task' component={Stats} />
+    <Route name='admin' path='/admin/:task' component={Admin} />
   </Route>
-  /* jshint ignore:end */
 );
