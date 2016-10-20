@@ -1,7 +1,7 @@
 export const get = (key) => {
   try {
     const serializedValue = localStorage.getItem(key);
-    if (serializedState === null) {
+    if (serializedValue === null) {
       return undefined;
     }
     return JSON.parse(serializedValue);
@@ -19,3 +19,11 @@ export const set = (key, value) => {
     console.error('Could not write to localStorage.');
   }
 };
+
+export const remove = (key) => {
+  try {
+    localStorage.removeItem(key);
+  } catch (err) {
+    console.error('Could not delete from localStorage.');
+  }
+}
