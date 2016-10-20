@@ -1,12 +1,12 @@
 import osmAuth from 'osm-auth';
 import {
-  oauthKey,
-  oauthSecret,
+  OAUTH_CONSUMER_KEY,
+  OAUTH_CONSUMER_SECRET,
 } from '../config';
 
 const auth = osmAuth({
-  osm_consumer_key: oauthKey,
-  osm_secret: oauthSecret,
+  osm_consumer_key: OAUTH_CONSUMER_KEY,
+  osm_secret: OAUTH_CONSUMER_SECRET,
   auto: false,
   landing: 'oauth-complete.html',
 });
