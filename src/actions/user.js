@@ -6,14 +6,14 @@ export const login = () => (dispatch) => {
 
   return osmApi.login().then(
     response => {
+      store.set('osmid', response.osmid);
+      store.set('username', response.username);
+      store.set('avatar', response.avatar);
+
       dispatch({
         type: 'USER_LOGIN_SUCCESS',
         response,
       });
-
-      store.set('osmid', response.osmid);
-      store.set('username', response.username);
-      store.set('avatar', response.avatar);
     },
     error => dispatch({
       type: 'USER_LOGIN_FAILED',
