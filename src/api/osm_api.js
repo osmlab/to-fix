@@ -20,7 +20,11 @@ export const login = () => {
   });
 };
 
-export const logout = () => auth.logout();
+export const logout = () =>
+  auth.logout();
+
+export const authenticated = () =>
+  auth.authenticated();
 
 const parseUserDetails = (xml) => {
   const user = xml.getElementsByTagName('user')[0];
