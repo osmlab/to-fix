@@ -8,14 +8,13 @@ const isSettingsAction = /^settings/;
 const settings = (state = initialState, action) => {
   if (!isSettingsAction.test(action.type)) return state;
 
-  const type = action.type.substring('settings/'.length);
-  switch(type) {
-    case 'TOGGLE_SIDEBAR':
+  switch(action.type) {
+    case 'settings/TOGGLE_SIDEBAR':
       return {
         ...state,
         sidebar: !state.sidebar,
       };
-    case 'SET_EDITOR_PREFERENCE':
+    case 'settings/SET_EDITOR_PREFERENCE':
       return {
         ...state,
         editor: action.editor,

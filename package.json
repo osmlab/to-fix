@@ -7,6 +7,7 @@
     "d3": "^3.5.5",
     "leaflet-omnivore": "0.3.2",
     "leaflet-osm": "^0.1.0",
+    "lodash": "^4.16.4",
     "mapbox.js": "2.1.9",
     "normalizr": "^2.2.1",
     "osm-auth": "^0.2.8",
