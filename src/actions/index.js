@@ -25,108 +25,113 @@ const asyncAction = ({ type, asyncCall, responseSchema }) => {
 
 // Tasks
 export const fetchAllTasks = asyncAction({
-  type: 'FETCH_ALL_TASKS',
+  type: 'tasks/FETCH_ALL_TASKS',
   asyncCall: api.tofix.fetchAllTasks,
   responseSchema: { tasks: schema.arrayOfTasks },
 });
 
 export const fetchTaskById = asyncAction({
-  type: 'FETCH_TASK_BY_ID',
+  type: 'tasks/FETCH_TASK_BY_ID',
   asyncCall: api.tofix.fetchTaskById,
   responseSchema: schema.task,
 });
 
 export const createTask = asyncAction({
-  type: 'CREATE_TASK',
+  type: 'tasks/CREATE_TASK',
   asyncCall: api.tofix.createTask,
   responseSchema: schema.task,
 });
 
 export const updateTask = asyncAction({
-  type: 'UPDATE_TASK',
+  type: 'tasks/UPDATE_TASK',
   asyncCall: api.tofix.updateTask,
   responseSchema: schema.task,
 });
 
 export const deleteTask = asyncAction({
-  type: 'DELETE_TASK',
+  type: 'tasks/DELETE_TASK',
   asyncCall: api.tofix.deleteTask,
 });
 
+export const selectTask = ({ idtask }) => (dispatch) => {
+  dispatch({ type: 'tasks/SELECT_TASK', idtask });
+  dispatch(fetchTaskById({ idtask }));
+};
+
 // Items
 export const fetchAllItems = asyncAction({
-  type: 'FETCH_ALL_ITEMS',
+  type: 'items/FETCH_ALL_ITEMS',
   asyncCall: api.tofix.fetchAllItems,
   responseSchema: schema.arrayOfItems,
 });
 
 export const fetchRandomItem = asyncAction({
-  type: 'FETCH_RANDOM_ITEM',
+  type: 'items/FETCH_RANDOM_ITEM',
   asyncCall: api.tofix.fetchRandomItem,
   responseSchema: schema.item,
 });
 
 export const fetchItemByKey = asyncAction({
-  type: 'FETCH_ITEM_BY_KEY',
+  type: 'items/FETCH_ITEM_BY_KEY',
   asyncCall: api.tofix.fetchItemByKey,
   responseSchema: schema.item,
 });
 
 export const fetchNItems = asyncAction({
-  type: 'FETCH_N_ITEMS',
+  type: 'items/FETCH_N_ITEMS',
   asyncCall: api.tofix.fetchNItems,
   responseSchema: schema.arrayOfItems,
 });
 
 export const updateItem = asyncAction({
-  type: 'UPDATE_ITEM',
+  type: 'items/UPDATE_ITEM',
   asyncCall: api.tofix.updateItem,
 });
 
 export const unlockItems = asyncAction({
-  type: 'UNLOCK_ITEMS',
+  type: 'items/UNLOCK_ITEMS',
   asyncCall: api.tofix.unlockItems,
 });
 
 // Activity
 export const fetchActivity = asyncAction({
-  type: 'FETCH_ACTIVITY',
+  type: 'activity/FETCH_ACTIVITY',
   asyncCall: api.tofix.fetchActivity,
 });
 
 export const fetchUserActivity = asyncAction({
-  type: 'FETCH_USER_ACTIVITY',
+  type: 'activity/FETCH_USER_ACTIVITY',
   asyncCall: api.tofix.fetchUserActivity,
 });
 
 // Stats
 export const fetchStats = asyncAction({
-  type: 'FETCH_STATS',
+  type: 'stats/FETCH_STATS',
   asyncCall: api.tofix.fetchStats,
 });
 
 // User
 export const userLogin = asyncAction({
-  type: 'USER_LOGIN',
+  type: 'user/USER_LOGIN',
   asyncCall: api.osm.login,
 });
 
 export const getUserDetails = asyncAction({
-  type: 'GET_USER_DETAILS',
+  type: 'user/GET_USER_DETAILS',
   asyncCall: api.osm.getUserDetails,
 });
 
 export const userLogout = () => (dispatch) => {
   api.osm.logout();
-  dispatch({ type: 'USER_LOGOUT' });
+  dispatch({ type: 'user/USER_LOGOUT' });
 };
 
 // Settings
 export const toggleSidebar = () => ({
-  type: 'TOGGLE_SIDEBAR',
+  type: 'settings/TOGGLE_SIDEBAR',
 });
 
 export const setEditorPreference = (editor) => ({
-  type: 'SET_EDITOR_PREFERENCE',
+  type: 'settings/SET_EDITOR_PREFERENCE',
   editor,
 });
