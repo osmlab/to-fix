@@ -3,7 +3,7 @@ import * as schema from './schema';
 import { normalize } from 'normalizr';
 
 const asyncAction = ({ type, asyncCall, responseSchema }) => {
-  return (params) => (dispatch) => {
+  return (params = {}) => (dispatch) => {
     dispatch({
       type: `${type}_REQUEST`,
       ...params,
@@ -13,7 +13,7 @@ const asyncAction = ({ type, asyncCall, responseSchema }) => {
       response => dispatch({
         type: `${type}_SUCCESS`,
         response: responseSchema ? normalize(response, responseSchema) : response,
-        params: params || {},
+        params,
       }),
       error => dispatch({
         type: `${type}_FAILURE`,
