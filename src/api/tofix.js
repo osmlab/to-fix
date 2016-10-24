@@ -67,7 +67,7 @@ export const updateItem = ({ idtask, payload }) => (
 
 export const unlockItems = ({ idtask, groupIds }) => {
   groupIds = groupIds.join(',');
-  return fetchJSON(`${baseURL}/tasks/${idtask}/items/unlocked`, { method: 'POST', body: { groupIds }})
+  return fetchJSON(`${baseURL}/tasks/${idtask}/items/unlocked`, { method: 'POST', body: JSON.stringify({ groupIds })})
 };
 
 // Activity
