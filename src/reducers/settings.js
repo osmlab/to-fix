@@ -3,8 +3,13 @@ const initialState = {
   editor: 'id',
 };
 
+const isSettingsAction = /^settings/;
+
 const settings = (state = initialState, action) => {
-  switch(action.type) {
+  if (!isSettingsAction.test(action.type)) return state;
+
+  const type = action.type.substring('settings/'.length);
+  switch(type) {
     case 'TOGGLE_SIDEBAR':
       return {
         ...state,

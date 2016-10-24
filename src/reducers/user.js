@@ -1,5 +1,10 @@
+const isUserAction = /^user/
+
 const user = (state = {}, action) => {
-  switch(action.type) {
+  if (!isUserAction.test(action.type)) return state;
+
+  const type = action.type.substring('user/'.length);
+  switch(type) {
     case 'USER_LOGIN_SUCCESS':
       return {
         authenticated: true,
@@ -11,7 +16,7 @@ const user = (state = {}, action) => {
       }
     case 'GET_USER_DETAILS_SUCCESS':
       return {
-        ...state,
+        authenticated: true,
         ...action.response,
       };
     case 'GET_USER_DETAILS_FAILURE':
