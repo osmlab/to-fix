@@ -8,6 +8,8 @@ const isSuccess = /_SUCCESS$/;
 const isFailure = /_FAILURE$/;
 
 const byId = (state = {}, action) => {
+  if (action.type === 'tasks/SELECT_TASK') return {};
+
   if (!isItemsAction.test(action.type)) return state;
   if (!isSuccess.test(action.type)) return state;
 
@@ -27,6 +29,8 @@ const byId = (state = {}, action) => {
 };
 
 const allIds = (state = [], action) => {
+  if (action.type === 'tasks/SELECT_TASK') return [];
+
   if (!isItemsAction.test(action.type)) return state;
   if (!isSuccess.test(action.type)) return state;
 
@@ -43,6 +47,8 @@ const allIds = (state = [], action) => {
 };
 
 const currentId = (state = null, action) => {
+  if (action.type === 'tasks/SELECT_TASK') return null;
+
   if (!isItemsAction.test(action.type)) return state;
 
   switch(action.type) {
@@ -55,6 +61,8 @@ const currentId = (state = null, action) => {
 };
 
 const isFetching = (state = false, action) => {
+  if (action.type === 'tasks/SELECT_TASK') return false;
+
   if (!isItemsAction.test(action.type)) return state;
 
   if (isRequest.test(action.type)) return true;
@@ -65,6 +73,8 @@ const isFetching = (state = false, action) => {
 };
 
 const error = (state = null, action) => {
+  if (action.type === 'tasks/SELECT_TASK') return null;
+
   if (!isItemsAction.test(action.type)) return state;
 
   if (isRequest.test(action.type)) return null;
