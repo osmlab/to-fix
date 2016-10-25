@@ -62,7 +62,7 @@ export const fetchNItems = ({ idtask, numitems, payload }) => (
 );
 
 export const updateItem = ({ idtask, payload }) => (
-  fetch(`${baseURL}/tasks/${idtask}/items`, { method: 'PUT', body: JSON.stringify(payload) })
+  fetchJSON(`${baseURL}/tasks/${idtask}/items`, { method: 'PUT', body: JSON.stringify(payload) })
 );
 
 export const unlockItems = ({ idtask, groupIds }) => {
