@@ -1,6 +1,12 @@
+import api from '../api';
+
+const initialState = {
+  authenticated: api.osm.authenticated(),
+};
+
 const isUserAction = /^user/
 
-const user = (state = {}, action) => {
+const user = (state = initialState, action) => {
   if (!isUserAction.test(action.type)) return state;
 
   switch(action.type) {
