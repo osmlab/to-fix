@@ -1,60 +1,54 @@
-import React from 'react';
-import Reflux from 'reflux';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
-import appStore from '../../stores/application_store';
-import LogIn from './login';
-import actions from '../../actions/actions';
+import { getSidebarSetting, getCurrentTasks, getCompletedTasks } from '../../reducers';
 
-const Sidebar = React.createClass({
-  mixins: [
-    Reflux.connect(appStore, 'appSettings')
-  ],
+import Login from './login';
 
-  render: function() {
-    var topLevel = this.props.routes[1].name; // CHECK
-    var appSettings = this.state.appSettings;
-    var sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
-    if (appSettings.sidebar) sidebarClass += ' active';
+class Sidebar extends Component {
+  renderTaskList(tasks) {
+    const { topLevelRoute } = this.props;
 
-    var tasks = this.props.taskItems.map(function(task, i) {
-      if(!task.status){
-        return (
-          <Link
-            to={`${topLevel}/${task.id}`}
-            key={i}
-            className='block strong dark pad1x pad0y truncate'>
-            {task.title}
-          </Link>
-        );
-      }
-    });
+    return tasks.map((task, i) => (
+      <Link
+        to={`${topLevelRoute}/${task.idtask}`}
+        key={i}
+        className='block strong dark pad1x pad0y truncate'>
+        {task.value.description}
+      </Link>
+    ));
+  }
 
-    var completed_tasks = this.props.taskItems.map(function(task, i) {
-      if(task.status){
-        return (
-          <Link
-            to={`${topLevel}/${task.id}`}
-            key={i}
-            className='block strong dark pad1x pad0y truncate'>
-            {task.title}
-          </Link>
-        );
-      }
-    });
+  render() {
+    const { sidebar, currentTasks, completedTasks } = this.props;
+
+    let sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
+    if (sidebar) sidebarClass += ' active';
 
     return (
       <div className={sidebarClass}>
         <div className='scroll-styled pad2y'>
-          <LogIn />
-          <h4 className='dark block pad1x space-bottom1'>Tasks</h4>
-          <nav ref='taskList' className='space-bottom2'>{tasks}</nav>
+          <Login />
+          <h4 className='dark block pad1x space-bottom1'>Current Tasks</h4>
+          <nav ref='taskList' className='space-bottom2'>{this.renderTaskList(currentTasks)}</nav>
           <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>
-          <nav ref='taskList' className='space-bottom2'>{completed_tasks}</nav>
+          <nav ref='taskList' className='space-bottom2'>{this.renderTaskList(completedTasks)}</nav>
         </div>
       </div>
     );
   }
+}
+
+const mapStateToProps = (state, { routes }) => ({
+  topLevelRoute: routes[1].name,
+  sidebar: getSidebarSetting(state),
+  currentTasks: getCurrentTasks(state),
+  completedTasks: getCompletedTasks(state),
 });
 
-export default withRouter(Sidebar);
+Sidebar = withRouter(connect(
+  mapStateToProps
+)(Sidebar));
+
+export default Sidebar;
