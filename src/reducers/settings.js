@@ -25,3 +25,7 @@ const settings = (state = initialState, action) => {
 };
 
 export default settings;
+
+// Selectors
+export const getSidebar = (state) => state.sidebar;
+export const getEditor = (state) => state.editor;

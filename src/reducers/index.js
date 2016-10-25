@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 
-import user from './user';
-import settings from './settings';
-import tasks from './tasks';
+import user, * as fromUser from './user';
+import settings, * as fromSettings from './settings';
+import tasks, * as fromTasks from './tasks';
 import items from './items';
 import activity from './activity';
 import stats from './stats';
@@ -15,3 +15,19 @@ export default combineReducers({
   activity,
   stats,
 });
+
+// User state
+export const getAuthenticated = (state) => fromUser.getAuthenticated(state.user);
+export const getUsername = (state) => fromUser.getUsername(state.user);
+export const getOsmId = (state) => fromUser.getOsmId(state.user);
+export const getAvatar = (state) => fromUser.getAvatar(state.user);
+
+// Settings state
+export const getSidebarSetting = (state) => fromSettings.getSidebar(state.settings);
+export const getEditorSetting = (state) => fromSettings.getEditor(state.settings);
+
+// Tasks state
+export const getTasks = (state) => fromTasks.getTasks(state.tasks);
+export const getTasksIsFetching = (state) => fromTasks.getIsFetching(state.tasks);
+export const getCompletedTasks = (state) => fromTasks.getCompletedTasks(state.tasks);
+export const getCurrentTasks = (state) => fromTasks.getCurrentTasks(state.tasks);

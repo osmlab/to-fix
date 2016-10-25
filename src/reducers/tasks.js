@@ -86,3 +86,10 @@ export default combineReducers({
   isFetching,
   error,
 });
+
+// Selectors
+export const getTasks = (state) => state.allIds.map(id => state.byId[id]);
+export const getIsFetching = (state) => state.isFetching;
+export const getError = (state) => state.error;
+export const getCompletedTasks = (state) => getTasks(state).filter(task => task.isCompleted);
+export const getCurrentTasks = (state) => getTasks(state).filter(task => !task.isCompleted);

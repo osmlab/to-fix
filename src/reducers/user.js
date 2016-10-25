@@ -33,3 +33,11 @@ const user = (state = {}, action) => {
 };
 
 export default user;
+
+// Selectors
+export const getAuthenticated = (state) => state.authenticated;
+export const getOsmId = (state) => state.osmid;
+export const getUsername = (state) => state.username;
+export const getAvatar = (state) => state.avatar;
+export const getIsFetching = (state) => state.isFetching;
+export const getError = (state) => state.error;
