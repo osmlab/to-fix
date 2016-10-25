@@ -1,30 +1,26 @@
-import React from 'react';
-import Reflux from 'reflux';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
-import appStore from '../../stores/application_store';
-import actions from '../../actions/actions';
+import * as actions from '../../actions';
+import { getSidebarSetting } from '../../reducers';
 
-const Header = React.createClass({
-  mixins: [
-    Reflux.connect(appStore, 'appSettings')
-  ],
-
-  toggle: function(e) {
+class Header extends Component {
+  toggleSidebar = (e) => {
     e.preventDefault();
-    actions.sidebarToggled();
-  },
+    this.props.toggleSidebar();
+  }
 
-  render: function() {
-    var appSettings = this.state.appSettings;
-    var toggleClass = 'sidebar-toggle quiet block fl keyline-right animate pad1 row-60';
-    if (appSettings.sidebar) toggleClass += ' active';
-    var currentTask = this.props.params.task || '';
+  render() {
+    const { currentTaskId, sidebar } = this.props;
+
+    let toggleClass = 'sidebar-toggle quiet block fl keyline-right animate pad1 row-60';
+    if (sidebar) toggleClass += ' active';
 
     return (
       <header className='fill-light keyline-bottom row-60 col12 clearfix mobile-cols'>
         <nav className='col6 truncate'>
-          <a href='#' onClick={this.toggle} className={toggleClass}>
+          <a href='#' onClick={this.toggleSidebar} className={toggleClass}>
             <span className='icon big menu'></span>
           </a>
           <a href='/to-fix/' className='pad2x'>
@@ -36,25 +32,25 @@ const Header = React.createClass({
             <Link
               className='icon pencil short button'
               activeClassName='active'
-              to={`task/${currentTask}`}>
+              to={`task/${currentTaskId}`}>
               Task
             </Link>
             <Link
               className='icon bolt short button'
               activeClassName='active'
-              to={`activity/${currentTask}`}>
+              to={`activity/${currentTaskId}`}>
               Activity
             </Link>
             <Link
               className='icon graph short button'
               activeClassName='active'
-              to={`stats/${currentTask}`}>
+              to={`stats/${currentTaskId}`}>
               Statistics
             </Link>
             <Link
               className='icon plus short button'
               activeClassName='active'
-              to={`admin/${currentTask}`}>
+              to={`admin/${currentTaskId}`}>
               Admin
             </Link>
           </nav>
@@ -62,6 +58,16 @@ const Header = React.createClass({
       </header>
     );
   }
+}
+
+const mapStateToProps = (state, { params }) => ({
+  currentTaskId: params.task,
+  sidebar: getSidebarSetting(state),
 });
 
-export default withRouter(Header);
+Header = withRouter(connect(
+  mapStateToProps,
+  actions
+)(Header));
+
+export default Header;
