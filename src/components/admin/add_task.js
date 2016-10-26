@@ -1,151 +1,103 @@
-import React from 'react';
-import xhr from 'xhr';
+import React, { Component } from 'react';
 
-import config from '../../config';
+class AddTask extends Component {
+  state = {
+    isUploading: false,
+    uploadSuccessful: false,
+    error: null,
+  }
 
-const AddTask = React.createClass({
-  getInitialState: function() {
-    return {
-      //taskid: this field will fill when the upload was successful
-      //loading: to show the load gif when a task in on upload progress
-      //startupload:when a task start to upload at server
-      confirm: {
-        taskid: null,
-        loading: false,
-        startupload: false,
-        successful_upload:false
-      },
-      selected: false
-    };
-  },
-  triggerFileInput: function() {
-    this.refs.fileInput.getDOMNode().click();
-  },
-  uploadData: function(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
-    var self = this;
-    // TODO sanitize/validation
-    var formData = new window.FormData();
-    var name = this.refs.taskname.getDOMNode().value.trim();
-    var source = this.refs.tasksource.getDOMNode().value.trim();
-    var description = this.refs.taskdescription.getDOMNode().value.trim();
-    var changeset_comment = this.refs.taskchangeset_comment.getDOMNode().value.trim();
-    var password = this.refs.password.getDOMNode().value.trim();
-    var file = this.refs.fileInput.getDOMNode();
-    file = file.files[0];
-    var preserve = this.refs.random.getDOMNode().checked;
-    formData.append('name', name);
-    formData.append('source', source);
-    formData.append('description', description);
-    formData.append('changeset_comment', changeset_comment);
-    formData.append('password', password);
-    formData.append('file', file);
-    formData.append('preserve', preserve);
-    formData.append('newtask', true);
+    const { onTaskAdd } = this.props;
+    const formData = this.getFormData();
 
-    //start upload
     this.setState({
-      loading: true
+      isUploading: true,
+      uploadSuccessful: false,
+      error: null,
     });
-    //send the request
-    xhr({
-      uri: config.taskServer + 'csv',
-      body: formData,
-      method: 'POST'
-    }, function(err, res) {
-      if (err || res.statusCode === 400) {
-        self.setState({
-          startupload: true,
-          loading: false,
-          successful_upload:false
-        });
-        self.cleanup();
+
+    onTaskAdd(formData).then(({ error }) => {
+      if (error) {
+        this.setState({ isUploading: false, error });
       } else {
-        var resut = JSON.parse(res.body);
-        if(resut.taskid!== undefined){
-            self.setState({
-              startupload: true,
-              taskid: resut.taskid,
-              loading: true,
-              successful_upload:true
-        });
-        }else{
-          self.setState({
-              startupload: true,
-              taskid: resut.taskid,
-              loading: true,
-              successful_upload:false
-          });
-        }
-        self.cleanup();
+        this.setState({ isUploading: false, uploadSuccessful: true });
       }
     });
-  },
+  }
 
-  cleanup: function() {
-    var self = this;
-    if (this.state.taskid !== null && typeof this.state.taskid !== "undefined") {
-      window.location.href = '#/task/' + this.state.taskid;
-      window.location.reload();
-    }else {
-      setTimeout(function() {
-        self.setState({
-          startupload: false,
-          loading:false
-        });
-      }, 2000);
-    }
-  },
+  getFormData = () => {
+    const formData = new window.FormData();
 
-  triggerRandom: function() {
-    this.refs.random.getDOMNode().checked ? this.setState({
-      selected: false
-    }) : this.setState({
-      selected: true
-    });
-  },
-  render: function() {
-    var loading = (this.state.loading) ? 'dark loading' : 'dark';
-    var form = (<form className={loading} onSubmit={this.uploadData}>
-              <fieldset className='pad2x'>
-                <label>Task name</label>
-                <input className='col12 block clean' ref='taskname' type='text' name='name' placeholder='Task name' />
-              </fieldset>
-              <fieldset className='pad2x'>
-                <label>Source</label>
-                <input className='col12 block clean' ref='tasksource' type='text' name='source' placeholder='Task Source' />
-              </fieldset>
-              <fieldset className='pad2x'>
-                <label>Description</label>
-                <textarea className='col12 block clean resize' ref='taskdescription' type='text' name='description' placeholder='Task description' ></textarea>
-              </fieldset>
-              <fieldset className='pad2x'>
-                <label>Changeset Comment</label>
-                <textarea className='col12 block clean resize' ref='taskchangeset_comment' type='text' name='changeset_comment' placeholder='Changeset comment for this task' ></textarea>
-              </fieldset>
-              <fieldset className='pad2x'>
-                <label>Password</label>
-                <input className='col12 block clean' ref='password' type='password' name='uploadPassword' placeholder='Password' />
-              </fieldset>
-              <fieldset className='pad2x'>
-                <input type='file' className='hidden' ref='fileInput' name='uploadfile' accept=".csv"/>
-                <a onClick={this.triggerFileInput} className='button pad2x quiet'>Choose CSV</a>
-              </fieldset>
-              <div className='pad2 checkbox-pill'>
-                <input type='checkbox' id='random' ref='random' checked={this.state.selected}/>
-                <a onClick={this.triggerRandom} htmlFor='random' className='button icon check quiet'>Do not load randomize the data</a>
-              </div>
-              <div className='pad2x pad1y  round-bottom col12 clearfix'>
-                <input className='col6 margin3 button' type='submit' value='Create Task' />
-              </div>
-            </form>);
+    formData.append('name', this.refs.name.value.trim());
+    formData.append('description', this.refs.description.value.trim());
+    formData.append('changesetComment', this.refs.changesetComment.value.trim());
+    formData.append('password', this.refs.password.value.trim());
+    formData.append('file', this.refs.fileInput.files[0]);
+
+    return formData;
+  }
+
+  renderNotice() {
+    const { uploadSuccessful, error } = this.state;
+
     return (
-          <div>
-          <div>{(this.state.startupload) ? ((this.state.successful_upload)?(<h2 className='dark'>Successful upload</h2>):(<h2 className='dark'>Something went wrong, try again</h2>)): form}
+      <div className='pad2x pad1y round-bottom col12 clearfix dark'>
+        {uploadSuccessful
+          ? <div className='note contain fill-lighten0'>
+              <h3 className='dark'>The task has been added.</h3>
             </div>
-          </div>
+          : null}
+        {error
+          ? <div className='note error contain'>
+              <h3 className='dark'>Error: {error}.</h3>
+            </div>
+          : null}
+      </div>
     );
   }
-});
+
+  renderForm() {
+    const { isUploading } = this.state;
+
+    return (
+      <form className={isUploading ? 'dark loading' : 'dark'} onSubmit={this.handleSubmit}>
+        <fieldset className='pad2x'>
+          <label>Task name</label>
+          <input className='col12 block clean' ref='name' type='text' placeholder='Task name' />
+        </fieldset>
+        <fieldset className='pad2x'>
+          <label>Description</label>
+          <textarea className='col12 block clean resize' ref='description' type='text' placeholder='Task description' ></textarea>
+        </fieldset>
+        <fieldset className='pad2x'>
+          <label>Changeset comment</label>
+          <textarea className='col12 block clean resize' ref='changesetComment' type='text' placeholder='Changeset comment for this task' ></textarea>
+        </fieldset>
+        <fieldset className='pad2x'>
+          <label>Password</label>
+          <input className='col12 block clean' ref='password' type='password' placeholder='Password' />
+        </fieldset>
+        <fieldset className='pad2x'>
+          <input type='file' className='hidden' ref='fileInput' accept=".geojson" />
+          <a onClick={() => this.refs.fileInput.click()} className='button pad2x quiet'>Choose GeoJSON</a>
+        </fieldset>
+        <div className='pad2x pad1y  round-bottom col12 clearfix'>
+          <input className='col6 margin3 button' type='submit' value='Create Task' />
+        </div>
+      </form>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        {this.renderNotice()}
+        {this.renderForm()}
+      </div>
+    );
+  }
+}
 
 export default AddTask;
