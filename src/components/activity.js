@@ -1,63 +1,62 @@
-import React from 'react';
-import Reflux from 'reflux';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 import d3 from 'd3';
 
-import * as config from '../config';
-import actions from '../actions/actions';
-import taskObj from '../mixins/taskobj';
-import ActivityStore from '../stores/activity_store';
+import { USER_PROFILE_URL } from '../config';
+import { fetchActivity } from '../actions';
+import { getCurrentTask, getActivityData } from '../reducers';
 
-const Activity = React.createClass({
-  mixins: [
-    Reflux.connect(ActivityStore, 'activity'),
-    Reflux.listenTo(actions.taskActivityLoaded, 'activityLoaded')
-  ],
+class Activity extends Component {
+  state = {
+    loadCount: 5,
+  }
 
-  getInitialState: function() {
-    return {
-      loadCount: 25
-    };
-  },
+  componentDidMount() {
+    this.fetchData();
+  }
 
-  statics: {
-    fetchData: function(params) {
-      actions.taskActivity(params.task);
-    }
-  },
+  fetchData() {
+    const { fetchActivity, currentTaskId } = this.props;
 
-  loadMore: function() {
-    this.setState({ loadCount: this.state.loadCount += 25 });
-  },
+    const dateFormat = d3.time.format('%Y-%m-%d');
+    const _from = dateFormat(d3.time.day.offset(new Date(), -7));
+    const _to = dateFormat(new Date());
 
-  activityLoaded: function() {
-    // Reset the load count when new data has loaded.
-    this.setState({ loadCount: 25 });
-  },
+    fetchActivity({ idtask: currentTaskId, from: _from, to: _to });
+  }
 
-  render: function() {
-    var row;
-    var dateDisplay = d3.time.format('%B %-d');
-    var timeDisplay = d3.time.format('%-I:%-M%p');
+  loadMore = () => {
+    this.setState({
+      loadCount: this.state.loadCount + 5,
+    });
+  }
 
-    if (this.state.activity.length) {
-      // Show only the first 25 results.
-      row = this.state.activity.slice(0, this.state.loadCount).map(function(action, i) {
-        if (!action.attributes.user) return;
-        var permalink = 'key-' + action.attributes.key;
-        var profile = config.userProfileURL + action.attributes.user;
-        var editor = (action.attributes.editor) ? action.attributes.editor : '';
-        var actionDay = dateDisplay(new Date(action.time * 1000));
-        var actionTime = timeDisplay(new Date(action.time * 1000));
+  renderActivityList() {
+    const { activity } = this.props;
+    const { loadCount } = this.state;
+
+    if (activity.length) {
+      return activity.slice(0, loadCount).map((data, i) => {
+        const { time, key, action, editor, user } = data;
+
+        const permalink = `key-${key}`;
+        const profile = `${USER_PROFILE_URL}/${user}`;
+
+        const dateDisplay = d3.time.format('%B %-d');
+        const timeDisplay = d3.time.format('%-I:%-M%p');
+
+        const actionDay = dateDisplay(new Date(time * 1000));
+        const actionTime = timeDisplay(new Date(time * 1000));
 
         return (
           <div id={permalink} key={i} className='col12 clearfix fill-darken1 dark mobile-cols'>
             <div className='fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>{action.attributes.action}</span>
+              <span className='capitalize'>{action}</span>
             </div>
             <div className='pad1 fl space'>
               <a href={profile} target='_blank' className='icon account'>
-                {action.attributes.user}
+                {user}
               </a>
               <strong className='fill-navy inline micro pad0x uppercase'>{editor}</strong>
             </div>
@@ -69,36 +68,53 @@ const Activity = React.createClass({
         );
       });
     } else {
-      row = (<strong className='quiet'>No recent activity found.</strong>);
+      return <strong className='quiet'>No recent activity found.</strong>;
     }
+  }
 
-    var taskTitle = taskObj(this.props.params.task).title;
+  renderLoadMoreButton() {
+    const { activity } = this.props;
+    const { loadCount } = this.state;
 
-    // Load more button
-    var loadmore = '';
-
-    if (this.state.activity.length) {
-      if (this.state.loadCount >= this.state.activity.length) {
-        loadmore = (<button className='button col12 quiet disabled round-bottom'>Activity loaded</button>);
+    if (activity.length) {
+      if (loadCount >= activity.length) {
+        return <button className='button col12 quiet disabled round-bottom'>Activity loaded</button>;
       } else {
-        loadmore = (<button onClick={this.loadMore} className='col12 button round-bottom'>Load more</button>);
+        return <button onClick={this.loadMore} className='col12 button round-bottom'>Load more</button>;
       }
     }
+  }
+
+  render() {
+    const { currentTask, activity } = this.props;
+
+    if (!activity || !currentTask) return null;
 
     return (
       <div className='col12 clearfix scroll-styled'>
         <div className='col10 pad2 dark'>
           <div className='space-bottom1 col12 clearfix'>
-            <h4>{taskTitle}</h4>
+            <h4>{currentTask.value.name}</h4>
           </div>
           <div className='rows'>
-            {row}
-            {loadmore}
+            {this.renderActivityList()}
+            {this.renderLoadMoreButton()}
           </div>
         </div>
       </div>
     );
   }
+}
+
+const mapStateToProps = (state, { params }) => ({
+  currentTaskId: params.task,
+  currentTask: getCurrentTask(state, params.task),
+  activity: getActivityData(state),
 });
 
-export default withRouter(Activity);
+Activity = withRouter(connect(
+  mapStateToProps,
+  { fetchActivity }
+)(Activity));
+
+export default Activity;
