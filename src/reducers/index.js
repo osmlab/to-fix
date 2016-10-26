@@ -34,4 +34,4 @@ export const getActiveTasks = (state) => fromTasks.getActiveTasks(state.tasks);
 export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
 
 // Activity state
-export const getActivityData = (state) => fromActivity.getActivityData(state.activity);
+export const getActivityData = (state) => fromActivity.getData(state.activity);
