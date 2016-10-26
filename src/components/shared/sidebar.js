@@ -2,26 +2,28 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { getSidebarSetting, getCurrentTasks, getCompletedTasks } from '../../reducers';
+import { selectTask } from '../../actions';
+import { getSidebarSetting, getActiveTasks, getCompletedTasks } from '../../reducers';
 
 import Login from './login';
 
 class Sidebar extends Component {
   renderTaskList(tasks) {
-    const { topLevelRoute } = this.props;
+    const { topLevelRoute, selectTask } = this.props;
 
     return tasks.map((task, i) => (
       <Link
         to={`${topLevelRoute}/${task.idtask}`}
         key={i}
-        className='block strong dark pad1x pad0y truncate'>
+        className='block strong dark pad1x pad0y truncate'
+        onClick={() => selectTask({ idtask: task.idtask })}>
         {task.value.description}
       </Link>
     ));
   }
 
   render() {
-    const { sidebar, currentTasks, completedTasks } = this.props;
+    const { sidebar, activeTasks, completedTasks } = this.props;
 
     let sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
     if (sidebar) sidebarClass += ' active';
@@ -31,9 +33,9 @@ class Sidebar extends Component {
         <div className='scroll-styled pad2y'>
           <Login />
           <h4 className='dark block pad1x space-bottom1'>Current Tasks</h4>
-          <nav ref='taskList' className='space-bottom2'>{this.renderTaskList(currentTasks)}</nav>
+          <nav className='space-bottom2'>{this.renderTaskList(activeTasks)}</nav>
           <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>
-          <nav ref='taskList' className='space-bottom2'>{this.renderTaskList(completedTasks)}</nav>
+          <nav className='space-bottom2'>{this.renderTaskList(completedTasks)}</nav>
         </div>
       </div>
     );
@@ -43,12 +45,13 @@ class Sidebar extends Component {
 const mapStateToProps = (state, { routes }) => ({
   topLevelRoute: routes[1].name,
   sidebar: getSidebarSetting(state),
-  currentTasks: getCurrentTasks(state),
+  activeTasks: getActiveTasks(state),
   completedTasks: getCompletedTasks(state),
 });
 
 Sidebar = withRouter(connect(
-  mapStateToProps
+  mapStateToProps,
+  { selectTask }
 )(Sidebar));
 
 export default Sidebar;
