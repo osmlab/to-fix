@@ -1,62 +1,56 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
-import actions from '../actions/actions';
-import Addtask from './admin/add_task';
-import Showtask from './admin/show_task';
-import Edittask from './admin/edit_task';
+import { updateTask, createTask } from '../actions';
+import { getCurrentTask } from '../reducers';
 
-const Admin = React.createClass({
-  getInitialState: function() {
-    return {
-      show_task_window: true,
-      add_task_window: false,
-      edit_task_window: false
-    };
-  },
-  statics: {
-    fetchData: function(params) {
-      actions.getTask(params.task);
-    }
-  },
-  openShow_task: function() {
+import ShowTask from './admin/show_task';
+import EditTask from './admin/edit_task';
+import AddTask from './admin/add_task';
+
+class Admin extends Component {
+  state = {
+    taskWindow: 'show', // 'show' | 'edit' | 'add'
+  }
+
+  setTaskWindow(to) {
     this.setState({
-      show_task_window: true,
-      add_task_window: false,
-      edit_task_window: false
+      taskWindow: to,
     });
-  },
-  openAdd_task: function() {
-    this.setState({
-      show_task_window: false,
-      add_task_window: true,
-      edit_task_window: false
-    });
-  },
-  openEdit_task: function() {
-    this.setState({
-      show_task_window: false,
-      add_task_window: false,
-      edit_task_window: true
-    });
-  },
-  render: function() {
+  }
+
+  render() {
+    const { taskWindow } = this.state;
+    const { currentTask, updateTask, createTask } = this.props;
+
     return (
       <div className='col12 clearfix scroll-styled'>
         <div className='col6 pad2 dark'>
-         {(this.state.show_task_window) ? (<Showtask />) : ''}
-         {(this.state.add_task_window) ? (<Addtask />) : ''}
-         {(this.state.edit_task_window) ? (<Edittask />) : ''}
+          {(taskWindow === 'show' && currentTask) ? <ShowTask task={currentTask} /> : null}
+          {(taskWindow === 'edit' && currentTask) ? <EditTask task={currentTask} onTaskEdit={updateTask} /> : null}
+          {(taskWindow === 'add') ? <AddTask onTaskAdd={createTask} /> : null}
         </div>
           <div className='col6 pad2 dark'>
           <div className='pill'>
-            <a onClick={this.openShow_task} className='button pad2x quiet'>Show detail</a>
-            <a onClick={this.openEdit_task} className='button pad2x quiet'>Edit this task</a>
-            <a onClick={this.openAdd_task} className='button pad2x quiet'>Add a task</a>
+            <a onClick={() => this.setTaskWindow('show')} className='button pad2x quiet'>Show details</a>
+            <a onClick={() => this.setTaskWindow('edit')} className='button pad2x quiet'>Edit task</a>
+            <a onClick={() => this.setTaskWindow('add') } className='button pad2x quiet'>Add new task</a>
           </div>
         </div>
       </div>
     );
   }
+}
+
+const mapStateToProps = (state, { params }) => ({
+  currentTaskId: params.task,
+  currentTask: getCurrentTask(state),
 });
+
+Admin = withRouter(connect(
+  mapStateToProps,
+  { updateTask, createTask }
+)(Admin));
 
 export default Admin;
