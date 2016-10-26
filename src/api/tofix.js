@@ -14,9 +14,9 @@ const fetchJSON = (url, options = {}) => (
   fetch(url, {
     ...options,
     headers: {
-      ...options.headers,
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      ...options.headers,
     },
   })
   .then(toJSON)
@@ -33,11 +33,11 @@ export const fetchTaskById = ({ idtask }) => (
 );
 
 export const createTask = (payload) => (
-  fetchJSON(`${baseURL}/tasks`, { method: 'POST', body: JSON.stringify(payload) })
+  fetch(`${baseURL}/tasks`, { method: 'POST', body: payload }).then(toJSON).then(checkError)
 );
 
 export const updateTask = (payload) => (
-  fetchJSON(`${baseURL}/tasks`, { method: 'PUT', body: JSON.stringify(payload) })
+  fetch(`${baseURL}/tasks`, { method: 'PUT', body: payload }).then(toJSON).then(checkError)
 );
 
 export const deleteTask = (payload) => (
