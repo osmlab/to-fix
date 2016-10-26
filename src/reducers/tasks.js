@@ -92,4 +92,5 @@ export const getTasks = (state) => state.allIds.map(id => state.byId[id]);
 export const getIsFetching = (state) => state.isFetching;
 export const getError = (state) => state.error;
 export const getCompletedTasks = (state) => getTasks(state).filter(task => task.isCompleted);
-export const getCurrentTasks = (state) => getTasks(state).filter(task => !task.isCompleted);
+export const getActiveTasks = (state) => getTasks(state).filter(task => !task.isCompleted);
+export const getCurrentTask = (state) => state.byId[state.currentId];

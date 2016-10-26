@@ -4,7 +4,7 @@ import user, * as fromUser from './user';
 import settings, * as fromSettings from './settings';
 import tasks, * as fromTasks from './tasks';
 import items from './items';
-import activity from './activity';
+import activity, * as fromActivity from './activity';
 import stats from './stats';
 
 export default combineReducers({
@@ -30,4 +30,8 @@ export const getEditorSetting = (state) => fromSettings.getEditor(state.settings
 export const getTasks = (state) => fromTasks.getTasks(state.tasks);
 export const getTasksIsFetching = (state) => fromTasks.getIsFetching(state.tasks);
 export const getCompletedTasks = (state) => fromTasks.getCompletedTasks(state.tasks);
-export const getCurrentTasks = (state) => fromTasks.getCurrentTasks(state.tasks);
+export const getActiveTasks = (state) => fromTasks.getActiveTasks(state.tasks);
+export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
+
+// Activity state
+export const getActivityData = (state) => fromActivity.getActivityData(state.activity);

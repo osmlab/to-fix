@@ -27,3 +27,5 @@ const activity = (state = {}, action) => {
 };
 
 export default activity;
+
+export const getData = (state) => state.data;
