@@ -1,8 +1,7 @@
-var d3 = require('d3');
+import d3 from 'd3';
 var actions = require('../actions/actions');
 
-module.exports = {
-
+export default {
   create: function(el) {
     el = d3.select(el);
     var svg = el.append('svg')

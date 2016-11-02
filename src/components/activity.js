@@ -17,10 +17,11 @@ class Activity extends Component {
   }
 
   fetchData() {
-    const { fetchActivity, currentTaskId } = this.props;
+    const { fetchActivity, currentTaskId, currentTask } = this.props;
+    const createdAt = currentTask.value.stats[0].date * 1000;
 
     const dateFormat = d3.time.format('%Y-%m-%d');
-    const _from = dateFormat(d3.time.day.offset(new Date(), -7));
+    const _from = dateFormat(new Date(createdAt));
     const _to = dateFormat(new Date());
 
     fetchActivity({ idtask: currentTaskId, from: _from, to: _to });

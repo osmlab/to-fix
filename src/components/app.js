@@ -1,49 +1,64 @@
-import React from 'react';
-import Reflux from 'reflux';
-import store from 'store';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import TasksStore from '../stores/tasks_store';
+import * as actions from '../actions';
+import { getTasks, getTasksIsFetching } from '../reducers';
 
 import Header from './shared/header';
 import Sidebar from './shared/sidebar';
-import Modal from './shared/modal';
-import ErrorDialog from './shared/error';
+// import Modal from './shared/modal';
+// import ErrorDialog from './shared/error';
 
-const App = React.createClass({
-  mixins: [
-    Reflux.listenTo(TasksStore, 'onTaskLoad')
-  ],
-  getInitialState: function() {
-    return {
-      tasks: TasksStore.loadTasks(),
-      loading: true
-    };
-  },
-  onTaskLoad: function(tasks) {
-    store.set('tasks', tasks);
-    this.setState({
-      tasks: tasks,
-      loading: false
-    });
-  },
-  render: function () {
-    var tasks = this.state.tasks;
-    var loading = (this.state.loading) ? 'loading' : '';
+class App extends Component {
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
+    const { fetchAllTasks } = this.props;
+    fetchAllTasks();
+  }
+
+  render() {
+    const { tasks, isFetching } = this.props;
+    const loading = isFetching ? 'loading' : '';
 
     return (
       <div className={loading}>
         {tasks && <div>
           <Header />
-          <Sidebar taskItems={this.state.tasks} />
+          <Sidebar />
           <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
             {this.props.children}
-            <ErrorDialog />
           </div>
-          <Modal />
         </div>}
       </div>
     );
   }
-});
+}
+
+// <div className={loading}>
+//   {tasks && <div>
+//     <Header />
+//     <Sidebar taskItems={tasks} />
+//     <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
+//       {this.props.children}
+//       <ErrorDialog />
+//     </div>
+//     <Modal />
+//   </div>}
+// </div>
+
+const mapStateToProps = (state) => {
+  return {
+    tasks: getTasks(state),
+    isFetching: getTasksIsFetching(state),
+  };
+};
+
+App = connect(
+  mapStateToProps,
+  actions,
+)(App);
 
 export default App;

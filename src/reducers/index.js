@@ -5,7 +5,7 @@ import settings, * as fromSettings from './settings';
 import tasks, * as fromTasks from './tasks';
 import items from './items';
 import activity, * as fromActivity from './activity';
-import stats from './stats';
+import stats, * as fromStats from './stats';
 
 export default combineReducers({
   user,
@@ -35,3 +35,6 @@ export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
 
 // Activity state
 export const getActivityData = (state) => fromActivity.getData(state.activity);
+
+// Stats state
+export const getStatsData = (state) => fromStats.getData(state.stats);
