@@ -32,9 +32,12 @@ export const getTasksIsFetching = (state) => fromTasks.getIsFetching(state.tasks
 export const getCompletedTasks = (state) => fromTasks.getCompletedTasks(state.tasks);
 export const getActiveTasks = (state) => fromTasks.getActiveTasks(state.tasks);
 export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
+export const getStatsSummary = (state) => fromTasks.getStatsSummary(state.tasks);
 
 // Activity state
 export const getActivityData = (state) => fromActivity.getData(state.activity);
 
 // Stats state
 export const getStatsData = (state) => fromStats.getData(state.stats);
+export const getStatsFrom = (state) => fromStats.getFrom(state.stats);
+export const getStatsTo = (state) => fromStats.getTo(state.stats);

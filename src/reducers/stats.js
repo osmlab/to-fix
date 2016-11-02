@@ -29,3 +29,5 @@ const stats = (state = {}, action) => {
 export default stats;
 
 export const getData = (state) => state.stats;
+export const getFrom = (state) => state.from;
+export const getTo = (state) => state.to;

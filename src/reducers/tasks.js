@@ -94,3 +94,8 @@ export const getError = (state) => state.error;
 export const getCompletedTasks = (state) => getTasks(state).filter(task => task.isCompleted);
 export const getActiveTasks = (state) => getTasks(state).filter(task => !task.isCompleted);
 export const getCurrentTask = (state) => state.byId[state.currentId];
+export const getStatsSummary = (state) => {
+  const statsArray = getCurrentTask(state).value.stats;
+  const latestStats = statsArray[statsArray.length - 1];
+  return latestStats;
+};

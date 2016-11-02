@@ -1,5 +1,4 @@
 import d3 from 'd3';
-var actions = require('../actions/actions');
 
 export default {
   create: function(el) {
@@ -32,7 +31,7 @@ export default {
       .attr('transform', 'translate(-40,0)');
   },
 
-  update: function(el, state, params) {
+  update: function(el, state, params, fetchData) {
     params = (!this._empty(params)) ? params : false;
     el = d3.select(el);
 
@@ -41,7 +40,6 @@ export default {
     // TODO This is dirty
     g.html('');
     if (!state.data.length) return this.noData(g);
-
     var _this = this;
     var tooltip = el.select('.tooltip');
 
@@ -71,7 +69,7 @@ export default {
         this._queryDateFormat(extent[0]),
         this._queryDateFormat(extent[1])
       ];
-      actions.graphUpdated([from, to], query);
+      fetchData(from, to);
     }.bind(this));
 
     brush.on('brush', function() {
@@ -152,7 +150,7 @@ export default {
     // If params are set, trigger the brush to draw
     // initial extents on the graph.
     if (params) gBrush.call(brush.event);
-    actions.graphUpdated([from, to], query);
+    fetchData(from, to);
   },
 
   destroy: function(el) {},
@@ -190,5 +188,4 @@ export default {
     }
     return true;
   }
-
 };
