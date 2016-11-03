@@ -72,14 +72,14 @@ export const unlockItems = ({ idtask, groupIds }) => {
 
 // Activity
 export const fetchActivity = ({ idtask, from, to }) => (
-  fetchJSON(`${baseURL}/tasks/${idtask}/activity/${from}/${to}`)
+  fetchJSON(`${baseURL}/tasks/${idtask}/activity/from:${from}/to:${to}`)
 );
 
 export const fetchUserActivity = ({ idtask, user, from, to }) => (
-  fetchJSON(`${baseURL}/tasks/${idtask}/activity/${user}/${from}/${to}`)
+  fetchJSON(`${baseURL}/tasks/${idtask}/activity/${user}/from:${from}/to:${to}`)
 );
 
 // Stats
 export const fetchStats = ({ idtask, from, to }) => (
-  fetchJSON(`${baseURL}/tasks/${idtask}/track_stats/${from}/${to}`)
+  fetchJSON(`${baseURL}/tasks/${idtask}/track_stats/from:${from}/to:${to}`)
 );
