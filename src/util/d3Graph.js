@@ -69,7 +69,7 @@ export default {
         this._queryDateFormat(extent[0]),
         this._queryDateFormat(extent[1])
       ];
-      fetchData(from, to);
+      fetchData(query[0], query[1]);
     }.bind(this));
 
     brush.on('brush', function() {
@@ -150,7 +150,7 @@ export default {
     // If params are set, trigger the brush to draw
     // initial extents on the graph.
     if (params) gBrush.call(brush.event);
-    fetchData(from, to);
+    fetchData(query[0], query[1]);
   },
 
   destroy: function(el) {},
