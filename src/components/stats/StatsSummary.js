@@ -3,7 +3,7 @@ import d3 from 'd3';
 
 import { USER_PROFILE_URL } from '../../config';
 
-const DashSummary = ({ statsByUser }) => {
+const StatsSummary = ({ statsByUser }) => {
   const contributions = (statsByUser && statsByUser.length) ? (
     statsByUser.map((stats, i) => {
       const { edit, fixed, skip, noterror, user } = stats;
@@ -45,4 +45,4 @@ const DashSummary = ({ statsByUser }) => {
   );
 }
 
-export default DashSummary;
+export default StatsSummary;

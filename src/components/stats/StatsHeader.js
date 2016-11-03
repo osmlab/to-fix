@@ -1,7 +1,7 @@
 import React from 'react';
 import d3 from 'd3';
 
-const DashHeading = ({ task, statsFrom, statsTo, statsSummary }) => {
+const StatsHeader = ({ task, statsFrom, statsTo, statsSummary }) => {
   const taskTitle = task.value.name;
 
   const selectedRange = (statsFrom && statsTo) ? `${statsFrom} – ${statsTo}` : null;
@@ -39,4 +39,4 @@ const DashHeading = ({ task, statsFrom, statsTo, statsSummary }) => {
   );
 };
 
-export default DashHeading;
+export default StatsHeader;

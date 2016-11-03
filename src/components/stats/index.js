@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import d3 from 'd3';
 
-import { fetchStats } from '../actions';
+import { fetchStats } from '../../actions';
 import {
   getCurrentTask,
   getStatsFrom,
@@ -11,11 +11,11 @@ import {
   getStatsByUser,
   getStatsByDate,
   getStatsSummary,
-} from '../reducers';
+} from '../../reducers';
 
-import DashHeading from './workspace/dash_heading';
-import DashGraph from './workspace/dash_graph';
-import DashSummary from './workspace/dash_summary';
+import StatsHeader from './StatsHeader';
+import StatsGraph from './StatsGraph';
+import StatsSummary from './StatsSummary';
 
 class Stats extends Component {
   componentDidMount() {
@@ -47,17 +47,17 @@ class Stats extends Component {
     return (
       <div className='col12 clearfix scroll-styled'>
         <div className='col10 pad2 dark'>
-          <DashHeading
+          <StatsHeader
             task={currentTask}
             statsFrom={statsFrom}
             statsTo={statsTo}
             statsSummary={statsSummary} />
-          <DashGraph
+          <StatsGraph
             statsFrom={statsFrom}
             statsTo={statsTo}
             statsByDate={statsByDate}
             fetchData={this.fetchData} />
-          <DashSummary
+          <StatsSummary
             statsByUser={statsByUser} />
         </div>
       </div>

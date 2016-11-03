@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { updateTask, createTask } from '../actions';
-import { getCurrentTask } from '../reducers';
+import { updateTask, createTask } from '../../actions';
+import { getCurrentTask } from '../../reducers';
 
-import ShowTask from './admin/show_task';
-import EditTask from './admin/edit_task';
-import AddTask from './admin/add_task';
+import ShowTask from './ShowTask';
+import EditTask from './EditTask';
+import AddTask from './AddTask';
 
 class Admin extends Component {
   state = {

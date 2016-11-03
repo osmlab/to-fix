@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import d3Graph from '../../util/d3Graph';
 
-class DashGraph extends Component {
+class StatsGraph extends Component {
   state = {
     filter: 'all',
   }
@@ -80,4 +80,4 @@ class DashGraph extends Component {
   }
 }
 
-export default DashGraph;
+export default StatsGraph;

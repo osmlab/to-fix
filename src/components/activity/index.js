@@ -3,9 +3,9 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import d3 from 'd3';
 
-import { USER_PROFILE_URL } from '../config';
-import { fetchActivity } from '../actions';
-import { getCurrentTask, getActivityData } from '../reducers';
+import { USER_PROFILE_URL } from '../../config';
+import { fetchActivity } from '../../actions';
+import { getCurrentTask, getActivityData } from '../../reducers';
 
 class Activity extends Component {
   state = {

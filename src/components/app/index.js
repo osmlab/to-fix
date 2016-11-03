@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import * as actions from '../actions';
-import { getTasks, getTasksIsFetching } from '../reducers';
+import * as actions from '../../actions';
+import { getTasks, getTasksIsFetching } from '../../reducers';
 
-import Header from './shared/header';
-import Sidebar from './shared/sidebar';
+import Header from './Header';
+import Sidebar from './Sidebar';
 // import Modal from './shared/modal';
 // import ErrorDialog from './shared/error';
 
