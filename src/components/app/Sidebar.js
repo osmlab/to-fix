@@ -17,7 +17,7 @@ class Sidebar extends Component {
         key={i}
         className='block strong dark pad1x pad0y truncate'
         onClick={() => selectTask({ idtask: task.idtask })}>
-        {task.value.description}
+        {task.value.name}
       </Link>
     ));
   }
