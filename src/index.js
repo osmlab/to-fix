@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { Router, hashHistory } from 'react-router';
 
 import routes from './routes';
-import * as config from './config';
 import configureStore from './configureStore';
 
 const store = configureStore();
