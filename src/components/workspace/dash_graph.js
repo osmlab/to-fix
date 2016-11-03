@@ -8,12 +8,19 @@ class DashGraph extends Component {
     filter: 'all',
   }
 
+  fetchIfChanged = (_from, _to) => {
+    const { statsFrom, statsTo, fetchData } = this.props;
+    if (_from !== statsFrom || _to !== statsTo) {
+      fetchData(_from, _to);
+    }
+  }
+
   getGraphState() {
     const { filter } = this.state;
-    const { statsData } = this.props;
+    const { statsByDate } = this.props;
 
-    if (statsData && statsData.length) {
-      const data = this.props.statsData.map(function(d) {
+    if (statsByDate && statsByDate.length) {
+      const data = this.props.statsByDate.map(function(d) {
         d.value = 0;
         if (d.edit && (filter === 'all' || filter === 'edited')) d.value += d.edit;
         if (d.fixed && (filter === 'all' || filter === 'fixed')) d.value += d.fixed;
@@ -38,7 +45,7 @@ class DashGraph extends Component {
 
   componentDidUpdate() {
     const { fetchData } = this.props;
-    d3Graph.update(this.brushGraph, this.getGraphState(), null, fetchData);
+    d3Graph.update(this.brushGraph, this.getGraphState(), null, this.fetchIfChanged);
   }
 
   componentWillUnmount() {

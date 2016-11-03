@@ -8,7 +8,8 @@ import {
   getCurrentTask,
   getStatsFrom,
   getStatsTo,
-  getStatsData,
+  getStatsByUser,
+  getStatsByDate,
   getStatsSummary,
 } from '../reducers';
 
@@ -38,7 +39,8 @@ class Stats extends Component {
       currentTask,
       statsFrom,
       statsTo,
-      statsData,
+      statsByUser,
+      statsByDate,
       statsSummary,
     } = this.props;
 
@@ -51,10 +53,12 @@ class Stats extends Component {
             statsTo={statsTo}
             statsSummary={statsSummary} />
           <DashGraph
-            statsData={statsData}
+            statsFrom={statsFrom}
+            statsTo={statsTo}
+            statsByDate={statsByDate}
             fetchData={this.fetchData} />
           <DashSummary
-            statsData={statsData} />
+            statsByUser={statsByUser} />
         </div>
       </div>
     );
@@ -66,7 +70,8 @@ const mapStateToProps = (state, { params }) => ({
   currentTask: getCurrentTask(state, params.task),
   statsFrom: getStatsFrom(state),
   statsTo: getStatsTo(state),
-  statsData: getStatsData(state),
+  statsByUser: getStatsByUser(state),
+  statsByDate: getStatsByDate(state),
   statsSummary: getStatsSummary(state),
 });
 

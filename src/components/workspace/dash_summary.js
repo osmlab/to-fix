@@ -3,9 +3,9 @@ import d3 from 'd3';
 
 import { USER_PROFILE_URL } from '../../config';
 
-const DashSummary = ({ statsData }) => {
-  const contributions = (statsData && statsData.length) ? (
-    statsData.map((stats, i) => {
+const DashSummary = ({ statsByUser }) => {
+  const contributions = (statsByUser && statsByUser.length) ? (
+    statsByUser.map((stats, i) => {
       const { edit, fixed, skip, noterror, user } = stats;
 
       const profile = `${USER_PROFILE_URL}/${user}`;
