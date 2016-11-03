@@ -28,6 +28,8 @@ const stats = (state = {}, action) => {
 
 export default stats;
 
-export const getData = (state) => state.stats;
+// Selectors
 export const getFrom = (state) => state.from;
 export const getTo = (state) => state.to;
+export const getByUser = (state) => state.statsUsers;
+export const getByDate = (state) => state.statsDate;

@@ -38,6 +38,7 @@ export const getStatsSummary = (state) => fromTasks.getStatsSummary(state.tasks)
 export const getActivityData = (state) => fromActivity.getData(state.activity);
 
 // Stats state
-export const getStatsData = (state) => fromStats.getData(state.stats);
 export const getStatsFrom = (state) => fromStats.getFrom(state.stats);
 export const getStatsTo = (state) => fromStats.getTo(state.stats);
+export const getStatsByUser = (state) => fromStats.getByUser(state.stats);
+export const getStatsByDate = (state) => fromStats.getByDate(state.stats);
