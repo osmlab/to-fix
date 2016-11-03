@@ -8,7 +8,6 @@
     "lodash": "^4.16.4",
     "normalizr": "^2.2.1",
     "osm-auth": "^0.2.8",
-    "raven-js": "^1.1.17",
     "react": "^15.3.2",
     "react-addons-pure-render-mixin": "^15.3.2",
     "react-addons-update": "^15.3.2",
