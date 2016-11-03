@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 
 import d3Graph from '../../util/d3Graph';
 
@@ -44,7 +43,6 @@ class DashGraph extends Component {
   }
 
   componentDidUpdate() {
-    const { fetchData } = this.props;
     d3Graph.update(this.brushGraph, this.getGraphState(), null, this.fetchIfChanged);
   }
 
