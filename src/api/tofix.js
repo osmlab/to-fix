@@ -1,27 +1,5 @@
 import { TASK_SERVER_URL as baseURL } from '../config';
-
-const toJSON = (response) => response.json();
-
-const checkError = (response) => {
-  const { statusCode } = response;
-  if (statusCode && statusCode >= 400) {
-    return Promise.reject(response.message || 'Something went wrong.');
-  }
-  return response;
-};
-
-const fetchJSON = (url, options = {}) => (
-  fetch(url, {
-    ...options,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-  .then(toJSON)
-  .then(checkError)
-);
+import { fetchJSON, toJSON, checkError } from './utils';
 
 // Tasks
 export const fetchAllTasks = () => (
