@@ -16,10 +16,10 @@ let EditBar = React.createClass({
   mixins: [KeyBinding],
 
   keybindings: {
-    'e': () => this.edit(),
-    's': () => this.skip(),
-    'f': () => this.fixed(),
-    'n': () => this.noterror(),
+    'e': function() { this.edit() },
+    's': function() { this.skip() },
+    'f': function() { this.fixed() },
+    'n': function() { this.noterror() },
   },
 
   updateItem(action) {
