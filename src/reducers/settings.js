@@ -1,6 +1,16 @@
+import * as store from '../util/localStorage';
+
+if (!store.get('sidebar')) {
+  store.set('sidebar', true);
+}
+
+if (!store.get('editor')) {
+  store.set('editor', 'id');
+}
+
 const initialState = {
-  sidebar: true,
-  editor: 'id',
+  sidebar: store.get('sidebar'),
+  editor: store.get('editor'),
 };
 
 const isSettingsAction = /^settings/;

@@ -1,6 +1,7 @@
 import api from '../api';
 import * as schema from './schema';
 import { normalize } from 'normalizr';
+import * as store from '../util/localStorage';
 
 const asyncAction = ({ type, asyncCall, responseSchema }) => {
   return (params = {}) => (dispatch) => {
@@ -126,14 +127,20 @@ export const userLogout = () => (dispatch) => {
 };
 
 // Settings
-export const toggleSidebar = () => ({
-  type: 'settings/TOGGLE_SIDEBAR',
-});
+export const toggleSidebar = () => {
+  store.set('sidebar', !store.get('sidebar'));
+  return {
+    type: 'settings/TOGGLE_SIDEBAR',
+  };
+}
 
-export const setEditorPreference = (editor) => ({
-  type: 'settings/SET_EDITOR_PREFERENCE',
-  editor,
-});
+export const setEditorPreference = (editor) => {
+  store.set('editor', editor);
+  return {
+    type: 'settings/SET_EDITOR_PREFERENCE',
+    editor,
+  };
+}
 
 // Geocoder
 export const reverseGeocode = asyncAction({
