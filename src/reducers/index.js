@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import user, * as fromUser from './user';
 import settings, * as fromSettings from './settings';
 import tasks, * as fromTasks from './tasks';
-import items from './items';
+import items, * as fromItems from './items';
 import activity, * as fromActivity from './activity';
 import stats, * as fromStats from './stats';
 
@@ -33,6 +33,11 @@ export const getCompletedTasks = (state) => fromTasks.getCompletedTasks(state.ta
 export const getActiveTasks = (state) => fromTasks.getActiveTasks(state.tasks);
 export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
 export const getStatsSummary = (state) => fromTasks.getStatsSummary(state.tasks);
+
+// Items state
+export const getItems = (state) => fromItems.getItems(state.items);
+export const getCurrentItem = (state) => fromItems.getCurrentItem(state.items);
+export const getCurrentItemId = (state) => fromItems.getCurrentItemId(state.items);
 
 // Activity state
 export const getActivityData = (state) => fromActivity.getData(state.activity);

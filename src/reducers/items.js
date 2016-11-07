@@ -91,3 +91,9 @@ export default combineReducers({
   isFetching,
   error,
 });
+
+
+// Selectors
+export const getItems = (state) => state.allIds.map(id => state.byId[id]);
+export const getCurrentItem = (state) => state.byId[state.currentId];
+export const getCurrentItemId = (state) => state.currentId;
