@@ -6,6 +6,7 @@
   "dependencies": {
     "d3": "^3.5.5",
     "lodash": "^4.16.4",
+    "mapbox-gl": "^0.26.0",
     "normalizr": "^2.2.1",
     "osm-auth": "^0.2.8",
     "react": "^15.3.2",
@@ -18,6 +19,7 @@
     "redux": "^3.6.0",
     "redux-logger": "^2.7.0",
     "redux-thunk": "^2.1.0",
+    "turf": "^3.0.14",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
