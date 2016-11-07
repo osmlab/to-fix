@@ -134,3 +134,9 @@ export const setEditorPreference = (editor) => ({
   type: 'settings/SET_EDITOR_PREFERENCE',
   editor,
 });
+
+// Geocoder
+export const reverseGeocode = asyncAction({
+  type: 'geocoder/REVERSE_GEOCODE',
+  asyncCall: api.geocoder.reverseGeocode,
+});
