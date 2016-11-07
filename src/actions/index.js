@@ -55,7 +55,6 @@ export const deleteTask = asyncAction({
 
 export const selectTask = ({ idtask }) => (dispatch) => {
   dispatch({ type: 'tasks/SELECT_TASK', idtask });
-  dispatch(fetchTaskById({ idtask }));
 };
 
 // Items

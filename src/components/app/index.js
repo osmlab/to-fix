@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import * as actions from '../../actions';
-import { getTasks, getTasksIsFetching } from '../../reducers';
+import { fetchAllTasks, selectTask } from '../../actions';
+import {
+  getCurrentTask,
+  getTasksIsFetching,
+} from '../../reducers';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -15,17 +19,17 @@ class App extends Component {
   }
 
   fetchData() {
-    const { fetchAllTasks } = this.props;
-    fetchAllTasks();
+    const { fetchAllTasks, selectTask, currentTaskId } = this.props;
+    fetchAllTasks().then(() => selectTask({ idtask: currentTaskId }));
   }
 
   render() {
-    const { tasks, isFetching } = this.props;
+    const { currentTask, isFetching } = this.props;
     const loading = isFetching ? 'loading' : '';
 
     return (
       <div className={loading}>
-        {tasks && <div>
+        {currentTask && <div>
           <Header />
           <Sidebar />
           <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
@@ -49,16 +53,17 @@ class App extends Component {
 //   </div>}
 // </div>
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, { params }) => {
   return {
-    tasks: getTasks(state),
+    currentTaskId: params.task,
+    currentTask: getCurrentTask(state),
     isFetching: getTasksIsFetching(state),
   };
 };
 
-App = connect(
+App = withRouter(connect(
   mapStateToProps,
-  actions,
-)(App);
+  { fetchAllTasks, selectTask },
+)(App));
 
 export default App;
