@@ -7,11 +7,11 @@ import Stats from './components/stats';
 import Admin from './components/admin';
 import Activity from './components/activity';
 
-const defaultTask = '/task/tigerdelta';
+const defaultTask = 'overlappingminorhighwaysrjogv';
 
 export default (
   <Route path='/' component={App}>
-    <IndexRedirect to={defaultTask} />
+    <IndexRedirect to={`/task/${defaultTask}`} />
     <Route name='task' path='/task/:task' component={Task} />
     <Route name='activity' path='/activity/:task' component={Activity} />
     <Route name='stats' path='/stats/:task' component={Stats} />
