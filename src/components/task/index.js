@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-
 import { centroid, featureCollection } from 'turf';
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import EditBar from './EditBar';
+
 import { MAPBOX_ACCESS_TOKEN } from '../../config';
-import { fetchRandomItem } from '../../actions';
+import { fetchRandomItem, reverseGeocode } from '../../actions';
 import {
   getUsername,
   getEditorSetting,
@@ -21,15 +22,24 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 class Task extends Component {
   state = {
     map: null,
+    geolocation: null,
   }
 
-  fetchData() {
+  fetchNextItem = () => {
     const { user, editor, currentTaskId, fetchRandomItem } = this.props;
     const payload = {
       user,
       editor,
     };
+    this.setState({ geolocation: null });
     return fetchRandomItem({ idtask: currentTaskId, payload });
+  }
+
+  geolocate = (center) => {
+    const [lng, lat] = center;
+    const { reverseGeocode } = this.props;
+    reverseGeocode({lng, lat})
+      .then(({ response }) => this.setState({ geolocation: response }));
   }
 
   addSource(id) {
@@ -51,7 +61,7 @@ class Task extends Component {
     map.removeSource(id);
   }
 
-  setupLayers(id) {
+  addLayers(id) {
     const { map } = this.state;
 
     map.addLayer({
@@ -84,14 +94,19 @@ class Task extends Component {
     });
   }
 
+  removeLayers(id) {
+    const { map } = this.state;
+    map.removeLayer(`${id}-circle`);
+    map.removeLayer(`${id}-line`);
+    map.removeLayer(`${id}-fill`);
+  }
+
   jumpTo(options) {
     const { map } = this.state;
     map.jumpTo(options);
   }
 
   componentDidMount() {
-    const { currentTaskId } = this.props;
-
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/light-v9',
@@ -99,39 +114,43 @@ class Task extends Component {
       center: [-74.50, 40],
     });
 
-    map.once('load', () => {
-      this.fetchData().then(() => this.setState({ map }));
-    });
+    map.once('load', () => this.setState({ map }));
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextState.map !== this.state.map
+      nextState.map !== this.state.map ||
+      nextState.geolocation !== this.state.geolocation ||
+      nextProps.currentItemId !== this.state.currentItemId ||
+      nextProps.currentTaskId !== this.state.currentTaskId
     );
   }
 
-  componentDidUpdate(nextProps, nextState) {
-    console.log("PROPS", this.props, nextProps);
-    console.log("STATE", this.state, nextState);
-
-    if (nextState.map !== this.state.map) {
-      const { currentTaskId } = nextProps;
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.map !== this.state.map) {
+      const { currentTaskId } = this.props;
       this.addSource(currentTaskId);
-      this.setupLayers(currentTaskId);
-
-      const { currentItemId, currentItem } = nextProps;
-      this.updateSource(currentTaskId, currentItem);
-      this.jumpTo({
-        center: centroid(currentItem).geometry.coordinates,
-      });
+      this.addLayers(currentTaskId);
+      this.fetchNextItem();
+      return;
     }
 
-    if (nextProps.currentItemId !== this.props.currentItemId) {
-      const { currentTaskId, currentItem } = nextProps;
+    if (this.state.map && prevProps.currentTaskId !== this.props.currentTaskId) {
+      this.removeSource(prevProps.currentTaskId);
+      this.removeLayers(prevProps.currentTaskId);
+      this.addSource(this.props.currentTaskId);
+      this.addLayers(this.props.currentTaskId);
+      this.fetchNextItem();
+      return;
+    }
+
+    if (this.state.map && prevProps.currentItemId !== this.props.currentItemId) {
+      const { currentTaskId, currentItem } = this.props;
       this.updateSource(currentTaskId, currentItem);
-      this.jumpTo({
-        center: centroid(currentItem).geometry.coordinates,
-      });
+      const center = centroid(currentItem).geometry.coordinates;
+      this.geolocate(center);
+      this.jumpTo({ center });
+      return;
     }
   }
 
@@ -141,8 +160,10 @@ class Task extends Component {
   }
 
   render() {
+    const { geolocation } = this.state;
     return (
       <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark'>
+        <EditBar onUpdate={this.fetchNextItem} geolocation={geolocation} />
       </div>
     );
   }
@@ -158,7 +179,7 @@ const mapStateToProps = (state, { params }) => ({
 
 Task = withRouter(connect(
   mapStateToProps,
-  { fetchRandomItem }
+  { fetchRandomItem, reverseGeocode }
 )(Task));
 
 export default Task;

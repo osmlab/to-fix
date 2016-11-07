@@ -1,67 +1,54 @@
 import React from 'react';
-import Reflux from 'reflux';
+import KeyBinding from 'react-keybinding';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import actions from '../../actions/actions';
-import UserStore from '../../stores/user_store';
-import Keys from 'react-keybinding';
-import taskObj from '../../mixins/taskobj';
+import { updateItem } from '../../actions';
+import {
+  getUsername,
+  getEditorSetting,
+  getCurrentTask,
+  getCurrentItemId,
+  getAuthenticated,
+} from '../../reducers';
 
-const EditBar = React.createClass({
-  mixins: [
-    Reflux.connect(UserStore, 'user'),
-    Reflux.listenTo(actions.geolocated, 'geolocate'),
-    Keys
-  ],
+let EditBar = React.createClass({
+  mixins: [KeyBinding],
 
   keybindings: {
-    'e': function() {
-      this.edit();
-    },
-    's': function() {
-      this.skip();
-    },
-    'f': function() {
-      this.fixed();
-    },
-    'n': function() {
-      this.noterror();
-    }
+    'e': () => this.edit(),
+    's': () => this.skip(),
+    'f': () => this.fixed(),
+    'n': () => this.noterror(),
   },
 
-  edit: function() {
-    actions.taskEdit(this.props.params.task);
+  updateItem(action) {
+    const { updateItem, user, editor, currentTaskId, currentItemId, onUpdate } = this.props;
+    const payload = {
+      user,
+      editor,
+      action,
+      key: currentItemId,
+    };
+    updateItem({ idtask: currentTaskId, payload }).then(onUpdate);
   },
 
-  noterror: function() {
-    actions.taskNotError(this.props.params.task);
-  },
+  edit() { this.updateItem('edit') },
+  skip() { this.updateItem('skip') },
+  fixed() { this.updateItem('fixed') },
+  noterror() { this.updateItem('noterror') },
 
-  skip: function() {
-    var task = this.props.params.task;
-    actions.taskData(task);
-    actions.taskSkip(task);
-  },
+  render() {
+    const { currentTask, authenticated, geolocation } = this.props;
 
-  fixed: function() {
-    actions.taskDone(this.props.params.task);
-  },
-
-  geolocate: function(placename) {
-    this.setState({
-      placename: placename
-    });
-  },
-
-  render: function() {
-    var taskTitle = taskObj(this.props.params.task).title;
-    var taskActions = (
+    const taskTitle = currentTask.value.name;
+    let taskActions = (
       <nav className='tabs col12 clearfix'>
         <a onClick={this.skip} className='col12 animate icon refresh'>Preview another task</a>
       </nav>
     );
 
-    if (this.state.user && this.state.user.auth) {
+    if (authenticated) {
       taskActions = (
         <nav className='tabs col12 clearfix mobile-cols'>
           <button onClick={this.edit} className='col3 button animate unround'>Edit</button>
@@ -77,12 +64,25 @@ const EditBar = React.createClass({
         <div className='round col6 margin3'>
           {taskActions}
           <div className='fill-lighten3 round-bottom col12 pad2x pad1y center strong inline truncate'>
-            {taskTitle} {this.state.placename ? <span className='quiet icon marker'>{this.state.placename}</span> : ''}
+            {taskTitle} {geolocation ? <span className='quiet icon marker'>{geolocation}</span> : ''}
           </div>
         </div>
       </div>
     );
   }
 });
+const mapStateToProps = (state, { params }) => ({
+  currentTaskId: params.task,
+  currentTask: getCurrentTask(state, params.task),
+  user: getUsername(state),
+  editor: getEditorSetting(state),
+  currentItemId: getCurrentItemId(state),
+  authenticated: getAuthenticated(state),
+});
 
-export default withRouter(EditBar);
+EditBar = withRouter(connect(
+  mapStateToProps,
+  { updateItem },
+)(EditBar));
+
+export default EditBar;
