@@ -8,7 +8,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 import EditBar from './EditBar';
 
-import { MAPBOX_ACCESS_TOKEN } from '../../config';
+import { MAPBOX_ACCESS_TOKEN, JOSM, iD } from '../../config';
 import { fetchRandomItem, reverseGeocode } from '../../actions';
 import {
   getUsername,
@@ -22,7 +22,49 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 class Task extends Component {
   state = {
     map: null,
-    geolocation: null,
+    geolocation: '',
+    iDEdit: false,
+    iDEditPath: '',
+  }
+
+  editTask = () => {
+    const { map } = this.state;
+    const { editor } = this.props;
+
+    if (editor === 'josm') {
+      const bounds = map.getBounds();
+
+      const bottom = bounds.getSouthWest().lat - 0.0005;
+      const left = bounds.getSouthWest().lng - 0.0005;
+      const top = bounds.getNorthEast().lat - 0.0005;
+      const right = bounds.getNorthEast().lng - 0.0005;
+
+      const query = { left, right, top, bottom };
+      const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+
+      fetch(`${JOSM}?${params}`);
+    }
+
+    if (editor === 'id') {
+      const bounds = map.getBounds();
+      const {lng, lat} = map.getCenter();
+      const zoom = map.getZoom();
+
+      const iDEditPath = `${iD}/#map=${zoom}/${lng}/${lat}`;
+
+      this.setState({
+        iDEdit: true,
+        iDEditPath,
+      });
+    }
+  }
+
+  iDEditDone = () => {
+    this.setState({
+      iDEdit: false,
+      iDEditPath: '',
+    });
+    this.fetchNextItem();
   }
 
   fetchNextItem = () => {
@@ -160,10 +202,19 @@ class Task extends Component {
   }
 
   render() {
-    const { geolocation } = this.state;
+    const { geolocation, iDEdit, iDEditPath } = this.state;
+
+    const iDEditor = (
+      <div>
+        <iframe src={iDEditPath} frameBorder='0' className='ideditor'></iframe>
+        <button onClick={this.iDEditDone} className='ideditor-done z10000 button rcon next round animate pad1y pad2x strong'>Next task</button>
+      </div>
+    );
+
     return (
       <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark'>
-        <EditBar onUpdate={this.fetchNextItem} geolocation={geolocation} />
+        <EditBar onEditTask={this.editTask} onUpdate={this.fetchNextItem} geolocation={geolocation} />
+        { iDEdit && iDEditor }
       </div>
     );
   }
