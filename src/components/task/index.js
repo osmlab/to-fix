@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { centroid, featureCollection } from 'turf';
+import { featureCollection } from '@turf/helpers';
+import centroid from '@turf/centroid';
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
