@@ -6,25 +6,25 @@
   "dependencies": {
     "@turf/centroid": "^3.5.3",
     "@turf/helpers": "^3.5.3",
-    "d3": "^3.5.5",
+    "d3": "^3.5.17",
     "lodash.union": "^4.6.0",
     "mapbox-gl": "^0.26.0",
     "normalizr": "^2.2.1",
-    "osm-auth": "^0.2.8",
+    "osm-auth": "^1.0.1",
     "react": "^15.3.2",
     "react-addons-pure-render-mixin": "^15.3.2",
     "react-addons-update": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-keybinding": "^3.0.0",
     "react-redux": "^4.4.5",
-    "react-router": "^3.0.0-beta.1",
+    "react-router": "^3.0.0",
     "redux": "^3.6.0",
-    "redux-logger": "^2.7.0",
+    "redux-logger": "^2.7.4",
     "redux-thunk": "^2.1.0",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
-    "react-scripts": "^0.6.1"
+    "react-scripts": "0.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
