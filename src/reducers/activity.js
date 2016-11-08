@@ -28,4 +28,4 @@ const activity = (state = {}, action) => {
 
 export default activity;
 
-export const getData = (state) => state.data;
+export const getData = (state) => state.data && state.data.sort((a, b) => b.time - a.time);
