@@ -8,9 +8,9 @@ class StatsGraph extends Component {
   }
 
   fetchIfChanged = (_from, _to) => {
-    const { statsFrom, statsTo, fetchData } = this.props;
+    const { statsFrom, statsTo, fetchStatsByRange } = this.props;
     if (_from !== statsFrom || _to !== statsTo) {
-      fetchData(_from, _to);
+      fetchStatsByRange(_from, _to);
     }
   }
 

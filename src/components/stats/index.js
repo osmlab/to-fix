@@ -19,6 +19,10 @@ import StatsSummary from './StatsSummary';
 
 class Stats extends Component {
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
     const { statsSummary } = this.props;
     const createdAt = statsSummary.date * 1000;
 
@@ -26,12 +30,18 @@ class Stats extends Component {
     const _from = dateFormat(new Date(createdAt));
     const _to = dateFormat(new Date());
 
-    this.fetchData(_from, _to);
+    this.fetchStatsByRange(_from, _to);
   }
 
-  fetchData = (_from, _to) => {
+  fetchStatsByRange = (_from, _to) => {
     const { fetchStats, currentTaskId } = this.props;
     fetchStats({ idtask: currentTaskId, from: _from, to: _to });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentTaskId !== this.props.currentTaskId) {
+      this.fetchData();
+    }
   }
 
   render() {
@@ -56,7 +66,7 @@ class Stats extends Component {
             statsFrom={statsFrom}
             statsTo={statsTo}
             statsByDate={statsByDate}
-            fetchData={this.fetchData} />
+            fetchStatsByRange={this.fetchStatsByRange} />
           <StatsSummary
             statsByUser={statsByUser} />
         </div>
