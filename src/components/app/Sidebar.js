@@ -11,11 +11,15 @@ class Sidebar extends Component {
   renderTaskList(tasks) {
     const { topLevelRoute, selectTask } = this.props;
 
+    if (tasks.length === 0) {
+      return <p className='quiet strong small block pad1x'>No tasks.</p>;
+    };
+
     return tasks.map((task, i) => (
       <Link
         to={`${topLevelRoute}/${task.idtask}`}
         key={i}
-        className='block strong dark pad1x pad0y truncate'
+        className='block strong pad1x pad0y truncate'
         activeClassName='active'
         onClick={() => selectTask({ idtask: task.idtask })}>
         {task.value.name}
@@ -34,9 +38,9 @@ class Sidebar extends Component {
         <div className='scroll-styled pad2y'>
           <Login />
           <h4 className='dark block pad1x space-bottom1'>Current Tasks</h4>
-          <nav className='space-bottom2'>{this.renderTaskList(activeTasks)}</nav>
+          <nav className='dark space-bottom2'>{this.renderTaskList(activeTasks)}</nav>
           <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>
-          <nav className='space-bottom2'>{this.renderTaskList(completedTasks)}</nav>
+          <nav className='dark space-bottom2'>{this.renderTaskList(completedTasks)}</nav>
         </div>
       </div>
     );
