@@ -17,14 +17,26 @@ class Activity extends Component {
   }
 
   fetchData() {
-    const { fetchActivity, currentTaskId, statsSummary } = this.props;
+    const {statsSummary } = this.props;
     const createdAt = statsSummary.date * 1000;
 
     const dateFormat = d3.time.format('%Y-%m-%d');
     const _from = dateFormat(new Date(createdAt));
     const _to = dateFormat(new Date());
 
+    this.fetchActivityByRange(_from, _to);
+    this.setState({ loadCount: 5 });
+  }
+
+  fetchActivityByRange = (_from, _to) => {
+    const { currentTaskId, fetchActivity } = this.props;
     fetchActivity({ idtask: currentTaskId, from: _from, to: _to });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentTaskId !== this.props.currentTaskId) {
+      this.fetchData();
+    }
   }
 
   loadMore = () => {
