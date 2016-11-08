@@ -12,8 +12,6 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Settings from '../shared/Settings';
 import Error from '../shared/Error';
-// import Modal from './shared/modal';
-// import ErrorDialog from './shared/error';
 
 class App extends Component {
   componentDidMount() {
@@ -46,18 +44,6 @@ class App extends Component {
     );
   }
 }
-
-// <div className={loading}>
-//   {tasks && <div>
-//     <Header />
-//     <Sidebar taskItems={tasks} />
-//     <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
-//       {this.props.children}
-//       <ErrorDialog />
-//     </div>
-//     <Modal />
-//   </div>}
-// </div>
 
 const mapStateToProps = (state, { params }) => {
   return {
