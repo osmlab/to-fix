@@ -95,7 +95,12 @@ export const getCompletedTasks = (state) => getTasks(state).filter(task => task.
 export const getActiveTasks = (state) => getTasks(state).filter(task => !task.isCompleted);
 export const getCurrentTask = (state) => state.byId[state.currentId];
 export const getStatsSummary = (state) => {
-  const statsArray = getCurrentTask(state).value.stats;
-  const latestStats = statsArray[statsArray.length - 1];
-  return latestStats;
+  const currentTask = getCurrentTask(state);
+  const { updated, stats } = currentTask.value;
+
+  if (Array.isArray(stats)) {
+    return stats.find(s => s.date === updated);
+  } else {
+    return stats;
+  }
 };
