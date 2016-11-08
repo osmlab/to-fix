@@ -88,7 +88,7 @@ export default combineReducers({
 });
 
 // Selectors
-export const getTasks = (state) => state.allIds.map(id => state.byId[id]);
+export const getTasks = (state) => state.allIds.map(id => state.byId[id]).sort((a, b) => b.value.updated - a.value.updated);
 export const getIsFetching = (state) => state.isFetching;
 export const getError = (state) => state.error;
 export const getCompletedTasks = (state) => getTasks(state).filter(task => task.isCompleted);
