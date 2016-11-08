@@ -70,7 +70,7 @@ class Task extends Component {
   fetchNextItem = () => {
     const { user, editor, currentTaskId, fetchRandomItem } = this.props;
     const payload = {
-      user,
+      user: user || 'anonymous',
       editor,
     };
     this.setState({ geolocation: null });
