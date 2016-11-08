@@ -1,34 +1,27 @@
 import React from 'react';
-import Keys from 'react-keybinding';
-import store from 'store';
+import KeyBinding from 'react-keybinding';
+import { connect } from 'react-redux';
 
-import actions from '../../../actions/actions';
+import { userLogout, setEditorPreference, closeSettings } from '../../actions';
+import { getEditorSetting, getShowSettings } from '../../reducers';
 
-const Settings = React.createClass({
-  mixins: [Keys],
-
-  propTypes: {
-    onClose: React.PropTypes.func
-  },
+let Settings = React.createClass({
+  mixins: [KeyBinding],
 
   keybindings: {
     'esc': function(e) {
-      this.onCancel(e);
+      this.props.closeSettings();
     }
   },
 
-  onCancel: function(e) {
-    this.props.onClose(e);
-  },
-
   userLogout: function(e) {
-    this.props.onClose(e);
-    actions.userLogout();
+    this.props.closeSettings(e);
+    this.props.userLogout();
   },
 
   setEditor: function(e) {
     var editor = e.target.getAttribute('id');
-    actions.editorPreference(editor);
+    this.props.setEditorPreference(editor);
   },
 
   stopProp: function(e) {
@@ -37,12 +30,14 @@ const Settings = React.createClass({
   },
 
   render: function() {
-    var editor = (store.get('editor')) ? store.get('editor') : 'ideditor';
+    const { editor, showSettings, closeSettings } = this.props;
+    console.log("SETTINGS", showSettings);
+    if (!showSettings) return null;
 
     return (
-      <div id='modal' className='animate modal modal-content active' onClick={this.onCancel}>
+      <div id='modal' className='animate modal modal-content active' onClick={closeSettings}>
         <div className='col4 modal-body fill-purple contain' onClick={this.stopProp}>
-          <button onClick={this.props.onClose} className='unround pad1 icon fr close button quiet'></button>
+          <button onClick={closeSettings} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
             <h2 className='dark'>Settings</h2>
           </div>
@@ -50,7 +45,7 @@ const Settings = React.createClass({
           <fieldset className='pad2x space-bottom2 dark'>
             <label className='quiet block space-bottom0'>Default editor</label>
             <form onChange={this.setEditor} className='radio-pill pill clearfix col12'>
-              <input type='radio' name='editorpref' id='ideditor' defaultChecked={editor === 'ideditor'} />
+              <input type='radio' name='editorpref' id='ideditor' defaultChecked={editor === 'id'} />
               <label htmlFor='ideditor' className='col6 button quiet icon check'>iD editor</label>
               <input type='radio' name='editorpref' id='josm' defaultChecked={editor === 'josm'} />
               <label htmlFor='josm' className='col6 button quiet icon check'>JOSM editor*</label>
@@ -70,5 +65,15 @@ const Settings = React.createClass({
     );
   }
 });
+
+const mapStateToProps = (state) => ({
+  editor: getEditorSetting(state),
+  showSettings: getShowSettings(state),
+});
+
+Settings = connect(
+  mapStateToProps,
+  { userLogout, setEditorPreference, closeSettings }
+)(Settings);
 
 export default Settings;
