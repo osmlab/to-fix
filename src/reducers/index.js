@@ -6,6 +6,7 @@ import tasks, * as fromTasks from './tasks';
 import items, * as fromItems from './items';
 import activity, * as fromActivity from './activity';
 import stats, * as fromStats from './stats';
+import modals, * as fromModals from './modals';
 
 export default combineReducers({
   user,
@@ -14,6 +15,7 @@ export default combineReducers({
   items,
   activity,
   stats,
+  modals,
 });
 
 // User state
@@ -47,3 +49,8 @@ export const getStatsFrom = (state) => fromStats.getFrom(state.stats);
 export const getStatsTo = (state) => fromStats.getTo(state.stats);
 export const getStatsByUser = (state) => fromStats.getByUser(state.stats);
 export const getStatsByDate = (state) => fromStats.getByDate(state.stats);
+
+// Modals state
+export const getShowSettings = (state) => fromModals.getShowSettings(state.modals);
+export const getShowError = (state) => fromModals.getShowError(state.modals);
+export const getErrorMessage = (state) => fromModals.getErrorMessage(state.modals);

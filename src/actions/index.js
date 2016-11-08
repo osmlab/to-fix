@@ -147,3 +147,21 @@ export const reverseGeocode = asyncAction({
   type: 'geocoder/REVERSE_GEOCODE',
   asyncCall: api.geocoder.reverseGeocode,
 });
+
+// Modals
+export const openSettings = () => ({
+  type: 'modals/OPEN_SETTINGS',
+});
+
+export const closeSettings = () => ({
+  type: 'modals/CLOSE_SETTINGS',
+});
+
+export const openError = (error) => ({
+  type: 'modals/OPEN_ERROR',
+  error,
+});
+
+export const closeError = () => ({
+  type: 'modals/CLOSE_ERROR',
+});
