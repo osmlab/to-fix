@@ -45,8 +45,8 @@ let Settings = React.createClass({
           <fieldset className='pad2x space-bottom2 dark'>
             <label className='quiet block space-bottom0'>Default editor</label>
             <form onChange={this.setEditor} className='radio-pill pill clearfix col12'>
-              <input type='radio' name='editorpref' id='ideditor' defaultChecked={editor === 'id'} />
-              <label htmlFor='ideditor' className='col6 button quiet icon check'>iD editor</label>
+              <input type='radio' name='editorpref' id='id' defaultChecked={editor === 'id'} />
+              <label htmlFor='id' className='col6 button quiet icon check'>iD editor</label>
               <input type='radio' name='editorpref' id='josm' defaultChecked={editor === 'josm'} />
               <label htmlFor='josm' className='col6 button quiet icon check'>JOSM editor*</label>
             </form>
