@@ -31,7 +31,7 @@ let Settings = React.createClass({
 
   render: function() {
     const { editor, showSettings, closeSettings } = this.props;
-    console.log("SETTINGS", showSettings);
+
     if (!showSettings) return null;
 
     return (
