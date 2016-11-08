@@ -35,7 +35,7 @@ let Settings = React.createClass({
     if (!showSettings) return null;
 
     return (
-      <div id='modal' className='animate modal modal-content active' onClick={closeSettings}>
+      <div className='animate modal modal-content active' onClick={closeSettings}>
         <div className='col4 modal-body fill-purple contain' onClick={this.stopProp}>
           <button onClick={closeSettings} className='unround pad1 icon fr close button quiet'></button>
           <div className='pad2'>
