@@ -46,7 +46,6 @@ class Task extends Component {
     }
 
     if (editor === 'id') {
-      const bounds = map.getBounds();
       const {lng, lat} = map.getCenter();
       const zoom = map.getZoom();
 
