@@ -16,6 +16,7 @@ class Sidebar extends Component {
         to={`${topLevelRoute}/${task.idtask}`}
         key={i}
         className='block strong dark pad1x pad0y truncate'
+        activeClassName='active'
         onClick={() => selectTask({ idtask: task.idtask })}>
         {task.value.name}
       </Link>
