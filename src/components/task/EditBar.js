@@ -51,10 +51,18 @@ let EditBar = React.createClass({
     if (authenticated) {
       taskActions = (
         <nav className='tabs col12 clearfix mobile-cols'>
-          <button onClick={this.edit} className='col3 button animate unround'>Edit</button>
-          <button onClick={this.skip} className='col3 button animate'>Skip</button>
-          <button onClick={this.noterror} className='col3 button animate'>Not an error</button>
-          <button onClick={this.fixed} className='col3 button animate'>Fixed</button>
+          <button onClick={this.edit} className='col3 button animate unround'>
+            <span className='underline'>E</span>dit
+          </button>
+          <button onClick={this.skip} className='col3 button animate'>
+            <span className='underline'>S</span>kip
+          </button>
+          <button onClick={this.noterror} className='col3 button animate'>
+            <span className='underline'>N</span>ot an error
+          </button>
+          <button onClick={this.fixed} className='col3 button animate'>
+            <span className='underline'>F</span>ixed
+          </button>
         </nav>
       );
     }
