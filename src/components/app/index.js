@@ -11,6 +11,7 @@ import {
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Settings from '../shared/Settings';
+import Error from '../shared/Error';
 // import Modal from './shared/modal';
 // import ErrorDialog from './shared/error';
 
@@ -37,6 +38,7 @@ class App extends Component {
           <Sidebar />
           <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
             {this.props.children}
+            <Error />
           </div>
           <Settings />
         </div>}

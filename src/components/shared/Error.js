@@ -1,48 +1,30 @@
 import React from 'react';
-import Reflux from 'reflux';
+import KeyBinding from 'react-keybinding';
+import { connect } from 'react-redux';
 
-import actions from '../../actions/actions';
+import { closeError } from '../../actions';
+import { getShowError, getErrorMessage } from '../../reducers';
 
-const ErrorDialog = React.createClass({
-  mixins: [
-    Reflux.listenTo(actions.errorDialog, 'emit')
-  ],
+let Error = React.createClass({
+  mixins: [KeyBinding],
 
-  getInitialState: function() {
-    return {
-      error: null
-    };
+  keybindings: {
+    'esc': function(e) {
+      this.props.closeError();
+    }
   },
 
-  componentDidUpdate: function() {
-    if (this.timedDismiss) window.clearTimeout(this.timedDismiss);
-    this.timedDismiss = window.setTimeout(function() {
-      this.dismiss();
-    }.bind(this), 3000);
-  },
+  render() {
+    const { showError, errorMessage, closeError } = this.props;
 
-  dismiss: function() {
-    this.setState({
-      error: null
-    });
-  },
-
-  emit: function(error) {
-    this.setState({
-      error: error
-    });
-  },
-
-  render: function() {
-    var klass = 'pin-bottomleft z1000 offcanvas-bottom animate pad1 col12';
-    klass += (this.state.error) ? ' active' : '';
+    if (!showError) return null;
 
     return (
-      <div className={klass}>
+      <div className='pin-bottomleft z1000 offcanvas-bottom animate pad1 col12 active'>
         <div className='fill-orange round col3 quiet dialog'>
-          <button onClick={this.dismiss} className='icon fr close button quiet'></button>
+          <button onClick={closeError} className='icon fr close button quiet'></button>
           <div className='pad1'>
-            <strong className='icon alert'>{this.state.error}</strong>
+            <strong className='icon alert'>{errorMessage}</strong>
           </div>
         </div>
       </div>
@@ -50,4 +32,14 @@ const ErrorDialog = React.createClass({
   }
 });
 
-export default ErrorDialog;
+const mapStateToProps = (state) => ({
+  showError: getShowError(state),
+  errorMessage: getErrorMessage(state),
+});
+
+Error = connect(
+  mapStateToProps,
+  { closeError }
+)(Error);
+
+export default Error;
