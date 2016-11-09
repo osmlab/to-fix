@@ -8,8 +8,8 @@ import {
   getTasksIsFetching,
 } from '../../reducers';
 
-import Header from './Header';
-import Sidebar from './Sidebar';
+import AppHeader from './AppHeader';
+import AppSidebar from './AppSidebar';
 import SettingsModal from '../shared/SettingsModal';
 import ErrorModal from '../shared/ErrorModal';
 
@@ -31,8 +31,8 @@ class App extends Component {
     return (
       <div className={loading}>
         {currentTask && <div>
-          <Header />
-          <Sidebar />
+          <AppHeader />
+          <AppSidebar />
           <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
             {this.props.children}
             <ErrorModal />
