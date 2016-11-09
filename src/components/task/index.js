@@ -9,8 +9,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 import EditBar from './EditBar';
 
-import { MAPBOX_ACCESS_TOKEN, JOSM, iD } from '../../config';
-import { fetchRandomItem, reverseGeocode } from '../../actions';
+import { MAPBOX_ACCESS_TOKEN, MAPBOX_GEOCODER_API, JOSM, iD } from '../../config';
+import { fetchRandomItem } from '../../actions';
 import {
   getUsername,
   getEditorSetting,
@@ -73,15 +73,19 @@ class Task extends Component {
       user: user || '',
       editor,
     };
-    this.setState({ geolocation: null });
-    return fetchRandomItem({ idtask: currentTaskId, payload });
+
+    fetchRandomItem({ idtask: currentTaskId, payload })
+      .then(() => this.setState({ geolocation: null }));
   }
 
   geolocate = (center) => {
     const [lng, lat] = center;
-    const { reverseGeocode } = this.props;
-    reverseGeocode({lng, lat})
-      .then(({ response }) => this.setState({ geolocation: response }));
+    const addressRegex = /address./;
+
+    fetch(`${MAPBOX_GEOCODER_API}/mapbox.places/${lng},${lat}.json?types=address&access_token=${MAPBOX_ACCESS_TOKEN}`)
+      .then(data => data.json())
+      .then(json => (json.features.length && json.features.find(f => addressRegex.test(f.id)).place_name) || '')
+      .then(geolocation => this.setState({ geolocation }));
   }
 
   addSource(id) {
@@ -230,7 +234,7 @@ const mapStateToProps = (state, { params }) => ({
 
 Task = withRouter(connect(
   mapStateToProps,
-  { fetchRandomItem, reverseGeocode }
+  { fetchRandomItem }
 )(Task));
 
 export default Task;

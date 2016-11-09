@@ -1,28 +1,6 @@
 import api from '../api';
 import * as schema from './schema';
-import { normalize } from 'normalizr';
-import * as store from '../util/localStorage';
-
-const asyncAction = ({ type, asyncCall, responseSchema }) => {
-  return (params = {}) => (dispatch) => {
-    dispatch({
-      type: `${type}_REQUEST`,
-      ...params,
-    });
-
-    return asyncCall(params).then(
-      response => dispatch({
-        type: `${type}_SUCCESS`,
-        response: responseSchema ? normalize(response, responseSchema) : response,
-        params,
-      }),
-      error => dispatch({
-        type: `${type}_FAILURE`,
-        error,
-      })
-    );
-  };
-};
+import { asyncAction } from './utils';
 
 // Tasks
 export const fetchAllTasks = asyncAction({
@@ -54,9 +32,10 @@ export const deleteTask = asyncAction({
   asyncCall: api.tofix.deleteTask,
 });
 
-export const selectTask = ({ idtask }) => (dispatch) => {
-  dispatch({ type: 'tasks/SELECT_TASK', idtask });
-};
+export const selectTask = ({ idtask }) => ({
+  type: 'tasks/SELECT_TASK',
+  idtask,
+});
 
 // Items
 export const fetchAllItems = asyncAction({
@@ -127,25 +106,13 @@ export const userLogout = () => (dispatch) => {
 };
 
 // Settings
-export const toggleSidebar = () => {
-  store.set('sidebar', !store.get('sidebar'));
-  return {
-    type: 'settings/TOGGLE_SIDEBAR',
-  };
-}
+export const toggleSidebar = () => ({
+  type: 'settings/TOGGLE_SIDEBAR'
+});
 
-export const setEditorPreference = (editor) => {
-  store.set('editor', editor);
-  return {
-    type: 'settings/SET_EDITOR_PREFERENCE',
-    editor,
-  };
-}
-
-// Geocoder
-export const reverseGeocode = asyncAction({
-  type: 'geocoder/REVERSE_GEOCODE',
-  asyncCall: api.geocoder.reverseGeocode,
+export const setEditorPreference = (editor) => ({
+  type: 'settings/SET_EDITOR_PREFERENCE',
+  editor,
 });
 
 // Modals

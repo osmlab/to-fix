@@ -1,5 +1,5 @@
 import { TASK_SERVER_URL as baseURL } from '../config';
-import { fetchJSON, toJSON, checkError } from './utils';
+import { fetchJSON, fetchForm } from './utils';
 
 // Tasks
 export const fetchAllTasks = () => (
@@ -11,11 +11,11 @@ export const fetchTaskById = ({ idtask }) => (
 );
 
 export const createTask = (payload) => (
-  fetch(`${baseURL}/tasks`, { method: 'POST', body: payload }).then(toJSON).then(checkError)
+  fetchForm(`${baseURL}/tasks`, { method: 'POST', body: payload })
 );
 
 export const updateTask = (payload) => (
-  fetch(`${baseURL}/tasks`, { method: 'PUT', body: payload }).then(toJSON).then(checkError)
+  fetchForm(`${baseURL}/tasks`, { method: 'PUT', body: payload })
 );
 
 export const deleteTask = (payload) => (
@@ -53,7 +53,7 @@ export const fetchActivity = ({ idtask, from, to }) => (
   fetchJSON(`${baseURL}/tasks/${idtask}/activity/from:${from}/to:${to}`)
 );
 
-export const fetchUserActivity = ({ idtask, user, from, to }) => (
+export const fetchActivityForUser = ({ idtask, user, from, to }) => (
   fetchJSON(`${baseURL}/tasks/${idtask}/activity/${user}/from:${from}/to:${to}`)
 );
 

@@ -14,9 +14,14 @@ export const fetchJSON = (url, options = {}) => (
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      ...options.headers,
     },
   })
   .then(toJSON)
   .then(checkError)
+);
+
+export const fetchForm = (url, options = {}) => (
+  fetch(url, { ...options })
+    .then(toJSON)
+    .then(checkError)
 );

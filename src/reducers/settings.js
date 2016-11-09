@@ -20,11 +20,13 @@ const settings = (state = initialState, action) => {
 
   switch(action.type) {
     case 'settings/TOGGLE_SIDEBAR':
+      store.set('sidebar', !state.sidebar);
       return {
         ...state,
         sidebar: !state.sidebar,
       };
     case 'settings/SET_EDITOR_PREFERENCE':
+      store.set('editor', action.editor);
       return {
         ...state,
         editor: action.editor,
