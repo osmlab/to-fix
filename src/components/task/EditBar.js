@@ -44,7 +44,7 @@ let EditBar = React.createClass({
     const taskTitle = currentTask.value.name;
     let taskActions = (
       <nav className='tabs col12 clearfix'>
-        <a onClick={this.skip} className='col12 animate icon refresh'>Preview another task</a>
+        <a onClick={this.props.onUpdate} className='col12 animate icon refresh'>Preview another task</a>
       </nav>
     );
 
