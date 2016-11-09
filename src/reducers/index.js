@@ -51,6 +51,6 @@ export const getStatsByUser = (state) => fromStats.getByUser(state.stats);
 export const getStatsByDate = (state) => fromStats.getByDate(state.stats);
 
 // Modals state
-export const getShowSettings = (state) => fromModals.getShowSettings(state.modals);
-export const getShowError = (state) => fromModals.getShowError(state.modals);
+export const getShowSettingsModal = (state) => fromModals.getShowSettings(state.modals);
+export const getShowErrorModal = (state) => fromModals.getShowError(state.modals);
 export const getErrorMessage = (state) => fromModals.getErrorMessage(state.modals);

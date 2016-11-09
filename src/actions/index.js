@@ -116,19 +116,19 @@ export const setEditorPreference = (editor) => ({
 });
 
 // Modals
-export const openSettings = () => ({
+export const openSettingsModal = () => ({
   type: 'modals/OPEN_SETTINGS',
 });
 
-export const closeSettings = () => ({
+export const closeSettingsModal = () => ({
   type: 'modals/CLOSE_SETTINGS',
 });
 
-export const openError = (error) => ({
+export const openErrorModal = (error) => ({
   type: 'modals/OPEN_ERROR',
   error,
 });
 
-export const closeError = () => ({
+export const closeErrorModal = () => ({
   type: 'modals/CLOSE_ERROR',
 });

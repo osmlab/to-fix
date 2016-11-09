@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { USER_PROFILE_URL } from '../../config';
-import { userLogin, getUserDetails, openSettings } from '../../actions';
+import { userLogin, getUserDetails, openSettingsModal } from '../../actions';
 import { getAuthenticated, getUsername, getOsmId, getAvatar} from '../../reducers';
 
 class Login extends Component {
@@ -17,7 +17,7 @@ class Login extends Component {
   }
 
   renderLoginState() {
-    const { authenticated, username, avatar, openSettings } = this.props;
+    const { authenticated, username, avatar, openSettingsModal } = this.props;
     const profileURL = `${USER_PROFILE_URL}/${username}`;
 
     if (authenticated) {
@@ -29,7 +29,7 @@ class Login extends Component {
               {username}
             </a>
           </div>
-          <button onClick={openSettings} className='col6 icon sprocket button quiet small animate'>Settings</button>
+          <button onClick={openSettingsModal} className='col6 icon sprocket button quiet small animate'>Settings</button>
         </div>
       );
     } else {
@@ -61,7 +61,7 @@ const mapStateToProps = (state) => ({
 
 Login = connect(
   mapStateToProps,
-  { userLogin, getUserDetails, openSettings }
+  { userLogin, getUserDetails, openSettingsModal }
 )(Login);
 
 export default Login;
