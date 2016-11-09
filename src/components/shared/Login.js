@@ -2,25 +2,25 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { USER_PROFILE_URL } from '../../config';
-import { userLogin, getUserDetails, openSettingsModal } from '../../actions';
-import { getAuthenticated, getUsername, getOsmId, getAvatar} from '../../reducers';
+import { login, getUserDetails, openSettingsModal } from '../../actions';
+import { getIsAuthenticated, getUsername, getOsmId, getAvatar} from '../../reducers';
 
 class Login extends Component {
   componentDidMount() {
-    const { authenticated, getUserDetails } = this.props;
-    if (authenticated) getUserDetails();
+    const { isAuthenticated, getUserDetails } = this.props;
+    if (isAuthenticated) getUserDetails();
   }
 
   onLoginClick = () => {
-    const { userLogin, getUserDetails } = this.props;
-    userLogin().then(getUserDetails);
+    const { login, getUserDetails } = this.props;
+    login().then(getUserDetails);
   }
 
   renderLoginState() {
-    const { authenticated, username, avatar, openSettingsModal } = this.props;
+    const { isAuthenticated, username, avatar, openSettingsModal } = this.props;
     const profileURL = `${USER_PROFILE_URL}/${username}`;
 
-    if (authenticated) {
+    if (isAuthenticated) {
       return (
         <div className='pad1x col12 truncate clearfix mobile-cols'>
           <div className='pad0y col6'>
@@ -40,6 +40,7 @@ class Login extends Component {
       );
     }
   }
+
   render() {
     return (
       <div className='space-bottom1'>
@@ -53,7 +54,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  authenticated: getAuthenticated(state),
+  isAuthenticated: getIsAuthenticated(state),
   username: getUsername(state),
   osmid: getOsmId(state),
   avatar: getAvatar(state),
@@ -61,7 +62,7 @@ const mapStateToProps = (state) => ({
 
 Login = connect(
   mapStateToProps,
-  { userLogin, getUserDetails, openSettingsModal }
+  { login, getUserDetails, openSettingsModal }
 )(Login);
 
 export default Login;

@@ -11,7 +11,7 @@ const auth = osmAuth({
   landing: 'oauth-complete.html',
 });
 
-export const authenticated = () => auth.authenticated();
+export const isAuthenticated = () => auth.authenticated();
 
 export const login = () => {
   return new Promise((resolve, reject) => {

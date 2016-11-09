@@ -1,7 +1,7 @@
 import api from '../api';
 
 const initialState = {
-  authenticated: api.osm.authenticated(),
+  isAuthenticated: api.osm.isAuthenticated(),
 };
 
 const isUserAction = /^user/
@@ -10,28 +10,28 @@ const user = (state = initialState, action) => {
   if (!isUserAction.test(action.type)) return state;
 
   switch(action.type) {
-    case 'user/USER_LOGIN_SUCCESS':
+    case 'user/LOGIN_SUCCESS':
       return {
-        authenticated: true,
+        isAuthenticated: true,
       };
-    case 'user/USER_LOGIN_FAILURE':
+    case 'user/LOGIN_FAILURE':
       return {
-        authenticated: false,
+        isAuthenticated: false,
         error: action.error,
       }
     case 'user/GET_USER_DETAILS_SUCCESS':
       return {
-        authenticated: true,
+        isAuthenticated: true,
         ...action.response,
       };
     case 'user/GET_USER_DETAILS_FAILURE':
       return {
-        authenticated: false,
+        isAuthenticated: false,
         error: action.error,
       };
-    case 'user/USER_LOGOUT':
+    case 'user/LOGOUT':
       return {
-        authenticated: false,
+        isAuthenticated: false,
       };
     default:
       return state;
@@ -41,9 +41,7 @@ const user = (state = initialState, action) => {
 export default user;
 
 // Selectors
-export const getAuthenticated = (state) => state.authenticated;
+export const getIsAuthenticated = (state) => state.isAuthenticated;
 export const getOsmId = (state) => state.osmid;
 export const getUsername = (state) => state.username;
 export const getAvatar = (state) => state.avatar;
-export const getIsFetching = (state) => state.isFetching;
-export const getError = (state) => state.error;

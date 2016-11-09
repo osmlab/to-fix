@@ -90,8 +90,8 @@ export const fetchStats = asyncAction({
 });
 
 // User
-export const userLogin = asyncAction({
-  type: 'user/USER_LOGIN',
+export const login = asyncAction({
+  type: 'user/LOGIN',
   asyncCall: api.osm.login,
 });
 
@@ -100,9 +100,9 @@ export const getUserDetails = asyncAction({
   asyncCall: api.osm.getUserDetails,
 });
 
-export const userLogout = () => (dispatch) => {
+export const logout = () => (dispatch) => {
   api.osm.logout();
-  dispatch({ type: 'user/USER_LOGOUT' });
+  dispatch({ type: 'user/LOGOUT' });
 };
 
 // Settings

@@ -9,7 +9,7 @@ import {
   getEditorSetting,
   getCurrentTask,
   getCurrentItemId,
-  getAuthenticated,
+  getIsAuthenticated,
 } from '../../reducers';
 
 let EditBar = React.createClass({
@@ -39,7 +39,7 @@ let EditBar = React.createClass({
   noterror() { this.updateItem('noterror') },
 
   render() {
-    const { currentTask, authenticated, geolocation } = this.props;
+    const { currentTask, isAuthenticated, geolocation } = this.props;
 
     const taskTitle = currentTask.value.name;
     let taskActions = (
@@ -48,7 +48,7 @@ let EditBar = React.createClass({
       </nav>
     );
 
-    if (authenticated) {
+    if (isAuthenticated) {
       taskActions = (
         <nav className='tabs col12 clearfix mobile-cols'>
           <button onClick={this.edit} className='col3 button animate unround'>
@@ -85,7 +85,7 @@ const mapStateToProps = (state, { params }) => ({
   user: getUsername(state),
   editor: getEditorSetting(state),
   currentItemId: getCurrentItemId(state),
-  authenticated: getAuthenticated(state),
+  isAuthenticated: getIsAuthenticated(state),
 });
 
 EditBar = withRouter(connect(

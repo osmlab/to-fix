@@ -19,7 +19,7 @@ export default combineReducers({
 });
 
 // User state
-export const getAuthenticated = (state) => fromUser.getAuthenticated(state.user);
+export const getIsAuthenticated = (state) => fromUser.getIsAuthenticated(state.user);
 export const getUsername = (state) => fromUser.getUsername(state.user);
 export const getOsmId = (state) => fromUser.getOsmId(state.user);
 export const getAvatar = (state) => fromUser.getAvatar(state.user);

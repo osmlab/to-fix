@@ -2,7 +2,7 @@ import React from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
 
-import { userLogout, setEditorPreference, closeSettingsModal } from '../../actions';
+import { logout, setEditorPreference, closeSettingsModal } from '../../actions';
 import { getEditorSetting, getShowSettingsModal } from '../../reducers';
 
 let SettingsModal = React.createClass({
@@ -14,9 +14,9 @@ let SettingsModal = React.createClass({
     },
   },
 
-  userLogout(e) {
+  logout(e) {
     this.props.closeSettingsModal(e);
-    this.props.userLogout();
+    this.props.logout();
   },
 
   setEditor(e) {
@@ -57,7 +57,7 @@ let SettingsModal = React.createClass({
             </div>
 
             <div className='pad2x pad1y fill-light round-bottom text-right'>
-              <button onClick={this.userLogout} className='rcon logout button quiet animate'>Logout</button>
+              <button onClick={this.logout} className='rcon logout button quiet animate'>Logout</button>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@ const mapStateToProps = (state) => ({
 
 SettingsModal = connect(
   mapStateToProps,
-  { userLogout, setEditorPreference, closeSettingsModal }
+  { logout, setEditorPreference, closeSettingsModal }
 )(SettingsModal);
 
 export default SettingsModal;
