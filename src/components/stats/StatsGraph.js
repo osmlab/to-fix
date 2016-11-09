@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import d3Graph from '../../util/d3Graph';
+import d3Graph from '../../utils/d3Graph';
 
 class StatsGraph extends Component {
   state = {
