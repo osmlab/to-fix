@@ -94,11 +94,6 @@ h2 { padding-top:0; padding-bottom:0; }
 .uppercase { text-transform:uppercase; }
 .underline { text-decoration:underline; }
 
-/* mapbox.css Overrides
-------------------------- */
-.mapbox-improve-map { display: none; }
-.leaflet-container  { background:#fff url(img/tile-bg.png) repeat 0 0; }
-
 /* Layout
 ------------------------- */
 .sidebar.active ~ .main { width:83.3334%; left:16.6666%; }
@@ -227,13 +222,6 @@ header .button {
     color:#fff;
     font-weight:bold;
     }
-
-.leaflet-clickable {
-  fill:transparent;
-  stroke-opacity:1;
-  stroke:#FF1F7C;
-  stroke-width: 4;
-  }
 
 /* D3 Dashboards
 ------------------------- */
