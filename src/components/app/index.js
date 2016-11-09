@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { fetchAllTasks, fetchTaskById, selectTask } from '../../actions';
+import { fetchAllTasks, selectTask } from '../../actions';
 import {
   getCurrentTask,
   getTasksIsFetching,
@@ -19,9 +19,8 @@ class App extends Component {
   }
 
   fetchData() {
-    const { fetchAllTasks, fetchTaskById, selectTask, currentTaskId } = this.props;
+    const { fetchAllTasks, selectTask, currentTaskId } = this.props;
     fetchAllTasks()
-      .then(() => fetchTaskById({ idtask: currentTaskId }))
       .then(() => selectTask({ idtask: currentTaskId }));
   }
 
@@ -55,7 +54,7 @@ const mapStateToProps = (state, { params }) => {
 
 App = withRouter(connect(
   mapStateToProps,
-  { fetchAllTasks, fetchTaskById, selectTask },
+  { fetchAllTasks, selectTask },
 )(App));
 
 export default App;
