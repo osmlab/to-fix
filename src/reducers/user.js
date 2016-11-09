@@ -4,11 +4,7 @@ const initialState = {
   isAuthenticated: api.osm.isAuthenticated(),
 };
 
-const isUserAction = /^user/
-
 const user = (state = initialState, action) => {
-  if (!isUserAction.test(action.type)) return state;
-
   switch(action.type) {
     case 'user/LOGIN_SUCCESS':
       return {
