@@ -9,7 +9,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 import EditBar from './EditBar';
 
-import { MAPBOX_ACCESS_TOKEN, MAPBOX_GEOCODER_API, JOSM, iD } from '../../config';
+import { MAPBOX_ACCESS_TOKEN, MAPBOX_GEOCODER_URL, JOSM_RC_URL, ID_URL } from '../../config';
 import { fetchRandomItem } from '../../actions';
 import {
   getUsername,
@@ -43,14 +43,14 @@ class Task extends Component {
       const query = { left, right, top, bottom };
       const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
 
-      fetch(`${JOSM}?${params}`);
+      fetch(`${JOSM_RC_URL}?${params}`);
     }
 
     if (editor === 'id') {
       const {lng, lat} = map.getCenter();
       const zoom = map.getZoom();
 
-      const iDEditPath = `${iD}/#map=${zoom}/${lng}/${lat}`;
+      const iDEditPath = `${ID_URL}/#map=${zoom}/${lng}/${lat}`;
 
       this.setState({
         iDEdit: true,
@@ -82,7 +82,7 @@ class Task extends Component {
     const [lng, lat] = center;
     const addressRegex = /address./;
 
-    fetch(`${MAPBOX_GEOCODER_API}/mapbox.places/${lng},${lat}.json?types=address&access_token=${MAPBOX_ACCESS_TOKEN}`)
+    fetch(`${MAPBOX_GEOCODER_URL}/mapbox.places/${lng},${lat}.json?types=address&access_token=${MAPBOX_ACCESS_TOKEN}`)
       .then(data => data.json())
       .then(json => (json.features.length && json.features.find(f => addressRegex.test(f.id)).place_name) || '')
       .then(geolocation => this.setState({ geolocation }));
