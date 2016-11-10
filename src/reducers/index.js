@@ -29,8 +29,8 @@ export const getSidebarSetting = (state) => fromSettings.getSidebar(state.settin
 export const getEditorSetting = (state) => fromSettings.getEditor(state.settings);
 
 // Tasks state
-export const getTaskIsFetching = (state) => fromTasks.getIsFetching(state.tasks);
-export const getTaskError = (state) => fromTasks.getError(state.tasks);
+export const getTasksIsFetching = (state) => fromTasks.getIsFetching(state.tasks);
+export const getTasksError = (state) => fromTasks.getError(state.tasks);
 export const getAllTasks = (state) => fromTasks.getAllTasks(state.tasks);
 export const getCompletedTasks = (state) => fromTasks.getCompletedTasks(state.tasks);
 export const getActiveTasks = (state) => fromTasks.getActiveTasks(state.tasks);
@@ -38,18 +38,27 @@ export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
 export const getTaskSummary = (state) => fromTasks.getTaskSummary(state.tasks);
 
 // Items state
-export const getItems = (state) => fromItems.getItems(state.items);
 export const getCurrentItem = (state) => fromItems.getCurrentItem(state.items);
 export const getCurrentItemId = (state) => fromItems.getCurrentItemId(state.items);
+export const getItemIsFetching = (state) => fromItems.getIsFetching(state.items);
+export const getItemError = (state) => fromItems.getError(state.items);
 
 // Activity state
+export const getActivityIsFetching = (state) => fromActivity.getIsFetching(state.activity);
+export const getActivityError = (state) => fromActivity.getError(state.activity);
 export const getActivityData = (state) => fromActivity.getData(state.activity);
+export const getActivityFrom = (state) => fromActivity.getFrom(state.activity);
+export const getActivityTo = (state) => fromActivity.getTo(state.activity);
+export const getActivityUpdated = (state) => fromActivity.get(state.activity);
 
 // Stats state
-export const getStatsFrom = (state) => fromStats.getFrom(state.stats);
-export const getStatsTo = (state) => fromStats.getTo(state.stats);
+export const getStatsIsFetching = (state) => fromStats.getIsFetching(state.stats);
+export const getStatsError = (state) => fromStats.getError(state.stats);
 export const getStatsByUser = (state) => fromStats.getByUser(state.stats);
 export const getStatsByDate = (state) => fromStats.getByDate(state.stats);
+export const getStatsFrom = (state) => fromStats.getFrom(state.stats);
+export const getStatsTo = (state) => fromStats.getTo(state.stats);
+export const getStatsUpdated = (state) => fromStats.getUpdated(state.stats);
 
 // Modals state
 export const getShowSettingsModal = (state) => fromModals.getShowSettings(state.modals);

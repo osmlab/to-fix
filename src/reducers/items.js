@@ -1,99 +1,46 @@
-import { combineReducers } from 'redux';
-import union from 'lodash.union';
+const initialState = {
+  isFetching: false,
+  error: null,
+  item: {},
+  itemId: null,
+};
 
-const isItemsAction = /^items/;
-
-const isRequest = /_REQUEST$/;
-const isSuccess = /_SUCCESS$/;
-const isFailure = /_FAILURE$/;
-
-const byId = (state = {}, action) => {
-  if (action.type === 'tasks/SET_TASK_ID') return {};
-
-  if (!isItemsAction.test(action.type)) return state;
-  if (!isSuccess.test(action.type)) return state;
-
+const items = (state = initialState, action) => {
   switch(action.type) {
-    case 'items/FETCH_ALL_ITEMS_SUCCESS':
-    case 'items/FETCH_N_ITEMS_SUCCESS':
-      return action.response.entities.items;
-    case 'items/FETCH_RANDOM_ITEM_SUCCESS':
-    case 'items/FETCH_ITEM_BY_KEY_SUCCESS':
+    case 'tasks/SET_TASK_ID':
+      // Reset state when a new task is selected
+      return initialState;
+
+    case 'items/FETCH_RANDOM_ITEM_REQUEST':
       return {
         ...state,
-        ...action.response.entities.items,
+        isFetching: true,
+        error: null,
       };
-    default:
-      return state;
-  }
-};
-
-const allIds = (state = [], action) => {
-  if (action.type === 'tasks/SET_TASK_ID') return [];
-
-  if (!isItemsAction.test(action.type)) return state;
-  if (!isSuccess.test(action.type)) return state;
-
-  switch(action.type) {
-    case 'items/FETCH_ALL_ITEMS_SUCCESS':
-    case 'items/FETCH_N_ITEMS_SUCCESS':
-      return action.response.result;
     case 'items/FETCH_RANDOM_ITEM_SUCCESS':
-    case 'items/FETCH_ITEM_BY_KEY_SUCCESS':
-      return union(state, [action.response.result]);
+      const { entities: { items }, result } = action.response;
+      return {
+        item: items[result],
+        itemId: result,
+        isFetching: false,
+        error: null
+      };
+    case 'items/FETCH_RANDOM_ITEM_FAILURE':
+      return {
+        ...state,
+        isFetching: false,
+        error: action.error,
+      };
+
     default:
       return state;
   }
 };
 
-const currentId = (state = null, action) => {
-  if (action.type === 'tasks/SET_TASK_ID') return null;
-
-  if (!isItemsAction.test(action.type)) return state;
-
-  switch(action.type) {
-    case 'items/FETCH_RANDOM_ITEM_SUCCESS':
-    case 'items/FETCH_ITEM_BY_KEY_SUCCESS':
-      return action.response.result;
-    default:
-      return state;
-  }
-};
-
-const isFetching = (state = false, action) => {
-  if (action.type === 'tasks/SET_TASK_ID') return false;
-
-  if (!isItemsAction.test(action.type)) return state;
-
-  if (isRequest.test(action.type)) return true;
-  if (isSuccess.test(action.type)) return false;
-  if (isFailure.test(action.type)) return false;
-
-  return state;
-};
-
-const error = (state = null, action) => {
-  if (action.type === 'tasks/SET_TASK_ID') return null;
-
-  if (!isItemsAction.test(action.type)) return state;
-
-  if (isRequest.test(action.type)) return null;
-  if (isSuccess.test(action.type)) return null;
-  if (isFailure.test(action.type)) return action.error;
-
-  return state;
-};
-
-export default combineReducers({
-  byId,
-  allIds,
-  currentId,
-  isFetching,
-  error,
-});
-
+export default items;
 
 // Selectors
-export const getItems = (state) => state.allIds.map(id => state.byId[id]);
-export const getCurrentItem = (state) => state.byId[state.currentId];
-export const getCurrentItemId = (state) => state.currentId;
+export const getIsFetching = (state) => state.isFetching;
+export const getError = (state) => state.error;
+export const getCurrentItem = (state) => state.item;
+export const getCurrentItemId = (state) => state.itemId;

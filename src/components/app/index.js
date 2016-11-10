@@ -6,6 +6,7 @@ import { fetchAllTasks, setTaskId } from '../../actions';
 import {
   getCurrentTask,
   getTasksIsFetching,
+  getTasksError,
 } from '../../reducers';
 
 import AppHeader from './AppHeader';
@@ -49,6 +50,7 @@ const mapStateToProps = (state, { params }) => {
     currentTaskId: params.task,
     currentTask: getCurrentTask(state),
     isFetching: getTasksIsFetching(state),
+    error: getTasksError(state),
   };
 };
 

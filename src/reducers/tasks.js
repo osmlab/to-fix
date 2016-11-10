@@ -83,11 +83,11 @@ export const getAllTasks = (state) =>
     .sort((a, b) => b.value.updated - a.value.updated);
 
 export const getCompletedTasks = (state) =>
-  getTasks(state)
+  getAllTasks(state)
     .filter(task => task.isCompleted);
 
 export const getActiveTasks = (state) =>
-  getTasks(state)
+  getAllTasks(state)
     .filter(task => !task.isCompleted);
 
 export const getCurrentTask = (state) =>

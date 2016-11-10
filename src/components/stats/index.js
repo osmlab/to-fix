@@ -10,7 +10,7 @@ import {
   getStatsTo,
   getStatsByUser,
   getStatsByDate,
-  getStatsSummary,
+  getTaskSummary,
 } from '../../reducers';
 
 import StatsHeader from './StatsHeader';
@@ -82,7 +82,7 @@ const mapStateToProps = (state, { params }) => ({
   statsTo: getStatsTo(state),
   statsByUser: getStatsByUser(state),
   statsByDate: getStatsByDate(state),
-  statsSummary: getStatsSummary(state),
+  statsSummary: getTaskSummary(state),
 });
 
 Stats = withRouter(connect(

@@ -1,5 +1,3 @@
-const isModalsAction = /^modals/;
-
 const initialState = {
   showSettings: false,
   showError: false,
@@ -7,8 +5,6 @@ const initialState = {
 };
 
 const modals = (state = initialState, action) => {
-  if (!isModalsAction.test(action.type)) return state;
-
   switch(action.type) {
     case 'modals/OPEN_SETTINGS':
       return {

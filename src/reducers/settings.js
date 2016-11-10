@@ -13,11 +13,7 @@ const initialState = {
   editor: store.get('editor'),
 };
 
-const isSettingsAction = /^settings/;
-
 const settings = (state = initialState, action) => {
-  if (!isSettingsAction.test(action.type)) return state;
-
   switch(action.type) {
     case 'settings/TOGGLE_SIDEBAR':
       store.set('sidebar', !state.sidebar);

@@ -5,7 +5,7 @@ import d3 from 'd3';
 
 import { USER_PROFILE_URL } from '../../config';
 import { fetchActivity } from '../../actions';
-import { getCurrentTask, getActivityData, getStatsSummary } from '../../reducers';
+import { getCurrentTask, getActivityData, getTaskSummary } from '../../reducers';
 
 class Activity extends Component {
   state = {
@@ -17,8 +17,8 @@ class Activity extends Component {
   }
 
   fetchData() {
-    const {statsSummary } = this.props;
-    const createdAt = statsSummary.date * 1000;
+    const { taskSummary } = this.props;
+    const createdAt = taskSummary.date * 1000;
 
     const dateFormat = d3.time.format('%Y-%m-%d');
     const _from = dateFormat(new Date(createdAt));
@@ -122,7 +122,7 @@ class Activity extends Component {
 const mapStateToProps = (state, { params }) => ({
   currentTaskId: params.task,
   currentTask: getCurrentTask(state, params.task),
-  statsSummary: getStatsSummary(state),
+  taskSummary: getTaskSummary(state),
   activity: getActivityData(state),
 });
 
