@@ -1,29 +1,14 @@
 import { combineReducers } from 'redux';
 import union from 'lodash.union';
 
-const isTasksAction = /^tasks/;
-
-const isRequest = /_REQUEST$/;
-const isSuccess = /_SUCCESS$/;
-const isFailure = /_FAILURE$/;
-
 const byId = (state = {}, action) => {
-  if (!isTasksAction.test(action.type)) return state;
-  if (!isSuccess.test(action.type)) return state;
-
   switch(action.type) {
     case 'tasks/FETCH_ALL_TASKS_SUCCESS':
-    case 'tasks/FETCH_TASK_BY_ID_SUCCESS':
     case 'tasks/CREATE_TASK_SUCCESS':
     case 'tasks/UPDATE_TASK_SUCCESS':
       return {
         ...state,
         ...action.response.entities.tasks,
-      };
-    case 'tasks/DELETE_TASK_SUCCESS':
-      return {
-        ...state,
-        [action.params.idtask]: undefined,
       };
     default:
       return state;
@@ -31,26 +16,18 @@ const byId = (state = {}, action) => {
 };
 
 const allIds = (state = [], action) => {
-  if (!isTasksAction.test(action.type)) return state;
-  if (!isSuccess.test(action.type)) return state;
-
   switch(action.type) {
     case 'tasks/FETCH_ALL_TASKS_SUCCESS':
       return union(state, action.response.result.tasks);
-    case 'tasks/FETCH_TASK_BY_ID_SUCCESS':
     case 'tasks/CREATE_TASK_SUCCESS':
     case 'tasks/UPDATE_TASK_SUCCESS':
       return union(state, [action.response.result]);
-    case 'tasks/DELETE_TASK_SUCCESS':
-      return state.filter(id => id !== action.params.idtask);
     default:
       return state;
   }
 };
 
 const currentId = (state = null, action) => {
-  if (!isTasksAction.test(action.type)) return state;
-
   switch(action.type) {
     case 'tasks/SET_TASK_ID':
       return action.idtask;
@@ -58,6 +35,12 @@ const currentId = (state = null, action) => {
       return state;
   }
 };
+
+const isTasksAction = /^tasks/;
+
+const isRequest = /_REQUEST$/;
+const isSuccess = /_SUCCESS$/;
+const isFailure = /_FAILURE$/;
 
 const isFetching = (state = false, action) => {
   if (!isTasksAction.test(action.type)) return state;
@@ -88,19 +71,27 @@ export default combineReducers({
 });
 
 // Selectors
-export const getTasks = (state) => state.allIds.map(id => state.byId[id]).sort((a, b) => b.value.updated - a.value.updated);
-export const getIsFetching = (state) => state.isFetching;
-export const getError = (state) => state.error;
-export const getCompletedTasks = (state) => getTasks(state).filter(task => task.isCompleted);
-export const getActiveTasks = (state) => getTasks(state).filter(task => !task.isCompleted);
-export const getCurrentTask = (state) => state.byId[state.currentId];
-export const getStatsSummary = (state) => {
-  const currentTask = getCurrentTask(state);
-  const { updated, stats } = currentTask.value;
+export const getIsFetching = (state) =>
+  state.isFetching;
 
-  if (Array.isArray(stats)) {
-    return stats.find(s => s.date === updated);
-  } else {
-    return stats;
-  }
-};
+export const getError = (state) =>
+  state.error;
+
+export const getAllTasks = (state) =>
+  // Sort by most recent
+  state.allIds.map(id => state.byId[id])
+    .sort((a, b) => b.value.updated - a.value.updated);
+
+export const getCompletedTasks = (state) =>
+  getTasks(state)
+    .filter(task => task.isCompleted);
+
+export const getActiveTasks = (state) =>
+  getTasks(state)
+    .filter(task => !task.isCompleted);
+
+export const getCurrentTask = (state) =>
+  state.byId[state.currentId];
+
+export const getTaskSummary = (state) =>
+  getCurrentTask(state).value.stats;

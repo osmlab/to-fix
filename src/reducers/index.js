@@ -29,12 +29,13 @@ export const getSidebarSetting = (state) => fromSettings.getSidebar(state.settin
 export const getEditorSetting = (state) => fromSettings.getEditor(state.settings);
 
 // Tasks state
-export const getTasks = (state) => fromTasks.getTasks(state.tasks);
-export const getTasksIsFetching = (state) => fromTasks.getIsFetching(state.tasks);
+export const getTaskIsFetching = (state) => fromTasks.getIsFetching(state.tasks);
+export const getTaskError = (state) => fromTasks.getError(state.tasks);
+export const getAllTasks = (state) => fromTasks.getAllTasks(state.tasks);
 export const getCompletedTasks = (state) => fromTasks.getCompletedTasks(state.tasks);
 export const getActiveTasks = (state) => fromTasks.getActiveTasks(state.tasks);
 export const getCurrentTask = (state) => fromTasks.getCurrentTask(state.tasks);
-export const getStatsSummary = (state) => fromTasks.getStatsSummary(state.tasks);
+export const getTaskSummary = (state) => fromTasks.getTaskSummary(state.tasks);
 
 // Items state
 export const getItems = (state) => fromItems.getItems(state.items);
