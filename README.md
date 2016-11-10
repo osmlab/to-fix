@@ -19,4 +19,6 @@ To start development, you will require node.js to be installed.
 npm install && npm start
 ```
 
+To build and publish to `gh-pages`, follow these [instructions](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#github-pages).
+
 You can configure some details at [src/config.js](src/config.js);
