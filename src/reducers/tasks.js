@@ -52,7 +52,7 @@ const currentId = (state = null, action) => {
   if (!isTasksAction.test(action.type)) return state;
 
   switch(action.type) {
-    case 'tasks/SELECT_TASK':
+    case 'tasks/SET_TASK_ID':
       return action.idtask;
     default:
       return state;

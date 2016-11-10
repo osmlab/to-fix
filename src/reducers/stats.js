@@ -1,6 +1,6 @@
 const stats = (state = {}, action) => {
   switch(action.type) {
-    case 'tasks/SELECT_TASK':
+    case 'tasks/SET_TASK_ID':
       return {};
     case 'stats/FETCH_STATS_REQUEST':
       return {

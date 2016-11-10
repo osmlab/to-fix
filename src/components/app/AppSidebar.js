@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { selectTask } from '../../actions';
+import { setTaskId } from '../../actions';
 import { getSidebarSetting, getActiveTasks, getCompletedTasks } from '../../reducers';
 
 import Login from '../shared/Login';
 
 class Sidebar extends Component {
   renderTaskList(tasks) {
-    const { topLevelRoute, selectTask } = this.props;
+    const { topLevelRoute, setTaskId } = this.props;
 
     if (tasks.length === 0) {
       return <p className='quiet strong small block pad1x'>No tasks.</p>;
@@ -21,7 +21,7 @@ class Sidebar extends Component {
         key={i}
         className='block strong pad1x pad0y truncate'
         activeClassName='active'
-        onClick={() => selectTask({ idtask: task.idtask })}>
+        onClick={() => setTaskId({ idtask: task.idtask })}>
         {task.value.name}
       </Link>
     ));
@@ -56,7 +56,7 @@ const mapStateToProps = (state, { routes }) => ({
 
 Sidebar = withRouter(connect(
   mapStateToProps,
-  { selectTask }
+  { setTaskId }
 )(Sidebar));
 
 export default Sidebar;

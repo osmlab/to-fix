@@ -32,8 +32,8 @@ export const deleteTask = asyncAction({
   asyncCall: api.tofix.deleteTask,
 });
 
-export const selectTask = ({ idtask }) => ({
-  type: 'tasks/SELECT_TASK',
+export const setTaskId = ({ idtask }) => ({
+  type: 'tasks/SET_TASK_ID',
   idtask,
 });
 
