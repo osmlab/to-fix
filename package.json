@@ -7,6 +7,7 @@
     "@turf/centroid": "^3.5.3",
     "@turf/helpers": "^3.5.3",
     "d3": "^3.5.17",
+    "keymirror": "^0.1.1",
     "lodash.union": "^4.6.0",
     "mapbox-gl": "^0.26.0",
     "normalizr": "^2.2.1",
