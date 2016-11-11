@@ -22,7 +22,7 @@ export const login = () => {
   });
 };
 
-export const getUserDetails = () => {
+export const fetchUserDetails = () => {
   const parseUserDetails = (xml) => {
     const user = xml.getElementsByTagName('user')[0];
     return {

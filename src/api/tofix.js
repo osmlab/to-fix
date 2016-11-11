@@ -18,7 +18,7 @@ export const updateTask = (payload) => (
   fetchForm(`${baseURL}/tasks`, { method: 'PUT', body: payload })
 );
 
-export const deleteTask = (payload) => (
+export const destroyTask = (payload) => (
   fetchJSON(`${baseURL}/tasks`, { method: 'DELETE', body: JSON.stringify(payload) })
 );
 
@@ -49,15 +49,15 @@ export const unlockItems = ({ idtask, groupIds }) => {
 };
 
 // Activity
-export const fetchActivity = ({ idtask, from, to }) => (
+export const fetchAllActivity = ({ idtask, from, to }) => (
   fetchJSON(`${baseURL}/tasks/${idtask}/activity/from:${from}/to:${to}`)
 );
 
-export const fetchActivityForUser = ({ idtask, user, from, to }) => (
+export const fetchUserActivity = ({ idtask, user, from, to }) => (
   fetchJSON(`${baseURL}/tasks/${idtask}/activity/${user}/from:${from}/to:${to}`)
 );
 
 // Stats
-export const fetchStats = ({ idtask, from, to }) => (
+export const fetchAllStats = ({ idtask, from, to }) => (
   fetchJSON(`${baseURL}/tasks/${idtask}/track_stats/from:${from}/to:${to}`)
 );
