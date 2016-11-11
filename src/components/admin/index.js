@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import { updateTask, createTask } from '../../actions';
 import { getCurrentTask } from '../../reducers';
 
-import ShowTask from './ShowTask';
-import EditTask from './EditTask';
-import AddTask from './AddTask';
+import ShowTask from './show_task';
+import EditTask from './edit_task';
+import AddTask from './add_task';
 
 class Admin extends Component {
   state = {

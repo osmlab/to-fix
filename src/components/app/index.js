@@ -9,10 +9,10 @@ import {
   getTasksError,
 } from '../../reducers';
 
-import AppHeader from './AppHeader';
-import AppSidebar from './AppSidebar';
-import SettingsModal from '../shared/SettingsModal';
-import ErrorModal from '../shared/ErrorModal';
+import AppHeader from './app_header';
+import AppSidebar from './app_sidebar';
+import SettingsModal from '../shared/settings_modal';
+import ErrorModal from '../shared/error_modal';
 
 class App extends Component {
   componentDidMount() {

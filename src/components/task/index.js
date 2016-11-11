@@ -7,7 +7,7 @@ import centroid from '@turf/centroid';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import EditBar from './EditBar';
+import EditBar from './edit_bar';
 
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_GEOCODER_URL, JOSM_RC_URL, ID_URL } from '../../config';
 import { fetchRandomItem } from '../../actions';

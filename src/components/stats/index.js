@@ -13,9 +13,9 @@ import {
   getTaskSummary,
 } from '../../reducers';
 
-import StatsHeader from './StatsHeader';
-import StatsGraph from './StatsGraph';
-import StatsSummary from './StatsSummary';
+import StatsHeader from './stats_header';
+import StatsGraph from './stats_graph';
+import StatsSummary from './stats_summary';
 
 class Stats extends Component {
   componentDidMount() {

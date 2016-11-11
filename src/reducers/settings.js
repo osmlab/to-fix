@@ -1,4 +1,4 @@
-import * as store from '../utils/localStorage';
+import * as store from '../utils/local_storage';
 
 if (!store.get('sidebar')) {
   store.set('sidebar', true);

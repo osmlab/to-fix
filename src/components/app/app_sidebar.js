@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { setTaskId } from '../../actions';
 import { getSidebarSetting, getActiveTasks, getCompletedTasks } from '../../reducers';
 
-import Login from '../shared/Login';
+import Login from '../shared/login';
 
 class Sidebar extends Component {
   renderTaskList(tasks) {
