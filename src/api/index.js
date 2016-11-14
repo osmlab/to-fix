@@ -1,7 +1,9 @@
 import * as osm from './osm';
 import * as tofix from './tofix';
 
-export default {
+const api = {
   osm,
   tofix,
 };
+
+export default api;
