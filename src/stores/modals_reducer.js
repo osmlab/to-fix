@@ -1,4 +1,4 @@
-import ModalsConstants from '../constants/modal_constants';
+import ModalsConstants from '../constants/modals_constants';
 
 const initialState = {
   showSettings: false,
