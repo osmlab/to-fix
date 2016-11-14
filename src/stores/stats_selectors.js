@@ -1,9 +1,13 @@
+import { createSelector } from 'reselect';
+
+const statsSelector = state => state.stats;
+
 const StatsSelectors = {
-  getByUser: (state) => state.byUser,
-  getByDate: (state) => state.byDate,
-  getFromDate: (state) => state.fromDate,
-  getToDate: (state) => state.toDate,
-  getUpdatedOn: (state) => state.updatedOn,
+  getByUser: createSelector(statsSelector, (state) => state.byUser),
+  getByDate: createSelector(statsSelector, (state) => state.byDate),
+  getFromDate: createSelector(statsSelector, (state) => state.fromDate),
+  getToDate: createSelector(statsSelector, (state) => state.toDate),
+  getUpdatedOn: createSelector(statsSelector, (state) => state.updatedOn),
 };
 
-export const StatsSelectors;
+export default StatsSelectors;

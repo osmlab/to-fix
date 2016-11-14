@@ -1,6 +1,10 @@
+import { createSelector } from 'reselect';
+
+const settingsSelector = state => state.settings;
+
 const SettingsSelectors = {
-  getSidebarSetting: (state) => state.sidebar,
-  getEditorSetting: (state) => state.editor,
+  getSidebarSetting: createSelector(settingsSelector, (state) => state.sidebar),
+  getEditorSetting: createSelector(settingsSelector, (state) => state.editor),
 };
 
 export default SettingsSelectors;

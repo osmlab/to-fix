@@ -1,6 +1,10 @@
+import { createSelector } from 'reselect';
+
+const itemsSelector = state => state.items;
+
 const ItemsSelectors = {
-  getCurrentItem: (state) => state.item,
-  getCurrentItemId: (state) => state.itemId,
+  getCurrentItem: createSelector(itemsSelector, (state) => state.item),
+  getCurrentItemId: createSelector(itemsSelector, (state) => state.itemId),
 };
 
 export default ItemsSelectors;

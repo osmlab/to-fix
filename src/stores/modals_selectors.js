@@ -1,7 +1,11 @@
+import { createSelector } from 'reselect';
+
+const modalsSelector = state => state.modals;
+
 const ModalsSelectors = {
-  getShowSettings: (state) => state.showSettings,
-  getShowError: (state) => state.showError,
-  getErrorMessage: (state) => state.errorMessage,
+  getShowSettingsModal: createSelector(modalsSelector, (state) => state.showSettings),
+  getShowErrorModal: createSelector(modalsSelector, (state) => state.showError),
+  getErrorMessage: createSelector(modalsSelector, (state) => state.errorMessage),
 };
 
 export default ModalsSelectors;
