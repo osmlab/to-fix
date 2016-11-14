@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
 
@@ -22,6 +22,16 @@ const mapDispatchToProps = {
 };
 
 let EditBar = React.createClass({
+  propTypes: {
+    currentTaskId: PropTypes.string.isRequired,
+    currentTask: PropTypes.object.isRequired,
+    user: PropTypes.string,
+    isAuthenticated: PropTypes.bool.isRequired,
+    editor: PropTypes.string.isRequired,
+    currentItemId: PropTypes.string.isRequired,
+    updateItem: PropTypes.func.isRequired,
+  },
+
   mixins: [KeyBinding],
 
   keybindings: {

@@ -1,34 +1,38 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import d3 from 'd3';
 
 import { USER_PROFILE_URL } from '../../config';
 
+const renderContributions = (statsByUser) => {
+  if (statsByUser.length === 0) {
+    return <strong className='quiet pad0y block'>No data</strong>;
+  }
+
+  return statsByUser.map((stats, i) => {
+    const { edit, fixed, skip, noterror, user } = stats;
+
+    const profile = `${USER_PROFILE_URL}/${user}`;
+    const total = edit + fixed + skip + noterror;
+
+    const numFormat = d3.format(',');
+
+    return (
+      <div key={i} className='col12 clearfix'>
+        <span className='col7'>
+          <a href={profile} target='_blank' className='inline strong pad0y'>{user}</a>
+        </span>
+        <span className='col1 pad0y text-right'>{numFormat(edit)}</span>
+        <span className='col1 pad0y text-right'>{numFormat(fixed)}</span>
+        <span className='col1 pad0y text-right'>{numFormat(skip)}</span>
+        <span className='col1 pad0y text-right'>{numFormat(noterror)}</span>
+        <span className='col1 pad0y text-right'>{numFormat(total)}</span>
+      </div>
+    );
+  });
+};
+
 const StatsSummary = ({ statsByUser }) => {
-  const contributions = (statsByUser && statsByUser.length) ? (
-    statsByUser.map((stats, i) => {
-      const { edit, fixed, skip, noterror, user } = stats;
-
-      const profile = `${USER_PROFILE_URL}/${user}`;
-      const total = edit + fixed + skip + noterror;
-
-      const numFormat = d3.format(',');
-
-      return (
-        <div key={i} className='col12 clearfix'>
-          <span className='col7'>
-            <a href={profile} target='_blank' className='inline strong pad0y'>{user}</a>
-          </span>
-          <span className='col1 pad0y text-right'>{numFormat(edit)}</span>
-          <span className='col1 pad0y text-right'>{numFormat(fixed)}</span>
-          <span className='col1 pad0y text-right'>{numFormat(skip)}</span>
-          <span className='col1 pad0y text-right'>{numFormat(noterror)}</span>
-          <span className='col1 pad0y text-right'>{numFormat(total)}</span>
-        </div>
-      );
-    })
-  ) : (
-    <strong className='quiet pad0y block'>No data</strong>
-  );
+  const contributions = renderContributions(statsByUser);
 
   return (
     <div className='contributions'>
@@ -44,5 +48,9 @@ const StatsSummary = ({ statsByUser }) => {
     </div>
   );
 }
+
+StatsSummary.propTypes = {
+  statsByUser: PropTypes.array.isRequired,
+};
 
 export default StatsSummary;

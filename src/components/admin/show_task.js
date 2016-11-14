@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import d3 from 'd3';
 
 const ShowTask = ({ task }) => {
@@ -67,5 +67,9 @@ const ShowTask = ({ task }) => {
     </div>
   );
 }
+
+ShowTask.propTypes = {
+  task: PropTypes.object.isRequired,
+};
 
 export default ShowTask;

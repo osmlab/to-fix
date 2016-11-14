@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
 
@@ -15,6 +15,12 @@ const mapDispatchToProps = {
 };
 
 let ErrorModal = React.createClass({
+  propTypes: {
+    showErrorModal: PropTypes.bool.isRequired,
+    errorMessage: PropTypes.string,
+    closeErrorModal: PropTypes.func.isRequired,
+  },
+
   mixins: [KeyBinding],
 
   keybindings: {

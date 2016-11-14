@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import d3Graph from '../../utils/d3_graph';
 
@@ -79,5 +79,12 @@ class StatsGraph extends Component {
     );
   }
 }
+
+StatsGraph.propTypes = {
+  statsFrom: PropTypes.string.isRequired,
+  statsTo: PropTypes.string.isRequired,
+  statsByDate: PropTypes.array.isRequired,
+  fetchStatsByRange: PropTypes.func.isRequired,
+};
 
 export default StatsGraph;

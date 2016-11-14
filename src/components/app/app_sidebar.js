@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -52,6 +52,13 @@ class Sidebar extends Component {
     );
   }
 }
+
+Sidebar.propTypes = {
+  topLevelRoute: PropTypes.string.isRequired,
+  sidebar: PropTypes.bool.isRequired,
+  activeTasks: PropTypes.array.isRequired,
+  completedTasks: PropTypes.array.isRequired,
+};
 
 Sidebar = withRouter(connect(
   mapStateToProps

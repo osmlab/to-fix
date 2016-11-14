@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import TasksSelectors from '../../stores/tasks_selectors';
@@ -36,8 +36,8 @@ class Admin extends Component {
     return (
       <div className='col12 clearfix scroll-styled'>
         <div className='col6 pad2 dark'>
-          {(taskWindow === 'show' && currentTask) ? <ShowTask task={currentTask} /> : null}
-          {(taskWindow === 'edit' && currentTask) ? <EditTask task={currentTask} onTaskEdit={updateTask} /> : null}
+          {(taskWindow === 'show') ? <ShowTask task={currentTask} /> : null}
+          {(taskWindow === 'edit') ? <EditTask task={currentTask} onTaskEdit={updateTask} /> : null}
           {(taskWindow === 'add') ? <AddTask onTaskAdd={createTask} /> : null}
         </div>
           <div className='col6 pad2 dark'>
@@ -51,6 +51,13 @@ class Admin extends Component {
     );
   }
 }
+
+Admin.propTypes = {
+  currentTaskId: PropTypes.string.isRequired,
+  currentTask: PropTypes.object.isRequired,
+  createTask: PropTypes.func.isRequired,
+  updateTask: PropTypes.func.isRequired,
+};
 
 Admin = connect(
   mapStateToProps,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class EditTask extends Component {
   state = {
@@ -107,5 +107,10 @@ class EditTask extends Component {
     );
   }
 }
+
+EditTask.propTypes = {
+  task: PropTypes.object.isRequired,
+  onTaskEdit: PropTypes.func.isRequired,
+};
 
 export default EditTask;

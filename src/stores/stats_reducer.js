@@ -5,8 +5,8 @@ import { AsyncStatus } from './async_action';
 const initialState = {
   byUser: [],
   byDate: [],
-  fromDate: null,
-  toDate: null,
+  fromDate: '',
+  toDate: '',
   updatedOn: null,
 };
 

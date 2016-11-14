@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import TasksActionCreators from '../../stores/tasks_action_creators';
@@ -33,19 +33,28 @@ class App extends Component {
 
     return (
       <div>
-        {currentTask && <div>
-          <AppHeader />
-          <AppSidebar />
-          <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
-            {this.props.children}
-            <ErrorModal />
-          </div>
-          <SettingsModal />
-        </div>}
+        {currentTask
+          ? <div>
+              <AppHeader />
+              <AppSidebar />
+              <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
+                {this.props.children}
+                <ErrorModal />
+              </div>
+              <SettingsModal />
+            </div>
+          : <div className='loading' />
+        }
       </div>
     );
   }
 }
+
+App.propTypes = {
+  currentTaskId: PropTypes.string.isRequired,
+  currentTask: PropTypes.object,
+  fetchAllTasks: PropTypes.func.isRequired,
+};
 
 App = connect(
   mapStateToProps,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import d3 from 'd3';
 
@@ -46,6 +46,7 @@ class Stats extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // Refetch stats when a new task is selected
     if (prevProps.currentTaskId !== this.props.currentTaskId) {
       this.fetchData();
     }
@@ -66,9 +67,9 @@ class Stats extends Component {
         <div className='col10 pad2 dark'>
           <StatsHeader
             task={currentTask}
+            taskSummary={taskSummary}
             statsFrom={statsFrom}
-            statsTo={statsTo}
-            taskSummary={taskSummary} />
+            statsTo={statsTo} />
           <StatsGraph
             statsFrom={statsFrom}
             statsTo={statsTo}
@@ -81,6 +82,17 @@ class Stats extends Component {
     );
   }
 }
+
+Stats.propTypes = {
+  currentTaskId: PropTypes.string.isRequired,
+  currentTask: PropTypes.object.isRequired,
+  taskSummary: PropTypes.object.isRequired,
+  statsFrom: PropTypes.string.isRequired,
+  statsTo: PropTypes.string.isRequired,
+  statsByUser: PropTypes.array.isRequired,
+  statsByDate: PropTypes.array.isRequired,
+  fetchAllStats: PropTypes.func.isRequired,
+};
 
 Stats = connect(
   mapStateToProps,

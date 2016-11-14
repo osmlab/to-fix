@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import d3 from 'd3';
 
@@ -20,115 +20,139 @@ const mapDispatchToProps = {
 
 class Activity extends Component {
   state = {
-    loadCount: 5,
+    loadCount: 10,
+  }
+
+  resetLoadCount() {
+    this.setState({
+      loadCount: 10,
+    });
+  }
+
+  loadMore() {
+    this.setState({
+      loadCount: this.state.loadCount + 10,
+    });
+  }
+
+  getExtent() {
+    const { taskSummary } = this.props;
+    const createdAt = taskSummary.date * 1000;
+
+    const dateFormat = d3.time.format('%Y-%m-%d');
+    const fromDate = dateFormat(new Date(createdAt));
+    const toDate = dateFormat(new Date());
+
+    return { fromDate, toDate };
+  }
+
+  fetchData() {
+    const { currentTaskId, fetchAllActivity } = this.props;
+    const { fromDate, toDate } = this.getExtent();
+
+    fetchAllActivity({ idtask: currentTaskId, from: fromDate, to: toDate })
+      .then(() => this.resetLoadCount());
   }
 
   componentDidMount() {
     this.fetchData();
   }
 
-  fetchData() {
-    const { taskSummary } = this.props;
-    const createdAt = taskSummary.date * 1000;
-
-    const dateFormat = d3.time.format('%Y-%m-%d');
-    const _from = dateFormat(new Date(createdAt));
-    const _to = dateFormat(new Date());
-
-    this.fetchActivityByRange(_from, _to);
-    this.setState({ loadCount: 5 });
-  }
-
-  fetchActivityByRange = (_from, _to) => {
-    const { currentTaskId, fetchAllActivity } = this.props;
-    fetchAllActivity({ idtask: currentTaskId, from: _from, to: _to });
-  }
-
   componentDidUpdate(prevProps) {
+    // Refetch activity when a new task is selected
     if (prevProps.currentTaskId !== this.props.currentTaskId) {
       this.fetchData();
     }
-  }
-
-  loadMore = () => {
-    this.setState({
-      loadCount: this.state.loadCount + 5,
-    });
   }
 
   renderActivityList() {
     const { activity } = this.props;
     const { loadCount } = this.state;
 
-    if (activity.length) {
-      return activity.slice(0, loadCount).map((data, i) => {
-        const { time, key, action, editor, user } = data;
-
-        const permalink = `key-${key}`;
-        const profile = `${USER_PROFILE_URL}/${user}`;
-
-        const dateDisplay = d3.time.format('%B %-d');
-        const timeDisplay = d3.time.format('%-I:%-M%p');
-
-        const actionDay = dateDisplay(new Date(time * 1000));
-        const actionTime = timeDisplay(new Date(time * 1000));
-
-        return (
-          <div id={permalink} key={i} className='col12 clearfix fill-darken1 dark mobile-cols'>
-            <div className='fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>{action}</span>
-            </div>
-            <div className='pad1 fl space'>
-              <a href={profile} target='_blank' className='icon account'>
-                {user}
-              </a>
-              <strong className='fill-navy inline micro pad0x uppercase'>{editor}</strong>
-            </div>
-            <div className='pad1 space fr'>
-              <span className='quiet'>{actionDay}</span>
-              {actionTime}
-            </div>
-          </div>
-        );
-      });
-    } else {
+    if (activity.length === 0) {
       return <strong className='quiet'>No recent activity found.</strong>;
     }
+
+    return activity.slice(0, loadCount).map((data, i) => {
+      const { time, key, action, editor, user } = data;
+
+      const permalink = `key-${key}`;
+      const profile = `${USER_PROFILE_URL}/${user}`;
+
+      const dateDisplay = d3.time.format('%B %-d');
+      const timeDisplay = d3.time.format('%-I:%-M%p');
+
+      const actionDate = dateDisplay(new Date(time * 1000));
+      const actionTime = timeDisplay(new Date(time * 1000));
+
+      return (
+        <div id={permalink} key={i} className='col12 clearfix fill-darken1 dark mobile-cols'>
+          <div className='fl strong pad1 fill-darken1 editor-key'>
+            <span className='capitalize'>{action}</span>
+          </div>
+          <div className='pad1 fl space'>
+            <a href={profile} target='_blank' className='icon account'>
+              {user}
+            </a>
+            <strong className='fill-navy inline micro pad0x uppercase'>{editor}</strong>
+          </div>
+          <div className='pad1 space fr'>
+            <span className='quiet'>{actionDate}</span>
+            {actionTime}
+          </div>
+        </div>
+      );
+    });
   }
 
   renderLoadMoreButton() {
     const { activity } = this.props;
     const { loadCount } = this.state;
 
-    if (activity.length) {
-      if (loadCount >= activity.length) {
-        return <button className='button col12 quiet disabled round-bottom'>Activity loaded</button>;
-      } else {
-        return <button onClick={this.loadMore} className='col12 button round-bottom'>Load more</button>;
-      }
+    if (activity.length === 0) return null;
+
+    if (loadCount >= activity.length) {
+      return <button className='button col12 quiet disabled round-bottom'>Activity loaded</button>;
+    } else {
+      return <button onClick={() => this.loadMore()} className='col12 button round-bottom'>Load more</button>;
     }
   }
 
   render() {
-    const { currentTask, activity } = this.props;
+    const { currentTask } = this.props;
+    const { fromDate, toDate } = this.getExtent();
 
-    if (!activity || !currentTask) return null;
+    const taskName = currentTask.value.name;
+    const extent = `${fromDate} - ${toDate}`;
+    const activityList = this.renderActivityList();
+    const loadMoreButton = this.renderLoadMoreButton();
 
     return (
       <div className='col12 clearfix scroll-styled'>
         <div className='col10 pad2 dark'>
           <div className='space-bottom1 col12 clearfix'>
-            <h4>{currentTask.value.name}</h4>
+            <h2>{taskName}</h2>
+            <h4 className='space col12 clearfix'>
+              {extent}
+            </h4>
           </div>
           <div className='rows'>
-            {this.renderActivityList()}
-            {this.renderLoadMoreButton()}
+            {activityList}
+            {loadMoreButton}
           </div>
         </div>
       </div>
     );
   }
 }
+
+Activity.propTypes = {
+  currentTaskId: PropTypes.string.isRequired,
+  currentTask: PropTypes.object.isRequired,
+  taskSummary: PropTypes.object.isRequired,
+  activity: PropTypes.array.isRequired,
+  fetchAllActivity: PropTypes.func.isRequired,
+};
 
 Activity = connect(
   mapStateToProps,

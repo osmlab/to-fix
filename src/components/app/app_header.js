@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -69,6 +69,12 @@ class Header extends Component {
     );
   }
 }
+
+Header.propTypes = {
+  currentTaskId: PropTypes.string.isRequired,
+  sidebar: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.func.isRequired,
+};
 
 Header = connect(
   mapStateToProps,

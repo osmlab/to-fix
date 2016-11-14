@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import d3 from 'd3';
 
-const StatsHeader = ({ task, statsFrom, statsTo, taskSummary }) => {
+const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
   const taskTitle = task.value.name;
 
   const selectedRange = (statsFrom && statsTo) ? `${statsFrom} – ${statsTo}` : null;
@@ -37,6 +37,13 @@ const StatsHeader = ({ task, statsFrom, statsTo, taskSummary }) => {
       {progressBar}
     </div>
   );
+};
+
+StatsHeader.propTypes = {
+  task: PropTypes.object.isRequired,
+  taskSummary: PropTypes.object.isRequired,
+  statsFrom: PropTypes.string.isRequired,
+  statsTo: PropTypes.string.isRequired,
 };
 
 export default StatsHeader;

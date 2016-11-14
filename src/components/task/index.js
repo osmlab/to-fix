@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { featureCollection } from '@turf/helpers';
 import centroid from '@turf/centroid';
@@ -216,6 +216,7 @@ class Task extends Component {
 
   render() {
     const { geolocation, iDEdit, iDEditPath } = this.state;
+    const { currentItemId } = this.props;
 
     const iDEditor = (
       <div>
@@ -226,12 +227,21 @@ class Task extends Component {
 
     return (
       <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark'>
-        <EditBar onEditTask={this.editTask} onUpdate={this.fetchNextItem} geolocation={geolocation} />
+        { currentItemId && <EditBar onEditTask={this.editTask} onUpdate={this.fetchNextItem} geolocation={geolocation} /> }
         { iDEdit && iDEditor }
       </div>
     );
   }
 }
+
+Task.propTypes = {
+  currentTaskId: PropTypes.string.isRequired,
+  user: PropTypes.string,
+  editor: PropTypes.string.isRequired,
+  currentItem: PropTypes.object,
+  currentItemId: PropTypes.string,
+  fetchRandomItem: PropTypes.func.isRequired,
+};
 
 Task = connect(
   mapStateToProps,

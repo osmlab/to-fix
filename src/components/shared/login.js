@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { USER_PROFILE_URL } from '../../config';
@@ -66,6 +66,16 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  username: PropTypes.string,
+  osmid: PropTypes.string,
+  avatar: PropTypes.string,
+  login: PropTypes.func.isRequired,
+  fetchUserDetails: PropTypes.func.isRequired,
+  openSettingsModal: PropTypes.func.isRequired,
+};
 
 Login = connect(
   mapStateToProps,

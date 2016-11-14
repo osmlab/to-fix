@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
 
@@ -20,6 +20,14 @@ const mapDispatchToProps = {
 };
 
 let SettingsModal = React.createClass({
+  propTypes: {
+    editor: PropTypes.string.isRequired,
+    showSettingsModal: PropTypes.bool.isRequired,
+    logout: PropTypes.func.isRequired,
+    setEditorPreference: PropTypes.func.isRequired,
+    closeSettingsModal: PropTypes.func.isRequired,
+  },
+
   mixins: [KeyBinding],
 
   keybindings: {
