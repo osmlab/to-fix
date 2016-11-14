@@ -1,6 +1,6 @@
 const SettingsSelectors = {
-  getSidebar: (state) => state.sidebar,
-  getEditor: (state) => state.editor,
+  getSidebarSetting: (state) => state.sidebar,
+  getEditorSetting: (state) => state.editor,
 };
 
 export default SettingsSelectors;
