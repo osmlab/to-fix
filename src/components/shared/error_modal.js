@@ -2,8 +2,17 @@ import React from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
 
-import { closeErrorModal } from '../../actions';
-import { getShowErrorModal, getErrorMessage } from '../../reducers';
+import ModalsActionCreators from '../../stores/modals_action_creators';
+import ModalsSelectors from '../../stores/modals_selectors';
+
+const mapStateToProps = (state) => ({
+  showErrorModal: ModalsSelectors.getShowErrorModal(state),
+  errorMessage: ModalsSelectors.getErrorMessage(state),
+});
+
+const mapDispatchToProps = {
+  closeErrorModal: ModalsActionCreators.closeErrorModal,
+};
 
 let ErrorModal = React.createClass({
   mixins: [KeyBinding],
@@ -34,14 +43,9 @@ let ErrorModal = React.createClass({
   }
 });
 
-const mapStateToProps = (state) => ({
-  showErrorModal: getShowErrorModal(state),
-  errorMessage: getErrorMessage(state),
-});
-
 ErrorModal = connect(
   mapStateToProps,
-  { closeErrorModal }
+  mapDispatchToProps
 )(ErrorModal);
 
 export default ErrorModal;

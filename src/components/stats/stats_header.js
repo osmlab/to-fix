@@ -1,12 +1,12 @@
 import React from 'react';
 import d3 from 'd3';
 
-const StatsHeader = ({ task, statsFrom, statsTo, statsSummary }) => {
+const StatsHeader = ({ task, statsFrom, statsTo, taskSummary }) => {
   const taskTitle = task.value.name;
 
   const selectedRange = (statsFrom && statsTo) ? `${statsFrom} – ${statsTo}` : null;
 
-  const { items, fixed, noterror } = statsSummary;
+  const { items, fixed, noterror } = taskSummary;
 
   const total = items;
   const completed = fixed + noterror;

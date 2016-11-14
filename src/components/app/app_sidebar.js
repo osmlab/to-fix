@@ -2,14 +2,21 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { setTaskId } from '../../actions';
-import { getSidebarSetting, getActiveTasks, getCompletedTasks } from '../../reducers';
+import TasksSelectors from '../../stores/tasks_selectors';
+import SettingsSelectors from '../../stores/settings_selectors';
 
 import Login from '../shared/login';
 
+const mapStateToProps = (state, { routes }) => ({
+  topLevelRoute: routes[1].name,
+  sidebar: SettingsSelectors.getSidebarSetting(state),
+  activeTasks: TasksSelectors.getActiveTasks(state),
+  completedTasks: TasksSelectors.getCompletedTasks(state),
+});
+
 class Sidebar extends Component {
   renderTaskList(tasks) {
-    const { topLevelRoute, setTaskId } = this.props;
+    const { topLevelRoute } = this.props;
 
     if (tasks.length === 0) {
       return <p className='quiet strong small block pad1x'>No tasks.</p>;
@@ -20,8 +27,7 @@ class Sidebar extends Component {
         to={`${topLevelRoute}/${task.idtask}`}
         key={i}
         className='block strong pad1x pad0y truncate'
-        activeClassName='active'
-        onClick={() => setTaskId({ idtask: task.idtask })}>
+        activeClassName='active'>
         {task.value.name}
       </Link>
     ));
@@ -47,16 +53,8 @@ class Sidebar extends Component {
   }
 }
 
-const mapStateToProps = (state, { routes }) => ({
-  topLevelRoute: routes[1].name,
-  sidebar: getSidebarSetting(state),
-  activeTasks: getActiveTasks(state),
-  completedTasks: getCompletedTasks(state),
-});
-
 Sidebar = withRouter(connect(
-  mapStateToProps,
-  { setTaskId }
+  mapStateToProps
 )(Sidebar));
 
 export default Sidebar;

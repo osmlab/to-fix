@@ -2,14 +2,28 @@ import React from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
 
-import { logout, setEditorPreference, closeSettingsModal } from '../../actions';
-import { getEditorSetting, getShowSettingsModal } from '../../reducers';
+import SettingsSelectors from '../../stores/settings_selectors';
+import ModalsSelectors from '../../stores/modals_selectors';
+import UserActionCreators from '../../stores/user_action_creators';
+import SettingsActionCreators from '../../stores/settings_action_creators';
+import ModalsActionCreators from '../../stores/modals_action_creators';
+
+const mapStateToProps = (state) => ({
+  editor: SettingsSelectors.getEditorSetting(state),
+  showSettingsModal: ModalsSelectors.getShowSettingsModal(state),
+});
+
+const mapDispatchToProps = {
+  logout: UserActionCreators.logout,
+  setEditorPreference: SettingsActionCreators.setEditorPreference,
+  closeSettingsModal: ModalsActionCreators.closeSettingsModal,
+};
 
 let SettingsModal = React.createClass({
   mixins: [KeyBinding],
 
   keybindings: {
-    esc(e) {
+    'esc': function(e) {
       this.props.closeSettingsModal();
     },
   },
@@ -68,14 +82,9 @@ let SettingsModal = React.createClass({
   }
 });
 
-const mapStateToProps = (state) => ({
-  editor: getEditorSetting(state),
-  showSettingsModal: getShowSettingsModal(state),
-});
-
 SettingsModal = connect(
   mapStateToProps,
-  { logout, setEditorPreference, closeSettingsModal }
+  mapDispatchToProps
 )(SettingsModal);
 
 export default SettingsModal;

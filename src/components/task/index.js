@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { featureCollection } from '@turf/helpers';
 import centroid from '@turf/centroid';
@@ -10,13 +9,23 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import EditBar from './edit_bar';
 
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_GEOCODER_URL, JOSM_RC_URL, ID_URL } from '../../config';
-import { fetchRandomItem } from '../../actions';
-import {
-  getUsername,
-  getEditorSetting,
-  getCurrentItem,
-  getCurrentItemId,
-} from '../../reducers';
+import ItemsActionCreators from '../../stores/items_action_creators';
+import ItemsSelectors from '../../stores/items_selectors';
+import UserSelectors from '../../stores/user_selectors';
+import SettingsSelectors from '../../stores/settings_selectors';
+import TasksSelectors from '../../stores/tasks_selectors';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  user: UserSelectors.getUsername(state),
+  editor: SettingsSelectors.getEditorSetting(state),
+  currentItem: ItemsSelectors.getCurrentItem(state),
+  currentItemId: ItemsSelectors.getCurrentItemId(state),
+});
+
+const mapDispatchToProps = {
+  fetchRandomItem: ItemsActionCreators.fetchRandomItem,
+};
 
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
@@ -224,17 +233,9 @@ class Task extends Component {
   }
 }
 
-const mapStateToProps = (state, { params }) => ({
-  currentTaskId: params.task,
-  user: getUsername(state),
-  editor: getEditorSetting(state),
-  currentItem: getCurrentItem(state),
-  currentItemId: getCurrentItemId(state),
-});
-
-Task = withRouter(connect(
+Task = connect(
   mapStateToProps,
-  { fetchRandomItem }
-)(Task));
+  mapDispatchToProps
+)(Task);
 
 export default Task;

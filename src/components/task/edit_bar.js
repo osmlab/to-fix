@@ -1,25 +1,34 @@
 import React from 'react';
 import KeyBinding from 'react-keybinding';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 
-import { updateItem } from '../../actions';
-import {
-  getUsername,
-  getEditorSetting,
-  getCurrentTask,
-  getCurrentItemId,
-  getIsAuthenticated,
-} from '../../reducers';
+import TasksSelectors from '../../stores/tasks_selectors';
+import UserSelectors from '../../stores/user_selectors';
+import SettingsSelectors from '../../stores/settings_selectors';
+import ItemsSelectors from '../../stores/items_selectors';
+import ItemsActionCreators from '../../stores/items_action_creators';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  currentTask: TasksSelectors.getCurrentTask(state),
+  user: UserSelectors.getUsername(state),
+  isAuthenticated: UserSelectors.getIsAuthenticated(state),
+  editor: SettingsSelectors.getEditorSetting(state),
+  currentItemId: ItemsSelectors.getCurrentItemId(state),
+});
+
+const mapDispatchToProps = {
+  updateItem: ItemsActionCreators.updateItem,
+};
 
 let EditBar = React.createClass({
   mixins: [KeyBinding],
 
   keybindings: {
-    'e': function() { this.edit() },
-    's': function() { this.skip() },
-    'f': function() { this.fixed() },
-    'n': function() { this.noterror() },
+    'e': function(e) { this.edit() },
+    's': function(e) { this.skip() },
+    'f': function(e) { this.fixed() },
+    'n': function(e) { this.noterror() },
   },
 
   updateItem(action) {
@@ -79,18 +88,11 @@ let EditBar = React.createClass({
     );
   }
 });
-const mapStateToProps = (state, { params }) => ({
-  currentTaskId: params.task,
-  currentTask: getCurrentTask(state, params.task),
-  user: getUsername(state),
-  editor: getEditorSetting(state),
-  currentItemId: getCurrentItemId(state),
-  isAuthenticated: getIsAuthenticated(state),
-});
 
-EditBar = withRouter(connect(
+
+EditBar = connect(
   mapStateToProps,
-  { updateItem },
-)(EditBar));
+  mapDispatchToProps,
+)(EditBar);
 
 export default EditBar;

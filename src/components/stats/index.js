@@ -1,21 +1,28 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import d3 from 'd3';
 
-import { fetchStats } from '../../actions';
-import {
-  getCurrentTask,
-  getStatsFrom,
-  getStatsTo,
-  getStatsByUser,
-  getStatsByDate,
-  getTaskSummary,
-} from '../../reducers';
+import TasksSelectors from '../../stores/tasks_selectors';
+import StatsActionCreators from '../../stores/stats_action_creators';
+import StatsSelectors from '../../stores/stats_selectors';
 
 import StatsHeader from './stats_header';
 import StatsGraph from './stats_graph';
 import StatsSummary from './stats_summary';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  currentTask: TasksSelectors.getCurrentTask(state),
+  taskSummary: TasksSelectors.getTaskSummary(state),
+  statsFrom: StatsSelectors.getFromDate(state),
+  statsTo: StatsSelectors.getToDate(state),
+  statsByUser: StatsSelectors.getByUser(state),
+  statsByDate: StatsSelectors.getByDate(state),
+});
+
+const mapDispatchToProps = {
+  fetchAllStats: StatsActionCreators.fetchAllStats,
+};
 
 class Stats extends Component {
   componentDidMount() {
@@ -23,8 +30,8 @@ class Stats extends Component {
   }
 
   fetchData() {
-    const { statsSummary } = this.props;
-    const createdAt = statsSummary.date * 1000;
+    const { taskSummary } = this.props;
+    const createdAt = taskSummary.date * 1000;
 
     const dateFormat = d3.time.format('%Y-%m-%d');
     const _from = dateFormat(new Date(createdAt));
@@ -34,8 +41,8 @@ class Stats extends Component {
   }
 
   fetchStatsByRange = (_from, _to) => {
-    const { fetchStats, currentTaskId } = this.props;
-    fetchStats({ idtask: currentTaskId, from: _from, to: _to });
+    const { fetchAllStats, currentTaskId } = this.props;
+    fetchAllStats({ idtask: currentTaskId, from: _from, to: _to });
   }
 
   componentDidUpdate(prevProps) {
@@ -51,7 +58,7 @@ class Stats extends Component {
       statsTo,
       statsByUser,
       statsByDate,
-      statsSummary,
+      taskSummary,
     } = this.props;
 
     return (
@@ -61,7 +68,7 @@ class Stats extends Component {
             task={currentTask}
             statsFrom={statsFrom}
             statsTo={statsTo}
-            statsSummary={statsSummary} />
+            taskSummary={taskSummary} />
           <StatsGraph
             statsFrom={statsFrom}
             statsTo={statsTo}
@@ -75,19 +82,9 @@ class Stats extends Component {
   }
 }
 
-const mapStateToProps = (state, { params }) => ({
-  currentTaskId: params.task,
-  currentTask: getCurrentTask(state, params.task),
-  statsFrom: getStatsFrom(state),
-  statsTo: getStatsTo(state),
-  statsByUser: getStatsByUser(state),
-  statsByDate: getStatsByDate(state),
-  statsSummary: getTaskSummary(state),
-});
-
-Stats = withRouter(connect(
+Stats = connect(
   mapStateToProps,
-  { fetchStats }
-)(Stats));
+  mapDispatchToProps
+)(Stats);
 
 export default Stats;

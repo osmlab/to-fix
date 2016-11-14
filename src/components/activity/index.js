@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import d3 from 'd3';
 
 import { USER_PROFILE_URL } from '../../config';
-import { fetchActivity } from '../../actions';
-import { getCurrentTask, getActivityData, getTaskSummary } from '../../reducers';
+import TasksSelectors from '../../stores/tasks_selectors';
+import ActivitySelectors from '../../stores/activity_selectors';
+import ActivityActionCreators from '../../stores/activity_action_creators';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  currentTask: TasksSelectors.getCurrentTask(state),
+  taskSummary: TasksSelectors.getTaskSummary(state),
+  activity: ActivitySelectors.getData(state),
+});
+
+const mapDispatchToProps = {
+  fetchAllActivity: ActivityActionCreators.fetchAllActivity,
+};
 
 class Activity extends Component {
   state = {
@@ -29,8 +40,8 @@ class Activity extends Component {
   }
 
   fetchActivityByRange = (_from, _to) => {
-    const { currentTaskId, fetchActivity } = this.props;
-    fetchActivity({ idtask: currentTaskId, from: _from, to: _to });
+    const { currentTaskId, fetchAllActivity } = this.props;
+    fetchAllActivity({ idtask: currentTaskId, from: _from, to: _to });
   }
 
   componentDidUpdate(prevProps) {
@@ -119,16 +130,9 @@ class Activity extends Component {
   }
 }
 
-const mapStateToProps = (state, { params }) => ({
-  currentTaskId: params.task,
-  currentTask: getCurrentTask(state, params.task),
-  taskSummary: getTaskSummary(state),
-  activity: getActivityData(state),
-});
-
-Activity = withRouter(connect(
+Activity = connect(
   mapStateToProps,
-  { fetchActivity }
-)(Activity));
+  mapDispatchToProps
+)(Activity);
 
 export default Activity;

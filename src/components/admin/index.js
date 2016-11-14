@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { updateTask, createTask } from '../../actions';
-import { getCurrentTask } from '../../reducers';
+import TasksSelectors from '../../stores/tasks_selectors';
+import TasksActionCreators from '../../stores/tasks_action_creators';
 
 import ShowTask from './show_task';
 import EditTask from './edit_task';
 import AddTask from './add_task';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  currentTask: TasksSelectors.getCurrentTask(state),
+});
+
+const mapDispatchToProps = {
+  createTask: TasksActionCreators.createTask,
+  updateTask: TasksActionCreators.updateTask,
+};
 
 class Admin extends Component {
   state = {
@@ -43,14 +52,9 @@ class Admin extends Component {
   }
 }
 
-const mapStateToProps = (state, { params }) => ({
-  currentTaskId: params.task,
-  currentTask: getCurrentTask(state),
-});
-
-Admin = withRouter(connect(
+Admin = connect(
   mapStateToProps,
-  { updateTask, createTask }
-)(Admin));
+  mapDispatchToProps
+)(Admin);
 
 export default Admin;

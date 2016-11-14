@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { fetchAllTasks, setTaskId } from '../../actions';
-import {
-  getCurrentTask,
-  getTasksIsFetching,
-  getTasksError,
-} from '../../reducers';
+import TasksActionCreators from '../../stores/tasks_action_creators';
+import TasksSelectors from '../../stores/tasks_selectors';
 
 import AppHeader from './app_header';
 import AppSidebar from './app_sidebar';
 import SettingsModal from '../shared/settings_modal';
 import ErrorModal from '../shared/error_modal';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  currentTask: TasksSelectors.getCurrentTask(state),
+});
+
+const mapDispatchToProps = {
+  fetchAllTasks: TasksActionCreators.fetchAllTasks,
+};
 
 class App extends Component {
   componentDidMount() {
@@ -20,17 +24,15 @@ class App extends Component {
   }
 
   fetchData() {
-    const { fetchAllTasks, setTaskId, currentTaskId } = this.props;
+    const { fetchAllTasks } = this.props;
     fetchAllTasks()
-      .then(() => setTaskId({ idtask: currentTaskId }));
   }
 
   render() {
-    const { currentTask, isFetching } = this.props;
-    const loading = isFetching ? 'loading' : '';
+    const { currentTask } = this.props;
 
     return (
-      <div className={loading}>
+      <div>
         {currentTask && <div>
           <AppHeader />
           <AppSidebar />
@@ -45,18 +47,9 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state, { params }) => {
-  return {
-    currentTaskId: params.task,
-    currentTask: getCurrentTask(state),
-    isFetching: getTasksIsFetching(state),
-    error: getTasksError(state),
-  };
-};
-
-App = withRouter(connect(
+App = connect(
   mapStateToProps,
-  { fetchAllTasks, setTaskId },
-)(App));
+  mapDispatchToProps,
+)(App);
 
 export default App;

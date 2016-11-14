@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import * as actions from '../../actions';
-import { getSidebarSetting } from '../../reducers';
+import SettingsActionCreators from '../../stores/settings_action_creators';
+import SettingsSelectors from '../../stores/settings_selectors';
+import TasksSelectors from '../../stores/tasks_selectors';
+
+const mapStateToProps = (state) => ({
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  sidebar: SettingsSelectors.getSidebarSetting(state),
+});
+
+const mapDispatchToProps = {
+  toggleSidebar: SettingsActionCreators.toggleSidebar,
+};
 
 class Header extends Component {
   toggleSidebar = (e) => {
@@ -60,14 +70,9 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = (state, { params }) => ({
-  currentTaskId: params.task,
-  sidebar: getSidebarSetting(state),
-});
-
-Header = withRouter(connect(
+Header = connect(
   mapStateToProps,
-  actions
-)(Header));
+  mapDispatchToProps
+)(Header);
 
 export default Header;

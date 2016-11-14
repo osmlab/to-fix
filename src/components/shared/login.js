@@ -2,18 +2,32 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { USER_PROFILE_URL } from '../../config';
-import { login, getUserDetails, openSettingsModal } from '../../actions';
-import { getIsAuthenticated, getUsername, getOsmId, getAvatar} from '../../reducers';
+import UserActionCreators from '../../stores/user_action_creators';
+import UserSelectors from '../../stores/user_selectors';
+import ModalsActionCreators from '../../stores/modals_action_creators';
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: UserSelectors.getIsAuthenticated(state),
+  username: UserSelectors.getUsername(state),
+  osmid: UserSelectors.getOsmId(state),
+  avatar: UserSelectors.getAvatar(state),
+});
+
+const mapDispatchToProps = {
+  login: UserActionCreators.login,
+  fetchUserDetails: UserActionCreators.fetchUserDetails,
+  openSettingsModal: ModalsActionCreators.openSettingsModal,
+};
 
 class Login extends Component {
   componentDidMount() {
-    const { isAuthenticated, getUserDetails } = this.props;
-    if (isAuthenticated) getUserDetails();
+    const { isAuthenticated, fetchUserDetails } = this.props;
+    if (isAuthenticated) fetchUserDetails();
   }
 
   onLoginClick = () => {
-    const { login, getUserDetails } = this.props;
-    login().then(getUserDetails);
+    const { login, fetchUserDetails } = this.props;
+    login().then(fetchUserDetails);
   }
 
   renderLoginState() {
@@ -53,16 +67,9 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: getIsAuthenticated(state),
-  username: getUsername(state),
-  osmid: getOsmId(state),
-  avatar: getAvatar(state),
-});
-
 Login = connect(
   mapStateToProps,
-  { login, getUserDetails, openSettingsModal }
+  mapDispatchToProps
 )(Login);
 
 export default Login;
