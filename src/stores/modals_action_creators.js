@@ -1,18 +1,22 @@
-import ModalsConstants from '../constants/modal_constants';
+import ModalsConstants from '../constants/modals_constants';
 
-export const openSettingsModal = () => ({
-  type: ModalsConstants.MODALS_OPEN_SETTINGS,
-});
+const ModalsActionCreators = {
+  openSettingsModal: () => ({
+    type: ModalsConstants.MODALS_OPEN_SETTINGS,
+  }),
 
-export const closeSettingsModal = () => ({
-  type: ModalsConstants.MODALS_CLOSE_SETTINGS,
-});
+  closeSettingsModal: () => ({
+    type: ModalsConstants.MODALS_CLOSE_SETTINGS,
+  }),
 
-export const openErrorModal = (error) => ({
-  type: ModalsConstants.MODALS_OPEN_ERROR,
-  error,
-});
+  openErrorModal: (error) => ({
+    type: ModalsConstants.MODALS_OPEN_ERROR,
+    error,
+  }),
 
-export const closeErrorModal = () => ({
-  type: ModalsConstants.MODALS_CLOSE_ERROR,
-});
+  closeErrorModal: () => ({
+    type: ModalsConstants.MODALS_CLOSE_ERROR,
+  }),
+};
+
+export default ModalsActionCreators;

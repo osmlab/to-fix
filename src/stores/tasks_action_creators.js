@@ -1,38 +1,42 @@
-import * as api from '../api';
-import * as schema from './schema';
-import { asyncAction } from './async';
+import api from '../api';
+import schemas from './schemas';
+import { asyncAction } from './async_action';
 import TasksConstants from '../constants/tasks_constants';
 
-export const fetchAllTasks = asyncAction({
-  type: TasksConstants.TASKS_FETCH_ALL,
-  asyncCall: api.tofix.fetchAllTasks,
-  responseSchema: { tasks: schema.arrayOfTasks },
-});
+const TasksActionCreators = {
+  fetchAllTasks: asyncAction({
+    type: TasksConstants.TASKS_FETCH_ALL,
+    asyncCall: api.tofix.fetchAllTasks,
+    responseSchema: { tasks: schemas.arrayOfTasks },
+  }),
 
-export const fetchTaskById = asyncAction({
-  type: TasksConstants.TASKS_FETCH_BY_ID,
-  asyncCall: api.tofix.fetchTaskById,
-  responseSchema: schema.task,
-});
+  fetchTaskById: asyncAction({
+    type: TasksConstants.TASKS_FETCH_BY_ID,
+    asyncCall: api.tofix.fetchTaskById,
+    responseSchema: schemas.task,
+  }),
 
-export const selectTask = ({ idtask }) => ({
-  type: TasksConstants.TASKS_SELECT,
-  idtask,
-});
+  selectTask: ({ idtask }) => ({
+    type: TasksConstants.TASKS_SELECT,
+    idtask,
+  }),
 
-export const createTask = asyncAction({
-  type: TasksConstants.TASKS_CREATE,
-  asyncCall: api.tofix.createTask,
-  responseSchema: schema.task,
-});
+  createTask: asyncAction({
+    type: TasksConstants.TASKS_CREATE,
+    asyncCall: api.tofix.createTask,
+    responseSchema: schemas.task,
+  }),
 
-export const updateTask = asyncAction({
-  type: TasksConstants.TASKS_UPDATE,
-  asyncCall: api.tofix.updateTask,
-  responseSchema: schema.task,
-});
+  updateTask: asyncAction({
+    type: TasksConstants.TASKS_UPDATE,
+    asyncCall: api.tofix.updateTask,
+    responseSchema: schemas.task,
+  }),
 
-export const destroyTask = asyncAction({
-  type: TasksConstants.TASKS_DESTROY,
-  asyncCall: api.tofix.destroyTask,
-});
+  destroyTask: asyncAction({
+    type: TasksConstants.TASKS_DESTROY,
+    asyncCall: api.tofix.destroyTask,
+  }),
+};
+
+export default TasksActionCreators;

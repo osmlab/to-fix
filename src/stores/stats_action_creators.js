@@ -1,8 +1,12 @@
-import * as api from '../api';
-import { asyncAction } from './async';
+import api from '../api';
+import { asyncAction } from './async_action';
 import StatsConstants from '../constants/stats_constants';
 
-export const fetchAllStats = asyncAction({
-  type: StatsConstants.STATS_FETCH_ALL,
-  asyncCall: api.tofix.fetchAllStats,
-});
+const StatsActionCreators = {
+  fetchAllStats: asyncAction({
+    type: StatsConstants.STATS_FETCH_ALL,
+    asyncCall: api.tofix.fetchAllStats,
+  }),
+};
+
+export default StatsActionCreators;
