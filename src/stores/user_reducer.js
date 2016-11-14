@@ -1,9 +1,8 @@
-import api from '../api';
 import UserConstants from '../constants/user_constants';
 import { AsyncStatus } from './async_action';
 
 const initialState = {
-  isAuthenticated: api.osm.isAuthenticated(),
+  isAuthenticated: false,
   osmid: null,
   username: null,
   avatar: null,

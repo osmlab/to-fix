@@ -1,4 +1,4 @@
-export const get = (key) => {
+const get = (key) => {
   try {
     const serializedValue = localStorage.getItem(key);
     if (serializedValue === null) {
@@ -11,7 +11,7 @@ export const get = (key) => {
   }
 };
 
-export const set = (key, value) => {
+const set = (key, value) => {
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
@@ -20,10 +20,18 @@ export const set = (key, value) => {
   }
 };
 
-export const remove = (key) => {
+const remove = (key) => {
   try {
     localStorage.removeItem(key);
   } catch (err) {
     console.error('Could not delete from localStorage.');
   }
-}
+};
+
+const safeStorage = {
+  get,
+  set,
+  remove,
+};
+
+export default safeStorage;
