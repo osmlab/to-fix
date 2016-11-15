@@ -19,6 +19,7 @@ const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   user: UserSelectors.getUsername(state),
   editor: SettingsSelectors.getEditorSetting(state),
+  sidebar: SettingsSelectors.getSidebarSetting(state),
   currentItem: ItemsSelectors.getCurrentItem(state),
   currentItemId: ItemsSelectors.getCurrentItemId(state),
 });
@@ -161,6 +162,12 @@ class Task extends Component {
     map.jumpTo(options);
   }
 
+  resize() {
+    const { map } = this.state;
+    // Needs a slight delay before of the sidebar animation
+    window.setTimeout(() => map.resize(), 100);
+  }
+
   componentDidMount() {
     const map = new mapboxgl.Map({
       container: this.mapContainer,
@@ -176,8 +183,9 @@ class Task extends Component {
     return (
       nextState.map !== this.state.map ||
       nextState.geolocation !== this.state.geolocation ||
-      nextProps.currentItemId !== this.state.currentItemId ||
-      nextProps.currentTaskId !== this.state.currentTaskId
+      nextProps.currentTaskId !== this.props.currentTaskId ||
+      nextProps.currentItemId !== this.props.currentItemId ||
+      nextProps.sidebar !== this.props.sidebar
     );
   }
 
@@ -206,6 +214,10 @@ class Task extends Component {
       this.geolocate(center);
       this.jumpTo({ center });
       return;
+    }
+
+    if (this.state.map && prevProps.sidebar !== this.props.sidebar) {
+      this.resize();
     }
   }
 
@@ -238,6 +250,7 @@ Task.propTypes = {
   currentTaskId: PropTypes.string.isRequired,
   user: PropTypes.string,
   editor: PropTypes.string.isRequired,
+  sidebar: PropTypes.bool.isRequired,
   currentItem: PropTypes.object,
   currentItemId: PropTypes.string,
   fetchRandomItem: PropTypes.func.isRequired,
