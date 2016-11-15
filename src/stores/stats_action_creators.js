@@ -6,6 +6,7 @@ const StatsActionCreators = {
   fetchAllStats: asyncAction({
     type: StatsConstants.STATS_FETCH_ALL,
     asyncCall: api.tofix.fetchAllStats,
+    showLoader: true,
   }),
 };
 

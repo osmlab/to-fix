@@ -6,11 +6,13 @@ const ActivityActionCreators = {
   fetchAllActivity: asyncAction({
     type: ActivityConstants.ACTIVITY_FETCH_ALL,
     asyncCall: api.tofix.fetchAllActivity,
+    showLoader: true,
   }),
 
   fetchUserActivity: asyncAction({
     type: ActivityConstants.ACTIVITY_FETCH_FOR_USER,
     asyncCall: api.tofix.fetchUserActivity,
+    showLoader: true,
   }),
 };
 

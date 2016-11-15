@@ -8,6 +8,7 @@ const TasksActionCreators = {
     type: TasksConstants.TASKS_FETCH_ALL,
     asyncCall: api.tofix.fetchAllTasks,
     responseSchema: { tasks: schemas.arrayOfTasks },
+    showLoader: true,
   }),
 
   fetchTaskById: asyncAction({
@@ -25,17 +26,20 @@ const TasksActionCreators = {
     type: TasksConstants.TASKS_CREATE,
     asyncCall: api.tofix.createTask,
     responseSchema: schemas.task,
+    showLoader: true,
   }),
 
   updateTask: asyncAction({
     type: TasksConstants.TASKS_UPDATE,
     asyncCall: api.tofix.updateTask,
     responseSchema: schemas.task,
+    showLoader: true,
   }),
 
   destroyTask: asyncAction({
     type: TasksConstants.TASKS_DESTROY,
     asyncCall: api.tofix.destroyTask,
+    showLoader: true,
   }),
 };
 
