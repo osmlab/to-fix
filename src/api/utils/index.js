@@ -17,11 +17,9 @@ export const fetchJSON = (url, options = {}) => (
     },
   })
   .then(toJSON)
-  .then(checkError)
 );
 
 export const fetchForm = (url, options = {}) => (
   fetch(url, { ...options })
     .then(toJSON)
-    .then(checkError)
 );
