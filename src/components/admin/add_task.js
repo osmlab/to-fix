@@ -1,107 +1,155 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+
+import { AsyncStatus } from '../../stores/async_action';
+import ModalsActionCreators from '../../stores/modals_action_creators';
+
+const mapDispatchToProps = {
+  openSuccessModal: ModalsActionCreators.openSuccessModal,
+};
 
 class AddTask extends Component {
-  state = {
-    isUploading: false,
-    uploadSuccessful: false,
-    error: null,
+  initialState = {
+    name: '',
+    description: '',
+    changesetComment: '',
+    password: '',
+    file: {},
+  }
+
+  state = this.initialState
+
+  resetState = () => {
+    this.setState(this.initialState);
+  }
+
+  handleNameChange = (e) => {
+    const name = e.target.value;
+    this.setState({ name });
+  }
+
+  handleDescriptionChange = (e) => {
+    const description = e.target.value;
+    this.setState({ description });
+  }
+
+  handleChangesetCommentChange = (e) => {
+    const changesetComment = e.target.value;
+    this.setState({ changesetComment });
+  }
+
+  handlePasswordChange = (e) => {
+    const password = e.target.value;
+    this.setState({ password });
+  }
+
+  handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    this.setState({ file });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
+
     const { onTaskAdd } = this.props;
     const formData = this.getFormData();
 
-    this.setState({
-      isUploading: true,
-      uploadSuccessful: false,
-      error: null,
-    });
-
-    onTaskAdd(formData).then(({ error }) => {
-      if (error) {
-        this.setState({ isUploading: false, error });
-      } else {
-        this.setState({ isUploading: false, uploadSuccessful: true });
-      }
-    });
+    onTaskAdd(formData)
+      .then(response => {
+        if (response.status === AsyncStatus.SUCCESS) {
+          this.props.openSuccessModal('Task created succesfully');
+          this.resetState();
+        }
+      });
   }
 
   getFormData = () => {
+    const { name, description, changesetComment, password, file } = this.state;
+
     const formData = new window.FormData();
 
-    formData.append('name', this.refs.name.value.trim());
-    formData.append('description', this.refs.description.value.trim());
-    formData.append('changesetComment', this.refs.changesetComment.value.trim());
-    formData.append('password', this.refs.password.value.trim());
-    formData.append('file', this.refs.fileInput.files[0]);
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('changesetComment', changesetComment);
+    formData.append('password', password);
+    formData.append('file', file);
 
     return formData;
   }
 
-  renderNotice() {
-    const { uploadSuccessful, error } = this.state;
+  render() {
+    const { name, description, changesetComment, password } = this.state;
 
     return (
-      <div className='pad2x pad1y round-bottom col12 clearfix dark'>
-        {uploadSuccessful
-          ? <div className='note contain fill-lighten0'>
-              <h3 className='dark'>The task has been added.</h3>
-            </div>
-          : null}
-        {error
-          ? <div className='note error contain'>
-              <h3 className='dark'>Error: {error}.</h3>
-            </div>
-          : null}
-      </div>
-    );
-  }
-
-  renderForm() {
-    const { isUploading } = this.state;
-
-    return (
-      <form className={isUploading ? 'dark loading' : 'dark'} onSubmit={this.handleSubmit}>
+      <form className='dark' onSubmit={this.handleSubmit}>
         <fieldset className='pad2x'>
           <label>Task name</label>
-          <input className='col12 block clean' ref='name' type='text' placeholder='Task name' />
+          <input
+            type='text'
+            className='col12 block clean'
+            placeholder='Task name'
+            value={name}
+            onChange={this.handleNameChange} />
         </fieldset>
         <fieldset className='pad2x'>
           <label>Description</label>
-          <textarea className='col12 block clean resize' ref='description' type='text' placeholder='Task description' ></textarea>
+          <textarea
+            type='text'
+            className='col12 block clean resize'
+            placeholder='Task description'
+            value={description}
+            onChange={this.handleDescriptionChange} />
         </fieldset>
         <fieldset className='pad2x'>
           <label>Changeset comment</label>
-          <textarea className='col12 block clean resize' ref='changesetComment' type='text' placeholder='Changeset comment for this task' ></textarea>
+          <textarea
+            type='text'
+            className='col12 block clean resize'
+            placeholder='Changeset comment for this task'
+            value={changesetComment}
+            onChange={this.handleChangesetCommentChange} />
         </fieldset>
         <fieldset className='pad2x'>
           <label>Password</label>
-          <input className='col12 block clean' ref='password' type='password' placeholder='Password' />
+          <input
+            type='password'
+            className='col12 block clean'
+            placeholder='Password'
+            value={password}
+            onChange={this.handlePasswordChange} />
         </fieldset>
         <fieldset className='pad2x'>
-          <input type='file' className='hidden' ref='fileInput' accept=".geojson" />
-          <a onClick={() => this.refs.fileInput.click()} className='button pad2x quiet'>Choose GeoJSON</a>
+          <input
+            type='file'
+            className='hidden'
+            ref='fileInput'
+            accept='.geojson'
+            value=''
+            onChange={this.handleFileInputChange} />
+          <a className='button pad2x quiet'
+             onClick={() => this.refs.fileInput.click()}>
+              Choose GeoJSON
+          </a>
         </fieldset>
-        <div className='pad2x pad1y  round-bottom col12 clearfix'>
-          <input className='col6 margin3 button' type='submit' value='Create Task' />
+        <div className='pad2x pad1y round-bottom col12 clearfix'>
+          <input
+            type='submit'
+            className='col6 margin3 button'
+            value='Create Task' />
         </div>
       </form>
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        {this.renderNotice()}
-        {this.renderForm()}
-      </div>
     );
   }
 }
 
 AddTask.propTypes = {
   onTaskAdd: PropTypes.func.isRequired,
+  openSuccessModal: PropTypes.func.isRequired,
 };
+
+AddTask = connect(
+  null,
+  mapDispatchToProps,
+)(AddTask);
 
 export default AddTask;
