@@ -24,7 +24,7 @@ let ErrorModal = React.createClass({
   mixins: [KeyBinding],
 
   keybindings: {
-    esc(e) {
+    'esc': function(e) {
       this.props.closeErrorModal();
     },
   },

@@ -46,21 +46,23 @@ class Login extends Component {
           <button onClick={openSettingsModal} className='col6 icon sprocket button quiet small animate'>Settings</button>
         </div>
       );
-    } else {
-      return (
-        <div className='pad1x'>
-          <button onClick={this.onLoginClick} className='icon osm button small col12 animate'>Authorize on OSM</button>
-        </div>
-      );
     }
+
+    return (
+      <div className='pad1x'>
+        <button onClick={this.onLoginClick} className='icon osm button small col12 animate'>Authorize on OSM</button>
+      </div>
+    );
   }
 
   render() {
+    const loginState = this.renderLoginState();
+
     return (
       <div className='space-bottom1'>
         <h4 className='dark block pad1x space-bottom1'>Account</h4>
         <div id='user-stuff' className='space-bottom1 col12 clearfix mobile-cols'>
-          {this.renderLoginState()}
+          {loginState}
         </div>
       </div>
     );
