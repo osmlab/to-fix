@@ -39,9 +39,9 @@ let ErrorModal = React.createClass({
       <div className={modalClass}>
         <div className='col4 modal-body fill-pink contain'>
           <button className='unround pad1 icon fr close button quiet' onClick={closeErrorModal} />
-          <div className='pad2 space-bottom2 dark'>
+          <div className='pad2 dark'>
             <h2>{'Error'}</h2>
-            <p>{errorMessage}</p>
+            <strong>{errorMessage}</strong>
           </div>
         </div>
       </div>
