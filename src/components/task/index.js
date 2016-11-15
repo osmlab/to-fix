@@ -185,6 +185,7 @@ class Task extends Component {
     return (
       nextState.map !== this.state.map ||
       nextState.geolocation !== this.state.geolocation ||
+      nextState.iDEdit !== this.state.iDEdit ||
       nextProps.currentTaskId !== this.props.currentTaskId ||
       nextProps.currentItemId !== this.props.currentItemId ||
       nextProps.sidebar !== this.props.sidebar
