@@ -36,17 +36,20 @@ class Sidebar extends Component {
   render() {
     const { sidebar, activeTasks, completedTasks } = this.props;
 
-    let sidebarClass = 'sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6';
-    if (sidebar) sidebarClass += ' active';
+    const isActive = sidebar ? 'active' : '';
+    const sidebarClass = `sidebar pin-bottomleft clip col2 animate offcanvas-left fill-navy space-top6 ${isActive}`;
+
+    const activeTasksList = this.renderTaskList(activeTasks);
+    const completedTasksList = this.renderTaskList(completedTasks);
 
     return (
       <div className={sidebarClass}>
         <div className='scroll-styled pad2y'>
           <Login />
           <h4 className='dark block pad1x space-bottom1'>Current Tasks</h4>
-          <nav className='dark space-bottom2'>{this.renderTaskList(activeTasks)}</nav>
+          <nav className='dark space-bottom2'>{activeTasksList}</nav>
           <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>
-          <nav className='dark space-bottom2'>{this.renderTaskList(completedTasks)}</nav>
+          <nav className='dark space-bottom2'>{completedTasksList}</nav>
         </div>
       </div>
     );

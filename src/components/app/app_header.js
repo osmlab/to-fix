@@ -24,8 +24,8 @@ class Header extends Component {
   render() {
     const { currentTaskId, sidebar } = this.props;
 
-    let toggleClass = 'sidebar-toggle quiet block fl keyline-right animate pad1 row-60';
-    if (sidebar) toggleClass += ' active';
+    const isActive = sidebar ? 'active' : '';
+    const toggleClass = `sidebar-toggle quiet block fl keyline-right animate pad1 row-60 ${isActive}`;
 
     return (
       <header className='fill-light keyline-bottom row-60 col12 clearfix mobile-cols'>
