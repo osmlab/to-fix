@@ -4,38 +4,36 @@ import d3Graph from '../../utils/d3_graph';
 
 class StatsGraph extends Component {
   state = {
+    // type filter = 'all' | 'edit' | 'fixed' | 'skip' | 'noterror'
     filter: 'all',
   }
 
-  fetchIfChanged = (_from, _to) => {
+  filterBy = (e) => {
+    const filter = e.target.getAttribute('value');
+    this.setState({ filter });
+  }
+
+  fetchIfChanged = (fromDate, toDate) => {
     const { statsFrom, statsTo, fetchStatsByRange } = this.props;
-    if (_from !== statsFrom || _to !== statsTo) {
-      fetchStatsByRange(_from, _to);
+    if (fromDate !== statsFrom || toDate !== statsTo) {
+      fetchStatsByRange(fromDate, toDate);
     }
   }
 
-  getGraphState() {
+  getGraphState = () => {
     const { filter } = this.state;
     const { statsByDate } = this.props;
 
-    if (statsByDate && statsByDate.length) {
-      const data = this.props.statsByDate.map(function(d) {
-        d.value = 0;
-        if (d.edit && (filter === 'all' || filter === 'edited')) d.value += d.edit;
-        if (d.fixed && (filter === 'all' || filter === 'fixed')) d.value += d.fixed;
-        if (d.skip && (filter === 'all' || filter === 'skipped')) d.value += d.skip;
-        if (d.noterror && (filter === 'all' || filter === 'noterror')) d.value += d.noterror;
-        return d;
-      });
+    const includedFields = (filter === 'all') ? ['edit', 'fixed', 'skip', 'noterror'] : [filter];
 
-      return {
-        data: data,
-      };
-    }
+    const data = statsByDate.map(function(d) {
+      d.value = includedFields.reduce((sum, field) => sum + d[field], 0);
+      return d;
+    });
 
     return {
-      data: [],
-    }
+      data: data,
+    };
   }
 
   componentDidMount() {
@@ -50,26 +48,23 @@ class StatsGraph extends Component {
     d3Graph.destroy(this.brushGraph);
   }
 
-  filterBy = (e) => {
-    const filter = e.target.getAttribute('id');
-    this.setState({ filter });
-  }
-
   render() {
+    const { filter } = this.state;
+
     return (
       <div className='fill-darken1 pad2 round col12 space-bottom2 contain'>
 
         <div className='pin-topright pad1'>
           <form onChange={this.filterBy} className='rounded-toggle short inline'>
-            <input id='all' type='radio' name='filter' value='all' defaultChecked={this.state.filter === 'all'} />
+            <input type='radio' id='all' name='filter' value='all' defaultChecked={filter === 'all'} />
             <label htmlFor='all'>All</label>
-            <input id='edited' type='radio' name='filter' value='edited' defaultChecked={this.state.filter === 'edited'} />
+            <input type='radio' id='edited' name='filter' value='edit' defaultChecked={filter === 'edit'} />
             <label htmlFor='edited'>Edited</label>
-            <input id='fixed' type='radio' name='filter' value='fixed' defaultChecked={this.state.filter === 'fixed'} />
+            <input type='radio' id='fixed' name='filter' value='fixed' defaultChecked={filter === 'fixed'} />
             <label htmlFor='fixed'>Fixed</label>
-            <input id='skipped' type='radio' name='filter' value='skipped' defaultChecked={this.state.filter === 'skipped'} />
+            <input type='radio' id='skipped' name='filter' value='skip' defaultChecked={filter === 'skip'} />
             <label htmlFor='skipped'>Skipped</label>
-            <input id='noterror' type='radio' name='filter' value='noterror' defaultChecked={this.state.filter === 'noterror'} />
+            <input type='radio' id='noterror' name='filter' value='noterror' defaultChecked={filter === 'noterror'} />
             <label htmlFor='noterror'>Not error</label>
           </form>
         </div>

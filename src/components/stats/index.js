@@ -25,24 +25,29 @@ const mapDispatchToProps = {
 };
 
 class Stats extends Component {
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  fetchData() {
+  getExtent() {
     const { taskSummary } = this.props;
     const createdAt = taskSummary.date * 1000;
 
     const dateFormat = d3.time.format('%Y-%m-%d');
-    const _from = dateFormat(new Date(createdAt));
-    const _to = dateFormat(new Date());
+    const fromDate = dateFormat(new Date(createdAt));
+    const toDate = dateFormat(new Date());
 
-    this.fetchStatsByRange(_from, _to);
+    return { fromDate, toDate };
   }
 
-  fetchStatsByRange = (_from, _to) => {
+  fetchData() {
+    const { fromDate, toDate } = this.getExtent();
+    this.fetchStatsByRange(fromDate, toDate);
+  }
+
+  fetchStatsByRange = (fromDate, toDate) => {
     const { fetchAllStats, currentTaskId } = this.props;
-    fetchAllStats({ idtask: currentTaskId, from: _from, to: _to });
+    fetchAllStats({ idtask: currentTaskId, from: fromDate, to: toDate });
+  }
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   componentDidUpdate(prevProps) {

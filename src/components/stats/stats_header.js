@@ -1,11 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 
-const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
-  const taskTitle = task.value.name;
-
-  const selectedRange = (statsFrom && statsTo) ? `${statsFrom} – ${statsTo}` : null;
-
+const renderProgressBar = (taskSummary) => {
   const { items, fixed, noterror } = taskSummary;
 
   const total = items;
@@ -14,7 +10,7 @@ const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
     width: (completed / total) * 100 + '%'
   };
 
-  const progressBar = (
+  return (
     <div className='col4'>
       <h4 className='block space-bottom0'>
         <strong>{d3.format(',')(completed)}</strong> complete
@@ -25,13 +21,19 @@ const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
       </div>
     </div>
   );
+};
+
+const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
+  const taskName = task.value.name;
+  const extent = `${statsFrom} – ${statsTo}`;
+  const progressBar = renderProgressBar(taskSummary);
 
   return (
     <div className='space-bottom1 col12 clearfix'>
       <div className='col8'>
-        <h2>{taskTitle}</h2>
+        <h2>{taskName}</h2>
         <h4 className='space col12 clearfix'>
-          {selectedRange}
+          {extent}
         </h4>
       </div>
       {progressBar}
