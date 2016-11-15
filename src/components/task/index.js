@@ -126,7 +126,7 @@ class Task extends Component {
       source: id,
       paint: {
         'circle-radius': 5,
-        'circle-color': 'hsl(112, 100%, 50%)',
+        'circle-color': '#dc322f',
       },
     });
 
@@ -136,7 +136,7 @@ class Task extends Component {
       source: id,
       paint: {
         'line-width': 5,
-        'line-color': 'hsl(112, 100%, 50%)',
+        'line-color': '#dc322f',
       },
     });
 
@@ -145,7 +145,7 @@ class Task extends Component {
       type: 'fill',
       source: id,
       paint: {
-        'fill-color': 'hsl(112, 100%, 50%)',
+        'fill-color': '#dc322f',
       },
     });
   }
@@ -164,17 +164,19 @@ class Task extends Component {
 
   resize() {
     const { map } = this.state;
-    // Needs a slight delay before of the sidebar animation
-    window.setTimeout(() => map.resize(), 100);
+    // Needs a slight delay because of the sidebar animation
+    window.setTimeout(() => map.resize(), 120);
   }
 
   componentDidMount() {
     const map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/light-v9',
-      zoom: 14,
+      style: 'mapbox://styles/mapbox/streets-v9',
+      zoom: 18,
       center: [-74.50, 40],
     });
+
+    map.addControl(new mapboxgl.NavigationControl());
 
     map.once('load', () => this.setState({ map }));
   }
@@ -230,6 +232,13 @@ class Task extends Component {
     const { geolocation, iDEdit, iDEditPath } = this.state;
     const { currentItemId } = this.props;
 
+    const editBar = (
+      <EditBar
+        onTaskEdit={this.editTask}
+        onUpdate={this.fetchNextItem}
+        geolocation={geolocation} />
+    );
+
     const iDEditor = (
       <div>
         <iframe src={iDEditPath} frameBorder='0' className='ideditor'></iframe>
@@ -238,8 +247,8 @@ class Task extends Component {
     );
 
     return (
-      <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark'>
-        { currentItemId && <EditBar onTaskEdit={this.editTask} onUpdate={this.fetchNextItem} geolocation={geolocation} /> }
+      <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark contain'>
+        { currentItemId && editBar }
         { iDEdit && iDEditor }
       </div>
     );
