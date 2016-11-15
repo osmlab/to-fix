@@ -32,22 +32,24 @@ export const asyncAction = ({ type, asyncCall, responseSchema, showLoader = fals
       .then(checkStatusCode)
       .then(
         response => {
-          dispatch({
+          if (showLoader) dispatch(LoadingActionCreators.stopLoading());
+
+          return dispatch({
             type,
             status: AsyncStatus.SUCCESS,
             response: responseSchema ? normalize(response, responseSchema) : response,
             params,
           });
-          if (showLoader) dispatch(LoadingActionCreators.stopLoading());
         },
         error => {
-          dispatch({
+          if (showLoader) dispatch(LoadingActionCreators.stopLoading());
+          dispatch(ModalsActionCreators.openErrorModal(error));
+
+          return dispatch({
             type,
             status: AsyncStatus.FAILURE,
             error,
           });
-          if (showLoader) dispatch(LoadingActionCreators.stopLoading());
-          dispatch(ModalsActionCreators.openErrorModal(error));
         }
       );
   };
