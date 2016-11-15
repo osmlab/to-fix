@@ -10,6 +10,14 @@ export const AsyncStatus = keymirror({
   FAILURE: null,
 });
 
+export const checkStatusCode = (response) => {
+  const { statusCode } = response;
+  if (statusCode && statusCode >= 400) {
+    return Promise.reject(response.message || 'Something went wrong.');
+  }
+  return response;
+};
+
 export const asyncAction = ({ type, asyncCall, responseSchema, showLoader = false }) => {
   return (params = {}) => (dispatch) => {
     dispatch({
@@ -43,12 +51,4 @@ export const asyncAction = ({ type, asyncCall, responseSchema, showLoader = fals
         }
       );
   };
-};
-
-export const checkStatusCode = (response) => {
-  const { statusCode } = response;
-  if (statusCode && statusCode >= 400) {
-    return Promise.reject(response.message || 'Something went wrong.');
-  }
-  return response;
 };
