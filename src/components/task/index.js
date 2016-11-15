@@ -227,7 +227,7 @@ class Task extends Component {
 
     return (
       <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark'>
-        { currentItemId && <EditBar onEditTask={this.editTask} onUpdate={this.fetchNextItem} geolocation={geolocation} /> }
+        { currentItemId && <EditBar onTaskEdit={this.editTask} onUpdate={this.fetchNextItem} geolocation={geolocation} /> }
         { iDEdit && iDEditor }
       </div>
     );

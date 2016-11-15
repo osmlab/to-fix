@@ -30,6 +30,8 @@ let EditBar = React.createClass({
     editor: PropTypes.string.isRequired,
     currentItemId: PropTypes.string.isRequired,
     updateItem: PropTypes.func.isRequired,
+    onTaskEdit: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
   },
 
   mixins: [KeyBinding],
@@ -52,25 +54,24 @@ let EditBar = React.createClass({
     updateItem({ idtask: currentTaskId, payload }).then(onUpdate);
   },
 
-  edit() { this.props.onEditTask() },
   skip() { this.updateItem('skip') },
   fixed() { this.updateItem('fixed') },
   noterror() { this.updateItem('noterror') },
 
   render() {
-    const { currentTask, isAuthenticated, geolocation } = this.props;
+    const { currentTask, isAuthenticated, geolocation, onUpdate, onTaskEdit } = this.props;
 
     const taskTitle = currentTask.value.name;
     let taskActions = (
       <nav className='tabs col12 clearfix'>
-        <a onClick={this.props.onUpdate} className='col12 animate icon refresh'>Preview another task</a>
+        <a onClick={onUpdate} className='col12 animate icon refresh'>Preview another task</a>
       </nav>
     );
 
     if (isAuthenticated) {
       taskActions = (
         <nav className='tabs col12 clearfix mobile-cols'>
-          <button onClick={this.edit} className='col3 button animate unround'>
+          <button onClick={onTaskEdit} className='col3 button animate unround'>
             <span className='underline'>E</span>dit
           </button>
           <button onClick={this.skip} className='col3 button animate'>
@@ -91,14 +92,14 @@ let EditBar = React.createClass({
         <div className='round col6 margin3'>
           {taskActions}
           <div className='fill-lighten3 round-bottom col12 pad2x pad1y center strong inline truncate'>
-            {taskTitle} {geolocation ? <span className='quiet icon marker'>{geolocation}</span> : ''}
+            {taskTitle}
+            {geolocation && <span className='quiet icon marker'>{geolocation}</span>}
           </div>
         </div>
       </div>
     );
   }
 });
-
 
 EditBar = connect(
   mapStateToProps,
