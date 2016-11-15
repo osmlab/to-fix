@@ -32,20 +32,20 @@ let ErrorModal = React.createClass({
   render() {
     const { showErrorModal, errorMessage, closeErrorModal } = this.props;
 
-    if (showErrorModal) {
-      return (
-        <div className='pin-bottomleft z1000 offcanvas-bottom animate pad1 col12 active'>
-          <div className='fill-orange round col3 quiet dialog'>
-            <button onClick={closeErrorModal} className='icon fr close button quiet'></button>
-            <div className='pad1'>
-              <strong className='icon alert'>{errorMessage}</strong>
-            </div>
+    const isActive = showErrorModal ? 'active' : '';
+    const modalClass = `animate modal modal-content ${isActive}`;
+
+    return (
+      <div className={modalClass}>
+        <div className='col4 modal-body fill-pink contain'>
+          <button className='unround pad1 icon fr close button quiet' onClick={closeErrorModal} />
+          <div className='pad2 space-bottom2 dark'>
+            <h2>{'Error'}</h2>
+            <p>{errorMessage}</p>
           </div>
         </div>
-      );
-    }
-
-    return null;
+      </div>
+    );
   }
 });
 

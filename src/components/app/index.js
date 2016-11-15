@@ -8,6 +8,7 @@ import LoadingSelectors from '../../stores/loading_selectors';
 import AppHeader from './app_header';
 import AppSidebar from './app_sidebar';
 import SettingsModal from '../shared/settings_modal';
+import SuccessModal from '../shared/success_modal';
 import ErrorModal from '../shared/error_modal';
 
 const mapStateToProps = (state) => ({
@@ -41,8 +42,9 @@ class App extends Component {
           <AppSidebar />
           <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
             {this.props.children}
-            <ErrorModal />
           </div>
+          <SuccessModal />
+          <ErrorModal />
           <SettingsModal />
         </div>}
       </div>

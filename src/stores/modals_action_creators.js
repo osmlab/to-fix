@@ -9,9 +9,18 @@ const ModalsActionCreators = {
     type: ModalsConstants.MODALS_CLOSE_SETTINGS,
   }),
 
-  openErrorModal: (error) => ({
+  openSuccessModal: (successMessage) => ({
+    type: ModalsConstants.MODALS_OPEN_SUCCESS,
+    successMessage,
+  }),
+
+  closeSuccessModal: () => ({
+    type: ModalsConstants.MODALS_CLOSE_SUCCESS,
+  }),
+
+  openErrorModal: (errorMessage) => ({
     type: ModalsConstants.MODALS_OPEN_ERROR,
-    error,
+    errorMessage,
   }),
 
   closeErrorModal: () => ({

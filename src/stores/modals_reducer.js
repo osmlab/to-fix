@@ -1,8 +1,10 @@
 import ModalsConstants from '../constants/modals_constants';
 
 const initialState = {
-  showSettings: false,
-  showError: false,
+  showSettingsModal: false,
+  showSuccessModal: false,
+  successMessage: null,
+  showErrorModal: false,
   errorMessage: null,
 };
 
@@ -11,23 +13,35 @@ const modals = (state = initialState, action) => {
     case ModalsConstants.MODALS_OPEN_SETTINGS:
       return {
         ...state,
-        showSettings: true,
+        showSettingsModal: true,
       };
     case ModalsConstants.MODALS_CLOSE_SETTINGS:
       return {
         ...state,
-        showSettings: false,
+        showSettingsModal: false,
+      };
+    case ModalsConstants.MODALS_OPEN_SUCCESS:
+      return {
+        ...state,
+        showSuccessModal: true,
+        successMessage: action.successMessage,
+      };
+    case ModalsConstants.MODALS_CLOSE_SUCCESS:
+      return {
+        ...state,
+        showSuccessModal: false,
+        successMessage: null,
       };
     case ModalsConstants.MODALS_OPEN_ERROR:
       return {
         ...state,
-        showError: true,
-        errorMessage: action.error,
+        showErrorModal: true,
+        errorMessage: action.errorMessage,
       };
     case ModalsConstants.MODALS_CLOSE_ERROR:
       return {
         ...state,
-        showError: false,
+        showErrorModal: false,
         errorMessage: null,
       };
     default:
