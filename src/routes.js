@@ -10,10 +10,10 @@ import Activity from './components/activity';
 import store from './stores/store';
 import TasksActionCreators from './stores/tasks_action_creators';
 
-const defaultTaskId = 'overlappingminorhighwaysrjogv';
+import { DEFAULT_TASK_ID } from './config';
 
 const onEnter = (nextState) => {
-  const nextTaskId = nextState.params.task || defaultTaskId;
+  const nextTaskId = nextState.params.task || DEFAULT_TASK_ID;
   store.dispatch(TasksActionCreators.selectTask({ idtask: nextTaskId }));
 };
 
@@ -28,7 +28,7 @@ const onChange = (prevState, nextState) => {
 
 export default (
   <Route path='/' component={App} onEnter={onEnter} onChange={onChange}>
-    <IndexRedirect to={`/task/${defaultTaskId}`} />
+    <IndexRedirect to={`/task/${DEFAULT_TASK_ID}`} />
     <Route name='task' path='/task/:task' component={Task} />
     <Route name='activity' path='/activity/:task' component={Activity} />
     <Route name='stats' path='/stats/:task' component={Stats} />

@@ -7,3 +7,5 @@ export const USER_PROFILE_URL = 'https://www.openstreetmap.org/user';
 export const MAPBOX_GEOCODER_URL = 'https://api.mapbox.com/geocoding/v5';
 export const JOSM_RC_URL = 'https://localhost:8112/load_and_zoom';
 export const ID_URL = 'https://openstreetmap.us/iD/release';
+
+export const DEFAULT_TASK_ID = 'strangelayerzngmd';
