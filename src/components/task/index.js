@@ -52,7 +52,11 @@ class Task extends Component {
       const top = bounds.getNorthEast().lat - 0.0005;
       const right = bounds.getNorthEast().lng - 0.0005;
 
-      const query = { left, right, top, bottom };
+      const { currentItem } = this.props;
+      const { _osmType, _osmId } = currentItem.properties;
+      const select = `${_osmType}${_osmId}`;
+
+      const query = { left, right, top, bottom, select };
       const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
 
       fetch(`${JOSM_RC_URL}?${params}`)
