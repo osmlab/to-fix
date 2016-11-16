@@ -1,9 +1,0 @@
-*.bz2
-*.txt
-*.gml
-*.ldb*
-*.zip
-*.csv
-node_modules/
-.lev_history
-dist/bundle.js
