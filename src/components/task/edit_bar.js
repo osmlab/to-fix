@@ -68,7 +68,7 @@ let EditBar = React.createClass({
   noterror() { this.updateItem('noterror') },
 
   render() {
-    const { currentTask, isAuthenticated, geolocation, onUpdate, onTaskEdit } = this.props;
+    const { currentTask, isAuthenticated, editor, geolocation, onUpdate, onTaskEdit } = this.props;
 
     const taskTitle = currentTask.value.name;
     let taskActions = (
@@ -78,10 +78,13 @@ let EditBar = React.createClass({
     );
 
     if (isAuthenticated) {
+      const editorName = editor === 'josm' ? 'JOSM' : 'iD';
+
       taskActions = (
         <nav className='tabs col12 clearfix mobile-cols'>
           <button onClick={onTaskEdit} className='col3 button animate unround'>
             <span className='underline'>E</span>dit
+            {` with ${editorName}`}
           </button>
           <button onClick={this.skip} className='col3 button animate'>
             <span className='underline'>S</span>kip
