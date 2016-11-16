@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import filesize from 'file-size';
 
 import { AsyncStatus } from '../../stores/async_action';
 import ModalsActionCreators from '../../stores/modals_action_creators';
@@ -94,7 +95,7 @@ class EditTask extends Component {
 
   render() {
     const { task } = this.props;
-    const { description, changesetComment, password } = this.state;
+    const { description, changesetComment, password, file } = this.state;
 
     if (!task.isComplete) {
       return <h2>Cannot update this task before complete.</h2>;
@@ -147,6 +148,7 @@ class EditTask extends Component {
              onClick={() => this.refs.fileInput.click()}>
               Choose GeoJSON
           </a>
+          {file.name && <span className='pad1x quiet'>{`${file.name} (${filesize(file.size).human()})`}</span>}
         </fieldset>
         <div className='pad2x pad1y round-bottom col12 clearfix'>
           <input
