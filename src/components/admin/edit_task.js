@@ -1,178 +1,175 @@
-'use strict';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import filesize from 'file-size';
 
-var React = require('react');
-var Reflux = require('reflux');
-var xhr = require('xhr');
+import { AsyncStatus } from '../../stores/async_action';
+import ModalsActionCreators from '../../stores/modals_action_creators';
 
-var actions = require('../../actions/actions');
-var Admin_store = require('../../stores/admin_store');
-var config = require('../../config');
+const mapDispatchToProps = {
+  openSuccessModal: ModalsActionCreators.openSuccessModal,
+};
 
-module.exports = React.createClass({
-  mixins: [
-    Reflux.connect(Admin_store, 'task')
-  ],
+class EditTask extends Component {
+  state = {
+    description: '',
+    changesetComment: '',
+    password: '',
+    file: {},
+  }
 
-  statics: {
-    fetchData: function(params) {
-      actions.getTasks(params.task);
-    }
-  },
+  handleDescriptionChange = (e) => {
+    const description = e.target.value;
+    this.setState({ description });
+  }
 
-  getInitialState: function() {
-    return {
-      //status: if a task is complete
-      //loading: to show the load gif when a task in on upload progress
-      //startupload:when a task start to upload at server
-      //successful_upload : if a task was successes upload
-      confirm: {
-        status: false,
-        taskid: null,
-        loading: false,
-        startupload: false,
-        successful_upload:false
-      },
-      selected: false
-    };
-  },
+  handleChangesetCommentChange = (e) => {
+    const changesetComment = e.target.value;
+    this.setState({ changesetComment });
+  }
 
-  triggerFileInput: function() {
-    this.refs.fileInput.getDOMNode().click();
-  },
+  handlePasswordChange = (e) => {
+    const password = e.target.value;
+    this.setState({ password });
+  }
 
-  uploadData: function(e) {
+  handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    this.setState({ file });
+  }
+
+  handleSubmit = (e) => {
     e.preventDefault();
-    var self = this;
-    // TODO sanitize/validation
-    var formData = new window.FormData();
-    var source = this.refs.tasksource.getDOMNode().value.trim();
-    var description = this.refs.taskdescription.getDOMNode().value.trim();
-    var changeset_comment = this.refs.taskchangeset_comment.getDOMNode().value.trim();
-    var password = this.refs.password.getDOMNode().value.trim();
-    var file = this.refs.fileInput.getDOMNode();
-    file = file.files[0];
-    var random = this.refs.random.getDOMNode().checked;
 
-    formData.append('id', this.state.task.id);
-    formData.append('name', this.state.task.title);
-    formData.append('source', source);
-    formData.append('description', description);
-    formData.append('changeset_comment', changeset_comment);    
-    formData.append('password', password);
-    formData.append('file', file);
-    formData.append('random', random);
-    formData.append('newtask', false);// newtask =true
-    //start upload 
-    this.setState({
-      loading: true
-    });
-    //send the request
-    xhr({
-      uri: config.taskServer + 'csv',
-      body: formData,
-      method: 'POST'
-    }, function(err, res) {
-      if (err || res.statusCode === 400) {
-        self.setState({
-          startupload: true,
-          status: false,
-          loading: false
-        });
-        self.cleanup();
-      } else {
-        var resut = JSON.parse(res.body);
+    const { onTaskEdit } = this.props;
+    const formData = this.getFormData();
 
-        if(resut.taskid !== undefined){
-          self.setState({
-            startupload: true,
-            status: true,
-            taskid: resut.taskid,
-            successful_upload:true
-          });
-        }else{
-          self.setState({
-            startupload: true,
-            status: true,
-            loading: false
-          });
+    onTaskEdit(formData)
+      .then(response => {
+        if (response.status === AsyncStatus.SUCCESS) {
+          this.props.openSuccessModal('Task updated succesfully');
         }
-        self.cleanup();
-      }
-    });
-  },
-
-  cleanup: function() {
-    var self = this;
-    if (this.state.taskid !== null && typeof this.state.taskid !== "undefined") {
-      window.location.href = '#/task/' + this.state.taskid;
-      window.location.reload();
-    }
-    setTimeout(function() {
-      self.setState({
-        startupload: false,
-        status: false
       });
-    }, 2000);
-  },
+  }
 
-  triggerRandom: function() {
-    this.refs.random.getDOMNode().checked ? this.setState({
-      selected: false
-    }) : this.setState({
-      selected: true
+  getFormData = () => {
+    const { task } = this.props;
+    const { description, changesetComment, password, file } = this.state;
+
+    const formData = new window.FormData();
+
+    formData.append('idtask', task.idtask);
+    formData.append('name', task.value.name);
+    formData.append('description', description);
+    formData.append('changesetComment', changesetComment);
+    formData.append('password', password);
+    formData.append('isCompleted', false);
+    formData.append('file', file);
+
+    return formData;
+  }
+
+  setInitialState = () => {
+    const { task } = this.props;
+
+    this.setState({
+      description: task.value.description,
+      changesetComment: task.value.changesetComment,
     });
-  },
+  }
 
-  render: function() {
-    var task = this.state.task;
-    var form = '';    
-    if(typeof task !== 'undefined') {
-      if(task.status) {
-        var loading = (this.state.loading) ? 'dark loading' : 'dark';
+  componentDidMount() {
+    this.setInitialState();
+  }
 
-        form = (
-                <form className={loading} onSubmit={this.uploadData}>
-                  <fieldset className='pad2x'>
-                    <label>Task name</label>
-                    <input className='col12 block clean' ref='taskname' type='text' name='name' disabled="disabled" value={task.title} />
-                  </fieldset>
-                  <fieldset className='pad2x'>
-                    <label>source</label>
-                    <input className='col12 block clean' ref='tasksource' type='text' name='source' defaultValue={this.state.task.source} />
-                  </fieldset>
-                  <fieldset className='pad2x'>
-                    <label>Description</label>
-                    <textarea className='col12 block clean resize' ref='taskdescription' type='text' name='description' defaultValue={this.state.task.description} ></textarea>
-                  </fieldset>
-                  <fieldset className='pad2x'>
-                    <label>Changeset comment</label>
-                    <textarea className='col12 block clean resize' ref='taskchangeset_comment' type='text' name='changeset_comment' defaultValue={this.state.task.changeset_comment} ></textarea>
-                  </fieldset>
-                  <fieldset className='pad2x'>
-                    <label>Password</label>
-                    <input className='col12 block clean' ref='password' type='password' name='uploadPassword' placeholder='Password' />
-                  </fieldset>
-                  <fieldset className='pad2x'>
-                    <input type='file' className='hidden' ref='fileInput' name='uploadfile' accept=".csv"/>
-                    <a onClick={this.triggerFileInput} className='button pad2x quiet'>Choose CSV</a>
-                  </fieldset>
-                  <div className='pad2 checkbox-pill'>
-                    <input type='checkbox' id='random' ref='random' checked={this.state.selected}/>
-                    <a onClick={this.triggerRandom} for='random' className='button icon check quiet'>Do not load randomize the data</a>
-                  </div>
-                  <div className='pad2x pad1y  round-bottom col12 clearfix'>
-                    <input className='col6 margin3 button' type='submit' value='Update Task' />
-                  </div>
-                </form>
-        );
-      }else {
-        form = (<h2>Cannot update this task before complete.</h2>);
-      }
-    }
+  shouldComponentUpdate(nextProps) {
     return (
-        /* jshint ignore:start */
-        <div>{(this.state.startupload) ? ((this.state.successful_upload)?(<h2 className='dark'>Successful upload</h2>):(<h2 className='dark'>Something went wrong, try again</h2>)): form}</div>
-        /* jshint ignore:end */
+      nextProps.task.idtask !== this.props.idtask
     );
   }
-});
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.task.idtask !== this.props.task.idtask) {
+      this.setInitialState();
+    }
+  }
+
+  render() {
+    const { task } = this.props;
+    const { description, changesetComment, password, file } = this.state;
+
+    if (!task.isComplete) {
+      return <h2>Cannot update this task before complete.</h2>;
+    }
+
+    return (
+      <form className='dark' onSubmit={this.handleSubmit}>
+        <fieldset className='pad2x'>
+          <label>Task name</label>
+          <input
+            className='col12 block clean'
+            type='text'
+            disabled='disabled'
+            value={task.value.name} />
+        </fieldset>
+        <fieldset className='pad2x'>
+          <label>Description</label>
+          <textarea
+            type='text'
+            className='col12 block clean resize'
+            value={description}
+            onChange={this.handleDescriptionChange} />
+        </fieldset>
+        <fieldset className='pad2x'>
+          <label>Changeset comment</label>
+          <textarea
+            type='text'
+            className='col12 block clean resize'
+            value={changesetComment}
+            onChange={this.handleChangesetCommentChange} />
+        </fieldset>
+        <fieldset className='pad2x'>
+          <label>Password</label>
+          <input
+            type='password'
+            className='col12 block clean'
+            placeholder='Password'
+            value={password}
+            onChange={this.handlePasswordChange} />
+        </fieldset>
+        <fieldset className='pad2x'>
+          <input
+            type='file'
+            className='hidden'
+            ref='fileInput'
+            accept='.geojson'
+            value=''
+            onChange={this.handleFileInputChange} />
+          <a className='button pad2x quiet'
+             onClick={() => this.refs.fileInput.click()}>
+              Choose GeoJSON
+          </a>
+          {file.name && <span className='pad1x quiet'>{`${file.name} (${filesize(file.size).human()})`}</span>}
+        </fieldset>
+        <div className='pad2x pad1y round-bottom col12 clearfix'>
+          <input
+            type='submit'
+            className='col6 margin3 button'
+            value='Update Task' />
+        </div>
+      </form>
+    );
+  }
+}
+
+EditTask.propTypes = {
+  task: PropTypes.object.isRequired,
+  onTaskEdit: PropTypes.func.isRequired,
+  openSuccessModal: PropTypes.func.isRequired,
+};
+
+EditTask = connect(
+  null,
+  mapDispatchToProps,
+)(EditTask);
+
+export default EditTask;
