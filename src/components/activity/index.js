@@ -10,7 +10,7 @@ import ActivityActionCreators from '../../stores/activity_action_creators';
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
-  taskSummary: TasksSelectors.getTaskSummary(state),
+  taskExtent: TasksSelectors.getTaskExtent(state),
   activity: ActivitySelectors.getData(state),
 });
 
@@ -35,20 +35,9 @@ class Activity extends Component {
     });
   }
 
-  getExtent() {
-    const { taskSummary } = this.props;
-    const createdAt = taskSummary.date * 1000;
-
-    const dateFormat = d3.time.format('%Y-%m-%d');
-    const fromDate = dateFormat(new Date(createdAt));
-    const toDate = dateFormat(new Date());
-
-    return { fromDate, toDate };
-  }
-
   fetchData() {
-    const { currentTaskId, fetchAllActivity } = this.props;
-    const { fromDate, toDate } = this.getExtent();
+    const { currentTaskId, taskExtent, fetchAllActivity } = this.props;
+    const { fromDate, toDate } = taskExtent;
 
     fetchAllActivity({ idtask: currentTaskId, from: fromDate, to: toDate })
       .then(() => this.resetLoadCount());
@@ -119,8 +108,8 @@ class Activity extends Component {
   }
 
   render() {
-    const { currentTask } = this.props;
-    const { fromDate, toDate } = this.getExtent();
+    const { currentTask, taskExtent } = this.props;
+    const { fromDate, toDate } = taskExtent;
 
     const taskName = currentTask.value.name;
     const extent = `${fromDate} - ${toDate}`;
@@ -149,7 +138,7 @@ class Activity extends Component {
 Activity.propTypes = {
   currentTaskId: PropTypes.string.isRequired,
   currentTask: PropTypes.object.isRequired,
-  taskSummary: PropTypes.object.isRequired,
+  taskExtent: PropTypes.object.isRequired,
   activity: PropTypes.array.isRequired,
   fetchAllActivity: PropTypes.func.isRequired,
 };

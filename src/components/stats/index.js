@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import d3 from 'd3';
 
 import TasksSelectors from '../../stores/tasks_selectors';
 import StatsActionCreators from '../../stores/stats_action_creators';
@@ -14,6 +13,7 @@ const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
   taskSummary: TasksSelectors.getTaskSummary(state),
+  taskExtent: TasksSelectors.getTaskExtent(state),
   statsFrom: StatsSelectors.getFromDate(state),
   statsTo: StatsSelectors.getToDate(state),
   statsByUser: StatsSelectors.getByUser(state),
@@ -25,19 +25,9 @@ const mapDispatchToProps = {
 };
 
 class Stats extends Component {
-  getExtent() {
-    const { taskSummary } = this.props;
-    const createdAt = taskSummary.date * 1000;
-
-    const dateFormat = d3.time.format('%Y-%m-%d');
-    const fromDate = dateFormat(new Date(createdAt));
-    const toDate = dateFormat(new Date());
-
-    return { fromDate, toDate };
-  }
-
   fetchData() {
-    const { fromDate, toDate } = this.getExtent();
+    const { taskExtent } = this.props;
+    const { fromDate, toDate } = taskExtent;
     this.fetchStatsByRange(fromDate, toDate);
   }
 
@@ -92,6 +82,7 @@ Stats.propTypes = {
   currentTaskId: PropTypes.string.isRequired,
   currentTask: PropTypes.object.isRequired,
   taskSummary: PropTypes.object.isRequired,
+  taskExtent: PropTypes.object.isRequired,
   statsFrom: PropTypes.string.isRequired,
   statsTo: PropTypes.string.isRequired,
   statsByUser: PropTypes.array.isRequired,
