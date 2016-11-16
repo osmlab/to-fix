@@ -37,7 +37,7 @@ let SuccessModal = React.createClass({
 
     return (
       <div className={modalClass}>
-        <div className='col4 modal-body fill-purple contain'>
+        <div className='col4 modal-body fill-green contain'>
           <button className='unround pad1 icon fr close button quiet' onClick={closeSuccessModal} />
           <div className='pad2 dark'>
             <h2>Success</h2>
