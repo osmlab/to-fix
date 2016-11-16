@@ -63,7 +63,7 @@ class Task extends Component {
       const {lng, lat} = map.getCenter();
       const zoom = map.getZoom();
 
-      const iDEditPath = `${ID_URL}/#map=${zoom}/${lng}/${lat}`;
+      const iDEditPath = `${ID_URL}/#map=${zoom}/${lat}/${lng}`;
 
       this.setState({
         iDEdit: true,
