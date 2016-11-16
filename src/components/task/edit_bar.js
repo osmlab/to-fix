@@ -97,8 +97,8 @@ let EditBar = React.createClass({
     }
 
     return (
-      <div className='editbar pin-bottomleft col12 pad4 z1'>
-        <div className='round col6 margin3'>
+      <div className='editbar pin-bottomleft col6 pad4 z1 margin3'>
+        <div className='round col12'>
           {taskActions}
           <div className='fill-lighten3 round-bottom col12 pad2x pad1y center strong inline truncate'>
             {taskTitle}
