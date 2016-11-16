@@ -1,99 +1,73 @@
-'use strict';
+import React, { PropTypes } from 'react';
+import d3 from 'd3';
 
-var React = require('react');
-var Reflux = require('reflux');
-var d3 = require('d3');
+const ShowTask = ({ task }) => {
+  const dateDisplay = d3.time.format('%B %-d');
+  const timeDisplay = d3.time.format('%-I:%-M%p');
 
-var actions = require('../../actions/actions');
-var Admin_store = require('../../stores/admin_store');
-module.exports = React.createClass({
-  mixins: [
-    Reflux.connect(Admin_store, 'task')
-  ],
-  statics: {
-    fetchData: function(params) {
-      actions.getTasks(params.task);
-    }
-  },
-  render: function() {
-    var task = this.state.task;
-    var info = '';
+  const updatedDay = dateDisplay(new Date(task.value.updated * 1000));
+  const updatedTime = timeDisplay(new Date(task.value.updated * 1000));
 
-    if (typeof task !== 'undefined') {
-      var dateDisplay = d3.time.format('%B %-d');
-      var timeDisplay = d3.time.format('%-I:%-M%p');
-      var actionDay = dateDisplay(new Date(task.updated * 1000));
-      var actionTime = timeDisplay(new Date(task.updated * 1000));
-      var status = '';
-      (task.status) ? status = 'Completed': status = 'Items remaining to be done';
-      info = ( <div>
-                  <div className='rows'>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Title</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                        {task.title}
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Id Task</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                        {task.id}
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Source</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                        {task.source}
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Description</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                        {task.description}
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Changeset comment</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                        {task.changeset_comment}
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Updated</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                      {actionDay}<span className='quiet'> {actionTime} </span>
-                      </div>
-                    </div>
-                    <div className='clearfix fill-darken1 dark mobile-cols'>
-                      <div className='fl strong pad1 fill-darken1 editor-key'>
-                        <span className='capitalize'>Status</span>
-                      </div>
-                      <div className='pad1 fl space'>
-                      {status}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-      );
-    }
+  const status = (task.isCompleted) ? 'Completed.' : 'Items remaining to be done.';
 
-    return (
-        /* jshint ignore:start */
-        <div>{info}</div>
-        /* jshint ignore:end */
-    );
+  return (
+    <div className='rows'>
+      <div className='clearfix fill-darken1 dark mobile-cols'>
+        <div className='col3 fl strong pad1 fill-darken1 editor-key'>
+          <span className='capitalize'>Title</span>
+        </div>
+        <div className='col9 pad1 fl space'>
+          {task.value.name}
+        </div>
+      </div>
+      <div className='clearfix fill-darken1 dark mobile-cols'>
+        <div className='col3 fl strong pad1 fill-darken1 editor-key'>
+          <span className='capitalize'>Task ID</span>
+        </div>
+        <div className='col9 pad1 fl space'>
+          {task.idtask}
+        </div>
+      </div>
+      <div className='clearfix fill-darken1 dark mobile-cols'>
+        <div className='col3 fl strong pad1 fill-darken1 editor-key'>
+          <span className='capitalize'>Description</span>
+        </div>
+        <div className='col9 pad1 fl space'>
+          {task.value.description}
+        </div>
+      </div>
+      <div className='clearfix fill-darken1 dark mobile-cols'>
+        <div className='col3 fl strong pad1 fill-darken1 editor-key'>
+          <span className='capitalize'>Changeset comment</span>
+        </div>
+        <div className='col9 pad1 fl space'>
+          {task.value.changesetComment}
+        </div>
+      </div>
+      <div className='clearfix fill-darken1 dark mobile-cols'>
+        <div className='col3 fl strong pad1 fill-darken1 editor-key'>
+          <span className='capitalize'>Updated</span>
+        </div>
+        <div className='col9 pad1 fl space'>
+          {updatedDay}
+          {' '}
+          <span className='quiet'>{updatedTime}</span>
+        </div>
+      </div>
+      <div className='clearfix fill-darken1 dark mobile-cols'>
+        <div className='col3 fl strong pad1 fill-darken1 editor-key'>
+          <span className='capitalize'>Status</span>
+        </div>
+        <div className='col9 pad1 fl space'>
+          {status}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  }
-});
+ShowTask.propTypes = {
+  task: PropTypes.object.isRequired,
+};
+
+export default ShowTask;

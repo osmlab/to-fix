@@ -1,9 +1,6 @@
-*.bz2
-*.txt
-*.gml
-*.ldb*
-*.zip
-*.csv
-node_modules/
-.lev_history
-dist/bundle.js
+node_modules
+coverage
+build
+.DS_Store
+.env
+npm-debug.log

@@ -1,78 +1,37 @@
-'use strict';
+import React from 'react';
+import { Route, IndexRedirect } from 'react-router';
 
-var React = require('react');
-var Router = require('react-router');
-var NotFoundRoute = Router.NotFoundRoute;
-var Navigation = Router.Navigation;
-var Link = Router.Link;
-var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
-var DefaultRoute = Router.DefaultRoute;
-var Redirect = Router.Redirect;
-var Reflux = require('reflux');
-var store = require('store');
+import App from './components/app';
+import Task from './components/task';
+import Stats from './components/stats';
+import Admin from './components/admin';
+import Activity from './components/activity';
 
-var TasksStore = require('./stores/tasks_store');
-var Header = require('./components/shared/header');
-var Sidebar = require('./components/shared/sidebar');
-var Task = require('./components/task');
-var Stats = require('./components/stats');
-var Activity = require('./components/activity');
-var Modal = require('./components/shared/modal');
-var ErrorDialog = require('./components/shared/error');
-var Admin = require('./components/admin');
-//var taskobj = require('./mixins/taskobj');
+import store from './stores/store';
+import TasksActionCreators from './stores/tasks_action_creators';
 
-// As there isn't a proper initial path for
+import { DEFAULT_TASK_ID } from './config';
 
-var firstTask = '/task/tigerdelta';// to-fix, redirect start tigerdelta
+const onEnter = (nextState) => {
+  const nextTaskId = nextState.params.task || DEFAULT_TASK_ID;
+  store.dispatch(TasksActionCreators.selectTask({ idtask: nextTaskId }));
+};
 
-var App = React.createClass({
-  mixins: [
-    Reflux.listenTo(TasksStore, 'onTaksLoad')
-  ],
-  getInitialState: function() {
-    return {
-      tasks: TasksStore.loadTasks(),
-      loading: true
-    };
-  },
-  onTaksLoad: function(tasks) {
-    store.set('tasks', tasks);
-    this.setState({
-      tasks: tasks,
-      loading: false
-    });
-  },
-  render: function () {
-    var tasks = this.state.tasks;
-    var loading = (this.state.loading) ? 'loading' : '';
+const onChange = (prevState, nextState) => {
+  const prevTaskId = prevState.params.task;
+  const nextTaskId = nextState.params.task;
 
-    return (
-      <div className={loading}>
-        {tasks && <div>
-          <Header />
-          <Sidebar taskItems={this.state.tasks} />
-          <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
-            <RouteHandler />
-            <ErrorDialog />
-          </div>
-          <Modal />
-        </div>}
-      </div>
-    );
+  if (prevTaskId !== nextTaskId) {
+    store.dispatch(TasksActionCreators.selectTask({ idtask: nextTaskId }));
   }
-});
+};
 
-module.exports = (
-  /* jshint ignore:start */
-  <Route path='/' handler={App}>
-    <Route name='task' path='/task/:task' handler={Task} />
-    <Route name='activity' path='/activity/:task' handler={Activity} />
-    <Route name='stats' path='/stats/:task' handler={Stats} />
-    <Route name='admin' path='/admin/:task' handler={Admin} />
-    <DefaultRoute handler={Task} />
-    <Redirect from='/' to={firstTask} />
+export default (
+  <Route path='/' component={App} onEnter={onEnter} onChange={onChange}>
+    <IndexRedirect to={`/task/${DEFAULT_TASK_ID}`} />
+    <Route name='task' path='/task/:task' component={Task} />
+    <Route name='activity' path='/activity/:task' component={Activity} />
+    <Route name='stats' path='/stats/:task' component={Stats} />
+    <Route name='admin' path='/admin/:task' component={Admin} />
   </Route>
-  /* jshint ignore:end */
 );
