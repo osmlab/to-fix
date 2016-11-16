@@ -10,6 +10,7 @@ import EditBar from './edit_bar';
 
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_GEOCODER_URL, JOSM_RC_URL, ID_URL } from '../../config';
 import ItemsActionCreators from '../../stores/items_action_creators';
+import ModalsActionCreators from '../../stores/modals_action_creators';
 import ItemsSelectors from '../../stores/items_selectors';
 import UserSelectors from '../../stores/user_selectors';
 import SettingsSelectors from '../../stores/settings_selectors';
@@ -26,6 +27,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   fetchRandomItem: ItemsActionCreators.fetchRandomItem,
+  openErrorModal: ModalsActionCreators.openErrorModal,
 };
 
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -53,7 +55,8 @@ class Task extends Component {
       const query = { left, right, top, bottom };
       const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
 
-      fetch(`${JOSM_RC_URL}?${params}`);
+      fetch(`${JOSM_RC_URL}?${params}`)
+        .catch(() => this.props.openErrorModal('Could not connect to JOSM remote control.'));
     }
 
     if (editor === 'id') {
@@ -264,6 +267,7 @@ Task.propTypes = {
   currentItem: PropTypes.object,
   currentItemId: PropTypes.string,
   fetchRandomItem: PropTypes.func.isRequired,
+  openErrorModal: PropTypes.func.isRequired,
 };
 
 Task = connect(
