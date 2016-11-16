@@ -62,6 +62,7 @@ let EditBar = React.createClass({
     updateItem({ idtask: currentTaskId, payload }).then(onUpdate);
   },
 
+  edit() { this.props.onTaskEdit() },
   skip() { this.updateItem('skip') },
   fixed() { this.updateItem('fixed') },
   noterror() { this.updateItem('noterror') },
