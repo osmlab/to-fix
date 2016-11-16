@@ -96,9 +96,9 @@ class EditTask extends Component {
     const { task } = this.props;
     const { description, changesetComment, password } = this.state;
 
-    // if (!task.isComplete) {
-    //   return <h2>Cannot update this task before complete.</h2>;
-    // }
+    if (!task.isComplete) {
+      return <h2>Cannot update this task before complete.</h2>;
+    }
 
     return (
       <form className='dark' onSubmit={this.handleSubmit}>
