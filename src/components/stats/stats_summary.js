@@ -9,11 +9,9 @@ const renderContributions = (statsByUser) => {
   }
 
   return statsByUser.map((stats, i) => {
-    const { edit, fixed, skip, noterror, user } = stats;
+    const { edit, fixed, skip, noterror, total, user } = stats;
 
     const profile = `${USER_PROFILE_URL}/${user}`;
-    const total = edit + fixed + skip + noterror;
-
     const numFormat = d3.format(',');
 
     return (
