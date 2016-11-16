@@ -9,6 +9,7 @@ const auth = osmAuth({
   oauth_secret: OAUTH_CONSUMER_SECRET,
   auto: false,
   landing: 'oauth-complete.html',
+  url: 'https://www.openstreetmap.org',
 });
 
 export const isAuthenticated = () => auth.authenticated();
