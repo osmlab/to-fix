@@ -37,10 +37,18 @@ let EditBar = React.createClass({
   mixins: [KeyBinding],
 
   keybindings: {
-    'e': function(e) { this.edit() },
-    's': function(e) { this.skip() },
-    'f': function(e) { this.fixed() },
-    'n': function(e) { this.noterror() },
+    'e': function(e) {
+      if (this.props.isAuthenticated) this.edit()
+    },
+    's': function(e) {
+      if (this.props.isAuthenticated) this.skip()
+    },
+    'f': function(e) {
+      if (this.props.isAuthenticated) this.fixed()
+    },
+    'n': function(e) {
+      if (this.props.isAuthenticated) this.noterror()
+    },
   },
 
   updateItem(action) {
