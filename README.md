@@ -25,4 +25,4 @@ To build and publish to `gh-pages`, run
 npm build && npm deploy
 ```
 
-You can configure some details at [src/confi](src/config).
+You can configure some details at [src/config](src/config).
