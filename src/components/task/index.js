@@ -97,11 +97,11 @@ class Task extends Component {
 
   geolocate = (center) => {
     const [lng, lat] = center;
-    const addressRegex = /address./;
+    const placeRegex = /place./;
 
-    fetch(`${MAPBOX_GEOCODER_URL}/mapbox.places/${lng},${lat}.json?types=address&access_token=${MAPBOX_ACCESS_TOKEN}`)
+    fetch(`${MAPBOX_GEOCODER_URL}/mapbox.places/${lng},${lat}.json?types=place&access_token=${MAPBOX_ACCESS_TOKEN}`)
       .then(data => data.json())
-      .then(json => (json.features.length && json.features.find(f => addressRegex.test(f.id)).place_name) || '')
+      .then(json => (json.features.length && json.features.find(f => placeRegex.test(f.id)).place_name) || '')
       .then(geolocation => this.setState({ geolocation }));
   }
 
