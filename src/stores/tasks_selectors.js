@@ -9,6 +9,12 @@ const getAllTasks = state => (
     .sort((a, b) => b.value.updated - a.value.updated)
 );
 
+const getLatestTaskId = state => {
+  if (state.allIds.length !== 0) {
+    return getAllTasks(state)[0].idtask;
+  }
+}
+
 const getCompletedTasks = state => (
   getAllTasks(state)
     .filter(task => task.isCompleted)
@@ -44,6 +50,7 @@ const getTaskExtent = state => {
 
 const TasksSelectors = {
   getAllTasks: createSelector(tasksSelector, getAllTasks),
+  getLatestTaskId: createSelector(tasksSelector, getLatestTaskId),
   getCompletedTasks: createSelector(tasksSelector, getCompletedTasks),
   getActiveTasks: createSelector(tasksSelector, getActiveTasks),
   getCurrentTask: createSelector(tasksSelector, getCurrentTask),
