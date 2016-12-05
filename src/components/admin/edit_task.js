@@ -117,6 +117,7 @@ class EditTask extends Component {
             type='text'
             className='col12 block clean resize'
             value={description}
+            required
             onChange={this.handleDescriptionChange} />
         </fieldset>
         <fieldset className='pad2x'>
@@ -125,6 +126,7 @@ class EditTask extends Component {
             type='text'
             className='col12 block clean resize'
             value={changesetComment}
+            required
             onChange={this.handleChangesetCommentChange} />
         </fieldset>
         <fieldset className='pad2x'>
@@ -134,6 +136,7 @@ class EditTask extends Component {
             className='col12 block clean'
             placeholder='Password'
             value={password}
+            required
             onChange={this.handlePasswordChange} />
         </fieldset>
         <fieldset className='pad2x'>

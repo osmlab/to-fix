@@ -90,6 +90,7 @@ class AddTask extends Component {
             className='col12 block clean'
             placeholder='Task name'
             value={name}
+            required
             onChange={this.handleNameChange} />
         </fieldset>
         <fieldset className='pad2x'>
@@ -99,6 +100,7 @@ class AddTask extends Component {
             className='col12 block clean resize'
             placeholder='Task description'
             value={description}
+            required
             onChange={this.handleDescriptionChange} />
         </fieldset>
         <fieldset className='pad2x'>
@@ -108,6 +110,7 @@ class AddTask extends Component {
             className='col12 block clean resize'
             placeholder='Changeset comment for this task'
             value={changesetComment}
+            required
             onChange={this.handleChangesetCommentChange} />
         </fieldset>
         <fieldset className='pad2x'>
@@ -117,6 +120,7 @@ class AddTask extends Component {
             className='col12 block clean'
             placeholder='Password'
             value={password}
+            required
             onChange={this.handlePasswordChange} />
         </fieldset>
         <fieldset className='pad2x'>
