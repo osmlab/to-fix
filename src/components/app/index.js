@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import TasksActionCreators from '../../stores/tasks_action_creators';
 import TasksSelectors from '../../stores/tasks_selectors';
@@ -13,6 +14,7 @@ import ErrorModal from '../shared/error_modal';
 
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  latestTaskId: TasksSelectors.getLatestTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
   isLoading: LoadingSelectors.getIsLoading(state),
 });
@@ -28,7 +30,14 @@ class App extends Component {
 
   fetchData() {
     const { fetchAllTasks } = this.props;
-    fetchAllTasks()
+    fetchAllTasks();
+  }
+
+  componentDidUpdate() {
+    const { currentTaskId, latestTaskId, router } = this.props;
+    if (!currentTaskId && latestTaskId) {
+      router.push(`/task/${latestTaskId}`);
+    }
   }
 
   render() {
@@ -53,15 +62,17 @@ class App extends Component {
 }
 
 App.propTypes = {
-  currentTaskId: PropTypes.string.isRequired,
+  router: PropTypes.object.isRequired,
+  currentTaskId: PropTypes.string,
+  latestTaskId: PropTypes.string,
   currentTask: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   fetchAllTasks: PropTypes.func.isRequired,
 };
 
-App = connect(
+App = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(App);
+)(App));
 
 export default App;
