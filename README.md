@@ -22,7 +22,7 @@ npm install && npm start
 To build and publish to `gh-pages`, run 
 
 ```
-npm build && npm deploy
+npm deploy
 ```
 
 You can configure some details at [src/config](src/config).
