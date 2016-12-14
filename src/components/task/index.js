@@ -115,6 +115,7 @@ class Task extends Component {
 
   updateSource(id, ...features) {
     const { map } = this.state;
+    console.log(features);
     const geojson = featureCollection(features);
     map.getSource(id).setData(geojson);
   }
@@ -152,7 +153,8 @@ class Task extends Component {
       type: 'fill',
       source: id,
       paint: {
-        'fill-color': '#dc322f',
+        'fill-opacity': 0,
+        'fill-outline-color': '#dc322f',
       },
     });
   }
