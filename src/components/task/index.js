@@ -113,16 +113,21 @@ class Task extends Component {
     });
   }
 
-  updateSource(id, ...features) {
+  updateSource(id, feature) {
     const { map } = this.state;
-    console.log(features);
-    const geojson = featureCollection(features);
+    const flattenedFeatures = this.flattenRelations(feature);
+    const geojson = featureCollection(flattenedFeatures);
     map.getSource(id).setData(geojson);
   }
 
   removeSource(id) {
     const { map } = this.state;
     map.removeSource(id);
+  }
+
+  flattenRelations(feature) {
+    const relations = feature.properties.relations || [];
+    return [feature].concat(relations);
   }
 
   addLayers(id) {
