@@ -113,15 +113,21 @@ class Task extends Component {
     });
   }
 
-  updateSource(id, ...features) {
+  updateSource(id, feature) {
     const { map } = this.state;
-    const geojson = featureCollection(features);
+    const flattenedFeatures = this.flattenRelations(feature);
+    const geojson = featureCollection(flattenedFeatures);
     map.getSource(id).setData(geojson);
   }
 
   removeSource(id) {
     const { map } = this.state;
     map.removeSource(id);
+  }
+
+  flattenRelations(feature) {
+    const relations = feature.properties.relations || [];
+    return [feature].concat(relations);
   }
 
   addLayers(id) {
@@ -152,7 +158,8 @@ class Task extends Component {
       type: 'fill',
       source: id,
       paint: {
-        'fill-color': '#dc322f',
+        'fill-opacity': 0,
+        'fill-outline-color': '#dc322f',
       },
     });
   }
