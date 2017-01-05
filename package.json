@@ -29,7 +29,7 @@
     "react-scripts": "0.8.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "deploy": "npm run build && gh-pages -d build"
