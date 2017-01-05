@@ -36,9 +36,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Persisted state
 const persistedState = {
-  user: {
-    isAuthenticated: api.osm.isAuthenticated(),
-  },
   settings: {
     sidebar: safeStorage.get('sidebar') || true,
     editor: safeStorage.get('editor') || 'id',
