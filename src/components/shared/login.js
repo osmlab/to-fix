@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { USER_PROFILE_URL } from '../../config';
+import { USER_PROFILE_URL, TASK_SERVER_URL } from '../../config';
 import UserActionCreators from '../../stores/user_action_creators';
 import UserSelectors from '../../stores/user_selectors';
 import ModalsActionCreators from '../../stores/modals_action_creators';
@@ -15,19 +15,46 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   login: UserActionCreators.login,
-  fetchUserDetails: UserActionCreators.fetchUserDetails,
   openSettingsModal: ModalsActionCreators.openSettingsModal,
 };
 
 class Login extends Component {
-  componentDidMount() {
-    const { isAuthenticated, fetchUserDetails } = this.props;
-    if (isAuthenticated) fetchUserDetails();
+  onLoginClick = () => {
+    const { login } = this.props;
+
+    const popup = this.createPopup(600, 550, 'oauth_popup');
+    popup.location = `${TASK_SERVER_URL}/connect/openstreetmap`;
+
+    window.authComplete = (location) => {
+      const queryString = location.split('?')[1];
+      const creds = this.parseQueryString(queryString);
+      login(creds);
+
+      delete window.authComplete;
+    }
   }
 
-  onLoginClick = () => {
-    const { login, fetchUserDetails } = this.props;
-    login().then(fetchUserDetails);
+  createPopup(width, height, title) {
+    const settings = [
+      ['width', width], ['height', height],
+      ['left', screen.width / 2 - width / 2],
+      ['top', screen.height / 2 - height / 2]
+    ].map(x => x.join('='))
+     .join(',');
+
+    const popup = window.open('about:blank', title, settings);
+    return popup;
+  }
+
+  parseQueryString(queryString) {
+    const query = {};
+
+    queryString.split('&').forEach(pair => {
+      const [key, value] = pair.split('=');
+      query[decodeURIComponent(key)] = decodeURIComponent(value) || null;
+    });
+
+    return query;
   }
 
   renderLoginState() {
@@ -75,7 +102,6 @@ Login.propTypes = {
   osmid: PropTypes.string,
   avatar: PropTypes.string,
   login: PropTypes.func.isRequired,
-  fetchUserDetails: PropTypes.func.isRequired,
   openSettingsModal: PropTypes.func.isRequired,
 };
 
