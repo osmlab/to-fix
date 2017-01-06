@@ -2,7 +2,6 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
-import api from '../api';
 import safeStorage from '../utils/safe_storage';
 
 import user from './user_reducer';
