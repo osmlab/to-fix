@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import filesize from 'file-size';
 
 import { AsyncStatus } from '../../stores/async_action';
+import UserSelectors from '../../stores/user_selectors';
 import ModalsActionCreators from '../../stores/modals_action_creators';
+
+const mapStateToProps = (state) => ({
+  token: UserSelectors.getToken(state),
+});
 
 const mapDispatchToProps = {
   openSuccessModal: ModalsActionCreators.openSuccessModal,
@@ -13,7 +18,6 @@ class EditTask extends Component {
   state = {
     description: '',
     changesetComment: '',
-    password: '',
     file: {},
   }
 
@@ -27,11 +31,6 @@ class EditTask extends Component {
     this.setState({ changesetComment });
   }
 
-  handlePasswordChange = (e) => {
-    const password = e.target.value;
-    this.setState({ password });
-  }
-
   handleFileInputChange = (e) => {
     const file = e.target.files[0];
     this.setState({ file });
@@ -40,10 +39,11 @@ class EditTask extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { onTaskEdit } = this.props;
+    const { onTaskEdit, token } = this.props;
     const formData = this.getFormData();
+    const payload = { formData, token };
 
-    onTaskEdit(formData)
+    onTaskEdit(payload)
       .then(response => {
         if (response.status === AsyncStatus.SUCCESS) {
           this.props.openSuccessModal('Task updated succesfully');
@@ -53,7 +53,7 @@ class EditTask extends Component {
 
   getFormData = () => {
     const { task } = this.props;
-    const { description, changesetComment, password, file } = this.state;
+    const { description, changesetComment, file } = this.state;
 
     const formData = new window.FormData();
 
@@ -61,7 +61,6 @@ class EditTask extends Component {
     formData.append('name', task.value.name);
     formData.append('description', description);
     formData.append('changesetComment', changesetComment);
-    formData.append('password', password);
     formData.append('isCompleted', false);
     formData.append('file', file);
 
@@ -95,11 +94,11 @@ class EditTask extends Component {
 
   render() {
     const { task } = this.props;
-    const { description, changesetComment, password, file } = this.state;
+    const { description, changesetComment, file } = this.state;
 
-    if (!task.isComplete) {
-      return <h2>Cannot update this task before complete.</h2>;
-    }
+    // if (!task.isComplete) {
+    //   return <h2>Cannot update this task before complete.</h2>;
+    // }
 
     return (
       <form className='dark' onSubmit={this.handleSubmit}>
@@ -128,16 +127,6 @@ class EditTask extends Component {
             value={changesetComment}
             required
             onChange={this.handleChangesetCommentChange} />
-        </fieldset>
-        <fieldset className='pad2x'>
-          <label>Password</label>
-          <input
-            type='password'
-            className='col12 block clean'
-            placeholder='Password'
-            value={password}
-            required
-            onChange={this.handlePasswordChange} />
         </fieldset>
         <fieldset className='pad2x'>
           <input
@@ -171,7 +160,7 @@ EditTask.propTypes = {
 };
 
 EditTask = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(EditTask);
 
