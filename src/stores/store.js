@@ -2,7 +2,6 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
-import api from '../api';
 import safeStorage from '../utils/safe_storage';
 
 import user from './user_reducer';
@@ -36,9 +35,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Persisted state
 const persistedState = {
-  user: {
-    isAuthenticated: api.osm.isAuthenticated(),
-  },
   settings: {
     sidebar: safeStorage.get('sidebar') || true,
     editor: safeStorage.get('editor') || 'id',

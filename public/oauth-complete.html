@@ -2,9 +2,8 @@
 <html>
   <body>
   <script>
-    // This page is called when the oauth handshake 
-    // has completed with OpenStreetMap via `osm-auth`
-    // See its NPM package for details
+    // This page is called when the oauth
+    // handshake with the server has completed.
     opener.authComplete(window.location.href);
     window.close();
   </script>
