@@ -10,16 +10,16 @@ export const fetchTaskById = ({ idtask }) => (
   fetchJSON(`${baseURL}/tasks/${idtask}`)
 );
 
-export const createTask = (payload) => (
-  fetchForm(`${baseURL}/tasks`, { method: 'POST', body: payload })
+export const createTask = ({ token, formData }) => {
+  return fetchForm(`${baseURL}/tasks`, { method: 'POST', headers: { 'Authorization': token }, body: formData })
+};
+
+export const updateTask = ({ token, formData }) => (
+  fetchForm(`${baseURL}/tasks`, { method: 'PUT', headers: { 'Authorization': token }, body: formData })
 );
 
-export const updateTask = (payload) => (
-  fetchForm(`${baseURL}/tasks`, { method: 'PUT', body: payload })
-);
-
-export const destroyTask = (payload) => (
-  fetchJSON(`${baseURL}/tasks`, { method: 'DELETE', body: JSON.stringify(payload) })
+export const destroyTask = ({ token, payload }) => (
+  fetchJSON(`${baseURL}/tasks`, { method: 'DELETE', headers: { 'Authorization': token }, body: JSON.stringify(payload) })
 );
 
 // Items
