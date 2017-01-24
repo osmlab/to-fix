@@ -6,34 +6,37 @@ const initialState = {
   osmid: null,
   username: null,
   avatar: null,
+  role: null,
+  token: null,
 };
 
 const user = (state = initialState, action) => {
   switch(action.type) {
-    case UserConstants.USER_LOGIN:
-      switch(action.status) {
-        case AsyncStatus.SUCCESS:
-          return {
-            isAuthenticated: true,
-          };
-        case AsyncStatus.FAILURE:
-          return {
-            isAuthenticated: false,
-          };
-        default:
-          return state;
-      }
+    case UserConstants.USER_LOGGED_IN:
+      return {
+        isAuthenticated: true,
+        osmid: action.creds.id,
+        username: action.creds.user,
+        avatar: action.creds.img,
+        role: action.creds.role,
+        token: action.creds.token
+      };
 
     case UserConstants.USER_FETCH_USER_DETAILS:
       switch(action.status) {
         case AsyncStatus.SUCCESS:
           return {
             isAuthenticated: true,
-            ...action.response,
+            osmid: action.response.id,
+            username: action.response.user,
+            avatar: action.response.img,
+            role: action.response.role,
+            token: action.params.token
           };
         case AsyncStatus.FAILURE:
           return {
             isAuthenticated: false,
+            token: null,
           };
         default:
           return state;
@@ -42,6 +45,7 @@ const user = (state = initialState, action) => {
     case UserConstants.USER_LOGOUT:
       return {
         isAuthenticated: false,
+        token: null,
       };
 
     default:

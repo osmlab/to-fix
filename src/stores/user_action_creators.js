@@ -1,22 +1,24 @@
-import api from '../api';
+import { server } from '../services';
 import { asyncAction } from './async_action';
 import UserConstants from '../constants/user_constants';
 
 const UserActionCreators = {
-  login: asyncAction({
-    type: UserConstants.USER_LOGIN,
-    asyncCall: api.osm.login,
-  }),
+  login: (creds) => (dispatch) => {
+    dispatch({
+      type: UserConstants.USER_LOGGED_IN,
+      creds,
+    });
+  },
 
   fetchUserDetails: asyncAction({
     type: UserConstants.USER_FETCH_USER_DETAILS,
-    asyncCall: api.osm.fetchUserDetails,
+    asyncCall: server.fetchUserDetails,
   }),
 
-  logout: () => (dispatch) => {
-    api.osm.logout();
-    dispatch({ type: UserConstants.USER_LOGOUT });
-  },
+  logout: asyncAction({
+    type: UserConstants.USER_LOGOUT,
+    asyncCall: server.logout,
+  }),
 };
 
 export default UserActionCreators;
