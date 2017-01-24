@@ -18,6 +18,7 @@ import TasksSelectors from '../../stores/tasks_selectors';
 
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
+  currentTaskType: TasksSelectors.getCurrentTaskType(state),
   user: UserSelectors.getUsername(state),
   editor: SettingsSelectors.getEditorSetting(state),
   sidebar: SettingsSelectors.getSidebarSetting(state),
@@ -85,13 +86,13 @@ class Task extends Component {
   }
 
   fetchNextItem = () => {
-    const { user, editor, currentTaskId, fetchRandomItem } = this.props;
+    const { user, editor, currentTaskId, currentTaskType, fetchRandomItem } = this.props;
     const payload = {
       user: user || '',
       editor,
     };
 
-    fetchRandomItem({ idtask: currentTaskId, payload })
+    fetchRandomItem({ taskId: currentTaskId, taskType: currentTaskType, payload })
       .then(() => this.setState({ geolocation: null }));
   }
 

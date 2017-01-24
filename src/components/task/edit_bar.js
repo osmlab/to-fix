@@ -11,6 +11,7 @@ import ItemsActionCreators from '../../stores/items_action_creators';
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
+  currentTaskType: TasksSelectors.getCurrentTaskType(state),
   user: UserSelectors.getUsername(state),
   isAuthenticated: UserSelectors.getIsAuthenticated(state),
   editor: SettingsSelectors.getEditorSetting(state),
@@ -25,6 +26,7 @@ let EditBar = React.createClass({
   propTypes: {
     currentTaskId: PropTypes.string.isRequired,
     currentTask: PropTypes.object.isRequired,
+    currentTaskType: PropTypes.string.isRequired,
     user: PropTypes.string,
     isAuthenticated: PropTypes.bool.isRequired,
     editor: PropTypes.string.isRequired,
@@ -52,14 +54,14 @@ let EditBar = React.createClass({
   },
 
   updateItem(action) {
-    const { updateItem, user, editor, currentTaskId, currentItemId, onUpdate } = this.props;
+    const { updateItem, user, editor, currentTaskId, currentTaskType, currentItemId, onUpdate } = this.props;
     const payload = {
       user,
       editor,
       action,
       key: currentItemId,
     };
-    updateItem({ idtask: currentTaskId, payload }).then(onUpdate);
+    updateItem({ taskId: currentTaskId, taskType: currentTaskType, payload }).then(onUpdate);
   },
 
   edit() { this.props.onTaskEdit() },
