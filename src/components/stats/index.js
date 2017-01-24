@@ -12,8 +12,8 @@ import StatsSummary from './stats_summary';
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
-  taskSummary: TasksSelectors.getTaskSummary(state),
-  taskExtent: TasksSelectors.getTaskExtent(state),
+  currentTaskSummary: TasksSelectors.getCurrentTaskSummary(state),
+  currentTaskExtent: TasksSelectors.getCurrentTaskExtent(state),
   statsFrom: StatsSelectors.getFromDate(state),
   statsTo: StatsSelectors.getToDate(state),
   statsByUser: StatsSelectors.getByUser(state),
@@ -26,14 +26,14 @@ const mapDispatchToProps = {
 
 class Stats extends Component {
   fetchData() {
-    const { taskExtent } = this.props;
-    const { fromDate, toDate } = taskExtent;
+    const { currentTaskExtent } = this.props;
+    const { fromDate, toDate } = currentTaskExtent;
     this.fetchStatsByRange(fromDate, toDate);
   }
 
   fetchStatsByRange = (fromDate, toDate) => {
     const { fetchAllStats, currentTaskId } = this.props;
-    fetchAllStats({ idtask: currentTaskId, from: fromDate, to: toDate });
+    fetchAllStats({ taskId: currentTaskId, from: fromDate, to: toDate });
   }
 
   componentDidMount() {
@@ -54,7 +54,7 @@ class Stats extends Component {
       statsTo,
       statsByUser,
       statsByDate,
-      taskSummary,
+      currentTaskSummary,
     } = this.props;
 
     return (
@@ -62,7 +62,7 @@ class Stats extends Component {
         <div className='col10 pad2 dark'>
           <StatsHeader
             task={currentTask}
-            taskSummary={taskSummary}
+            taskSummary={currentTaskSummary}
             statsFrom={statsFrom}
             statsTo={statsTo} />
           <StatsGraph
@@ -81,8 +81,8 @@ class Stats extends Component {
 Stats.propTypes = {
   currentTaskId: PropTypes.string.isRequired,
   currentTask: PropTypes.object.isRequired,
-  taskSummary: PropTypes.object.isRequired,
-  taskExtent: PropTypes.object.isRequired,
+  currentTaskSummary: PropTypes.object.isRequired,
+  currentTaskExtent: PropTypes.object.isRequired,
   statsFrom: PropTypes.string.isRequired,
   statsTo: PropTypes.string.isRequired,
   statsByUser: PropTypes.array.isRequired,
