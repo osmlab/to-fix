@@ -12,7 +12,6 @@
     "lodash.union": "^4.6.0",
     "mapbox-gl": "^0.26.0",
     "normalizr": "^2.2.1",
-    "osm-auth": "^1.0.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-keybinding": "^3.0.0",
@@ -29,7 +28,7 @@
     "react-scripts": "0.8.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "deploy": "npm run build && gh-pages -d build"

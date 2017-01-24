@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import filesize from 'file-size';
 
 import { AsyncStatus } from '../../stores/async_action';
+import UserSelectors from '../../stores/user_selectors';
 import ModalsActionCreators from '../../stores/modals_action_creators';
+
+const mapStateToProps = (state) => ({
+  token: UserSelectors.getToken(state),
+});
 
 const mapDispatchToProps = {
   openSuccessModal: ModalsActionCreators.openSuccessModal,
@@ -14,7 +19,6 @@ class AddTask extends Component {
     name: '',
     description: '',
     changesetComment: '',
-    password: '',
     file: {},
   }
 
@@ -39,11 +43,6 @@ class AddTask extends Component {
     this.setState({ changesetComment });
   }
 
-  handlePasswordChange = (e) => {
-    const password = e.target.value;
-    this.setState({ password });
-  }
-
   handleFileInputChange = (e) => {
     const file = e.target.files[0];
     this.setState({ file });
@@ -52,10 +51,10 @@ class AddTask extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { onTaskAdd } = this.props;
+    const { onTaskAdd, token } = this.props;
     const formData = this.getFormData();
 
-    onTaskAdd(formData)
+    onTaskAdd({ token, payload: formData })
       .then(response => {
         if (response.status === AsyncStatus.SUCCESS) {
           this.props.openSuccessModal('Task created succesfully');
@@ -65,21 +64,20 @@ class AddTask extends Component {
   }
 
   getFormData = () => {
-    const { name, description, changesetComment, password, file } = this.state;
+    const { name, description, changesetComment, file } = this.state;
 
     const formData = new window.FormData();
 
     formData.append('name', name);
     formData.append('description', description);
     formData.append('changesetComment', changesetComment);
-    formData.append('password', password);
     formData.append('file', file);
 
     return formData;
   }
 
   render() {
-    const { name, description, changesetComment, password, file } = this.state;
+    const { name, description, changesetComment, file } = this.state;
 
     return (
       <form className='dark' onSubmit={this.handleSubmit}>
@@ -114,16 +112,6 @@ class AddTask extends Component {
             onChange={this.handleChangesetCommentChange} />
         </fieldset>
         <fieldset className='pad2x'>
-          <label>Password</label>
-          <input
-            type='password'
-            className='col12 block clean'
-            placeholder='Password'
-            value={password}
-            required
-            onChange={this.handlePasswordChange} />
-        </fieldset>
-        <fieldset className='pad2x'>
           <input
             type='file'
             className='hidden'
@@ -154,7 +142,7 @@ AddTask.propTypes = {
 };
 
 AddTask = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(AddTask);
 

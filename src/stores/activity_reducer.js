@@ -16,7 +16,7 @@ const activity = (state = initialState, action) => {
   }
 
   switch(action.type) {
-    case ActivityConstants.ACTIVITY_FETCH_ALL:
+    case ActivityConstants.ACTIVITY_FETCH_RECENT:
       if (action.status === AsyncStatus.SUCCESS) {
         const { data, updated } = action.response;
         const { from, to } = action.params;

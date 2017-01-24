@@ -10,12 +10,12 @@ import ActivityActionCreators from '../../stores/activity_action_creators';
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
-  taskExtent: TasksSelectors.getTaskExtent(state),
+  currentTaskExtent: TasksSelectors.getCurrentTaskExtent(state),
   activity: ActivitySelectors.getData(state),
 });
 
 const mapDispatchToProps = {
-  fetchAllActivity: ActivityActionCreators.fetchAllActivity,
+  fetchRecentActivity: ActivityActionCreators.fetchRecentActivity,
 };
 
 class Activity extends Component {
@@ -36,10 +36,9 @@ class Activity extends Component {
   }
 
   fetchData() {
-    const { currentTaskId, taskExtent, fetchAllActivity } = this.props;
-    const { fromDate, toDate } = taskExtent;
+    const { currentTaskId, fetchRecentActivity } = this.props;
 
-    fetchAllActivity({ idtask: currentTaskId, from: fromDate, to: toDate })
+    fetchRecentActivity({ taskId: currentTaskId })
       .then(() => this.resetLoadCount());
   }
 
@@ -108,8 +107,8 @@ class Activity extends Component {
   }
 
   render() {
-    const { currentTask, taskExtent } = this.props;
-    const { fromDate, toDate } = taskExtent;
+    const { currentTask, currentTaskExtent } = this.props;
+    const { fromDate, toDate } = currentTaskExtent;
 
     const taskName = currentTask.value.name;
     const extent = `${fromDate} - ${toDate}`;
@@ -138,9 +137,9 @@ class Activity extends Component {
 Activity.propTypes = {
   currentTaskId: PropTypes.string.isRequired,
   currentTask: PropTypes.object.isRequired,
-  taskExtent: PropTypes.object.isRequired,
+  currentTaskExtent: PropTypes.object.isRequired,
   activity: PropTypes.array.isRequired,
-  fetchAllActivity: PropTypes.func.isRequired,
+  fetchRecentActivity: PropTypes.func.isRequired,
 };
 
 Activity = connect(

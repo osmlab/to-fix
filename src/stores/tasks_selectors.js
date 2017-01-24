@@ -33,12 +33,12 @@ const getCurrentTaskId = state => (
   state.currentId
 );
 
-const getTaskSummary = state => (
+const getCurrentTaskSummary = state => (
   getCurrentTask(state).value.stats
 );
 
-const getTaskExtent = state => {
-  const taskSummary = getTaskSummary(state);
+const getCurrentTaskExtent = state => {
+  const taskSummary = getCurrentTaskSummary(state);
   const createdAt = taskSummary.date * 1000;
 
   const dateFormat = d3.time.format('%Y-%m-%d');
@@ -48,6 +48,10 @@ const getTaskExtent = state => {
   return { fromDate, toDate };
 };
 
+const getCurrentTaskType = state => (
+  getCurrentTaskSummary(state).type
+);
+
 const TasksSelectors = {
   getAllTasks: createSelector(tasksSelector, getAllTasks),
   getLatestTaskId: createSelector(tasksSelector, getLatestTaskId),
@@ -55,8 +59,9 @@ const TasksSelectors = {
   getActiveTasks: createSelector(tasksSelector, getActiveTasks),
   getCurrentTask: createSelector(tasksSelector, getCurrentTask),
   getCurrentTaskId: createSelector(tasksSelector, getCurrentTaskId),
-  getTaskSummary: createSelector(tasksSelector, getTaskSummary),
-  getTaskExtent: createSelector(tasksSelector, getTaskExtent),
+  getCurrentTaskType: createSelector(tasksSelector, getCurrentTaskType),
+  getCurrentTaskSummary: createSelector(tasksSelector, getCurrentTaskSummary),
+  getCurrentTaskExtent: createSelector(tasksSelector, getCurrentTaskExtent),
 };
 
 export default TasksSelectors;

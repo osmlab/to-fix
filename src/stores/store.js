@@ -2,7 +2,6 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
-import api from '../api';
 import safeStorage from '../utils/safe_storage';
 
 import user from './user_reducer';
@@ -37,7 +36,8 @@ if (process.env.NODE_ENV !== 'production') {
 // Persisted state
 const persistedState = {
   user: {
-    isAuthenticated: api.osm.isAuthenticated(),
+    isAuthenticated: false,
+    token: safeStorage.get('token') || null,
   },
   settings: {
     sidebar: safeStorage.get('sidebar') || true,
@@ -52,10 +52,11 @@ const store = createStore(
   applyMiddleware(...middlewares)
 );
 
-// Persist change in settings to local storage
+// Persist change to local storage
 store.subscribe(() => {
   const state = store.getState();
   const { sidebar, editor } = state.settings;
+  const { token } = state.user;
 
   if (sidebar !== safeStorage.get('sidebar')) {
     safeStorage.set('sidebar', sidebar);
@@ -63,6 +64,10 @@ store.subscribe(() => {
 
   if (editor !== safeStorage.get('editor')) {
     safeStorage.set('editor', editor);
+  }
+
+  if (token !== safeStorage.get('token')) {
+    safeStorage.set('token', token);
   }
 });
 

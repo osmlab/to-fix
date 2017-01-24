@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 
 import SettingsSelectors from '../../stores/settings_selectors';
 import ModalsSelectors from '../../stores/modals_selectors';
+import UserSelectors from '../../stores/user_selectors';
 import UserActionCreators from '../../stores/user_action_creators';
 import SettingsActionCreators from '../../stores/settings_action_creators';
 import ModalsActionCreators from '../../stores/modals_action_creators';
 
 const mapStateToProps = (state) => ({
   editor: SettingsSelectors.getEditorSetting(state),
+  token: UserSelectors.getToken(state),
   showSettingsModal: ModalsSelectors.getShowSettingsModal(state),
 });
 
@@ -22,6 +24,7 @@ const mapDispatchToProps = {
 let SettingsModal = React.createClass({
   propTypes: {
     editor: PropTypes.string.isRequired,
+    token: PropTypes.string,
     showSettingsModal: PropTypes.bool.isRequired,
     logout: PropTypes.func.isRequired,
     setEditorPreference: PropTypes.func.isRequired,
@@ -37,8 +40,10 @@ let SettingsModal = React.createClass({
   },
 
   logout(e) {
+    const { token } = this.props;
+
     this.props.closeSettingsModal(e);
-    this.props.logout();
+    this.props.logout({ token });
   },
 
   setEditor(e) {
