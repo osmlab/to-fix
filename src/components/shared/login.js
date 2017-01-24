@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { USER_PROFILE_URL } from '../../config';
+import { server } from '../../services';
 import UserActionCreators from '../../stores/user_action_creators';
 import UserSelectors from '../../stores/user_selectors';
 import ModalsActionCreators from '../../stores/modals_action_creators';
@@ -11,6 +12,7 @@ const mapStateToProps = (state) => ({
   username: UserSelectors.getUsername(state),
   osmid: UserSelectors.getOsmId(state),
   avatar: UserSelectors.getAvatar(state),
+  token: UserSelectors.getToken(state),
 });
 
 const mapDispatchToProps = {
@@ -21,13 +23,46 @@ const mapDispatchToProps = {
 
 class Login extends Component {
   componentDidMount() {
-    const { isAuthenticated, fetchUserDetails } = this.props;
-    if (isAuthenticated) fetchUserDetails();
+    const { token, fetchUserDetails } = this.props;
+    if (token) fetchUserDetails({ token });
   }
 
   onLoginClick = () => {
-    const { login, fetchUserDetails } = this.props;
-    login().then(fetchUserDetails);
+    const { login } = this.props;
+
+    const popup = this.createPopup(600, 550, 'oauth_popup');
+    popup.location = server.loginURL;
+
+    window.authComplete = (location) => {
+      const queryString = location.split('?')[1];
+      const creds = this.parseQueryString(queryString);
+      login(creds);
+
+      delete window.authComplete;
+    }
+  }
+
+  createPopup(width, height, title) {
+    const settings = [
+      ['width', width], ['height', height],
+      ['left', screen.width / 2 - width / 2],
+      ['top', screen.height / 2 - height / 2]
+    ].map(x => x.join('='))
+     .join(',');
+
+    const popup = window.open('about:blank', title, settings);
+    return popup;
+  }
+
+  parseQueryString(queryString) {
+    const query = {};
+
+    queryString.split('&').forEach(pair => {
+      const [key, value] = pair.split('=');
+      query[decodeURIComponent(key)] = decodeURIComponent(value) || null;
+    });
+
+    return query;
   }
 
   renderLoginState() {
