@@ -3,20 +3,44 @@ import { TASK_SERVER_URL as baseURL } from '../config';
 const toJSON = response => response.json();
 
 // Status
-export const status = () =>
+export const status = () => (
   fetch(`${baseURL}`)
-    .then(toJSON);
+    .then(toJSON)
+);
 
 // User
-export const fetchAllUsers = (token) =>
+export const loginURL =
+  `${baseURL}/connect/openstreetmap`;
+
+export const fetchUserDetails = ({ token }) => (
+  fetch(`${baseURL}/user/details`, {
+    headers: {
+      'Authorization': token,
+    },
+  })
+    .then(toJSON)
+);
+
+export const logout = ({ token }) => (
+  fetch(`${baseURL}/logout`, {
+    headers: {
+      'Authorization': token,
+    },
+  })
+    .then(toJSON)
+);
+
+// Admin
+export const fetchAllUsers = ({ token }) => (
   fetch(`${baseURL}/user`, {
     headers: {
       'Authorization': token,
     },
   })
-    .then(toJSON);
+    .then(toJSON)
+);
 
-export const changeUserRole = (token, payload) =>
+export const changeUserRole = ({ token, payload }) => (
   fetch(`${baseURL}/user`, {
     method: 'PUT',
     headers: {
@@ -24,9 +48,10 @@ export const changeUserRole = (token, payload) =>
     },
     body: payload,
   })
-    .then(toJSON);
+    .then(toJSON)
+);
 
-export const destroyUser = (token, payload) =>
+export const destroyUser = ({ token, payload }) => (
   fetch(`${baseURL}/user`, {
     method: 'DELETE',
     headers: {
@@ -34,29 +59,21 @@ export const destroyUser = (token, payload) =>
     },
     body: payload,
   })
-    .then(toJSON);
-
-export const loginURL =
-  `${baseURL}/connect/openstreetmap`;
-
-export const logout = (token) =>
-  fetch(`${baseURL}/logout`, {
-    headers: {
-      'Authorization': token,
-    },
-  })
-    .then(toJSON);
+    .then(toJSON)
+);
 
 // Tasks
-export const fetchAllTasks = () =>
+export const fetchAllTasks = () => (
   fetch(`${baseURL}/tasks`)
-    .then(toJSON);
+    .then(toJSON)
+);
 
-export const fetchTaskById = (id) =>
-  fetch(`${baseURL}/tasks/${id}`)
-    .then(toJSON);
+export const fetchTaskById = ({ taskId }) => (
+  fetch(`${baseURL}/tasks/${taskId}`)
+    .then(toJSON)
+);
 
-export const createTask = (token, payload) =>
+export const createTask = ({ token, payload }) => (
   fetch(`${baseURL}/tasks`, {
     method: 'POST',
     headers: {
@@ -64,9 +81,10 @@ export const createTask = (token, payload) =>
     },
     body: payload,
   })
-    .then(toJSON);
+    .then(toJSON)
+);
 
-export const updateTask = (token, payload) =>
+export const updateTask = ({ token, payload }) => (
   fetch(`${baseURL}/tasks`, {
     method: 'PUT',
     headers: {
@@ -75,8 +93,9 @@ export const updateTask = (token, payload) =>
     body: payload,
   })
     .then(toJSON)
+);
 
-export const destroyTask = (token, payload) =>
+export const destroyTask = ({ token, payload }) => (
   fetch(`${baseURL}/tasks`, {
     method: 'DELETE',
     headers: {
@@ -84,37 +103,34 @@ export const destroyTask = (token, payload) =>
     },
     body: payload,
   })
-    .then(toJSON);
+    .then(toJSON)
+);
 
 // Items
-export const fetchItemsCount = (id, type) =>
-  fetch(`${baseURL}/tasks/${id}/${type}/count`)
-    .then(toJSON);
-
-export const fetchAllItems = (id, type) =>
-  fetch(`${baseURL}/tasks/${id}/${type}/items`)
-    .then(toJSON);
-
-export const fetchRandomItem = (id, type, payload) =>
-  fetch(`${baseURL}/tasks/${id}/${type}/items`, {
+export const fetchRandomItem = ({ taskId, taskType, payload }) => (
+  fetch(`${baseURL}/tasks/${taskId}/${taskType}/items`, {
     method: 'POST',
-    body: payload,
+    body: JSON.stringify(payload),
   })
-    .then(toJSON);
+    .then(toJSON)
+);
 
-export const updateItem = (id, type, payload) =>
-  fetch(`${baseURL}/tasks/${id}/${type}/items`, {
+export const updateItem = ({ taskId, taskType, payload }) => (
+  fetch(`${baseURL}/tasks/${taskId}/${taskType}/items`, {
     method: 'PUT',
-    body: payload,
+    body: JSON.stringify(payload),
   })
-    .then(toJSON);
+    .then(toJSON)
+);
 
 // Activity
-export const fetchRecentActivity = (id) =>
-  fetch(`${baseURL}/tasks/${id}/activity`)
-    .then(toJSON);
+export const fetchRecentActivity = ({ taskId }) => (
+  fetch(`${baseURL}/tasks/${taskId}/activity`)
+    .then(toJSON)
+);
 
 // Stats
-export const fetchAllStats = (id, from, to) =>
-  fetch(`${baseURL}/tasks/${id}/track_stats/from:${from}/to:${to}`)
-    .then(toJSON);
+export const fetchAllStats = ({ taskId, from, to }) => (
+  fetch(`${baseURL}/tasks/${taskId}/track_stats/from:${from}/to:${to}`)
+    .then(toJSON)
+);
