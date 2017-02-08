@@ -26,13 +26,17 @@ class StatsGraph extends Component {
 
     const includedFields = (filter === 'all') ? ['edit', 'fixed', 'skip', 'noterror'] : [filter];
 
-    const data = statsByDate.map(function(d) {
-      d.value = includedFields.reduce((sum, field) => sum + d[field], 0);
-      return d;
-    });
+    const data = statsByDate
+      .map(function(d) {
+        d.value = includedFields.reduce((sum, field) => sum + d[field], 0);
+        return d;
+      })
+      .sort(function(d1, d2) {
+        return d1.start < d2.start;
+      });
 
     return {
-      data: data,
+      data
     };
   }
 

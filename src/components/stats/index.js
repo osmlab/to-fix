@@ -68,13 +68,11 @@ class Stats extends Component {
             task={currentTask}
             taskSummary={currentTaskSummary}
             statsFrom={statsFrom} />
-          {/*
           <StatsGraph
             statsFrom={statsFrom}
             statsTo={statsTo}
             statsByDate={statsByDate}
             fetchStatsByRange={this.fetchStatsByRange} />
-          */}
           <StatsSummary
             statsByUser={statsByUser} />
         </div>
