@@ -23,9 +23,8 @@ const renderProgressBar = (taskSummary) => {
   );
 };
 
-const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
+const StatsHeader = ({ task, taskSummary, statsFrom }) => {
   const taskName = task.value.name;
-  const extent = `${statsFrom} – ${statsTo}`;
   const progressBar = renderProgressBar(taskSummary);
 
   return (
@@ -33,7 +32,7 @@ const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
       <div className='col8'>
         <h2>{taskName}</h2>
         <h4 className='col12 clearfix'>
-          {extent}
+          {`Task last updated on ${statsFrom}.`}
         </h4>
       </div>
       {progressBar}

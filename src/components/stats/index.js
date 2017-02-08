@@ -63,8 +63,7 @@ class Stats extends Component {
           <StatsHeader
             task={currentTask}
             taskSummary={currentTaskSummary}
-            statsFrom={statsFrom}
-            statsTo={statsTo} />
+            statsFrom={statsFrom} />
           {/*
           <StatsGraph
             statsFrom={statsFrom}
