@@ -77,12 +77,12 @@ class Task extends Component {
     }
   }
 
-  iDEditDone = () => {
+  reset = () => {
     this.setState({
       iDEdit: false,
       iDEditPath: '',
+      geolocation: '',
     });
-    this.fetchNextItem();
   }
 
   fetchNextItem = () => {
@@ -93,7 +93,7 @@ class Task extends Component {
     };
 
     fetchRandomItem({ taskId: currentTaskId, taskType: currentTaskType, payload })
-      .then(() => this.setState({ geolocation: null }));
+      .then(this.reset);
   }
 
   geolocate = (center) => {
@@ -255,17 +255,17 @@ class Task extends Component {
         geolocation={geolocation} />
     );
 
+    const iDContainerClass = iDEdit ? '' : 'hidden';
     const iDEditor = (
-      <div>
+      <div className={iDContainerClass}>
         <iframe src={iDEditPath} frameBorder='0' className='ideditor'></iframe>
-        <button onClick={this.iDEditDone} className='ideditor-done z10000 button rcon next round animate pad1y pad2x strong'>Next task</button>
       </div>
     );
 
     return (
       <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark contain'>
         { currentItemId && editBar }
-        { iDEdit && iDEditor }
+        { iDEditor }
       </div>
     );
   }
