@@ -44,7 +44,6 @@ StatsHeader.propTypes = {
   task: PropTypes.object.isRequired,
   taskSummary: PropTypes.object.isRequired,
   statsFrom: PropTypes.string.isRequired,
-  statsTo: PropTypes.string.isRequired,
 };
 
 export default StatsHeader;
