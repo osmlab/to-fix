@@ -29,10 +29,10 @@ const StatsHeader = ({ task, taskSummary, statsFrom, statsTo }) => {
   const progressBar = renderProgressBar(taskSummary);
 
   return (
-    <div className='space-bottom1 col12 clearfix'>
+    <div className='space-bottom2 col12 clearfix'>
       <div className='col8'>
         <h2>{taskName}</h2>
-        <h4 className='space col12 clearfix'>
+        <h4 className='col12 clearfix'>
           {extent}
         </h4>
       </div>
