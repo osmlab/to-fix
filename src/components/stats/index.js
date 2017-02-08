@@ -59,6 +59,7 @@ class Stats extends Component {
       statsByUser,
       statsByDate,
       currentTaskSummary,
+      currentTaskExtent,
     } = this.props;
 
     return (
@@ -67,7 +68,7 @@ class Stats extends Component {
           <StatsHeader
             task={currentTask}
             taskSummary={currentTaskSummary}
-            statsFrom={statsFrom} />
+            statsFrom={currentTaskExtent.fromDate} />
           <StatsGraph
             statsFrom={statsFrom}
             statsTo={statsTo}
