@@ -42,6 +42,13 @@ let ErrorModal = React.createClass({
           <div className='pad2 dark'>
             <h2>{'Error'}</h2>
             <strong>{errorMessage}</strong>
+            <p className='space-top0'>
+              Please report any issues at
+              {' '}
+              <a href='https://github.com/osmlab/to-fix/issues/new' target='_blank'>
+                <code>github.com/osmlab/to-fix</code>.
+              </a>
+            </p>
           </div>
         </div>
       </div>
