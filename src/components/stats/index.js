@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import d3 from 'd3';
 
 import TasksSelectors from '../../stores/tasks_selectors';
 import StatsActionCreators from '../../stores/stats_action_creators';
@@ -26,9 +27,12 @@ const mapDispatchToProps = {
 
 class Stats extends Component {
   fetchData() {
-    const { currentTaskExtent } = this.props;
-    const { fromDate, toDate } = currentTaskExtent;
-    this.fetchStatsByRange(fromDate, toDate);
+    const dateFormat = d3.time.format('%Y-%m-%d');
+
+    const toDate = new Date();
+    const fromDate = new Date(toDate.getFullYear() - 1, toDate.getMonth(), toDate.getDate());
+
+    this.fetchStatsByRange(dateFormat(fromDate), dateFormat(toDate));
   }
 
   fetchStatsByRange = (fromDate, toDate) => {
@@ -63,15 +67,12 @@ class Stats extends Component {
           <StatsHeader
             task={currentTask}
             taskSummary={currentTaskSummary}
-            statsFrom={statsFrom}
-            statsTo={statsTo} />
-          {/*
+            statsFrom={statsFrom} />
           <StatsGraph
             statsFrom={statsFrom}
             statsTo={statsTo}
             statsByDate={statsByDate}
             fetchStatsByRange={this.fetchStatsByRange} />
-          */}
           <StatsSummary
             statsByUser={statsByUser} />
         </div>
