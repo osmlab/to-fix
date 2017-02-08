@@ -16,9 +16,15 @@ const mapDispatchToProps = {
 
 class EditTask extends Component {
   state = {
+    name: '',
     description: '',
     changesetComment: '',
     file: {},
+  }
+
+  handleNameChange = (e) => {
+    const name = e.target.value;
+    this.setState({ name });
   }
 
   handleDescriptionChange = (e) => {
@@ -52,12 +58,12 @@ class EditTask extends Component {
 
   getFormData = () => {
     const { task } = this.props;
-    const { description, changesetComment, file } = this.state;
+    const { name, description, changesetComment, file } = this.state;
 
     const formData = new window.FormData();
 
     formData.append('idtask', task.idtask);
-    formData.append('name', task.value.name);
+    formData.append('name', name);
     formData.append('description', description);
     formData.append('changesetComment', changesetComment);
     formData.append('isCompleted', false);
@@ -70,6 +76,7 @@ class EditTask extends Component {
     const { task } = this.props;
 
     this.setState({
+      name: task.value.name,
       description: task.value.description,
       changesetComment: task.value.changesetComment,
     });
@@ -93,7 +100,7 @@ class EditTask extends Component {
 
   render() {
     const { task } = this.props;
-    const { description, changesetComment, file } = this.state;
+    const { name, description, changesetComment, file } = this.state;
 
     return (
       <form className='dark' onSubmit={this.handleSubmit}>
@@ -102,8 +109,8 @@ class EditTask extends Component {
           <input
             className='col12 block clean'
             type='text'
-            disabled='disabled'
-            value={task.value.name} />
+            value={name}
+            onChange={this.handleNameChange} />
         </fieldset>
         <fieldset className='pad2x'>
           <label>Description</label>
