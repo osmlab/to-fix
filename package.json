@@ -4,6 +4,8 @@
   "description": "A task manager for OpenStreetMap",
   "private": true,
   "dependencies": {
+    "@turf/bbox": "^3.7.5",
+    "@turf/bbox-polygon": "^3.7.5",
     "@turf/centroid": "^3.5.3",
     "@turf/helpers": "^3.5.3",
     "d3": "^3.5.17",

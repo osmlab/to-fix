@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { featureCollection } from '@turf/helpers';
-import centroid from '@turf/centroid';
+import turfCentroid from '@turf/centroid';
+import turfBbox from '@turf/bbox';
+import turfBboxPolygon from '@turf/bbox-polygon';
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -112,18 +114,25 @@ class Task extends Component {
       type: 'geojson',
       data: featureCollection([]),
     });
+    map.addSource(`${id}-bbox`, {
+      type: 'geojson',
+      data: featureCollection([]),
+    });
   }
 
   updateSource(id, feature) {
     const { map } = this.state;
     const flattenedFeatures = this.flattenRelations(feature);
     const geojson = featureCollection(flattenedFeatures);
+    const bbox = this.getBoundingBox(geojson);
     map.getSource(id).setData(geojson);
+    map.getSource(`${id}-bbox`).setData(bbox);
   }
 
   removeSource(id) {
     const { map } = this.state;
     map.removeSource(id);
+    map.removeSource(`${id}-bbox`);
   }
 
   flattenRelations(feature) {
@@ -131,8 +140,32 @@ class Task extends Component {
     return [feature].concat(relations);
   }
 
+  getBoundingBox(geojson) {
+    const [ minX, minY, maxX, maxY ] = turfBbox(geojson);
+    const padX = Math.max((maxX - minX) / 5, 0.0001);
+    const padY = Math.max((maxY - minY) / 5, 0.0001);
+    const bboxWithPadding = [
+      minX - padX,
+      minY - padY,
+      maxX + padX,
+      maxY + padY,
+    ];
+    const bboxPolygon = turfBboxPolygon(bboxWithPadding);
+    return featureCollection([bboxPolygon]);
+  }
+
   addLayers(id) {
     const { map } = this.state;
+
+    map.addLayer({
+      id: `${id}-bbox`,
+      type: 'line',
+      source: `${id}-bbox`,
+      paint: {
+        'line-width': 3,
+        'line-color': '#b58900',
+      },
+    });
 
     map.addLayer({
       id: `${id}-circle`,
@@ -170,11 +203,12 @@ class Task extends Component {
     map.removeLayer(`${id}-circle`);
     map.removeLayer(`${id}-line`);
     map.removeLayer(`${id}-fill`);
+    map.removeLayer(`${id}-bbox`);
   }
 
-  jumpTo(options) {
+  fitBounds(bounds) {
     const { map } = this.state;
-    map.jumpTo(options);
+    map.fitBounds(bounds, { linear: true, padding: 200 });
   }
 
   resize() {
@@ -228,9 +262,13 @@ class Task extends Component {
     if (this.state.map && prevProps.currentItemId !== this.props.currentItemId) {
       const { currentTaskId, currentItem } = this.props;
       this.updateSource(currentTaskId, currentItem);
-      const center = centroid(currentItem).geometry.coordinates;
+
+      const center = turfCentroid(currentItem).geometry.coordinates;
       this.geolocate(center);
-      this.jumpTo({ center });
+
+      const bboxPolygon = this.state.map.getSource(`${currentTaskId}-bbox`)._data.features[0];
+      const bboxCoordiantes = bboxPolygon.geometry.coordinates[0];
+      this.fitBounds([bboxCoordiantes[0], bboxCoordiantes[2]]);
       return;
     }
 
