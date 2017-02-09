@@ -7,6 +7,7 @@ import UserSelectors from '../../stores/user_selectors';
 import SettingsSelectors from '../../stores/settings_selectors';
 import ItemsSelectors from '../../stores/items_selectors';
 import ItemsActionCreators from '../../stores/items_action_creators';
+import ModalsActionCreators from '../../stores/modals_action_creators';
 
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
@@ -20,6 +21,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   updateItem: ItemsActionCreators.updateItem,
+  openSettingsModal: ModalsActionCreators.openSettingsModal,
 };
 
 let EditBar = React.createClass({
@@ -34,6 +36,7 @@ let EditBar = React.createClass({
     updateItem: PropTypes.func.isRequired,
     onTaskEdit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    openSettingsModal: PropTypes.func.isRequired,
   },
 
   mixins: [KeyBinding],
@@ -70,7 +73,7 @@ let EditBar = React.createClass({
   noterror() { this.updateItem('noterror') },
 
   render() {
-    const { currentTask, isAuthenticated, editor, geolocation, onUpdate, onTaskEdit } = this.props;
+    const { currentTask, isAuthenticated, editor, geolocation, onUpdate, onTaskEdit, openSettingsModal } = this.props;
 
     const taskTitle = currentTask.value.name;
     let taskActions = (
@@ -84,11 +87,14 @@ let EditBar = React.createClass({
 
       taskActions = (
         <nav className='tabs col12 clearfix mobile-cols'>
-          <button onClick={onTaskEdit} className='col3 button animate unround'>
+          <button onClick={onTaskEdit} className='col3 button animate'>
             <span className='underline'>E</span>dit
             {` with ${editorName}`}
           </button>
-          <button onClick={this.skip} className='col3 button animate'>
+          <button
+            onClick={openSettingsModal}
+            className='col1 button icon sprocket animate settings' />
+          <button onClick={this.skip} className='col2 button animate'>
             <span className='underline'>S</span>kip
           </button>
           <button onClick={this.noterror} className='col3 button animate'>

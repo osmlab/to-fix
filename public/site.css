@@ -53,6 +53,12 @@ h2 { padding-top:0; padding-bottom:0; }
     background-color:rgba(0,0,0,0.9);
     color:#fff;
     }
+  .editbar .tabs > .settings {
+    border-width:0px;
+    height:38px;
+    width:37px !important;
+    padding:7px !important;
+    }
   .button.small {
     font-size:11px;
     line-height:20px;
