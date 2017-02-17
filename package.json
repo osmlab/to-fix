@@ -11,6 +11,8 @@
     "d3": "^3.5.17",
     "file-size": "^1.0.0",
     "keymirror": "^0.1.1",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
     "lodash.union": "^4.6.0",
     "mapbox-gl": "^0.26.0",
     "normalizr": "^2.2.1",
