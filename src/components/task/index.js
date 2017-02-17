@@ -55,7 +55,7 @@ class Task extends Component {
       const query = {
         new_layer: true,
         objects,
-        relation_memebers: true,
+        relation_members: true,
       };
       const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
 
