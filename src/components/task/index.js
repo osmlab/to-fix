@@ -48,21 +48,18 @@ class Task extends Component {
     const { editor } = this.props;
 
     if (editor === 'josm') {
-      const bounds = map.getBounds();
-
-      const bottom = bounds.getSouthWest().lat - 0.0005;
-      const left = bounds.getSouthWest().lng - 0.0005;
-      const top = bounds.getNorthEast().lat - 0.0005;
-      const right = bounds.getNorthEast().lng - 0.0005;
-
       const { currentItem } = this.props;
       const { _osmType, _osmId } = currentItem.properties;
-      const select = `${_osmType}${_osmId}`;
+      const objects = `${_osmType.substr(0, 1)}${_osmId}`;
 
-      const query = { left, right, top, bottom, select };
+      const query = {
+        new_layer: true,
+        objects,
+        relation_memebers: true,
+      };
       const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
 
-      fetch(`${JOSM_RC_URL}?${params}`)
+      fetch(`${JOSM_RC_URL}/load_object?${params}`)
         .catch(() => this.props.openErrorModal('Could not connect to JOSM remote control.'));
     }
 
