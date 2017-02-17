@@ -18,10 +18,10 @@ const stats = (state = initialState, action) => {
   switch(action.type) {
     case StatsConstants.STATS_FETCH_ALL:
       if (action.status === AsyncStatus.SUCCESS) {
-        const { statsDate, updated } = action.response;
+        const { stats, updated } = action.response;
         const { from, to } = action.params;
         return {
-          byDate: statsDate,
+          byDate: stats,
           fromDate: from,
           toDate: to,
           updatedOn: updated,
