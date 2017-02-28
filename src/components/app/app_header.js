@@ -6,6 +6,8 @@ import SettingsActionCreators from '../../stores/settings_action_creators';
 import SettingsSelectors from '../../stores/settings_selectors';
 import TasksSelectors from '../../stores/tasks_selectors';
 
+import Login from '../shared/login';
+
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   sidebar: SettingsSelectors.getSidebarSetting(state),
@@ -37,8 +39,8 @@ class Header extends Component {
             <h1 className='inline fancy title'>to-fix</h1>
           </a>
         </nav>
-        <div className='col6 truncate text-right pad1'>
-          <nav className='col12 space pad0y'>
+        <div className='col4 truncate text-right pad1'>
+          <nav className='col12 space pad0y keyline-right'>
             <Link
               className='icon pencil short button'
               activeClassName='active'
@@ -57,13 +59,10 @@ class Header extends Component {
               to={`stats/${currentTaskId}`}>
               Statistics
             </Link>
-            <Link
-              className='icon plus short button'
-              activeClassName='active'
-              to={`admin/${currentTaskId}`}>
-              Admin
-            </Link>
           </nav>
+        </div>
+        <div className='col2 truncate pad1'>
+          <Login />
         </div>
       </header>
     );
