@@ -8,7 +8,6 @@ import TasksActionCreators from '../../stores/tasks_action_creators';
 
 import ShowTask from './show_task';
 import EditTask from './edit_task';
-import AddTask from './add_task';
 
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
@@ -19,16 +18,15 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  createTask: TasksActionCreators.createTask,
   updateTask: TasksActionCreators.updateTask,
 };
 
 class Admin extends Component {
   state = {
-    taskWindow: 'show', // 'show' | 'edit' | 'add'
+    taskWindow: 'show', // 'show' | 'edit'
   }
 
-  setTaskWindow(to) {
+  setTaskWindow = (to) => {
     this.setState({
       taskWindow: to,
     });
@@ -36,15 +34,13 @@ class Admin extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.currentTaskId !== this.props.currentTaskId) {
-      this.setState({
-        taskWindow: 'show',
-      });
+      this.setTaskWindow('show');
     }
   }
 
   render() {
     const { taskWindow } = this.state;
-    const { currentTask, updateTask, createTask, currentTaskExtent, role, isAuthenticated } = this.props;
+    const { currentTask, updateTask, currentTaskExtent, role, isAuthenticated } = this.props;
 
     const taskName = currentTask.value.name;
     const fromDate = currentTaskExtent.fromDate;
@@ -57,7 +53,7 @@ class Admin extends Component {
       );
     }
 
-    if (role == ROLES.EDITOR) {
+    if (role === ROLES.EDITOR) {
       return (
         <div className='col12 pad2 clearfix scroll-styled'>
           <h2 className='dark'>You need admin privileges to see this section.</h2>
@@ -73,16 +69,9 @@ class Admin extends Component {
             {`Task last updated on ${fromDate}.`}
           </h4>
         </div>
-        <div className='col2 pad2 dark'>
-          <div className='pill'>
-            <a onClick={() => this.setTaskWindow('add') } className='col12 button icon plus pad2x space-bottom0 quiet truncate'>Create a new task</a>
-            <a onClick={() => this.setTaskWindow('edit')} className='col12 button icon pencil pad2x space-bottom0 quiet truncate'>Edit current task</a>
-          </div>
-        </div>
-        <div className='col8 pad2 dark'>
-          {(taskWindow === 'show') ? <ShowTask task={currentTask} /> : null}
-          {(taskWindow === 'edit') ? <EditTask task={currentTask} onTaskEdit={updateTask} /> : null}
-          {(taskWindow === 'add') ? <AddTask onTaskAdd={createTask} /> : null}
+        <div className='col8 dark'>
+          {(taskWindow === 'show') ? <ShowTask task={currentTask} onEdit={() => this.setTaskWindow('edit')}/> : null}
+          {(taskWindow === 'edit') ? <EditTask task={currentTask} onCancel={() => this.setTaskWindow('show')} onSubmit={updateTask} /> : null}
         </div>
       </div>
     );
@@ -95,7 +84,6 @@ Admin.propTypes = {
   currentTaskExtent: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   role: PropTypes.string,
-  createTask: PropTypes.func.isRequired,
   updateTask: PropTypes.func.isRequired,
 };
 

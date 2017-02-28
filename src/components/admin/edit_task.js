@@ -45,10 +45,10 @@ class EditTask extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { onTaskEdit, token } = this.props;
+    const { onSubmit, token } = this.props;
     const formData = this.getFormData();
 
-    onTaskEdit({ token, payload: formData })
+    onSubmit({ token, payload: formData })
       .then(response => {
         if (response.status === AsyncStatus.SUCCESS) {
           this.props.openSuccessModal('Task updated succesfully');
@@ -99,8 +99,8 @@ class EditTask extends Component {
   }
 
   render() {
-    const { task } = this.props;
     const { name, description, changesetComment, file } = this.state;
+    const { onCancel } = this.props;
 
     return (
       <form className='dark' onSubmit={this.handleSubmit}>
@@ -144,11 +144,12 @@ class EditTask extends Component {
           </a>
           {file.name && <span className='pad1x quiet'>{`${file.name} (${filesize(file.size).human()})`}</span>}
         </fieldset>
-        <div className='pad2x pad1y round-bottom col12 clearfix'>
+        <div className='pad2x pad4y col12 clearfix'>
           <input
             type='submit'
-            className='col6 margin3 button'
-            value='Update Task' />
+            className='col3 button'
+            value='Update task' />
+          <button className='col3 space-left0 button quiet' onClick={onCancel}>Cancel</button>
         </div>
       </form>
     );
@@ -157,7 +158,8 @@ class EditTask extends Component {
 
 EditTask.propTypes = {
   task: PropTypes.object.isRequired,
-  onTaskEdit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   openSuccessModal: PropTypes.func.isRequired,
 };
 
