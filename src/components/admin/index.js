@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import { ROLES } from '../../constants/user_constants';
 import TasksSelectors from '../../stores/tasks_selectors';
+import UserSelectors from '../../stores/user_selectors';
 import TasksActionCreators from '../../stores/tasks_action_creators';
 
 import ShowTask from './show_task';
@@ -11,6 +13,8 @@ import AddTask from './add_task';
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTask: TasksSelectors.getCurrentTask(state),
+  isAuthenticated: UserSelectors.getIsAuthenticated(state),
+  role: UserSelectors.getRole(state),
 });
 
 const mapDispatchToProps = {
@@ -31,7 +35,23 @@ class Admin extends Component {
 
   render() {
     const { taskWindow } = this.state;
-    const { currentTask, updateTask, createTask } = this.props;
+    const { currentTask, updateTask, createTask, role, isAuthenticated } = this.props;
+
+    if (!isAuthenticated) {
+      return (
+        <div className='col12 pad2 clearfix scroll-styled'>
+          <h2 className='dark'>Please login to access the admin section.</h2>
+        </div>
+      );
+    }
+
+    if (role == ROLES.EDITOR) {
+      return (
+        <div className='col12 pad2 clearfix scroll-styled'>
+          <h2 className='dark'>You need admin privileges to see this section.</h2>
+        </div>
+      );
+    }
 
     return (
       <div className='col12 clearfix scroll-styled'>
@@ -55,6 +75,8 @@ class Admin extends Component {
 Admin.propTypes = {
   currentTaskId: PropTypes.string.isRequired,
   currentTask: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
+  role: PropTypes.string,
   createTask: PropTypes.func.isRequired,
   updateTask: PropTypes.func.isRequired,
 };

@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import TasksSelectors from '../../stores/tasks_selectors';
 import SettingsSelectors from '../../stores/settings_selectors';
 
-import Login from '../shared/login';
-
 const mapStateToProps = (state, { routes }) => ({
   topLevelRoute: routes[1].name,
   sidebar: SettingsSelectors.getSidebarSetting(state),
@@ -45,7 +43,6 @@ class Sidebar extends Component {
     return (
       <div className={sidebarClass}>
         <div className='scroll-styled pad2y'>
-          <Login />
           <h4 className='dark block pad1x space-bottom1'>Current Tasks</h4>
           <nav className='dark space-bottom2'>{activeTasksList}</nav>
           <h4 className='dark block pad1x space-bottom1'>Completed Tasks</h4>

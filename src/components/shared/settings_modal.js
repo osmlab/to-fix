@@ -4,19 +4,15 @@ import { connect } from 'react-redux';
 
 import SettingsSelectors from '../../stores/settings_selectors';
 import ModalsSelectors from '../../stores/modals_selectors';
-import UserSelectors from '../../stores/user_selectors';
-import UserActionCreators from '../../stores/user_action_creators';
 import SettingsActionCreators from '../../stores/settings_action_creators';
 import ModalsActionCreators from '../../stores/modals_action_creators';
 
 const mapStateToProps = (state) => ({
   editor: SettingsSelectors.getEditorSetting(state),
-  token: UserSelectors.getToken(state),
   showSettingsModal: ModalsSelectors.getShowSettingsModal(state),
 });
 
 const mapDispatchToProps = {
-  logout: UserActionCreators.logout,
   setEditorPreference: SettingsActionCreators.setEditorPreference,
   closeSettingsModal: ModalsActionCreators.closeSettingsModal,
 };
@@ -24,9 +20,7 @@ const mapDispatchToProps = {
 let SettingsModal = React.createClass({
   propTypes: {
     editor: PropTypes.string.isRequired,
-    token: PropTypes.string,
     showSettingsModal: PropTypes.bool.isRequired,
-    logout: PropTypes.func.isRequired,
     setEditorPreference: PropTypes.func.isRequired,
     closeSettingsModal: PropTypes.func.isRequired,
   },
@@ -37,13 +31,6 @@ let SettingsModal = React.createClass({
     'esc': function(e) {
       this.props.closeSettingsModal();
     },
-  },
-
-  logout(e) {
-    const { token } = this.props;
-
-    this.props.closeSettingsModal(e);
-    this.props.logout({ token });
   },
 
   setEditor(e) {
@@ -81,10 +68,6 @@ let SettingsModal = React.createClass({
             <div className='pad2x space-bottom2 dark'>
               Shortcut keys: <span className='quiet'><code className='fill-darken1'>e</code> Edit <code className='fill-darken1'>s</code> Skip <code className='fill-darken1'>n</code> Not an error <code className='fill-darken1'>f</code> Fixed</span>
               <small className='quiet'>*JOSM requires <a target='_blank' href='http://josm.openstreetmap.de/wiki/Help/Preferences/RemoteControl/'>remote control</a> to be set in preferences.</small>
-            </div>
-
-            <div className='pad2x pad1y fill-light round-bottom text-right'>
-              <button onClick={this.logout} className='rcon logout button quiet animate'>Logout</button>
             </div>
           </div>
         </div>
