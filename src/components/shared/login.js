@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import { USER_PROFILE_URL } from '../../config';
+import { ROLES } from '../../constants/user_constants';
 import { server } from '../../services';
 import UserActionCreators from '../../stores/user_action_creators';
 import UserSelectors from '../../stores/user_selectors';
 import ModalsActionCreators from '../../stores/modals_action_creators';
+import TasksSelectors from '../../stores/tasks_selectors';
 
 const mapStateToProps = (state) => ({
   isAuthenticated: UserSelectors.getIsAuthenticated(state),
@@ -13,15 +15,22 @@ const mapStateToProps = (state) => ({
   osmid: UserSelectors.getOsmId(state),
   avatar: UserSelectors.getAvatar(state),
   token: UserSelectors.getToken(state),
+  role: UserSelectors.getRole(state),
+  currentTaskId: TasksSelectors.getCurrentTaskId(state),
 });
 
 const mapDispatchToProps = {
   login: UserActionCreators.login,
+  logout: UserActionCreators.logout,
   fetchUserDetails: UserActionCreators.fetchUserDetails,
   openSettingsModal: ModalsActionCreators.openSettingsModal,
 };
 
 class Login extends Component {
+  state = {
+    showUserMenu: false,
+  }
+
   componentDidMount() {
     const { token, fetchUserDetails } = this.props;
     if (token) fetchUserDetails({ token });
@@ -40,6 +49,30 @@ class Login extends Component {
 
       delete window.authComplete;
     }
+  }
+
+  openUserMenu = (e) => {
+    e.preventDefault();
+    this.toggleUserMenu();
+  }
+
+  openSettingsModal = (e) => {
+    e.preventDefault();
+    this.toggleUserMenu();
+    this.props.openSettingsModal();
+  }
+
+  logout = (e) => {
+    e.preventDefault();
+    this.toggleUserMenu();
+    const { token } = this.props;
+    this.props.logout({ token });
+  }
+
+  toggleUserMenu = (e) => {
+    this.setState({
+      showUserMenu: !this.state.showUserMenu,
+    });
   }
 
   createPopup(width, height, title) {
@@ -66,26 +99,46 @@ class Login extends Component {
   }
 
   renderLoginState() {
-    const { isAuthenticated, username, avatar, openSettingsModal } = this.props;
-    const profileURL = `${USER_PROFILE_URL}/${username}`;
+    const { isAuthenticated, username, avatar, role, currentTaskId } = this.props;
+
+    const menuClass = `user-menu ${this.state.showUserMenu ? 'visible' : ''}`;
 
     if (isAuthenticated) {
       return (
-        <div className='pad1x col12 truncate clearfix mobile-cols'>
-          <div className='pad0y col6'>
-            <a className='strong small dark' target='_blank' href={profileURL} title='Profile on OpenStreetMap'>
+        <div className='pad1x col12 clearfix mobile-cols'>
+          <div className='pad0y col8 margin2'>
+            <a className='block rcon caret-down strong small' href='#' onClick={this.openUserMenu}>
               <img className='dot avatar' src={avatar} role='presentation' />
               {username}
             </a>
+            <ul className={menuClass}>
+              <li>
+                <a href='#' className='block pad0y pad2x icon sprocket' onClick={this.openSettingsModal}>Settings</a>
+              </li>
+              {
+                (role === ROLES.ADMIN || role === ROLES.SUPERADMIN)
+                  ? <li>
+                     <Link
+                       className='block pad0y pad2x icon home'
+                       onClick={this.toggleUserMenu}
+                       to={`admin/${currentTaskId}`}>
+                       Admin
+                     </Link>
+                   </li>
+                 : null
+              }
+              <li>
+                <a href='#' className='block pad0y pad2x icon logout' onClick={this.logout}>Logout</a>
+              </li>
+            </ul>
           </div>
-          <button onClick={openSettingsModal} className='col6 icon sprocket button quiet small animate'>Settings</button>
         </div>
       );
     }
 
     return (
       <div className='pad1x'>
-        <button onClick={this.onLoginClick} className='icon osm button small col12 animate'>Authorize on OSM</button>
+        <button onClick={this.onLoginClick} className='col12 button icon osm small animate truncate'>Login with OSM</button>
       </div>
     );
   }
@@ -94,11 +147,8 @@ class Login extends Component {
     const loginState = this.renderLoginState();
 
     return (
-      <div className='space-bottom1'>
-        <h4 className='dark block pad1x space-bottom1'>Account</h4>
-        <div id='user-stuff' className='space-bottom1 col12 clearfix mobile-cols'>
-          {loginState}
-        </div>
+      <div id='user-stuff' className='col12 pad0y clearfix mobile-cols'>
+        {loginState}
       </div>
     );
   }
@@ -109,9 +159,13 @@ Login.propTypes = {
   username: PropTypes.string,
   osmid: PropTypes.string,
   avatar: PropTypes.string,
+  token: PropTypes.string,
+  role: PropTypes.string,
   login: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   fetchUserDetails: PropTypes.func.isRequired,
   openSettingsModal: PropTypes.func.isRequired,
+  currentTaskId: PropTypes.string.isRequired,
 };
 
 Login = connect(
