@@ -7,3 +7,9 @@ const UserConstants = keymirror({
 });
 
 export default UserConstants;
+
+export const ROLES = {
+  EDITOR: 'editor',
+  ADMIN: 'admin',
+  SUPERADMIN: 'superadmin',
+};
