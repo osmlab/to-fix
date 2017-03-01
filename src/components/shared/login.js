@@ -24,6 +24,7 @@ const mapDispatchToProps = {
   logout: UserActionCreators.logout,
   fetchUserDetails: UserActionCreators.fetchUserDetails,
   openSettingsModal: ModalsActionCreators.openSettingsModal,
+  openManageUsersModal: ModalsActionCreators.openManageUsersModal,
 };
 
 class Login extends Component {
@@ -60,6 +61,12 @@ class Login extends Component {
     e.preventDefault();
     this.toggleUserMenu();
     this.props.openSettingsModal();
+  }
+
+  openManageUsersModal = (e) => {
+    e.preventDefault();
+    this.toggleUserMenu();
+    this.props.openManageUsersModal();
   }
 
   logout = (e) => {
@@ -130,7 +137,7 @@ class Login extends Component {
               {
                 (role === ROLES.SUPERADMIN)
                   ? <li>
-                    <a href='#' className='block pad0y pad2x icon lock' onClick={this.logout}>Manage users</a>
+                    <a href='#' className='block pad0y pad2x icon lock' onClick={this.openManageUsersModal}>Manage users</a>
                    </li>
                  : null
               }
@@ -172,6 +179,7 @@ Login.propTypes = {
   logout: PropTypes.func.isRequired,
   fetchUserDetails: PropTypes.func.isRequired,
   openSettingsModal: PropTypes.func.isRequired,
+  openManageUsersModal: PropTypes.func.isRequired,
   currentTaskId: PropTypes.string.isRequired,
 };
 
