@@ -6,6 +6,7 @@ import { ROLES } from '../../constants/user_constants';
 import UserSelectors from '../../stores/user_selectors';
 import TasksSelectors from '../../stores/tasks_selectors';
 import SettingsSelectors from '../../stores/settings_selectors';
+import ModalsActionCreators from '../../stores/modals_action_creators';
 
 const mapStateToProps = (state, { routes }) => ({
   topLevelRoute: routes[1].name,
@@ -15,15 +16,19 @@ const mapStateToProps = (state, { routes }) => ({
   completedTasks: TasksSelectors.getCompletedTasks(state),
 });
 
+const mapDispatchToProps = {
+  openCreateTaskModal: ModalsActionCreators.openCreateTaskModal,
+};
+
 class Sidebar extends Component {
   renderCreateTaskBtn() {
-    const { role, topLevelRoute } = this.props;
+    const { role, topLevelRoute, openCreateTaskModal } = this.props;
 
     if (role === ROLES.ADMIN || role === ROLES.SUPERADMIN) {
       if (topLevelRoute === "admin") {
         return (
           <div className='pad1x space-bottom1'>
-            <button className='button icon plus quiet truncate col12 animate'>
+            <button className='button icon plus quiet truncate col12 animate' onClick={openCreateTaskModal}>
               Create a new task
             </button>
           </div>
@@ -82,10 +87,12 @@ Sidebar.propTypes = {
   sidebar: PropTypes.bool.isRequired,
   activeTasks: PropTypes.array.isRequired,
   completedTasks: PropTypes.array.isRequired,
+  openCreateTaskModal: PropTypes.func.isRequired,
 };
 
 Sidebar = withRouter(connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Sidebar));
 
 export default Sidebar;
