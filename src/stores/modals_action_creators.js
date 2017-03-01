@@ -26,6 +26,14 @@ const ModalsActionCreators = {
   closeErrorModal: () => ({
     type: ModalsConstants.MODALS_CLOSE_ERROR,
   }),
+
+  openCreateTaskModal: () => ({
+    type: ModalsConstants.MODALS_OPEN_CREATE_TASK,
+  }),
+
+  closeCreateTaskModal: () => ({
+    type: ModalsConstants.MODALS_CLOSE_CREATE_TASK,
+  }),
 };
 
 export default ModalsActionCreators;
