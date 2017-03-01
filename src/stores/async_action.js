@@ -18,7 +18,7 @@ export const checkStatusCode = (response) => {
   return response;
 };
 
-export const asyncAction = ({ type, asyncCall, responseSchema, showLoader = false }) => {
+export const asyncAction = ({ type, asyncCall, responseSchema, showLoader = false, showError=true }) => {
   return (params = {}) => (dispatch) => {
     dispatch({
       type,
@@ -43,7 +43,7 @@ export const asyncAction = ({ type, asyncCall, responseSchema, showLoader = fals
         },
         error => {
           if (showLoader) dispatch(LoadingActionCreators.stopLoading());
-          dispatch(ModalsActionCreators.openErrorModal(error));
+          if (showError) dispatch(ModalsActionCreators.openErrorModal(error));
 
           return dispatch({
             type,
