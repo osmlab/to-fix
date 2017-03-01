@@ -9,6 +9,7 @@ const ModalsSelectors = {
   getShowErrorModal: createSelector(modalsSelector, (state) => state.showErrorModal),
   getErrorMessage: createSelector(modalsSelector, (state) => state.errorMessage),
   getShowCreateTaskModal: createSelector(modalsSelector, (state) => state.showCreateTaskModal),
+  getShowManageUsersModal: createSelector(modalsSelector, (state) => state.showManageUsersModal),
 };
 
 export default ModalsSelectors;
