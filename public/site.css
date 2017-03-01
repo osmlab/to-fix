@@ -232,7 +232,7 @@ header nav .button {
     transition:.4s cubic-bezier(.3, 0, 0, 1.3);
     background:white;
     z-index:1000;
-    width:120px;
+    width:154px;
     }
 
   .user-menu.visible {

@@ -45,7 +45,7 @@ class Header extends Component {
               className='icon pencil short button'
               activeClassName='active'
               to={`task/${currentTaskId}`}>
-              Task
+              Review
             </Link>
             <Link
               className='icon bolt short button'

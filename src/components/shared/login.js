@@ -119,11 +119,18 @@ class Login extends Component {
                 (role === ROLES.ADMIN || role === ROLES.SUPERADMIN)
                   ? <li>
                      <Link
-                       className='block pad0y pad2x icon home'
+                       className='block pad0y pad2x icon pencil'
                        onClick={this.toggleUserMenu}
                        to={`admin/${currentTaskId}`}>
-                       Admin
+                       Manage tasks
                      </Link>
+                   </li>
+                 : null
+              }
+              {
+                (role === ROLES.SUPERADMIN)
+                  ? <li>
+                    <a href='#' className='block pad0y pad2x icon lock' onClick={this.logout}>Manage users</a>
                    </li>
                  : null
               }
