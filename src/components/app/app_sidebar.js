@@ -28,7 +28,7 @@ class Sidebar extends Component {
       if (topLevelRoute === "admin") {
         return (
           <div className='pad1x space-bottom1'>
-            <button className='button icon plus quiet truncate col12 animate' onClick={openCreateTaskModal}>
+            <button className='button icon plus truncate col12 animate' onClick={openCreateTaskModal}>
               Create a new task
             </button>
           </div>
