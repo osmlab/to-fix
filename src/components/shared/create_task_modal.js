@@ -14,7 +14,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openSuccessModal: ModalsActionCreators.openSuccessModal,
+  closeCreateTaskModal: ModalsActionCreators.closeCreateTaskModal,
   createTask: TasksActionCreators.createTask,
 };
 
@@ -229,7 +229,7 @@ class CreateTaskModal extends Component {
 CreateTaskModal.propTypes = {
   token: PropTypes.string.isRequired,
   showCreateTaskModal: PropTypes.bool.isRequired,
-  openSuccessModal: PropTypes.func.isRequired,
+  closeCreateTaskModal: PropTypes.func.isRequired,
   createTask: PropTypes.func.isRequired,
 };
 
