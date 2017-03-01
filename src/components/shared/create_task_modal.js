@@ -227,7 +227,7 @@ class CreateTaskModal extends Component {
 }
 
 CreateTaskModal.propTypes = {
-  token: PropTypes.string.isRequired,
+  token: PropTypes.string,
   showCreateTaskModal: PropTypes.bool.isRequired,
   closeCreateTaskModal: PropTypes.func.isRequired,
   createTask: PropTypes.func.isRequired,
