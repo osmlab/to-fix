@@ -261,6 +261,39 @@ header nav .button {
     text-align:left;
     }
 
+  .select-container {
+    display: inline-flex;
+    position: relative;
+    color: #fff;
+    align-items: center;
+   }
+
+  .select {
+    appearance: none;
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    color: white;
+    padding: 6px 30px 6px 12px;
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.25);
+    }
+
+  .select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    pointer-events: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid white;
+    width: 8px;
+    height: 8px;
+    margin-top: -1px;
+   }
+
 /* iD container
  * elements while editing
 ------------------------- */
