@@ -32,7 +32,7 @@ export const logout = ({ token }) => (
 
 // Admin
 export const fetchAllUsers = ({ token }) => (
-  fetch(`${baseURL}/user`, {
+  fetch(`${baseURL}/users`, {
     headers: {
       'Authorization': token,
     },
@@ -41,7 +41,7 @@ export const fetchAllUsers = ({ token }) => (
 );
 
 export const changeUserRole = ({ token, payload }) => (
-  fetch(`${baseURL}/user`, {
+  fetch(`${baseURL}/users`, {
     method: 'PUT',
     headers: {
       'Authorization': token,
@@ -52,7 +52,7 @@ export const changeUserRole = ({ token, payload }) => (
 );
 
 export const destroyUser = ({ token, payload }) => (
-  fetch(`${baseURL}/user`, {
+  fetch(`${baseURL}/users`, {
     method: 'DELETE',
     headers: {
       'Authorization': token,
