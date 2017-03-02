@@ -64,7 +64,7 @@ h2 { padding-top:0; padding-bottom:0; }
     line-height:20px;
     padding:5px 10px;
     font-weight:bold;
-    height:30px;
+    height:34px;
     }
 
 .loading:before {
@@ -142,7 +142,7 @@ header .fancy.title {
   color:rgba(0,0,0,0.75);
   }
 
-header .button {
+header nav .button {
   background-color:transparent;
   color:rgba(0,0,0,0.5);
   }
@@ -152,6 +152,12 @@ header .button {
     }
   header .button.active {
     color:#fff;
+    }
+  header a {
+    color:#6E65B3;
+    }
+  header a:hover {
+    color:#26198A;
     }
 
 .sidebar-toggle:hover,
@@ -179,9 +185,14 @@ header .button {
   color:rgba(0,0,0,0.75);
   }
 
+.avatar-wrap {
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  margin-top: -2px;
+  }
 .avatar {
-  height:20px;
-  margin-right:10px;
+  width: 20px;
+  margin-right:5px !important;
   }
 
 .progress-bar {
@@ -209,6 +220,79 @@ header .button {
   }
   .contributions > div:first-child { border-width:2px;  }
   .contributions > div:last-child { border-bottom:none; }
+
+  .user-menu {
+    position:relative;
+    top:7px;
+    right:0px;
+    padding:10px 0px 10px 0px;
+    border:1px solid rgba(26,53,71,.12);
+    border-radius:4px;
+    box-shadow:0 1px 2px rgba(26,53,71,.1);
+    opacity:0;
+    pointer-events:none;
+    -webkit-transform:scale(.8) translateY(-30%);
+    transform:scale(.8) translateY(-30%);
+    transition:.4s cubic-bezier(.3, 0, 0, 1.3);
+    background:white;
+    z-index:1000;
+    width:130px;
+    }
+
+  .user-menu.visible {
+    opacity:1;
+    pointer-events:auto;
+    -webkit-transform:none;
+    transform:none;
+    }
+
+  .user-menu::before {
+    content:"";
+    position:absolute;
+    top:-7px;
+    left:calc(50% - 7px);
+    width:13px;
+    height:7px;
+    background:url(user-menu-arrow.svg);
+    }
+
+  .user-menu li {
+    list-style:none;
+    text-align:left;
+    }
+
+  .select-container {
+    display: inline-flex;
+    position: relative;
+    color: #fff;
+    align-items: center;
+   }
+
+  .select {
+    appearance: none;
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    color: white;
+    padding: 6px 30px 6px 12px;
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.25);
+    }
+
+  .select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    pointer-events: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid white;
+    width: 8px;
+    height: 8px;
+    margin-top: -1px;
+   }
 
 /* iD container
  * elements while editing
