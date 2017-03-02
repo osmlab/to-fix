@@ -46,7 +46,7 @@ export const changeUserRole = ({ token, payload }) => (
     headers: {
       'Authorization': token,
     },
-    body: payload,
+    body: JSON.stringify(payload),
   })
     .then(toJSON)
 );
@@ -57,7 +57,7 @@ export const destroyUser = ({ token, payload }) => (
     headers: {
       'Authorization': token,
     },
-    body: payload,
+    body: JSON.stringify(payload),
   })
     .then(toJSON)
 );
