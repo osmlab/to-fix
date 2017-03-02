@@ -11,6 +11,8 @@ import AppSidebar from './app_sidebar';
 import SettingsModal from '../shared/settings_modal';
 import SuccessModal from '../shared/success_modal';
 import ErrorModal from '../shared/error_modal';
+import CreateTaskModal from '../shared/create_task_modal';
+import ManageUsersModal from '../shared/manage_users_modal';
 
 const mapStateToProps = (state) => ({
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
@@ -55,6 +57,8 @@ class App extends Component {
           <SuccessModal />
           <ErrorModal />
           <SettingsModal />
+          <CreateTaskModal />
+          <ManageUsersModal />
         </div>}
       </div>
     );

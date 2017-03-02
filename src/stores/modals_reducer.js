@@ -6,6 +6,8 @@ const initialState = {
   successMessage: null,
   showErrorModal: false,
   errorMessage: null,
+  showCreateTaskModal: false,
+  showManageUsersModal: false,
 };
 
 const modals = (state = initialState, action) => {
@@ -43,6 +45,26 @@ const modals = (state = initialState, action) => {
         ...state,
         showErrorModal: false,
         errorMessage: null,
+      };
+    case ModalsConstants.MODALS_OPEN_CREATE_TASK:
+      return {
+        ...state,
+        showCreateTaskModal: true,
+      };
+    case ModalsConstants.MODALS_CLOSE_CREATE_TASK:
+      return {
+        ...state,
+        showCreateTaskModal: false,
+      };
+    case ModalsConstants.MODALS_OPEN_MANAGE_USERS:
+      return {
+        ...state,
+        showManageUsersModal: true,
+      };
+    case ModalsConstants.MODALS_CLOSE_MANAGE_USERS:
+      return {
+        ...state,
+        showManageUsersModal: false,
       };
     default:
       return state;

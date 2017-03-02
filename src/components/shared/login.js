@@ -24,6 +24,7 @@ const mapDispatchToProps = {
   logout: UserActionCreators.logout,
   fetchUserDetails: UserActionCreators.fetchUserDetails,
   openSettingsModal: ModalsActionCreators.openSettingsModal,
+  openManageUsersModal: ModalsActionCreators.openManageUsersModal,
 };
 
 class Login extends Component {
@@ -60,6 +61,12 @@ class Login extends Component {
     e.preventDefault();
     this.toggleUserMenu();
     this.props.openSettingsModal();
+  }
+
+  openManageUsersModal = (e) => {
+    e.preventDefault();
+    this.toggleUserMenu();
+    this.props.openManageUsersModal();
   }
 
   logout = (e) => {
@@ -105,40 +112,47 @@ class Login extends Component {
 
     if (isAuthenticated) {
       return (
-        <div className='pad1x col12 clearfix mobile-cols'>
-          <div className='pad0y col8 margin2'>
-            <a className='block rcon caret-down strong small' href='#' onClick={this.openUserMenu}>
-              <img className='dot avatar' src={avatar} role='presentation' />
-              {username}
+        <div style={{width:'130px'}} className='unfloat inline align-top center'>
+          <div className='clearfix round inline align-top stroke avatar-wrap clip'>
+            <a href='#' className='align-top clearfix fill-darken0 inline pad2x pad1y' onClick={this.openUserMenu}>
+              <img className='fl dot align-top avatar' src={avatar} role='presentation' />
+              <div style={{maxWidth:'80px'}} title={username} className='fl truncate'>{username}</div>
             </a>
-            <ul className={menuClass}>
-              <li>
-                <a href='#' className='block pad0y pad2x icon sprocket' onClick={this.openSettingsModal}>Settings</a>
-              </li>
-              {
-                (role === ROLES.ADMIN || role === ROLES.SUPERADMIN)
-                  ? <li>
-                     <Link
-                       className='block pad0y pad2x icon home'
-                       onClick={this.toggleUserMenu}
-                       to={`admin/${currentTaskId}`}>
-                       Admin
-                     </Link>
-                   </li>
-                 : null
-              }
-              <li>
-                <a href='#' className='block pad0y pad2x icon logout' onClick={this.logout}>Logout</a>
-              </li>
-            </ul>
           </div>
+          <ul className={menuClass}>
+            <li>
+              <a href='#' className='block pad0y pad1x icon sprocket' onClick={this.openSettingsModal}>Settings</a>
+            </li>
+            {
+              (role === ROLES.ADMIN || role === ROLES.SUPERADMIN)
+                ? <li>
+                   <Link
+                     className='block pad0y pad1x icon pencil'
+                     onClick={this.toggleUserMenu}
+                     to={`admin/${currentTaskId}`}>
+                     Manage tasks
+                   </Link>
+                 </li>
+               : null
+            }
+            {
+              (role === ROLES.SUPERADMIN)
+                ? <li>
+                  <a href='#' className='block pad0y pad1x icon lock' onClick={this.openManageUsersModal}>Manage users</a>
+                 </li>
+               : null
+            }
+            <li>
+              <a href='#' className='block pad0y pad1x icon logout' onClick={this.logout}>Logout</a>
+            </li>
+          </ul>
         </div>
       );
     }
 
     return (
-      <div className='pad1x'>
-        <button onClick={this.onLoginClick} className='col12 button icon osm small animate truncate'>Login with OSM</button>
+      <div className='pad0y'>
+        <button onClick={this.onLoginClick} className='col12 button icon osm short animate truncate'>Login with OSM</button>
       </div>
     );
   }
@@ -147,7 +161,7 @@ class Login extends Component {
     const loginState = this.renderLoginState();
 
     return (
-      <div id='user-stuff' className='col12 pad0y clearfix mobile-cols'>
+      <div id='user-stuff' className='clearfix mobile-cols pad1x'>
         {loginState}
       </div>
     );
@@ -165,6 +179,7 @@ Login.propTypes = {
   logout: PropTypes.func.isRequired,
   fetchUserDetails: PropTypes.func.isRequired,
   openSettingsModal: PropTypes.func.isRequired,
+  openManageUsersModal: PropTypes.func.isRequired,
   currentTaskId: PropTypes.string.isRequired,
 };
 
@@ -174,3 +189,42 @@ Login = connect(
 )(Login);
 
 export default Login;
+
+/*
+
+        <div className='pad1x col12 clearfix mobile-cols'>
+          <div className='pad0y col8 margin2'>
+            <a className='block rcon caret-down strong small' href='#' onClick={this.openUserMenu}>
+              <img className='dot avatar' src={avatar} role='presentation' />
+              {username}
+            </a>
+            <ul className={menuClass}>
+              <li>
+                <a href='#' className='block pad0y pad2x icon sprocket' onClick={this.openSettingsModal}>Settings</a>
+              </li>
+              {
+                (role === ROLES.ADMIN || role === ROLES.SUPERADMIN)
+                  ? <li>
+                     <Link
+                       className='block pad0y pad2x icon pencil'
+                       onClick={this.toggleUserMenu}
+                       to={`admin/${currentTaskId}`}>
+                       Manage tasks
+                     </Link>
+                   </li>
+                 : null
+              }
+              {
+                (role === ROLES.SUPERADMIN)
+                  ? <li>
+                    <a href='#' className='block pad0y pad2x icon lock' onClick={this.openManageUsersModal}>Manage users</a>
+                   </li>
+                 : null
+              }
+              <li>
+                <a href='#' className='block pad0y pad2x icon logout' onClick={this.logout}>Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+*/

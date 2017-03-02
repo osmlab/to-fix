@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 
-const ShowTask = ({ task }) => {
+const ShowTask = ({ task, onEdit }) => {
   const dateDisplay = d3.time.format('%B %-d');
   const timeDisplay = d3.time.format('%-I:%-M%p');
 
@@ -11,7 +11,7 @@ const ShowTask = ({ task }) => {
   const status = (task.isCompleted) ? 'Completed.' : 'Items remaining to be done.';
 
   return (
-    <div className='rows'>
+    <div className='rows pad2'>
       <div className='clearfix fill-darken1 dark mobile-cols'>
         <div className='col3 fl strong pad1 fill-darken1 editor-key'>
           <span className='capitalize'>Title</span>
@@ -62,12 +62,16 @@ const ShowTask = ({ task }) => {
           {status}
         </div>
       </div>
+      <div className='pad4y space-top1'>
+        <button className='col3 button icon pencil' onClick={onEdit}>Edit task</button>
+      </div>
     </div>
   );
 }
 
 ShowTask.propTypes = {
   task: PropTypes.object.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default ShowTask;

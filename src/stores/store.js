@@ -12,6 +12,7 @@ import activity from './activity_reducer';
 import stats from './stats_reducer';
 import modals from './modals_reducer';
 import loading from './loading_reducer';
+import admin from './admin_reducer';
 
 // Root reducer
 const rootReducer = combineReducers({
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   stats,
   modals,
   loading,
+  admin,
 });
 
 // Middlewares

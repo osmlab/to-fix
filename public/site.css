@@ -185,10 +185,14 @@ header nav .button {
   color:rgba(0,0,0,0.75);
   }
 
+.avatar-wrap {
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  margin-top: -2px;
+  }
 .avatar {
-  height:30px;
-  margin-right:10px;
-  margin-top:-5px;
+  width: 20px;
+  margin-right:5px !important;
   }
 
 .progress-bar {
@@ -221,7 +225,7 @@ header nav .button {
     position:relative;
     top:7px;
     right:0px;
-    padding:10px 0px 5px 0px;
+    padding:10px 0px 10px 0px;
     border:1px solid rgba(26,53,71,.12);
     border-radius:4px;
     box-shadow:0 1px 2px rgba(26,53,71,.1);
@@ -232,7 +236,7 @@ header nav .button {
     transition:.4s cubic-bezier(.3, 0, 0, 1.3);
     background:white;
     z-index:1000;
-    width:120px;
+    width:130px;
     }
 
   .user-menu.visible {
@@ -256,6 +260,39 @@ header nav .button {
     list-style:none;
     text-align:left;
     }
+
+  .select-container {
+    display: inline-flex;
+    position: relative;
+    color: #fff;
+    align-items: center;
+   }
+
+  .select {
+    appearance: none;
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    color: white;
+    padding: 6px 30px 6px 12px;
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.25);
+    }
+
+  .select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    pointer-events: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid white;
+    width: 8px;
+    height: 8px;
+    margin-top: -1px;
+   }
 
 /* iD container
  * elements while editing

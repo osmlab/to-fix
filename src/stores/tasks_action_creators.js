@@ -27,6 +27,7 @@ const TasksActionCreators = {
     asyncCall: server.createTask,
     responseSchema: schemas.task,
     showLoader: true,
+    showError: false,
   }),
 
   updateTask: asyncAction({

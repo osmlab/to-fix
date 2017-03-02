@@ -39,13 +39,13 @@ class Header extends Component {
             <h1 className='inline fancy title'>to-fix</h1>
           </a>
         </nav>
-        <div className='col4 truncate text-right pad1'>
-          <nav className='col12 space pad0y keyline-right'>
+        <div className='col6 truncate text-right pad1'>
+          <nav className='inline space pad0y keyline-right'>
             <Link
               className='icon pencil short button'
               activeClassName='active'
               to={`task/${currentTaskId}`}>
-              Task
+              Review
             </Link>
             <Link
               className='icon bolt short button'
@@ -60,9 +60,9 @@ class Header extends Component {
               Statistics
             </Link>
           </nav>
-        </div>
-        <div className='col2 truncate pad1'>
-          <Login />
+          <div className='fr inline truncate'>
+            <Login />
+          </div>
         </div>
       </header>
     );

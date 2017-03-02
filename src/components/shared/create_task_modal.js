@@ -4,28 +4,50 @@ import filesize from 'file-size';
 
 import { AsyncStatus } from '../../stores/async_action';
 import UserSelectors from '../../stores/user_selectors';
+import ModalsSelectors from '../../stores/modals_selectors';
 import ModalsActionCreators from '../../stores/modals_action_creators';
+import TasksActionCreators from '../../stores/tasks_action_creators';
 
 const mapStateToProps = (state) => ({
   token: UserSelectors.getToken(state),
+  showCreateTaskModal: ModalsSelectors.getShowCreateTaskModal(state),
 });
 
 const mapDispatchToProps = {
-  openSuccessModal: ModalsActionCreators.openSuccessModal,
+  closeCreateTaskModal: ModalsActionCreators.closeCreateTaskModal,
+  createTask: TasksActionCreators.createTask,
 };
 
-class AddTask extends Component {
+class CreateTaskModal extends Component {
   initialState = {
     name: '',
     description: '',
     changesetComment: '',
     file: {},
+    isLoading: false,
+    isSuccess: false,
+    isFailure: false,
+    errorMessage: '',
   }
 
   state = this.initialState
 
-  resetState = () => {
-    this.setState(this.initialState);
+  resetFormState = () => {
+    this.setState({
+      name: '',
+      description: '',
+      changesetComment: '',
+      file: {},
+    });
+  }
+
+  resetAsyncState = () => {
+    this.setState({
+      isLoading: false,
+      isSuccess: false,
+      isFailure: false,
+      errorMessage: '',
+    });
   }
 
   handleNameChange = (e) => {
@@ -51,14 +73,26 @@ class AddTask extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { onTaskAdd, token } = this.props;
+    const { createTask, token } = this.props;
     const formData = this.getFormData();
 
-    onTaskAdd({ token, payload: formData })
+    this.resetAsyncState();
+    this.setState({ isLoading: true });
+
+    createTask({ token, payload: formData })
       .then(response => {
+        this.setState({ isLoading: false });
+
         if (response.status === AsyncStatus.SUCCESS) {
-          this.props.openSuccessModal('Task created succesfully');
-          this.resetState();
+          this.resetFormState();
+          this.setState({
+            isSuccess: true,
+          });
+        } else {
+          this.setState({
+            isFailure: true,
+            errorMessage: response.error,
+          });
         }
       });
   }
@@ -76,11 +110,40 @@ class AddTask extends Component {
     return formData;
   }
 
-  render() {
+  stopProp = (e) => {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  }
+
+  renderNotice = () => {
+    const { isSuccess, isFailure, errorMessage } = this.state;
+
+    if (isSuccess) {
+      return (
+        <div className='pad2 note contain'>
+          <h3>Success</h3>
+          <p>Task created successfully.</p>
+        </div>
+      );
+    }
+
+    if (isFailure) {
+      return (
+        <div className='pad2 note error contain truncate'>
+          <h3>Error</h3>
+          <p>{errorMessage || 'Something went wrong.'}</p>
+        </div>
+      );
+    }
+
+    return null;
+  }
+
+  renderForm = () => {
     const { name, description, changesetComment, file } = this.state;
 
     return (
-      <form className='dark' onSubmit={this.handleSubmit}>
+      <form className='pad2 space-bottom2 dark' onSubmit={this.handleSubmit}>
         <fieldset className='pad2x'>
           <label>Task name</label>
           <input
@@ -128,22 +191,51 @@ class AddTask extends Component {
         <div className='pad2x pad1y round-bottom col12 clearfix'>
           <input
             type='submit'
-            className='col6 margin3 button'
-            value='Create Task' />
+            className='col6 margin3 button quiet'
+            value='Create task' />
         </div>
       </form>
     );
   }
+
+  render() {
+    const { showCreateTaskModal, closeCreateTaskModal } = this.props;
+
+    const notice = this.renderNotice();
+    const form = this.renderForm();
+
+    if (showCreateTaskModal) {
+      const loadingClass = this.state.isLoading ? 'loading' : '';
+      const modalClass = `animate modal modal-content active ${loadingClass}`;
+
+      return (
+        <div className={modalClass} onClick={closeCreateTaskModal}>
+          <div className='col4 modal-body fill-purple contain' onClick={this.stopProp}>
+            <button onClick={closeCreateTaskModal} className='unround pad1 icon fr close button quiet'></button>
+            <div className='pad2'>
+              <h2 className='dark'>Create a new task</h2>
+            </div>
+            {notice}
+            {form}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  }
 }
 
-AddTask.propTypes = {
-  onTaskAdd: PropTypes.func.isRequired,
-  openSuccessModal: PropTypes.func.isRequired,
+CreateTaskModal.propTypes = {
+  token: PropTypes.string,
+  showCreateTaskModal: PropTypes.bool.isRequired,
+  closeCreateTaskModal: PropTypes.func.isRequired,
+  createTask: PropTypes.func.isRequired,
 };
 
-AddTask = connect(
+CreateTaskModal = connect(
   mapStateToProps,
-  mapDispatchToProps,
-)(AddTask);
+  mapDispatchToProps
+)(CreateTaskModal);
 
-export default AddTask;
+export default CreateTaskModal;
