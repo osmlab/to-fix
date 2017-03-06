@@ -14,7 +14,7 @@
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "lodash.union": "^4.6.0",
-    "mapbox-gl": "^0.26.0",
+    "mapbox-gl": "^0.32.1",
     "normalizr": "^2.2.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
