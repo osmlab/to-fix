@@ -18,7 +18,11 @@ import UserSelectors from '../../stores/user_selectors';
 import SettingsSelectors from '../../stores/settings_selectors';
 import TasksSelectors from '../../stores/tasks_selectors';
 
+import TaskControl from './controls/task';
+const taskControl = new TaskControl();
+
 const mapStateToProps = (state) => ({
+  currentTask: TasksSelectors.getCurrentTask(state),
   currentTaskId: TasksSelectors.getCurrentTaskId(state),
   currentTaskType: TasksSelectors.getCurrentTaskType(state),
   user: UserSelectors.getUsername(state),
@@ -223,8 +227,12 @@ class Task extends Component {
     });
 
     map.addControl(new mapboxgl.NavigationControl());
+    map.addControl(taskControl, 'top-left');
 
-    map.once('load', () => this.setState({ map }));
+    map.once('load', () => {
+      this.setState({ map })
+      taskControl.update(this.props.currentTask);
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -253,6 +261,7 @@ class Task extends Component {
       this.addSource(this.props.currentTaskId);
       this.addLayers(this.props.currentTaskId);
       this.fetchNextItem();
+      taskControl.update(this.props.currentTask);
       return;
     }
 
@@ -307,6 +316,7 @@ class Task extends Component {
 }
 
 Task.propTypes = {
+  currentTask: PropTypes.object.isRequired,
   currentTaskId: PropTypes.string.isRequired,
   user: PropTypes.string,
   editor: PropTypes.string.isRequired,
