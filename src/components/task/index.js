@@ -274,7 +274,7 @@ class Task extends Component {
 
       const bboxPolygon = this.state.map.getSource(`${currentTaskId}-bbox`)._data.features[0];
       const bboxCoordiantes = bboxPolygon.geometry.coordinates[0];
-      this.fitBounds([bboxCoordiantes[0], bboxCoordiantes[2]]);
+      this.fitBounds([bboxCoordiantes[3], bboxCoordiantes[1]]);
       return;
     }
 
