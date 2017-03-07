@@ -159,12 +159,24 @@ class Task extends Component {
     const { map } = this.state;
 
     map.addLayer({
+      id: `${id}-bbox-bg`,
+      type: 'line',
+      source: `${id}-bbox`,
+      paint: {
+        'line-width': 6,
+        'line-color': 'HSL(247, 100%, 100%)',
+        'line-opacity': 0.5,
+      },
+    });
+
+    map.addLayer({
       id: `${id}-bbox`,
       type: 'line',
       source: `${id}-bbox`,
       paint: {
-        'line-width': 3,
-        'line-color': '#b58900',
+        'line-width': 2,
+        'line-color': 'HSL(247, 60%, 50%)',
+        'line-opacity': 0.75,
       },
     });
 
@@ -173,7 +185,18 @@ class Task extends Component {
       type: 'circle',
       source: id,
       paint: {
-        'circle-radius': 5,
+        'circle-radius': {
+          'stops': [
+            [12,4],
+            [16,8]
+          ]
+        },
+        'circle-opacity': {
+          'stops': [
+            [12,0.5],
+            [16,0.75]
+          ]
+        },
         'circle-color': '#dc322f',
       },
     });
@@ -183,7 +206,13 @@ class Task extends Component {
       type: 'line',
       source: id,
       paint: {
-        'line-width': 5,
+        'line-width': {
+          'stops': [
+            [12,2],
+            [16,5]
+          ]
+        },
+        'line-opacity': 0.75,
         'line-color': '#dc322f',
       },
     });
