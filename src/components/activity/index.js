@@ -100,7 +100,7 @@ class Activity extends Component {
     if (activity.length === 0) return null;
 
     if (loadCount >= activity.length) {
-      return <button className='button col12 quiet disabled round-bottom'>Activity loaded</button>;
+      return <button className='button col12 quiet disabled round-bottom'>Loaded 50 recent activities.</button>;
     } else {
       return <button onClick={() => this.loadMore()} className='col12 button round-bottom'>Load more</button>;
     }
