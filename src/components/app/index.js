@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
+import { AsyncStatus } from '../../stores/async_action';
 import TasksActionCreators from '../../stores/tasks_action_creators';
 import TasksSelectors from '../../stores/tasks_selectors';
 import LoadingSelectors from '../../stores/loading_selectors';
@@ -26,13 +27,28 @@ const mapDispatchToProps = {
 };
 
 class App extends Component {
+  state = {
+    appLoading: false,
+    errorMessage: '',
+  }
+
   componentDidMount() {
     this.fetchData();
   }
 
   fetchData() {
     const { fetchAllTasks } = this.props;
-    fetchAllTasks();
+    this.setState({ appLoading: true });
+    fetchAllTasks()
+      .then(response => {
+        this.setState({ appLoading: false });
+
+        if (response.status === AsyncStatus.FAILURE) {
+          this.setState({
+            errorMessage: response.error.message || 'Something went wrong.',
+          });
+        }
+      });
   }
 
   componentDidUpdate() {
@@ -44,14 +60,20 @@ class App extends Component {
 
   render() {
     const { currentTask, isLoading } = this.props;
-    const loadingClass = isLoading ? 'loading' : '';
+    const { appLoading, errorMessage } = this.state;
+
+    const appLoadingClass = appLoading ? 'loading' : '';
+    const componentLoadingClass = isLoading ? 'loading' : '';
 
     return (
-      <div className={loadingClass}>
+      <div className={`${appLoadingClass}`}>
+        {errorMessage && <div className='col12 pad2 clearfix scroll-styled'>
+          <h2 className='dark'>{errorMessage}</h2>
+        </div>}
         {currentTask && <div>
           <AppHeader />
           <AppSidebar />
-          <div className='main clip fill-navy-dark col12 pin-bottom space-top6 animate col12 clearfix'>
+          <div className={`main clip fill-navy-dark col12 pin-bottom space-top6 animate ${componentLoadingClass}`}>
             {this.props.children}
           </div>
           <SuccessModal />

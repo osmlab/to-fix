@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 
-const ShowTask = ({ task, onEdit }) => {
+const ShowTask = ({ task, canEdit, onEdit }) => {
   const dateDisplay = d3.time.format('%B %-d');
   const timeDisplay = d3.time.format('%-I:%-M%p');
 
@@ -9,6 +9,8 @@ const ShowTask = ({ task, onEdit }) => {
   const updatedTime = timeDisplay(new Date(task.value.updated * 1000));
 
   const status = (task.isCompleted) ? 'Completed.' : 'Items remaining to be done.';
+
+  const editButtonClass = canEdit ? '' : 'disabled';
 
   return (
     <div className='rows pad2'>
@@ -63,7 +65,7 @@ const ShowTask = ({ task, onEdit }) => {
         </div>
       </div>
       <div className='pad4y space-top1'>
-        <button className='col3 button icon pencil' onClick={onEdit}>Edit task</button>
+        <button className={`col3 button ${editButtonClass}`} onClick={(e) => { if (canEdit) {onEdit(e)}}}>Edit task</button>
       </div>
     </div>
   );

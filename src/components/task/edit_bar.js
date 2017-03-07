@@ -78,7 +78,7 @@ let EditBar = React.createClass({
     const taskTitle = currentTask.value.name;
     let taskActions = (
       <nav className='tabs col12 clearfix'>
-        <a onClick={onUpdate} className='col12 animate icon refresh'>Preview another task</a>
+        <button onClick={onUpdate} className='col12 button animate icon refresh'>Preview another task</button>
       </nav>
     );
 
@@ -113,7 +113,7 @@ let EditBar = React.createClass({
           {taskActions}
           <div className='fill-lighten3 round-bottom col12 pad2x pad1y center strong inline truncate'>
             {taskTitle}
-            {geolocation && <span className='quiet icon marker'>{geolocation}</span>}
+            {geolocation && <span className='quiet icon marker' title={geolocation}>{geolocation}</span>}
           </div>
         </div>
       </div>

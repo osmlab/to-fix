@@ -108,7 +108,7 @@ class Login extends Component {
   renderLoginState() {
     const { isAuthenticated, username, avatar, role, currentTaskId } = this.props;
 
-    const menuClass = `user-menu ${this.state.showUserMenu ? 'visible' : ''}`;
+    const menuClass = `user-menu ${this.state.showUserMenu ? 'visible' : 'hidden'}`;
 
     if (isAuthenticated) {
       return (

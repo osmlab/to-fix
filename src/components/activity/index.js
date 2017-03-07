@@ -73,10 +73,17 @@ class Activity extends Component {
       const actionDate = dateDisplay(new Date(time * 1000));
       const actionTime = timeDisplay(new Date(time * 1000));
 
+      const mapAction = {
+        'edit': 'Edited',
+        'fixed': 'Fixed',
+        'skip': 'Skipped',
+        'noterror': 'Not an error',
+      };
+
       return (
         <div id={permalink} key={i} className='col12 clearfix fill-darken1 dark mobile-cols'>
           <div className='fl strong pad1 fill-darken1 editor-key'>
-            <span className='capitalize'>{action}</span>
+            <span>{mapAction[action]}</span>
           </div>
           <div className='pad1 fl space'>
             <a href={profile} target='_blank' className='icon account'>
@@ -100,7 +107,7 @@ class Activity extends Component {
     if (activity.length === 0) return null;
 
     if (loadCount >= activity.length) {
-      return <button className='button col12 quiet disabled round-bottom'>Activity loaded</button>;
+      return <button className='button col12 quiet disabled round-bottom'>Loaded 100 recent activities.</button>;
     } else {
       return <button onClick={() => this.loadMore()} className='col12 button round-bottom'>Load more</button>;
     }
@@ -111,7 +118,6 @@ class Activity extends Component {
     const { fromDate, toDate } = currentTaskExtent;
 
     const taskName = currentTask.value.name;
-    const extent = `${fromDate} - ${toDate}`;
     const activityList = this.renderActivityList();
     const loadMoreButton = this.renderLoadMoreButton();
 
@@ -121,7 +127,7 @@ class Activity extends Component {
           <div className='space-bottom1 col12 clearfix'>
             <h2>{taskName}</h2>
             <h4 className='space col12 clearfix'>
-              {extent}
+              {`Task last updated on ${fromDate}.`}
             </h4>
           </div>
           <div className='rows'>

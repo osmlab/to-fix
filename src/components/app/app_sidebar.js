@@ -11,6 +11,7 @@ import ModalsActionCreators from '../../stores/modals_action_creators';
 const mapStateToProps = (state, { routes }) => ({
   topLevelRoute: routes[1].name,
   role: UserSelectors.getRole(state),
+  userId: UserSelectors.getOsmId(state),
   sidebar: SettingsSelectors.getSidebarSetting(state),
   activeTasks: TasksSelectors.getActiveTasks(state),
   completedTasks: TasksSelectors.getCompletedTasks(state),
@@ -40,21 +41,33 @@ class Sidebar extends Component {
   }
 
   renderTaskList(tasks) {
-    const { topLevelRoute } = this.props;
+    const { role, userId, topLevelRoute } = this.props;
 
     if (tasks.length === 0) {
       return <p className='quiet strong small block pad1x'>No tasks.</p>;
     };
 
-    return tasks.map((task, i) => (
-      <Link
-        to={`${topLevelRoute}/${task.idtask}`}
-        key={i}
-        className='block strong pad1x pad0y truncate'
-        activeClassName='active'>
-        {task.value.name}
-      </Link>
-    ));
+    return tasks.map((task, i) => {
+      let iconClass = '';
+      if (topLevelRoute === "admin") {
+        if (role === ROLES.SUPERADMIN || (role === ROLES.ADMIN && task.iduser === userId)) {
+          iconClass = 'icon pencil';
+        } else {
+          iconClass = 'icon lock';
+        }
+      }
+
+      return (
+        <Link
+          to={`${topLevelRoute}/${task.idtask}`}
+          key={i}
+          className={`block strong pad1x pad0y truncate ${iconClass}`}
+          title={task.value.name}
+          activeClassName='active'>
+          {task.value.name}
+        </Link>
+      );
+    });
   }
 
   render() {
@@ -84,6 +97,7 @@ class Sidebar extends Component {
 Sidebar.propTypes = {
   topLevelRoute: PropTypes.string.isRequired,
   role: PropTypes.string,
+  userId: PropTypes.string,
   sidebar: PropTypes.bool.isRequired,
   activeTasks: PropTypes.array.isRequired,
   completedTasks: PropTypes.array.isRequired,

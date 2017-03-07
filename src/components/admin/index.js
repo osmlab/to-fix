@@ -15,6 +15,7 @@ const mapStateToProps = (state) => ({
   currentTaskExtent: TasksSelectors.getCurrentTaskExtent(state),
   isAuthenticated: UserSelectors.getIsAuthenticated(state),
   role: UserSelectors.getRole(state),
+  userId: UserSelectors.getOsmId(state),
 });
 
 const mapDispatchToProps = {
@@ -40,7 +41,7 @@ class Admin extends Component {
 
   render() {
     const { taskWindow } = this.state;
-    const { currentTask, updateTask, currentTaskExtent, role, isAuthenticated } = this.props;
+    const { currentTask, updateTask, currentTaskExtent, role, isAuthenticated, userId } = this.props;
 
     const taskName = currentTask.value.name;
     const fromDate = currentTaskExtent.fromDate;
@@ -61,6 +62,8 @@ class Admin extends Component {
       );
     }
 
+    const canEdit = (role === ROLES.SUPERADMIN || (role === ROLES.ADMIN && currentTask.iduser === userId));
+
     return (
       <div className='col12 clearfix scroll-styled'>
         <div className='col12 pad2 dark'>
@@ -70,7 +73,7 @@ class Admin extends Component {
           </h4>
         </div>
         <div className='col8 dark'>
-          {(taskWindow === 'show') ? <ShowTask task={currentTask} onEdit={() => this.setTaskWindow('edit')}/> : null}
+          {(taskWindow === 'show') ? <ShowTask task={currentTask} canEdit={canEdit} onEdit={() => this.setTaskWindow('edit')}/> : null}
           {(taskWindow === 'edit') ? <EditTask task={currentTask} onCancel={() => this.setTaskWindow('show')} onSubmit={updateTask} /> : null}
         </div>
       </div>
@@ -84,6 +87,7 @@ Admin.propTypes = {
   currentTaskExtent: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   role: PropTypes.string,
+  userId: PropTypes.string,
   updateTask: PropTypes.func.isRequired,
 };
 

@@ -58,59 +58,63 @@ class TaskComponent extends Component {
 
     return (
       <div className='mapboxgl-ctrl-task fill-darken3 dark width40'>
-        <div className='rows'>
-          <div className='clearfix fill-darken1 dark mobile-cols'>
-            <div className='col3 fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>Title</span>
-            </div>
-            <div className='col9 pad1 fl space truncate'>
-              {task.value.name}
-              <span onClick={this.toggleShowMore} className={`${showMoreIcon} fr`} />
-            </div>
-          </div>
-          <div className={`clearfix fill-darken1 dark mobile-cols ${showMoreClass}`}>
-            <div className='col3 fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>Task ID</span>
-            </div>
-            <div className='col9 pad1 fl space truncate'>
-              {task.idtask}
-            </div>
-          </div>
-          <div className={`clearfix fill-darken1 dark mobile-cols ${showMoreClass}`}>
-            <div className='col3 fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>Description</span>
-            </div>
-            <div className='col9 pad1 fl space truncate'>
-              {task.value.description}
-            </div>
-          </div>
-          <div className={`clearfix fill-darken1 dark mobile-cols ${showMoreClass}`}>
-            <div className='col3 fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>Changeset comment</span>
-            </div>
-            <div className='col9 pad1 fl space truncate'>
-              {task.value.changesetComment}
-            </div>
-          </div>
-          <div className={`clearfix fill-darken1 dark mobile-cols ${showMoreClass}`}>
-            <div className='col3 fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>Updated</span>
-            </div>
-            <div className='col9 pad1 fl space truncate'>
-              {updatedDay}
-              {' '}
-              <span className='quiet'>{updatedTime}</span>
-            </div>
-          </div>
-          <div className={`clearfix fill-darken1 dark mobile-cols ${showMoreClass}`}>
-            <div className='col3 fl strong pad1 fill-darken1 editor-key'>
-              <span className='capitalize'>Status</span>
-            </div>
-            <div className='col9 pad1 fl space truncate'>
-              {status}
-            </div>
-          </div>
-        </div>
+        <table>
+          <tbody className='fill-darken1 dark'>
+            <tr>
+              <td className='strong pad1 no-select' style={{width:'100px'}}>
+                <strong className='capitalize'>Title</strong>
+              </td>
+              <td style={{padding:'1px'}} onClick={this.toggleShowMore}>
+                <div className='block pad1 space button quiet unround text-left'>
+                  {task.value.name}
+                  <span className={`${showMoreIcon} fr`} />
+                </div>
+              </td>
+            </tr>
+            <tr className={`${showMoreClass}`}>
+              <td className='strong pad1 no-select'>
+                <strong className='capitalize'>Task ID</strong>
+              </td>
+              <td className='pad1 space'>
+                {task.idtask}
+              </td>
+            </tr>
+            <tr className={`${showMoreClass}`}>
+              <td className='strong pad1 no-select'>
+                <strong className='capitalize'>Description</strong>
+              </td>
+              <td className='pad1 space'>
+                {task.value.description}
+              </td>
+            </tr>
+            <tr className={`${showMoreClass}`}>
+              <td className='strong pad1 no-select'>
+                <strong className='capitalize'>Changeset comment</strong>
+              </td>
+              <td className='pad1 space'>
+                {task.value.changesetComment}
+              </td>
+            </tr>
+            <tr className={`${showMoreClass}`}>
+              <td className='strong pad1 no-select'>
+                <strong className='capitalize'>Updated</strong>
+              </td>
+              <td className='pad1 space'>
+                {updatedDay}
+                {' '}
+                <span className='quiet'>{updatedTime}</span>
+              </td>
+            </tr>
+            <tr className={`${showMoreClass}`}>
+              <td className='strong pad1'>
+                <strong className='capitalize'>Status</strong>
+              </td>
+              <td className='pad1 space'>
+                {status}
+              </td>
+            </tr>
+            </tbody>
+        </table>
       </div>
     );
   }
