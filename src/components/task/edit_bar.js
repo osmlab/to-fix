@@ -113,7 +113,7 @@ let EditBar = React.createClass({
           {taskActions}
           <div className='fill-lighten3 round-bottom col12 pad2x pad1y center strong inline truncate'>
             {taskTitle}
-            {geolocation && <span className='quiet icon marker'>{geolocation}</span>}
+            {geolocation && <span className='quiet icon marker' title={geolocation}>{geolocation}</span>}
           </div>
         </div>
       </div>
