@@ -100,6 +100,8 @@ h2 { padding-top:0; padding-bottom:0; }
 .uppercase { text-transform:uppercase; }
 .underline { text-decoration:underline; }
 
+.no-select { user-select: none; }
+
 /* Layout
 ------------------------- */
 .sidebar.active ~ .main { width:83.3334%; left:16.6666%; }
