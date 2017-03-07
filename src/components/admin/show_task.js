@@ -10,6 +10,8 @@ const ShowTask = ({ task, canEdit, onEdit }) => {
 
   const status = (task.isCompleted) ? 'Completed.' : 'Items remaining to be done.';
 
+  const editButtonClass = canEdit ? '' : 'disabled';
+
   return (
     <div className='rows pad2'>
       <div className='clearfix fill-darken1 dark mobile-cols'>
@@ -62,13 +64,9 @@ const ShowTask = ({ task, canEdit, onEdit }) => {
           {status}
         </div>
       </div>
-      { canEdit
-          ? <div className='pad4y space-top1'>
-              <button className='col3 button icon pencil' onClick={onEdit}>Edit task</button>
-            </div>
-          : null
-      }
-
+      <div className='pad4y space-top1'>
+        <button className={`col3 button icon pencil ${editButtonClass}`} onClick={onEdit}>Edit task</button>
+      </div>
     </div>
   );
 }
