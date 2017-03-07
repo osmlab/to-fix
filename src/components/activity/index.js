@@ -73,10 +73,17 @@ class Activity extends Component {
       const actionDate = dateDisplay(new Date(time * 1000));
       const actionTime = timeDisplay(new Date(time * 1000));
 
+      const mapAction = {
+        'edit': 'Edited',
+        'fixed': 'Fixed',
+        'skip': 'Skipped',
+        'noterror': 'Not an error',
+      };
+
       return (
         <div id={permalink} key={i} className='col12 clearfix fill-darken1 dark mobile-cols'>
           <div className='fl strong pad1 fill-darken1 editor-key'>
-            <span className='capitalize'>{action}</span>
+            <span>{mapAction[action]}</span>
           </div>
           <div className='pad1 fl space'>
             <a href={profile} target='_blank' className='icon account'>
