@@ -31,7 +31,7 @@ class Header extends Component {
 
     return (
       <header className='fill-light keyline-bottom row-60 col12 clearfix mobile-cols'>
-        <nav className='col6 truncate'>
+        <nav className='col4 truncate'>
           <a href='#' onClick={this.toggleSidebar} className={toggleClass}>
             <span className='icon big menu'></span>
           </a>
@@ -39,7 +39,7 @@ class Header extends Component {
             <h1 className='inline fancy title'>to-fix</h1>
           </a>
         </nav>
-        <div className='col6 truncate text-right pad1'>
+        <div className='col8 truncate text-right pad1'>
           <nav className='inline space pad0y keyline-right'>
             <Link
               className='icon pencil short button'
