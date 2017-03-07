@@ -111,7 +111,6 @@ class Activity extends Component {
     const { fromDate, toDate } = currentTaskExtent;
 
     const taskName = currentTask.value.name;
-    const extent = `${fromDate} - ${toDate}`;
     const activityList = this.renderActivityList();
     const loadMoreButton = this.renderLoadMoreButton();
 
@@ -121,7 +120,7 @@ class Activity extends Component {
           <div className='space-bottom1 col12 clearfix'>
             <h2>{taskName}</h2>
             <h4 className='space col12 clearfix'>
-              {extent}
+              {`Task last updated on ${fromDate}.`}
             </h4>
           </div>
           <div className='rows'>
