@@ -56,7 +56,7 @@ h2 { padding-top:0; padding-bottom:0; }
   .editbar .tabs > .settings {
     border-width:0px;
     height:38px;
-    width:37px !important;
+    width:08.3333% !important;
     padding:7px !important;
     }
   .button.small {
@@ -99,6 +99,8 @@ h2 { padding-top:0; padding-bottom:0; }
 
 .uppercase { text-transform:uppercase; }
 .underline { text-decoration:underline; }
+
+.no-select { user-select: none; }
 
 /* Layout
 ------------------------- */
@@ -223,7 +225,7 @@ header nav .button {
 
   .user-menu {
     position:relative;
-    top:7px;
+    top:0px;
     right:0px;
     padding:10px 0px 10px 0px;
     border:1px solid rgba(26,53,71,.12);
