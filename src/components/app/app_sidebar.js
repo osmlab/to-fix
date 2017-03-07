@@ -48,10 +48,12 @@ class Sidebar extends Component {
     };
 
     return tasks.map((task, i) => {
-      let editIcon = '';
+      let iconClass = '';
       if (topLevelRoute === "admin") {
         if (role === ROLES.SUPERADMIN || (role === ROLES.ADMIN && task.iduser === userId)) {
-          editIcon = 'icon pencil';
+          iconClass = 'icon pencil';
+        } else {
+          iconClass = 'icon lock';
         }
       }
 
@@ -59,7 +61,7 @@ class Sidebar extends Component {
         <Link
           to={`${topLevelRoute}/${task.idtask}`}
           key={i}
-          className={`block strong pad1x pad0y truncate ${editIcon}`}
+          className={`block strong pad1x pad0y truncate ${iconClass}`}
           title={task.value.name}
           activeClassName='active'>
           {task.value.name}
