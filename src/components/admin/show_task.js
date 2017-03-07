@@ -65,7 +65,7 @@ const ShowTask = ({ task, canEdit, onEdit }) => {
         </div>
       </div>
       <div className='pad4y space-top1'>
-        <button className={`col3 button icon pencil ${editButtonClass}`} onClick={onEdit}>Edit task</button>
+        <button className={`col3 button ${editButtonClass}`} onClick={(e) => { if (canEdit) {onEdit(e)}}}>Edit task</button>
       </div>
     </div>
   );
