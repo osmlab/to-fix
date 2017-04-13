@@ -4,4 +4,4 @@ export const TASK_SERVER_URL = 'https://build-to-fix-production.mapbox.com';
 export const USER_PROFILE_URL = 'https://www.openstreetmap.org/user';
 export const MAPBOX_GEOCODER_URL = 'https://api.mapbox.com/geocoding/v5';
 export const JOSM_RC_URL = 'https://localhost:8112';
-export const ID_URL = 'http://preview.ideditor.com/release';
+export const ID_URL = 'https://openstreetmap.us/iD/release';
