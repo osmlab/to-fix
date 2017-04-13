@@ -26,3 +26,9 @@ npm deploy
 ```
 
 You can configure some details at [src/config](src/config).
+
+
+Usage:
+
+* [How to create a To-Fix Task](https://github.com/osmlab/to-fix/wiki/Creating-and-updating-tasks)
+* [How to work on an existing To-Fix task](https://github.com/osmlab/to-fix/wiki/Working-on-a-task)
