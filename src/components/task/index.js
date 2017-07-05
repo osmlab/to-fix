@@ -54,17 +54,33 @@ class Task extends Component {
     if (editor === 'josm') {
       const { currentItem } = this.props;
       const { _osmType, _osmId } = currentItem.properties;
-      const objects = `${_osmType.substr(0, 1)}${_osmId}`;
 
-      const query = {
-        new_layer: true,
-        objects,
-        relation_members: true,
-      };
-      const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+      if (_osmType && _osmId) {
+        const objects = `${_osmType.substr(0, 1)}${_osmId}`;
 
-      fetch(`${JOSM_RC_URL}/load_object?${params}`)
-        .catch(() => this.props.openErrorModal('Could not connect to JOSM remote control.'));
+        const query = {
+          new_layer: true,
+          objects,
+          relation_members: true,
+        };
+        const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+
+        fetch(`${JOSM_RC_URL}/load_object?${params}`)
+          .catch(() => this.props.openErrorModal('Could not connect to JOSM remote control.'));
+      } else {
+        const bounds = map.getBounds();
+
+        const bottom = bounds.getSouthWest().lat - 0.0005;
+        const left = bounds.getSouthWest().lng - 0.0005;
+        const top = bounds.getNorthEast().lat - 0.0005;
+        const right = bounds.getNorthEast().lng - 0.0005;
+
+        const query = { left, right, top, bottom };
+        const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+
+        fetch(`${JOSM_RC_URL}/load_and_zoom?${params}`)
+          .catch(() => this.props.openErrorModal('Could not connect to JOSM remote control.'));
+      }
     }
 
     if (editor === 'id') {
