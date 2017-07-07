@@ -9,7 +9,7 @@ const renderContributions = (statsByUser) => {
   }
 
   return statsByUser.map((stats, i) => {
-    const { fixed, skip, noterror, user } = stats;
+    const { fixed, skip, noterror, edit, user } = stats;
 
     const profile = `${USER_PROFILE_URL}/${user}`;
     const numFormat = d3.format(',');
@@ -18,12 +18,13 @@ const renderContributions = (statsByUser) => {
 
     return (
       <div key={i} className='col12 clearfix'>
-        <span className='col4'>
+        <span className='col2'>
           <a href={profile} target='_blank' className='inline strong pad0y'>{user}</a>
         </span>
         <span className='col2 pad0y text-right'>{numFormat(fixed)}</span>
         <span className='col2 pad0y text-right quiet'>{numFormat(skip)}</span>
         <span className='col2 pad0y text-right'>{numFormat(noterror)}</span>
+        <span className='col2 pad0y text-right quiet'>{numFormat(edit)}</span>
         <span className='col2 pad0y text-right'>{numFormat(completed)}</span>
       </div>
     );
@@ -36,10 +37,11 @@ const StatsSummary = ({ statsByUser }) => {
   return (
     <div className='contributions'>
       <div className='col12 clearfix'>
-        <h4 className='col4 strong'>Contributors</h4>
+        <h4 className='col2 strong'>Contributors</h4>
         <h4 className='col2 pad0y text-right strong'>Fixed</h4>
         <h4 className='col2 pad0y text-right strong'>Skipped</h4>
         <h4 className='col2 pad0y text-right strong'>Not Error</h4>
+        <h4 className='col2 pad0y text-right strong'>Edited</h4>
         <h4 className='col2 pad0y text-right strong'>Completed</h4>
       </div>
       {contributions}
