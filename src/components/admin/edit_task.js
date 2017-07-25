@@ -19,7 +19,7 @@ class EditTask extends Component {
     name: '',
     description: '',
     changesetComment: '',
-    file: {},
+    file: null,
   }
 
   handleNameChange = (e) => {
@@ -67,7 +67,9 @@ class EditTask extends Component {
     formData.append('description', description);
     formData.append('changesetComment', changesetComment);
     formData.append('isCompleted', false);
-    formData.append('file', file);
+    if (file) {
+      formData.append('file', file);
+    }
 
     return formData;
   }
@@ -140,9 +142,9 @@ class EditTask extends Component {
             onChange={this.handleFileInputChange} />
           <a className='button pad2x quiet'
              onClick={() => this.refs.fileInput.click()}>
-              Choose GeoJSON
+              Upload GeoJSON (optional)
           </a>
-          {file.name && <span className='pad1x quiet'>{`${file.name} (${filesize(file.size).human()})`}</span>}
+          {file && file.name && <span className='pad1x quiet'>{`${file.name} (${filesize(file.size).human()})`}</span>}
         </fieldset>
         <div className='pad2x pad4y col12 clearfix'>
           <input
