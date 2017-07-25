@@ -142,7 +142,7 @@ class EditTask extends Component {
             onChange={this.handleFileInputChange} />
           <a className='button pad2x quiet'
              onClick={() => this.refs.fileInput.click()}>
-              Choose GeoJSON
+              Upload GeoJSON (optional)
           </a>
           {file && file.name && <span className='pad1x quiet'>{`${file.name} (${filesize(file.size).human()})`}</span>}
         </fieldset>
