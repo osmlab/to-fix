@@ -43,8 +43,6 @@ class Task extends Component {
   state = {
     map: null,
     geolocation: '',
-    iDEdit: false,
-    iDEditPath: '',
   }
 
   editTask = () => {
@@ -86,20 +84,17 @@ class Task extends Component {
     if (editor === 'id') {
       const {lng, lat} = map.getCenter();
       const zoom = map.getZoom();
+      const { currentTask } = this.props;
+      const { changesetComment } = currentTask.value;
 
-      const iDEditPath = `${ID_URL}/#map=${zoom}/${lat}/${lng}`;
+      const iDEditPath = `${ID_URL}/#comment=${encodeURI(changesetComment)}&map=${zoom}/${lat}/${lng}`;
 
-      this.setState({
-        iDEdit: true,
-        iDEditPath,
-      });
+      window.open(iDEditPath, '_blank');
     }
   }
 
   reset = () => {
     this.setState({
-      iDEdit: false,
-      iDEditPath: '',
       geolocation: '',
     });
   }
@@ -284,7 +279,6 @@ class Task extends Component {
     return (
       nextState.map !== this.state.map ||
       nextState.geolocation !== this.state.geolocation ||
-      nextState.iDEdit !== this.state.iDEdit ||
       nextProps.currentTaskId !== this.props.currentTaskId ||
       nextProps.currentItemId !== this.props.currentItemId ||
       nextProps.sidebar !== this.props.sidebar
@@ -344,17 +338,9 @@ class Task extends Component {
         geolocation={geolocation} />
     );
 
-    const iDContainerClass = iDEdit ? '' : 'hidden';
-    const iDEditor = (
-      <div className={iDContainerClass}>
-        <iframe src={iDEditPath} frameBorder='0' className='ideditor'></iframe>
-      </div>
-    );
-
     return (
       <div ref={node => this.mapContainer = node} className='mode active map fill-navy-dark contain'>
         { currentItemId && editBar }
-        { iDEditor }
       </div>
     );
   }
