@@ -84,8 +84,10 @@ class Task extends Component {
     if (editor === 'id') {
       const {lng, lat} = map.getCenter();
       const zoom = map.getZoom();
+      const { currentTask } = this.props;
+      const { changesetComment } = currentTask.value;
 
-      const iDEditPath = `${ID_URL}/#map=${zoom}/${lat}/${lng}`;
+      const iDEditPath = `${ID_URL}/#comment=${encodeURI(changesetComment)}&map=${zoom}/${lat}/${lng}`;
 
       window.open(iDEditPath, '_blank');
     }
